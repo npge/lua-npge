@@ -90,5 +90,24 @@ f_mt.text = function(self)
     end
 end
 
+f_mt.subfragment = function(self, start, stop, ori)
+    -- ori is related to source fragment
+    local start2 = self:start() + self:ori() * start
+    local stop2 = self:start() + self:ori() * stop
+    local ori2 = self:ori() * ori
+    local fix_coord = function(x)
+        if x < 0 then
+            return x + self:seq():size()
+        elseif x >= self:seq():size() then
+            return x - self:seq():size()
+        else
+            return x
+        end
+    end
+    start2 = fix_coord(start2)
+    stop2 = fix_coord(stop2)
+    return Fragment(self:seq(), start2, stop2, ori2)
+end
+
 return setmetatable(Fragment, Fragment_mt)
 
