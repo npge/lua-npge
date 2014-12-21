@@ -1,4 +1,5 @@
-local unpack = require 'npge.util.unpack'
+local npge = require 'npge'
+local unpack = npge.util.unpack
 
 describe("util.unpack", function()
     it("unpack works", function()
