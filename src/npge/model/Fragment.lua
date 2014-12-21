@@ -44,6 +44,13 @@ f_mt.ori = function(self)
     return self._ori
 end
 
+f_mt.__eq = function(self, other)
+    return self:seq() == other:seq() and
+        self:start() == other:start() and
+        self:stop() == other:stop() and
+        self:ori() == other:ori()
+end
+
 f_mt.parted = function(self)
     local diff = self:stop() - self:start()
     -- (diff < 0 and self:ori() == 1) or ...
