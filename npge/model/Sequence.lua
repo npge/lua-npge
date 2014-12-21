@@ -5,8 +5,7 @@ local Sequence_mt = {}
 Sequence_mt.__index = Sequence_mt
 
 Sequence_mt.to_atgcn = function(text)
-    return text
-        :upper()
+    return text:upper()
         :gsub('[RYMKWSBVHD]', 'N')
         :gsub('[^ATGCN]', '')
 end
@@ -25,25 +24,13 @@ Sequence_mt.__call = function(self, name, text, description)
     if circularity ~= 'c' and circularity ~= 'l' then
         circularity = nil
     end
-    mt.genome = function()
-        return genome
-    end
-    mt.chromosome = function()
-        return chromosome
-    end
-    mt.circularity = function()
-        return circularity
-    end
+    mt.genome = function() return genome end
+    mt.chromosome = function() return chromosome end
+    mt.circularity = function() return circularity end
     text = Sequence.to_atgcn(text)
-    mt.text = function()
-        return text
-    end
-    mt.description = function()
-        return description
-    end
-    mt.size = function()
-        return #text
-    end
+    mt.text = function() return text end
+    mt.description = function() return description end
+    mt.size = function() return #text end
     mt.at = function(self, index)
         return text:sub(index + 1, index + 1)
     end
