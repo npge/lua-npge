@@ -10,6 +10,12 @@ describe("model.fragment", function()
         assert.are.equal(f:ori(), 1)
     end)
 
+    it("has type 'Fragment'", function()
+        local s = model.Sequence("G&C&c", "ATGC")
+        local f = model.Fragment(s, 1, 2, 1)
+        assert.are.equal(f:type(), "Fragment")
+    end)
+
     local Fragment = require 'npge.model.Fragment'
     local fragment_gen = function(seq, start, stop, ori)
         return function()

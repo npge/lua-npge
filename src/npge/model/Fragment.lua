@@ -29,6 +29,10 @@ Fragment_mt.__call = function(self, seq, start, stop, ori)
     return setmetatable(f, f_mt)
 end
 
+f_mt.type = function(self)
+    return 'Fragment'
+end
+
 f_mt.seq = function(self)
     return self._seq
 end
