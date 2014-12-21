@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Usage:
+# $ . /path/to/SETPATH
+# $ lua
+# $ npge = require('npge')
+
+top_dir="$(readlink -f "$(dirname "$BASH_SOURCE")")"
+new_path="$top_dir/src/?/init.lua"
+new_path="$new_path;$top_dir/src/?.lua"
+if [ -z "$LUA_PATH" ]; then
+    export LUA_PATH="$new_path"
+else
+    export LUA_PATH="$new_path;$LUA_PATH"
+fi
+
