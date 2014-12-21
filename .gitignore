@@ -13,6 +13,8 @@
 *.pro.user
 *-build-*
 
+*.out
+
 usr
 include
 
