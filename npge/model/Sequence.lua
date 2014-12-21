@@ -2,6 +2,14 @@
 local Sequence = {}
 
 local Sequence_mt = {}
+Sequence_mt.__index = Sequence_mt
+
+Sequence_mt.to_atgcn = function(text)
+    return text
+        :upper()
+        :gsub('[RYMKWSBVHD]', 'N')
+        :gsub('[^ATGCN]', '')
+end
 
 Sequence_mt.__call = function(self, name, text, description)
     local mt = {}
