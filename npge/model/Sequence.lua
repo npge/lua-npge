@@ -5,12 +5,17 @@ local Sequence_mt = {}
 Sequence_mt.__index = Sequence_mt
 
 Sequence_mt.to_atgcn = function(text)
+    assert(type(text) == 'string')
     return text:upper()
         :gsub('[RYMKWSBVHD]', 'N')
         :gsub('[^ATGCN]', '')
 end
 
 Sequence_mt.__call = function(self, name, text, description)
+    assert(type(name) == 'string')
+    assert(type(text) == 'string')
+    assert(type(description) == 'string' or
+        type(description) == 'nil')
     local mt = {}
     mt.name = function()
         return name
