@@ -164,5 +164,9 @@ f_mt.subfragment = function(self, start, stop, ori)
     return f
 end
 
+f_mt.sub = function(self, start, stop, ori)
+    return self:subfragment(start, stop, ori):text()
+end
+
 return setmetatable(Fragment, Fragment_mt)
 
