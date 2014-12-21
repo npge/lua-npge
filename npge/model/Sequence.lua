@@ -17,6 +17,9 @@ Sequence_mt.__call = function(self, name, text, description)
     assert(type(description) == 'string' or
         type(description) == 'nil')
     local mt = {}
+    mt.type = function()
+        return 'Sequence'
+    end
     mt.name = function()
         return name
     end
