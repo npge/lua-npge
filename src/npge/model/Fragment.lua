@@ -1,8 +1,10 @@
 
 local Fragment = {}
-
 local Fragment_mt = {}
+local f_mt = {}
+
 Fragment_mt.__index = Fragment_mt
+f_mt.__index = f_mt
 
 Fragment_mt.__call = function(self, seq, start, stop, ori)
     assert(seq:type() == 'Sequence')
@@ -23,32 +25,32 @@ Fragment_mt.__call = function(self, seq, start, stop, ori)
         end
     end
     local f = {_seq=seq, _start=start, _stop=stop, _ori=ori}
-    return setmetatable(f, Fragment_mt)
+    return setmetatable(f, f_mt)
 end
 
-Fragment_mt.seq = function(self)
+f_mt.seq = function(self)
     return self._seq
 end
 
-Fragment_mt.start = function(self)
+f_mt.start = function(self)
     return self._start
 end
 
-Fragment_mt.stop = function(self)
+f_mt.stop = function(self)
     return self._stop
 end
 
-Fragment_mt.ori = function(self)
+f_mt.ori = function(self)
     return self._ori
 end
 
-Fragment_mt.parted = function(self)
+f_mt.parted = function(self)
     local diff = self:stop() - self:start()
     -- (diff < 0 and self:ori() == 1) or ...
     return diff * self:ori() < 0
 end
 
-Fragment_mt.parts = function(self)
+f_mt.parts = function(self)
     assert(self:parted())
     local last = self:seq():size() - 1
     if self:ori() == 1 then
@@ -60,7 +62,7 @@ Fragment_mt.parts = function(self)
     end
 end
 
-Fragment_mt.size = function(self)
+f_mt.size = function(self)
     local math = require('math')
     local absdiff = math.abs(self:stop() - self:start())
     if not self:parted() then
@@ -70,7 +72,7 @@ Fragment_mt.size = function(self)
     end
 end
 
-Fragment_mt.text = function(self)
+f_mt.text = function(self)
     local math = require('math')
     if not self:parted() then
         local min = math.min(self:start(), self:stop())
