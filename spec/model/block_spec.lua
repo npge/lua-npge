@@ -64,5 +64,32 @@ describe("model.block", function()
             end)
         end)
     end)
+
+    it("gets fragments of block", function()
+        local s = model.Sequence("test_name", "ATAT")
+        local f1 = model.Fragment(s, 0, 1, 1)
+        local f2 = model.Fragment(s, 3, 2, -1)
+        local ff1 = {f1, f2}
+        local block = model.Block(ff1)
+        local ff2 = block:fragments()
+        table.sort(ff1)
+        table.sort(ff2)
+        assert.are.same(ff1, ff2)
+    end)
+
+    it("itearte fragments of block", function()
+        local s = model.Sequence("test_name", "ATAT")
+        local f1 = model.Fragment(s, 0, 1, 1)
+        local f2 = model.Fragment(s, 3, 2, -1)
+        local ff1 = {f1, f2}
+        local block = model.Block(ff1)
+        local ff2 = {}
+        for f in block:iter_fragments() do
+            table.insert(ff2, f)
+        end
+        table.sort(ff1)
+        table.sort(ff2)
+        assert.are.same(ff1, ff2)
+    end)
 end)
 

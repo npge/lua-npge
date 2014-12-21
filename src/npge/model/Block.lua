@@ -84,7 +84,7 @@ block_mt.fragments = function(self)
 end
 
 block_mt.iter_fragments = function(self)
-    local f = nil
+    local f
     return function()
         f = next(self._fragments, f)
         return f
