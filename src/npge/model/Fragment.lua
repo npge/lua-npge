@@ -45,10 +45,11 @@ f_mt.ori = function(self)
 end
 
 f_mt.__eq = function(self, other)
-    return self:seq() == other:seq() and
-        self:start() == other:start() and
-        self:stop() == other:stop() and
-        self:ori() == other:ori()
+    local arrays_equal = require 'npge.util.arrays_equal'
+    return arrays_equal(
+        {self:seq(), self:start(), self:stop(), self:ori()},
+        {other:seq(), other:start(), other:stop(), other:ori()}
+        )
 end
 
 f_mt.parted = function(self)
