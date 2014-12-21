@@ -34,5 +34,13 @@ describe("model.fragment", function()
         assert.has_no.errors(fragment_gen(s, 2, 1, 1))
         assert.has_no.errors(fragment_gen(s, 1, 2, -1))
     end)
+
+    it("detects parted fragments", function()
+        local s = model.Sequence("genome&chromosome&c", "ATGC")
+        assert.is_true(Fragment(s, 1, 2, -1):parted())
+        assert.is_false(Fragment(s, 1, 2, 1):parted())
+        assert.is_true(Fragment(s, 2, 1, 1):parted())
+        assert.is_false(Fragment(s, 1, 1, -1):parted())
+    end)
 end)
 

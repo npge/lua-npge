@@ -42,5 +42,11 @@ Fragment_mt.ori = function(self)
     return self._ori
 end
 
+Fragment_mt.parted = function(self)
+    local diff = self:stop() - self:start()
+    -- (diff < 0 and self:ori() == 1) or ...
+    return diff * self:ori() < 0
+end
+
 return setmetatable(Fragment, Fragment_mt)
 
