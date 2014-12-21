@@ -12,11 +12,29 @@ Sequence_mt.to_atgcn = function(text)
 end
 
 Sequence_mt.__call = function(self, name, text, description)
-    text = Sequence.to_atgcn(text)
     local mt = {}
     mt.name = function()
         return name
     end
+    local split = require 'npge.util.split'
+    local parts = split(name, '&')
+    local genome, chromosome, circularity
+    if #parts == 3 then
+        genome, chromosome, circularity = unpack(parts)
+    end
+    if circularity ~= 'c' and circularity ~= 'l' then
+        circularity = nil
+    end
+    mt.genome = function()
+        return genome
+    end
+    mt.chromosome = function()
+        return chromosome
+    end
+    mt.circularity = function()
+        return circularity
+    end
+    text = Sequence.to_atgcn(text)
     mt.text = function()
         return text
     end
