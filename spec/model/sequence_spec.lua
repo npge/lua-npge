@@ -1,6 +1,10 @@
 local Sequence = require 'npge.model.Sequence'
 
 describe("model.sequence", function()
+    it("converts to atgcn", function()
+        assert.are.equal(Sequence.to_atgcn("a T g"), "ATG")
+    end)
+
     it("sequence creation", function()
         local s = Sequence("test_name", "ATGC",
             "test description")
