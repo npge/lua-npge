@@ -65,6 +65,10 @@ seq_mt.text = function(self)
     return self._text
 end
 
+seq_mt.sub = function(self, min, max)
+    return self._text:sub(min + 1, max + 1)
+end
+
 seq_mt.description = function(self)
     return self._description
 end
@@ -74,7 +78,7 @@ seq_mt.size = function(self)
 end
 
 seq_mt.at = function(self, index)
-    return self._text:sub(index + 1, index + 1)
+    return self:sub(index, index)
 end
 
 return setmetatable(Sequence, Sequence_mt)

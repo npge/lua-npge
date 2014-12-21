@@ -85,6 +85,11 @@ describe("model.sequence", function()
         assert.are.equal(s:at(3), 'C')
     end)
 
+    it("gets substrings from sequence's text", function()
+        local s = Sequence("test_name", "ATGC")
+        assert.are.equal(s:sub(0, 1), 'AT')
+    end)
+
     it("gets size of text", function()
         local s = Sequence("test_name", "ATGC")
         assert.are.equal(s:size(), 4)
