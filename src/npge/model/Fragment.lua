@@ -48,5 +48,15 @@ Fragment_mt.parted = function(self)
     return diff * self:ori() < 0
 end
 
+Fragment_mt.size = function(self)
+    local math = require('math')
+    local absdiff = math.abs(self:stop() - self:start())
+    if not self:parted() then
+        return absdiff + 1
+    else
+        return self:seq():size() - absdiff + 1
+    end
+end
+
 return setmetatable(Fragment, Fragment_mt)
 
