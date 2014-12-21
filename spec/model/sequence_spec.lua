@@ -5,6 +5,10 @@ describe("model.sequence", function()
         assert.are.equal(Sequence.to_atgcn("a T g"), "ATG")
     end)
 
+    it("calculates complement", function()
+        assert.are.equal(Sequence.complement("ATGC"), "GCAT")
+    end)
+
     it("sequence creation", function()
         local s = Sequence("test_name", "ATGC",
             "test description")

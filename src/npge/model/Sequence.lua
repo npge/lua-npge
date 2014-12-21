@@ -25,6 +25,11 @@ Sequence_mt.to_atgcn = function(text)
         :gsub('[^ATGCN]', '')
 end
 
+Sequence_mt.complement = function(text)
+    return text:reverse():gsub('[ATGC]',
+        {A='T', T='A', C='G', G='C'})
+end
+
 seq_mt.type = function()
     return 'Sequence'
 end
