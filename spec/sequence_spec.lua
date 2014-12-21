@@ -16,7 +16,7 @@ describe("sequence", function()
         assert.are.equal(s:description(), nil)
     end)
 
-    pending("sequence with lower text", function()
+    it("sequence with lower text", function()
         local s = Sequence("test_name", "atgc")
         assert.are.equal(s:text(), "ATGC")
     end)

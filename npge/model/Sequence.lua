@@ -12,6 +12,7 @@ Sequence_mt.to_atgcn = function(text)
 end
 
 Sequence_mt.__call = function(self, name, text, description)
+    text = Sequence.to_atgcn(text)
     local mt = {}
     mt.name = function()
         return name
