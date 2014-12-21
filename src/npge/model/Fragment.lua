@@ -7,6 +7,7 @@ Fragment_mt.__index = Fragment_mt
 f_mt.__index = f_mt
 
 Fragment_mt.__call = function(self, seq, start, stop, ori)
+    assert(seq)
     assert(seq:type() == 'Sequence')
     assert(type(start) == 'number')
     assert(type(stop) == 'number')
