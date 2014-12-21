@@ -63,11 +63,13 @@ local function f_as_arr(self)
 end
 
 f_mt.__eq = function(self, other)
+    assert(other and other:type() == 'Fragment')
     local arrays_equal = require 'npge.util.arrays_equal'
     return arrays_equal(f_as_arr(self), f_as_arr(other))
 end
 
 f_mt.__lt = function(self, other)
+    assert(other and other:type() == 'Fragment')
     local arrays_less = require 'npge.util.arrays_less'
     return arrays_less(f_as_arr(self), f_as_arr(other))
 end
