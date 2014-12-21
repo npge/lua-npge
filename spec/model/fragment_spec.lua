@@ -99,6 +99,19 @@ describe("model.fragment", function()
         assert.is.falsy(f:has(2))
     end)
 
+    it("#is_subfragment", function()
+        local s = model.Sequence("genome&chromosome&c", "ATGC")
+        local f = Fragment(s, 3, 1, 1)
+        assert.is.truthy(
+            Fragment(s, 3, 1, 1):is_subfragment_of(f))
+        assert.is.truthy(
+            Fragment(s, 3, 0, 1):is_subfragment_of(f))
+        assert.is.falsy(
+            Fragment(s, 2, 2, 1):is_subfragment_of(f))
+        assert.is.falsy(
+            Fragment(s, 1, 3, 1):is_subfragment_of(f))
+    end)
+
     it("gets text of fragment", function()
         local s = model.Sequence("genome&chromosome&c", "ATGC")
         assert.are.equal(Fragment(s, 0, 0, 1):text(), "A")

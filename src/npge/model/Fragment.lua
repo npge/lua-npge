@@ -112,6 +112,24 @@ f_mt.has = function(self, index)
     end
 end
 
+f_mt.is_subfragment_of = function(self, source)
+    assert(self:seq() == source:seq())
+    if not source:has(self:start()) or
+            not source:has(self:stop()) then
+        return false
+    end
+    if source:parted() then
+        -- not in source
+        local math = require 'math'
+        local x = math.floor((source:start() +
+            source:stop()) / 2)
+        if not source:has(x) and self:has(x) then
+            return false
+        end
+    end
+    return true
+end
+
 f_mt.subfragment = function(self, start, stop, ori)
     -- ori is related to source fragment
     local start2 = self:start() + self:ori() * start
