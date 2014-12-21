@@ -45,6 +45,14 @@ f_mt.ori = function(self)
     return self._ori
 end
 
+f_mt.id = function(self)
+    return ("%s_%s_%s_%s"):format(
+        self:seq():name(),
+        self:start(),
+        self:stop(),
+        self:ori())
+end
+
 local function f_as_arr(self)
     return {self:seq():name(), self:start(),
         self:stop(), self:ori()}

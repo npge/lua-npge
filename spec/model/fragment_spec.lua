@@ -57,6 +57,12 @@ describe("model.fragment", function()
         assert(Fragment(s1, 0, 1, -1) < Fragment(s1, 0, 1, 1))
     end)
 
+    it("gets id", function()
+        local s = model.Sequence("G&C&c", "ATGC")
+        local f = Fragment(s, 1, 2, 1)
+        assert.are.equal(f:id(), "G&C&c_1_2_1")
+    end)
+
     it("detects parted fragments", function()
         local s = model.Sequence("genome&chromosome&c", "ATGC")
         assert.is_true(Fragment(s, 1, 2, -1):parted())
