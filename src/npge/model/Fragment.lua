@@ -48,6 +48,18 @@ Fragment_mt.parted = function(self)
     return diff * self:ori() < 0
 end
 
+Fragment_mt.parts = function(self)
+    assert(self:parted())
+    local last = self:seq():size() - 1
+    if self:ori() == 1 then
+        return Fragment(self:seq(), self:start(), last, 1),
+               Fragment(self:seq(), 0, self:stop(), 1)
+    else
+        return Fragment(self:seq(), self:start(), 0, -1),
+               Fragment(self:seq(), last, self:stop(), -1)
+    end
+end
+
 Fragment_mt.size = function(self)
     local math = require('math')
     local absdiff = math.abs(self:stop() - self:start())
