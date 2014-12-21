@@ -14,9 +14,13 @@ Fragment_mt.__call = function(self, seq, start, stop, ori)
     assert(stop >= 0)
     assert(stop < seq:size())
     assert(ori == 1 or ori == -1)
-    if seq:circularity() ~= 'c' and ori == 1 then
+    if seq:circularity() ~= 'c' then
         -- forbid parted fragments on linear sequences
-        assert(start < stop)
+        if ori == 1 then
+            assert(start <= stop)
+        else
+            assert(start >= stop)
+        end
     end
     local f = {_seq=seq, _start=start, _stop=stop, _ori=ori}
     return setmetatable(f, Fragment_mt)
