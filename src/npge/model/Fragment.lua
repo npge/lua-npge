@@ -97,6 +97,21 @@ f_mt.text = function(self)
     end
 end
 
+f_mt.has = function(self, index)
+    if not self:parted() then
+        if self:ori() == 1 then
+            return index >= self:start() and
+                index <= self:stop()
+        else
+            return index <= self:start() and
+                index >= self:stop()
+        end
+    else
+        local a, b = self:parts()
+        return a:has(index) or b:has(index)
+    end
+end
+
 f_mt.subfragment = function(self, start, stop, ori)
     -- ori is related to source fragment
     local start2 = self:start() + self:ori() * start
