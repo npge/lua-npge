@@ -146,7 +146,9 @@ f_mt.subfragment = function(self, start, stop, ori)
     end
     start2 = fix_coord(start2)
     stop2 = fix_coord(stop2)
-    return Fragment(self:seq(), start2, stop2, ori2)
+    local f = Fragment(self:seq(), start2, stop2, ori2)
+    assert(f:is_subfragment_of(self))
+    return f
 end
 
 return setmetatable(Fragment, Fragment_mt)
