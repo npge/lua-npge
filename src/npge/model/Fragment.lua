@@ -168,5 +168,17 @@ f_mt.sub = function(self, start, stop, ori)
     return self:subfragment(start, stop, ori):text()
 end
 
+f_mt.at = function(self, index)
+    local seq_index = self:start() + index * self:ori()
+    seq_index = fix_coord(self:seq(), seq_index)
+    local letter = self:seq():at(seq_index)
+    if self:ori() == 1 then
+        return letter
+    else
+        local Sequence = require 'npge.model.Sequence'
+        return Sequence.complement(letter)
+    end
+end
+
 return setmetatable(Fragment, Fragment_mt)
 
