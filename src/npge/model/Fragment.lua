@@ -73,8 +73,8 @@ f_mt.size = function(self)
 end
 
 f_mt.text = function(self)
-    local math = require('math')
     if not self:parted() then
+        local math = require('math')
         local min = math.min(self:start(), self:stop())
         local max = math.max(self:start(), self:stop())
         local text = self:seq():sub(min, max)
