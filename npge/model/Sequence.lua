@@ -1,5 +1,9 @@
 
-local Sequence = function(name, text, description)
+local Sequence = {}
+
+local Sequence_mt = {}
+
+Sequence_mt.__call = function(self, name, text, description)
     local mt = {}
     mt.name = function()
         return name
@@ -20,4 +24,4 @@ local Sequence = function(name, text, description)
     return setmetatable({}, mt)
 end
 
-return Sequence
+return setmetatable(Sequence, Sequence_mt)
