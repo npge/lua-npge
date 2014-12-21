@@ -70,5 +70,23 @@ Fragment_mt.size = function(self)
     end
 end
 
+Fragment_mt.text = function(self)
+    local math = require('math')
+    if not self:parted() then
+        local min = math.min(self:start(), self:stop())
+        local max = math.max(self:start(), self:stop())
+        local text = self:seq():sub(min, max)
+        if self:ori() == 1 then
+            return text
+        else
+            local Sequence = require 'npge.model.Sequence'
+            return Sequence.complement(text)
+        end
+    else
+        local a, b = self:parts()
+        return a:text() .. b:text()
+    end
+end
+
 return setmetatable(Fragment, Fragment_mt)
 
