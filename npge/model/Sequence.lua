@@ -4,6 +4,18 @@ local Sequence = {}
 local Sequence_mt = {}
 Sequence_mt.__index = Sequence_mt
 
+Sequence_mt.__call = function(self, name, text, description)
+    assert(type(name) == 'string')
+    assert(type(text) == 'string')
+    assert(type(description) == 'string' or
+        type(description) == 'nil')
+    local seq = {}
+    seq._name = name
+    seq._text = Sequence.to_atgcn(text)
+    seq._description = description
+    return setmetatable(seq, Sequence_mt)
+end
+
 Sequence_mt.to_atgcn = function(text)
     assert(type(text) == 'string')
     return text:upper()
@@ -11,39 +23,51 @@ Sequence_mt.to_atgcn = function(text)
         :gsub('[^ATGCN]', '')
 end
 
-Sequence_mt.__call = function(self, name, text, description)
-    assert(type(name) == 'string')
-    assert(type(text) == 'string')
-    assert(type(description) == 'string' or
-        type(description) == 'nil')
-    local mt = {}
-    mt.type = function()
-        return 'Sequence'
-    end
-    mt.name = function()
-        return name
-    end
+Sequence_mt.type = function()
+    return 'Sequence'
+end
+
+Sequence_mt.name = function(self)
+    return self._name
+end
+
+local function get_name_part(name, number)
     local split = require 'npge.util.split'
     local parts = split(name, '&')
-    local genome, chromosome, circularity
     if #parts == 3 then
-        genome, chromosome, circularity = unpack(parts)
+        return parts[number]
     end
-    if circularity ~= 'c' and circularity ~= 'l' then
-        circularity = nil
+end
+
+Sequence_mt.genome = function(self)
+    return get_name_part(self._name, 1)
+end
+
+Sequence_mt.chromosome = function(self)
+    return get_name_part(self._name, 2)
+end
+
+Sequence_mt.circularity = function(self)
+    local circularity = get_name_part(self._name, 3)
+    if circularity == 'c' or circularity == 'l' then
+        return circularity
     end
-    mt.genome = function() return genome end
-    mt.chromosome = function() return chromosome end
-    mt.circularity = function() return circularity end
-    text = Sequence.to_atgcn(text)
-    mt.text = function() return text end
-    mt.description = function() return description end
-    mt.size = function() return #text end
-    mt.at = function(self, index)
-        return text:sub(index + 1, index + 1)
-    end
-    mt.__index = mt
-    return setmetatable({}, mt)
+end
+
+Sequence_mt.text = function(self)
+    return self._text
+end
+
+Sequence_mt.description = function(self)
+    return self._description
+end
+
+Sequence_mt.size = function(self)
+    return #self._text
+end
+
+Sequence_mt.at = function(self, index)
+    return self._text:sub(index + 1, index + 1)
 end
 
 return setmetatable(Sequence, Sequence_mt)
