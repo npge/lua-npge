@@ -112,22 +112,44 @@ f_mt.has = function(self, index)
     end
 end
 
+local fix_coord = function(seq, x)
+    if x < 0 then
+        return x + seq:size()
+    elseif x >= seq:size() then
+        return x - seq:size()
+    else
+        return x
+    end
+end
+
 f_mt.is_subfragment_of = function(self, source)
     assert(self:seq() == source:seq())
-    if not source:has(self:start()) or
-            not source:has(self:stop()) then
+    if not source:has(self:start())
+            or not source:has(self:stop()) then
         return false
     end
-    if source:parted() then
-        -- not in source
-        local math = require 'math'
-        local x = math.floor((source:start() +
-            source:stop()) / 2)
-        if not source:has(x) and self:has(x) then
-            return false
+    if not source:parted() and not self:parted() then
+        return true
+    elseif source:size() == source:seq():size() then
+        -- source covers whole sequence
+        return true
+    else
+        -- check all boundaries of source
+        local points = {source:start(), source:stop()}
+        local points1 = {}
+        for _, point in ipairs(points) do
+            table.insert(points1, point - 1)
+            table.insert(points1, point)
+            table.insert(points1, point + 1)
         end
+        for _, point in ipairs(points1) do
+            point = fix_coord(self:seq(), point)
+            if self:has(point) and not source:has(point) then
+                return false
+            end
+        end
+        return true
     end
-    return true
 end
 
 f_mt.subfragment = function(self, start, stop, ori)
@@ -135,17 +157,8 @@ f_mt.subfragment = function(self, start, stop, ori)
     local start2 = self:start() + self:ori() * start
     local stop2 = self:start() + self:ori() * stop
     local ori2 = self:ori() * ori
-    local fix_coord = function(x)
-        if x < 0 then
-            return x + self:seq():size()
-        elseif x >= self:seq():size() then
-            return x - self:seq():size()
-        else
-            return x
-        end
-    end
-    start2 = fix_coord(start2)
-    stop2 = fix_coord(stop2)
+    start2 = fix_coord(self:seq(), start2)
+    stop2 = fix_coord(self:seq(), stop2)
     local f = Fragment(self:seq(), start2, stop2, ori2)
     assert(f:is_subfragment_of(self))
     return f

@@ -112,6 +112,35 @@ describe("model.fragment", function()
             Fragment(s, 1, 3, 1):is_subfragment_of(f))
     end)
 
+    it("#is_subfragment whole sequence", function()
+        local s = model.Sequence("genome&chromosome&c", "ATGC")
+        local f = Fragment(s, 3, 2, 1)
+        assert.is.truthy(
+            Fragment(s, 0, 3, 1):is_subfragment_of(f))
+        assert.is.truthy(
+            Fragment(s, 2, 1, 1):is_subfragment_of(f))
+        assert.is.truthy(
+            Fragment(s, 2, 0, 1):is_subfragment_of(f))
+        assert.is.truthy(
+            Fragment(s, 2, 0, -1):is_subfragment_of(f))
+    end)
+
+    it("#is_subfragment source parted", function()
+        local s = model.Sequence("genome&chromosome&c", "ATGC")
+        local f = Fragment(s, 3, 0, 1)
+        assert.is.falsy(
+            Fragment(s, 0, 3, 1):is_subfragment_of(f))
+        assert.is.truthy(
+            Fragment(s, 0, 3, -1):is_subfragment_of(f))
+    end)
+
+    it("#is_subfragment self parted", function()
+        local s = model.Sequence("genome&chromosome&c", "ATGC")
+        local f = Fragment(s, 1, 3, 1)
+        assert.is.falsy(
+            Fragment(s, 1, 3, -1):is_subfragment_of(f))
+    end)
+
     it("gets text of fragment", function()
         local s = model.Sequence("genome&chromosome&c", "ATGC")
         assert.are.equal(Fragment(s, 0, 0, 1):text(), "A")
