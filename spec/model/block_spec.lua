@@ -55,13 +55,11 @@ describe("model.block", function()
                 {f2, ''},
             })
         end)
-        pending(function()
-            assert.has_error(function()
-                local block = model.Block({
-                    {f1, ''},
-                    {f2, ''},
-                })
-            end)
+        assert.has_error(function()
+            local block = model.Block({
+                {f1, ''},
+                {f2, ''},
+            })
         end)
     end)
 

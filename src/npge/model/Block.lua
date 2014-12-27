@@ -21,7 +21,11 @@ Block_mt.__call = function(self, fragments)
             return x
         else
             assert(#x == 2)
-            return x[1], Block.to_atgcn_and_gap(x[2])
+            local fragment = x[1]
+            local row = Block.to_atgcn_and_gap(x[2])
+            local Sequence = require 'npge.model.Sequence'
+            assert(fragment:text() == Sequence.to_atgcn(row))
+            return fragment, row
         end
     end
     -- memoization
