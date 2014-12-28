@@ -57,6 +57,45 @@ row_mt.block2fragment = function(self, blockpos)
     end
 end
 
+row_mt.block2left = function(self, blockpos)
+    for blockpos1 = blockpos, 0, -1 do
+        local fragmentpos = self:block2fragment(blockpos1)
+        if fragmentpos ~= -1 then
+            return fragmentpos
+        end
+    end
+    return -1
+end
+
+row_mt.block2right = function(self, blockpos)
+    for blockpos1 = blockpos, self:length() - 1 do
+        local fragmentpos = self:block2fragment(blockpos1)
+        if fragmentpos ~= -1 then
+            return fragmentpos
+        end
+    end
+    return -1
+end
+
+row_mt.block2nearest = function(self, blockpos)
+    for distance = 0, self:length() - 1 do
+        local left = blockpos - distance
+        if left > 0 then
+            local fragmentpos = self:block2fragment(left)
+            if fragmentpos ~= -1 then
+                return fragmentpos
+            end
+        end
+        local right = blockpos + distance
+        if right < self:length() then
+            local fragmentpos = self:block2fragment(right)
+            if fragmentpos ~= -1 then
+                return fragmentpos
+            end
+        end
+    end
+end
+
 row_mt.fragment2block = function(self, fragmentpos)
     local text = self._text
     local size = #text

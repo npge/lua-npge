@@ -69,9 +69,36 @@ describe("model.row", function()
                 if char ~= '-' then
                     assert.are.equal(r:block2fragment(bp), fp)
                     assert.are.equal(r:fragment2block(fp), bp)
+                    assert.are.equal(r:block2left(bp), fp)
+                    assert.are.equal(r:block2right(bp), fp)
+                    assert.are.equal(r:block2nearest(bp), fp)
                     fp = fp + 1
                 else
                     assert.are.equal(r:block2fragment(bp), -1)
+                    local left = r:block2left(bp)
+                    local right = r:block2right(bp)
+                    local nearest = r:block2nearest(bp)
+                    if fp >= 1 then
+                        assert.are.equal(left, fp - 1)
+                    else
+                        assert.are.equal(left, -1)
+                    end
+                    if fp < #ungapped then
+                        assert.are.equal(right, fp)
+                    else
+                        assert.are.equal(right, -1)
+                    end
+                    local nearest = r:block2nearest(bp)
+                    if left ~= -1 and right ~= -1 then
+                        assert(nearest == left or
+                               nearest == right)
+                    elseif left ~= -1 then
+                        assert.equal(nearest, left)
+                    elseif right ~= -1 then
+                        assert.equal(nearest, right)
+                    else
+                        assert.equal(nearest, -1)
+                    end
                 end
             end
             assert.has_error(function()
