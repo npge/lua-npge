@@ -29,6 +29,10 @@ row_mt.fragment_length = function(self)
     return fragmentpos1
 end
 
+row_mt.text = function(self)
+    return self._text:gsub('[^-]', 'N')
+end
+
 row_mt.block2fragment = function(self, blockpos)
     local text = self._text
     local size = #text

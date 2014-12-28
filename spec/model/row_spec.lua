@@ -6,6 +6,7 @@ describe("model.row", function()
         local r = Row("A-T-G-C")
         assert.are.equal(r:length(), 7)
         assert.are.equal(r:fragment_length(), 4)
+        assert.are.equal(r:text(), 'N-N-N-N')
         -- block2fragment
         assert.are.equal(r:block2fragment(0), 0)
         assert.are.equal(r:block2fragment(1), -1)
@@ -54,6 +55,7 @@ describe("model.row", function()
             local Sequence = require 'npge.model.Sequence'
             local ungapped = Sequence.to_atgcn(text)
             assert.are.equal(r:fragment_length(), #ungapped)
+            assert.are.equal(r:text(), text:gsub('[^-]', 'N'))
             local fp = 0
             for bp = 0, #text - 1 do
                 local char = text:sub(bp + 1, bp + 1)
