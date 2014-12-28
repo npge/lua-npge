@@ -16,6 +16,19 @@ row_mt.length = function(self)
     return #self._text
 end
 
+row_mt.fragment_length = function(self)
+    local text = self._text
+    local size = #text
+    local fragmentpos1 = 0
+    for blockpos1 = 0, size - 1 do
+        local char = text:sub(blockpos1 + 1, blockpos1 + 1)
+        if char ~= '-' then
+            fragmentpos1 = fragmentpos1 + 1
+        end
+    end
+    return fragmentpos1
+end
+
 row_mt.block2fragment = function(self, blockpos)
     local text = self._text
     local size = #text

@@ -5,6 +5,7 @@ describe("model.row", function()
     it("uses row A-T-G-C", function()
         local r = Row("A-T-G-C")
         assert.are.equal(r:length(), 7)
+        assert.are.equal(r:fragment_length(), 4)
         -- block2fragment
         assert.are.equal(r:block2fragment(0), 0)
         assert.are.equal(r:block2fragment(1), -1)
