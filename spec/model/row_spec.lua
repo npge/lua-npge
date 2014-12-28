@@ -61,7 +61,8 @@ describe("model.row", function()
             local Sequence = require 'npge.model.Sequence'
             local ungapped = Sequence.to_atgcn(text)
             assert.are.equal(r:fragment_length(), #ungapped)
-            assert.are.equal(r:text(), text:gsub('[^-]', 'N'))
+            local text1 = text:gsub('[^-]', 'N')
+            assert.are.equal(r:text(), text1)
             local fp = 0
             for bp = 0, #text - 1 do
                 local char = text:sub(bp + 1, bp + 1)
