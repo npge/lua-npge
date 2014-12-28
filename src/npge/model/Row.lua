@@ -32,7 +32,8 @@ row_mt.fragment_length = function(self)
 end
 
 row_mt.text = function(self)
-    return self._text:gsub('[^-]', 'N')
+    local text = self._text:gsub('[^-]', 'N')
+    return text
 end
 
 row_mt.block2fragment = function(self, blockpos)
