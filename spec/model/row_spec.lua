@@ -101,31 +101,22 @@ describe("model.row", function()
         end
     end
 
-    it("uses row A-T-G-C (2)", function()
-        return check_row("A-T-G-C")
-    end)
+    it("uses row A-T-G-C (2)", check_row("A-T-G-C"))
 
-    it("uses row ATGC", function()
-        return check_row("ATGC")
-    end)
+    it("uses row ATGC", check_row("ATGC"))
 
-    it("uses row A", function()
-        return check_row("A")
-    end)
+    it("uses row A", check_row("A"))
 
-    it("uses row --A-", function()
-        return check_row("--A-")
-    end)
+    it("uses row --A-", check_row("--A-"))
 
-    it("uses long row", function()
-        return check_row([[
+    it("uses long row",
+        check_row([[
 TCACCATTATACAGTTATGGTATGAACTGGGTCTTCAT-AA------AA-AAAAATATTT
 TTTTTTGTTTATGCCATCATAGTTGTTCAATTATGCTAGTTT-----------GAATACC
 GAGCAAGAGCCACGTGCTTGAAAATCTTGCAAGCACTTTGAGGGGGAGCATTTTGAAAGC
 TTAAGTTTGACTCAATAACTGCGATGGTTGAGGGTAAT----------------TT-ATG
 -ATATATGACTTGCTTTCATCAAGTATGTCGCGTGATTACTGAAGCTTTCTCTGCCCTGC
 ATAATGACCTATAATTATTC-----CAAAAAGCTTACTC
-        ]])
-    end)
+    ]]))
 end)
 
