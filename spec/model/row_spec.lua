@@ -44,5 +44,56 @@ describe("model.row", function()
             r:fragment2block(100)
         end)
     end)
+
+    local check_row = function(text)
+        local Block = require 'npge.model.Block'
+        text = Block.to_atgcn_and_gap(text)
+        return function()
+            local r = Row(text)
+            assert.are.equal(r:length(), #text)
+            local Sequence = require 'npge.model.Sequence'
+            local ungapped = Sequence.to_atgcn(text)
+            assert.are.equal(r:fragment_length(), #ungapped)
+            local fp = 0
+            for bp = 0, #text - 1 do
+                local char = text:sub(bp + 1, bp + 1)
+                if char ~= '-' then
+                    assert.are.equal(r:block2fragment(bp), fp)
+                    assert.are.equal(r:fragment2block(fp), bp)
+                    fp = fp + 1
+                else
+                    assert.are.equal(r:block2fragment(bp), -1)
+                end
+            end
+            assert.has_error(function()
+                r:block2fragment(-1)
+            end)
+            assert.has_error(function()
+                r:block2fragment(-100)
+            end)
+            assert.has_error(function()
+                r:block2fragment(#text)
+            end)
+            assert.has_error(function()
+                r:block2fragment(2 * #text)
+            end)
+            assert.has_error(function()
+                r:fragment2block(-1)
+            end)
+            assert.has_error(function()
+                r:fragment2block(-100)
+            end)
+            assert.has_error(function()
+                r:fragment2block(#ungapped)
+            end)
+            assert.has_error(function()
+                r:fragment2block(#ungapped * 2)
+            end)
+        end
+    end
+
+    it("uses row A-T-G-C (2)", function()
+        return check_row("A-T-G-C")
+    end)
 end)
 
