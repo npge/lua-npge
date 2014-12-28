@@ -7,6 +7,8 @@ Row_mt.__index = Row_mt
 row_mt.__index = row_mt
 
 Row_mt.__call = function(self, text)
+    assert(type(text) == 'string')
+    assert(#text > 0)
     local row = {}
     row._text = text
     return setmetatable(row, row_mt)

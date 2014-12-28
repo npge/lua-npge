@@ -2,6 +2,12 @@ local model = require 'npge.model'
 local Row = model.Row
 
 describe("model.row", function()
+    it("throws on empty string", function()
+        assert.has_error(function()
+            Row("")
+        end)
+    end)
+
     it("uses row A-T-G-C", function()
         local r = Row("A-T-G-C")
         assert.are.equal(r:length(), 7)
