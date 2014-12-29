@@ -92,8 +92,18 @@ describe("model.row", function()
                     end
                     local nearest = r:block2nearest(bp)
                     if left ~= -1 and right ~= -1 then
-                        assert(nearest == left or
-                               nearest == right)
+                        local bp_l = r:fragment2block(left)
+                        local dist_l = bp - bp_l
+                        local bp_r = r:fragment2block(right)
+                        local dist_r = bp_r - bp
+                        if dist_l == dist_r then
+                            assert(nearest == left or
+                                   nearest == right)
+                       elseif dist_l < dist_r then
+                            assert.equal(nearest, left)
+                       elseif dist_r < dist_l then
+                            assert.equal(nearest, right)
+                       end
                     elseif left ~= -1 then
                         assert.equal(nearest, left)
                     elseif right ~= -1 then
