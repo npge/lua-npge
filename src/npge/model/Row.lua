@@ -101,7 +101,7 @@ end
 row_mt.block2nearest = function(self, blockpos)
     for distance = 0, self:length() - 1 do
         local left = blockpos - distance
-        if left > 0 then
+        if left >= 0 then
             local fragmentpos = self:block2fragment(left)
             if fragmentpos ~= -1 then
                 return fragmentpos

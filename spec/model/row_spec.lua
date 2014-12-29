@@ -148,6 +148,8 @@ describe("model.row", function()
 
     it("uses row --A-", check_row("--A-"))
 
+    it("uses row A----AT", check_row("A----AT"))
+
     it("uses long row",
         check_row([[
 TCACCATTATACAGTTATGGTATGAACTGGGTCTTCAT-AA------AA-AAAAATATTT
