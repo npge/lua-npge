@@ -31,9 +31,26 @@ row_mt.fragment_length = function(self)
     return fragmentpos1
 end
 
-row_mt.text = function(self)
-    local text = self._text:gsub('[^-]', 'N')
-    return text
+row_mt.text = function(self, fragment)
+    if fragment then
+        assert(type(fragment) == 'string')
+        assert(#fragment == self:fragment_length())
+        local result = {}
+        for bp = 0, self:length() - 1 do
+            local fp = self:block2fragment(bp)
+            local char
+            if fp ~= -1 then
+                char = fragment:sub(fp + 1, fp + 1)
+            else
+                char = '-'
+            end
+            table.insert(result, char)
+        end
+        return table.concat(result)
+    else
+        local text = self._text:gsub('[^-]', 'N')
+        return text
+    end
 end
 
 row_mt.block2fragment = function(self, blockpos)

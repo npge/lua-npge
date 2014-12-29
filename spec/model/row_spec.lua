@@ -63,6 +63,7 @@ describe("model.row", function()
             assert.are.equal(r:fragment_length(), #ungapped)
             local text1 = text:gsub('[^-]', 'N')
             assert.are.equal(r:text(), text1)
+            assert.are.equal(r:text(ungapped), text)
             local fp = 0
             for bp = 0, #text - 1 do
                 local char = text:sub(bp + 1, bp + 1)
