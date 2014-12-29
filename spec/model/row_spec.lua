@@ -10,6 +10,7 @@ describe("model.row", function()
 
     it("uses row A-T-G-C", function()
         local r = Row("A-T-G-C")
+        assert.are.equal(r:type(), "Row")
         assert.are.equal(r:length(), 7)
         assert.are.equal(r:fragment_length(), 4)
         assert.are.equal(r:text(), 'N-N-N-N')

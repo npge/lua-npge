@@ -14,6 +14,10 @@ Row_mt.__call = function(self, text)
     return setmetatable(row, row_mt)
 end
 
+row_mt.type = function(self)
+    return "Row"
+end
+
 row_mt.length = function(self)
     return #self._text
 end
