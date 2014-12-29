@@ -64,7 +64,8 @@ Block_mt.__call = function(self, fragments)
             local gaps = length - f:size()
             row = f:text() .. ("-"):rep(gaps)
         end
-        ff[f] = row
+        local Row = require 'npge.model.Row'
+        ff[f] = Row(row)
     end
     local block = {_fragments=ff, _length=length,
         _size=#fragments}
@@ -93,6 +94,42 @@ block_mt.iter_fragments = function(self)
         f = next(self._fragments, f)
         return f
     end
+end
+
+block_mt.text = function(self, fragment)
+    local row = self._fragments[fragment]
+    assert(row)
+    return row:text(fragment:text())
+end
+
+block_mt.block2fragment = function(self, fragment, blockpos)
+    local row = self._fragments[fragment]
+    assert(row)
+    return row:block2fragment(blockpos)
+end
+
+block_mt.block2left = function(self, fragment, blockpos)
+    local row = self._fragments[fragment]
+    assert(row)
+    return row:block2left(blockpos)
+end
+
+block_mt.block2right = function(self, fragment, blockpos)
+    local row = self._fragments[fragment]
+    assert(row)
+    return row:block2right(blockpos)
+end
+
+block_mt.block2nearest = function(self, fragment, blockpos)
+    local row = self._fragments[fragment]
+    assert(row)
+    return row:block2nearest(blockpos)
+end
+
+block_mt.fragment2block = function(self, fragment, fragmentpos)
+    local row = self._fragments[fragment]
+    assert(row)
+    return row:fragment2block(fragmentpos)
 end
 
 return setmetatable(Block, Block_mt)
