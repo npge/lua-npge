@@ -1,18 +1,18 @@
--- http://rosettacode.org/wiki/Binary_search#Lua
+-- http://www.cplusplus.com/reference/algorithm/lower_bound/
 return function(list, value)
     local math = require 'math'
-    local low = 1
-    local high = #list
-    local mid = 0
-    while low <= high do
-        mid = math.floor((low + high) / 2)
-        if list[mid] > value then
-            high = mid - 1
-        elseif list[mid] < value then
-            low = mid + 1
+    local first = 1
+    local count = #list
+    while count > 0 do
+        local step = math.floor(count / 2)
+        local it = first + step
+        if list[it] < value then
+            first = it + 1
+            count = count - step - 1
         else
-            return mid
+            count = step
         end
     end
+    return first
 end
 
