@@ -7,6 +7,13 @@ describe("util.binary_search", function()
         assert.equal(lower({1, 2, 3}, 2), 2)
         assert.equal(lower({1, 2, 3}, 3), 3)
     end)
+
+    it("checks that binary search works (upper)", function()
+        local upper = binary_search.upper
+        assert.equal(upper({1, 2, 3}, 1), 2)
+        assert.equal(upper({1, 2, 3}, 2), 3)
+        assert.equal(upper({1, 2, 3}, 3), 4)
+    end)
 end)
 
 
