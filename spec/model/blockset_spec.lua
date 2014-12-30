@@ -31,6 +31,11 @@ describe("model.blockset", function()
         assert.same(blockset:blocks(), {})
     end)
 
+    it("blockset's type is 'BlockSet'", function()
+        local blockset = model.BlockSet({}, {})
+        assert.equal(blockset:type(), 'BlockSet')
+    end)
+
     it("creates a blockset without blocks", function()
         local s = model.Sequence("test_name", "ATAT")
         local blockset = model.BlockSet({s}, {})

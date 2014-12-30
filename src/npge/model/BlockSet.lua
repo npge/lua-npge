@@ -24,6 +24,10 @@ BlockSet_mt.__call = function(self, sequences, blocks)
     return setmetatable(bs, bs_mt)
 end
 
+bs_mt.type = function(self)
+    return "BlockSet"
+end
+
 bs_mt.size = function(self)
     return #(self._blocks)
 end
