@@ -1,5 +1,5 @@
 -- http://www.cplusplus.com/reference/algorithm/lower_bound/
-return function(list, value)
+local lower = function(list, value)
     local math = require 'math'
     local first = 1
     local count = #list
@@ -16,3 +16,6 @@ return function(list, value)
     return first
 end
 
+return {
+    lower = lower,
+}
