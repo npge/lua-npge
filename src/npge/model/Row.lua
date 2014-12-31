@@ -9,8 +9,25 @@ row_mt.__index = row_mt
 Row_mt.__call = function(self, text)
     assert(type(text) == 'string')
     assert(#text > 0)
-    local row = {}
-    row._text = text
+    local starts = {} -- bp at which group of nongaps starts
+    local lengths = {} -- total length of this and prev groups
+    local prev
+    table.insert(lengths, 0)
+    for bp = 0, #text - 1 do
+        local char = text:sub(bp + 1, bp + 1)
+        if char ~= '-' and (not prev or prev == '-') then
+            -- new nongap opened
+            table.insert(starts, bp)
+            local prev_length = lengths[#lengths]
+            table.insert(lengths, prev_length + 1)
+        elseif char ~= '-' then
+            -- increase length of last group of nongaps
+            lengths[#lengths] = lengths[#lengths] + 1
+        end
+        prev = char
+    end
+    table.insert(starts, #text)
+    local row = {_starts=starts, _lengths=lengths}
     return setmetatable(row, row_mt)
 end
 
@@ -19,62 +36,53 @@ row_mt.type = function(self)
 end
 
 row_mt.length = function(self)
-    return #self._text
+    local starts = self._starts
+    return starts[#starts]
 end
 
 row_mt.fragment_length = function(self)
-    local text = self._text
-    local size = #text
-    local fragmentpos1 = 0
-    for blockpos1 = 0, size - 1 do
-        local char = text:sub(blockpos1 + 1, blockpos1 + 1)
-        if char ~= '-' then
-            fragmentpos1 = fragmentpos1 + 1
-        end
-    end
-    return fragmentpos1
+    local lengths = self._lengths
+    return lengths[#lengths]
 end
 
 row_mt.text = function(self, fragment)
     if fragment then
         assert(type(fragment) == 'string')
         assert(#fragment == self:fragment_length())
-        local result = {}
-        for bp = 0, self:length() - 1 do
-            local fp = self:block2fragment(bp)
-            local char
-            if fp ~= -1 then
-                char = fragment:sub(fp + 1, fp + 1)
-            else
-                char = '-'
-            end
-            table.insert(result, char)
-        end
-        return table.concat(result)
     else
-        local text = self._text:gsub('[^-]', 'N')
-        return text
+        fragment = string.rep('N', self:fragment_length())
     end
+    local result = {}
+    for bp = 0, self:length() - 1 do
+        local fp = self:block2fragment(bp)
+        local char
+        if fp ~= -1 then
+            char = fragment:sub(fp + 1, fp + 1)
+        else
+            char = '-'
+        end
+        table.insert(result, char)
+    end
+    return table.concat(result)
 end
 
 row_mt.block2fragment = function(self, blockpos)
-    local text = self._text
-    local size = #text
     assert(blockpos >= 0)
-    assert(blockpos < size)
-    local char = text:sub(blockpos + 1, blockpos + 1)
-    if char == '-' then
+    assert(blockpos < self:length())
+    local starts = self._starts
+    local lengths = self._lengths
+    local upper = require('npge.util.binary_search').upper
+    local index = upper(starts, blockpos) - 1
+    if index == 0 then
+        -- we are in a gap before first letter
         return -1
     end
-    local fragmentpos1 = 0
-    for blockpos1 = 0, size - 1 do
-        local char = text:sub(blockpos1 + 1, blockpos1 + 1)
-        if char ~= '-' then
-            if blockpos1 == blockpos then
-                return fragmentpos1
-            end
-            fragmentpos1 = fragmentpos1 + 1
-        end
+    local group_length = lengths[index + 1] - lengths[index]
+    local distance = blockpos - starts[index]
+    if distance < group_length then
+        return lengths[index] + distance
+    else
+        return -1
     end
 end
 
@@ -118,20 +126,14 @@ row_mt.block2nearest = function(self, blockpos)
 end
 
 row_mt.fragment2block = function(self, fragmentpos)
-    local text = self._text
-    local size = #text
     assert(fragmentpos >= 0)
-    local fragmentpos1 = 0
-    for blockpos1 = 0, size - 1 do
-        local char = text:sub(blockpos1 + 1, blockpos1 + 1)
-        if char ~= '-' then
-            if fragmentpos1 == fragmentpos then
-                return blockpos1
-            end
-            fragmentpos1 = fragmentpos1 + 1
-        end
-    end
-    error("No such fragment pos in the row: " .. fragmentpos)
+    assert(fragmentpos < self:fragment_length())
+    local starts = self._starts
+    local lengths = self._lengths
+    local upper = require('npge.util.binary_search').upper
+    local index = upper(lengths, fragmentpos) - 1
+    local distance = fragmentpos - lengths[index]
+    return starts[index] + distance
 end
 
 return setmetatable(Row, Row_mt)
