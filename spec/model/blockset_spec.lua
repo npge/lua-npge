@@ -147,5 +147,13 @@ describe("model.blockset", function()
         assert.equal(blockset:prev(f3), f2)
         assert.equal(blockset:prev(f2), f1)
     end)
+
+    it("checks if it has a sequence", function()
+        local s1 = model.Sequence("genome1&chr&c", "ATAT")
+        local s2 = model.Sequence("genome2&chr&c", "ATAT")
+        local blockset = model.BlockSet({s1}, {})
+        assert.truthy(blockset:has_sequence(s1))
+        assert.falsy(blockset:has_sequence(s2))
+    end)
 end)
 
