@@ -53,7 +53,7 @@ Block_mt.__call = function(self, fragments)
         if first_row then
             assert(#first_row == #row)
         else
-            length = math.max(length, f:size())
+            length = math.max(length, f:length())
         end
     end
     assert(length)
@@ -61,7 +61,7 @@ Block_mt.__call = function(self, fragments)
     for _, x in ipairs(fragments) do
         local f, row = get(x)
         if not row then
-            local gaps = length - f:size()
+            local gaps = length - f:length()
             row = f:text() .. ("-"):rep(gaps)
         end
         local Row = require 'npge.model.Row'

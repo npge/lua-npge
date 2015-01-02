@@ -100,7 +100,7 @@ f_mt.parts = function(self)
     end
 end
 
-f_mt.size = function(self)
+f_mt.length = function(self)
     local math = require('math')
     local absdiff = math.abs(self:stop() - self:start())
     if not self:parted() then
@@ -161,7 +161,7 @@ f_mt.is_subfragment_of = function(self, source)
     end
     if not source:parted() and not self:parted() then
         return true
-    elseif source:size() == source:seq():length() then
+    elseif source:length() == source:seq():length() then
         -- source covers whole sequence
         return true
     else

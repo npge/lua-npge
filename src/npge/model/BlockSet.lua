@@ -11,7 +11,7 @@ local is_prepangenome = function(seq2fragments)
         local lengths_sum = 0
         local prev
         for _, fragment in ipairs(fragments) do
-            lengths_sum = lengths_sum + fragment:size()
+            lengths_sum = lengths_sum + fragment:length()
             if prev and prev:common(fragment) > 0 then
                 return false
             end
