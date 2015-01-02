@@ -105,5 +105,44 @@ bs_mt.iter_seqs = function(self)
     end
 end
 
+bs_mt.overlapping_fragments = function(self, fragment)
+    local arrays_concat = require 'npge.util.arrays_concat'
+    local unique = require 'npge.util.unique'
+    if fragment:parted() then
+        local a, b = fragment:parts()
+        return unique(arrays_concat(
+            self:overlapping_fragments(a),
+            self:overlapping_fragments(b)))
+    end
+    local seq = fragment:seq()
+    local fragments = self._seq2fragments[seq]
+    assert(fragments, "Sequence not in blockset")
+    local result = {}
+    local add_fragment_or_parent = function(f)
+        local parent = self._parent_of_parts[f]
+        if parent then
+            f = parent
+        end
+        table.insert(result, f)
+    end
+    local upper = require('npge.util.binary_search').upper
+    local index = upper(fragments, fragment)
+    for i = index, #fragments do
+        if fragment:common(fragments[i]) > 0 then
+            add_fragment_or_parent(fragments[i])
+        else
+            break
+        end
+    end
+    for i = index - 1, 1, -1 do
+        if fragment:common(fragments[i]) > 0 then
+            add_fragment_or_parent(fragments[i])
+        else
+            break
+        end
+    end
+    return unique(result)
+end
+
 return setmetatable(BlockSet, BlockSet_mt)
 

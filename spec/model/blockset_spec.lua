@@ -79,5 +79,29 @@ describe("model.blockset", function()
         assert.equal(blockset:is_prepangenome(), false)
     end)
 
+    it("finds overlapping fragments", function()
+        local s = model.Sequence("genome&chr&c", "ATAT")
+        local f1 = model.Fragment(s, 0, 3, -1)
+        local f2 = model.Fragment(s, 1, 1, 1)
+        local block1 = model.Block({f1, f2})
+        local block2 = model.Block({f1})
+        local blockset = model.BlockSet({s}, {block1, block2})
+        assert.same(blockset:overlapping_fragments(
+            model.Fragment(s, 2, 2, 1)), {})
+        assert.same(blockset:overlapping_fragments(
+            model.Fragment(s, 0, 0, -1)), {f1})
+        local toset = function(x)
+            local set = {}
+            for _, item in ipairs(x) do
+                set[item] = true
+            end
+            return set
+        end
+        assert.same(toset(blockset:overlapping_fragments(
+            model.Fragment(s, 0, 1, -1))), toset({f1, f2}))
+        assert.same(toset(blockset:overlapping_fragments(
+            model.Fragment(s, 0, 1, 1))), toset({f1, f2}))
+    end)
+
 end)
 
