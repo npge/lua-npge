@@ -21,7 +21,7 @@ describe("model.sequence", function()
         local s = Sequence("test_name", "ATGC")
         assert.are.equal(s:name(), "test_name")
         assert.are.equal(s:text(), "ATGC")
-        assert.are.equal(s:description(), nil)
+        assert.are.equal(s:description(), '')
     end)
 
     it("sequence with lower text", function()
