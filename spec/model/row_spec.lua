@@ -8,7 +8,7 @@ describe("model.row", function()
         end)
     end)
 
-    it("uses row A-T-G-C", function()
+    it("uses row A-T-G-C #A_T_G_C", function()
         local r = Row("A-T-G-C")
         assert.are.equal(r:type(), "Row")
         assert.are.equal(r:length(), 7)
@@ -142,15 +142,16 @@ describe("model.row", function()
 
     it("uses row A-T-G-C (2)", check_row("A-T-G-C"))
 
-    it("uses row ATGC", check_row("ATGC"))
+    it("uses row #ATGC", check_row("ATGC"))
 
-    it("uses row A", check_row("A"))
+    it("uses row A #row_of_one_letter", check_row("A"))
 
-    it("uses row --A-", check_row("--A-"))
+    it("uses row --A- #gaps_before_and_after",
+        check_row("--A-"))
 
-    it("uses row A----AT", check_row("A----AT"))
+    it("uses row A----AT #gaps_between", check_row("A----AT"))
 
-    it("uses long row",
+    it("uses #long row",
         check_row([[
 TCACCATTATACAGTTATGGTATGAACTGGGTCTTCAT-AA------AA-AAAAATATTT
 TTTTTTGTTTATGCCATCATAGTTGTTCAATTATGCTAGTTT-----------GAATACC
