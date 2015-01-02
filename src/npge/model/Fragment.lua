@@ -33,7 +33,7 @@ f_mt.type = function(self)
     return 'Fragment'
 end
 
-f_mt.seq = function(self)
+f_mt.sequence = function(self)
     return self._seq
 end
 
@@ -51,14 +51,14 @@ end
 
 f_mt.id = function(self)
     return ("%s_%s_%s_%s"):format(
-        self:seq():name(),
+        self:sequence():name(),
         self:start(),
         self:stop(),
         self:ori())
 end
 
 local function f_as_arr(self)
-    return {self:seq():name(), self:start(),
+    return {self:sequence():name(), self:start(),
         self:stop(), self:ori()}
 end
 
@@ -73,7 +73,7 @@ local function f_as_arr2(self)
     local math = require('math')
     local min = math.min(self:start(), self:stop())
     local max = math.max(self:start(), self:stop())
-    return {self:seq():name(), min, max, self:ori()}
+    return {self:sequence():name(), min, max, self:ori()}
 end
 
 f_mt.__lt = function(self, other)
@@ -90,13 +90,14 @@ end
 
 f_mt.parts = function(self)
     assert(self:parted())
-    local last = self:seq():length() - 1
+    local last = self:sequence():length() - 1
+    local seq = self:sequence()
     if self:ori() == 1 then
-        return Fragment(self:seq(), self:start(), last, 1),
-               Fragment(self:seq(), 0, self:stop(), 1)
+        return Fragment(seq, self:start(), last, 1),
+               Fragment(seq, 0, self:stop(), 1)
     else
-        return Fragment(self:seq(), self:start(), 0, -1),
-               Fragment(self:seq(), last, self:stop(), -1)
+        return Fragment(seq, self:start(), 0, -1),
+               Fragment(seq, last, self:stop(), -1)
     end
 end
 
@@ -106,7 +107,7 @@ f_mt.length = function(self)
     if not self:parted() then
         return absdiff + 1
     else
-        return self:seq():length() - absdiff + 1
+        return self:sequence():length() - absdiff + 1
     end
 end
 
@@ -115,7 +116,7 @@ f_mt.text = function(self)
         local math = require('math')
         local min = math.min(self:start(), self:stop())
         local max = math.max(self:start(), self:stop())
-        local text = self:seq():sub(min, max)
+        local text = self:sequence():sub(min, max)
         if self:ori() == 1 then
             return text
         else
@@ -154,14 +155,14 @@ local fix_coord = function(seq, x)
 end
 
 f_mt.is_subfragment_of = function(self, source)
-    assert(self:seq() == source:seq())
+    assert(self:sequence() == source:sequence())
     if not source:has(self:start())
             or not source:has(self:stop()) then
         return false
     end
     if not source:parted() and not self:parted() then
         return true
-    elseif source:length() == source:seq():length() then
+    elseif source:length() == source:sequence():length() then
         -- source covers whole sequence
         return true
     else
@@ -174,7 +175,7 @@ f_mt.is_subfragment_of = function(self, source)
             table.insert(points1, point + 1)
         end
         for _, point in ipairs(points1) do
-            point = fix_coord(self:seq(), point)
+            point = fix_coord(self:sequence(), point)
             if self:has(point) and not source:has(point) then
                 return false
             end
@@ -188,9 +189,9 @@ f_mt.subfragment = function(self, start, stop, ori)
     local start2 = self:start() + self:ori() * start
     local stop2 = self:start() + self:ori() * stop
     local ori2 = self:ori() * ori
-    start2 = fix_coord(self:seq(), start2)
-    stop2 = fix_coord(self:seq(), stop2)
-    local f = Fragment(self:seq(), start2, stop2, ori2)
+    start2 = fix_coord(self:sequence(), start2)
+    stop2 = fix_coord(self:sequence(), stop2)
+    local f = Fragment(self:sequence(), start2, stop2, ori2)
     assert(f:is_subfragment_of(self))
     return f
 end
@@ -225,8 +226,8 @@ end
 
 f_mt.at = function(self, index)
     local seq_index = self:start() + index * self:ori()
-    seq_index = fix_coord(self:seq(), seq_index)
-    local letter = self:seq():at(seq_index)
+    seq_index = fix_coord(self:sequence(), seq_index)
+    local letter = self:sequence():at(seq_index)
     if self:ori() == 1 then
         return letter
     else

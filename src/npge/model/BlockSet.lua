@@ -36,7 +36,7 @@ BlockSet_mt.__call = function(self, sequences, blocks)
     local parent_of_parts = {}
     for _, block in ipairs(blocks) do
         for fragment in block:iter_fragments() do
-            local seq = fragment:seq()
+            local seq = fragment:sequence()
             local name = seq:name()
             assert(name2seq[name])
             if not fragment:parted() then
@@ -119,7 +119,7 @@ bs_mt.overlapping_fragments = function(self, fragment)
             self:overlapping_fragments(a),
             self:overlapping_fragments(b)))
     end
-    local seq = fragment:seq()
+    local seq = fragment:sequence()
     local fragments = self._seq2fragments[seq]
     assert(fragments, "Sequence not in blockset")
     local result = {}
@@ -151,7 +151,7 @@ bs_mt.next = function(self, fragment)
         local f = (a < b) and a or b
         return self:next(f)
     end
-    local seq = fragment:seq()
+    local seq = fragment:sequence()
     local fragments = self._seq2fragments[seq]
     assert(fragments, "Sequence not in blockset")
     local lower = require('npge.util.binary_search').lower
@@ -174,7 +174,7 @@ bs_mt.prev = function(self, fragment)
         local f = (a < b) and b or a
         return self:prev(f)
     end
-    local seq = fragment:seq()
+    local seq = fragment:sequence()
     local fragments = self._seq2fragments[seq]
     assert(fragments, "Sequence not in blockset")
     local lower = require('npge.util.binary_search').lower
