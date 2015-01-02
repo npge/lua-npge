@@ -102,9 +102,9 @@ describe("model.sequence", function()
         assert.are.equal(s:sub(0, 1), 'AT')
     end)
 
-    it("gets size of text", function()
+    it("gets length of text", function()
         local s = Sequence("test_name", "ATGC")
-        assert.are.equal(s:size(), 4)
+        assert.are.equal(s:length(), 4)
     end)
 
     it("has type Sequence", function()

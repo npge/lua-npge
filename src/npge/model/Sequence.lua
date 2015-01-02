@@ -75,7 +75,7 @@ seq_mt.description = function(self)
     return self._description
 end
 
-seq_mt.size = function(self)
+seq_mt.length = function(self)
     return #self._text
 end
 
@@ -86,7 +86,7 @@ end
 seq_mt.tolua = function(self)
     local text = {}
     local step = 60
-    for i = 0, self:size() - 1, step do
+    for i = 0, self:length() - 1, step do
         table.insert(text, self:sub(i, i + step - 1))
     end
     text = table.concat(text, "\n")

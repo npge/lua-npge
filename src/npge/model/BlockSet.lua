@@ -17,7 +17,7 @@ local is_prepangenome = function(seq2fragments)
             end
             prev = fragment
         end
-        if lengths_sum ~= seq:size() then
+        if lengths_sum ~= seq:length() then
             return false
         end
     end

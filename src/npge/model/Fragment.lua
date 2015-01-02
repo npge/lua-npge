@@ -13,9 +13,9 @@ Fragment_mt.__call = function(self, seq, start, stop, ori)
     assert(type(stop) == 'number')
     assert(type(ori) == 'number')
     assert(start >= 0)
-    assert(start < seq:size())
+    assert(start < seq:length())
     assert(stop >= 0)
-    assert(stop < seq:size())
+    assert(stop < seq:length())
     assert(ori == 1 or ori == -1)
     if seq:circularity() ~= 'c' then
         -- forbid parted fragments on linear sequences
@@ -90,7 +90,7 @@ end
 
 f_mt.parts = function(self)
     assert(self:parted())
-    local last = self:seq():size() - 1
+    local last = self:seq():length() - 1
     if self:ori() == 1 then
         return Fragment(self:seq(), self:start(), last, 1),
                Fragment(self:seq(), 0, self:stop(), 1)
@@ -106,7 +106,7 @@ f_mt.size = function(self)
     if not self:parted() then
         return absdiff + 1
     else
-        return self:seq():size() - absdiff + 1
+        return self:seq():length() - absdiff + 1
     end
 end
 
@@ -145,9 +145,9 @@ end
 
 local fix_coord = function(seq, x)
     if x < 0 then
-        return x + seq:size()
-    elseif x >= seq:size() then
-        return x - seq:size()
+        return x + seq:length()
+    elseif x >= seq:length() then
+        return x - seq:length()
     else
         return x
     end
@@ -161,7 +161,7 @@ f_mt.is_subfragment_of = function(self, source)
     end
     if not source:parted() and not self:parted() then
         return true
-    elseif source:size() == source:seq():size() then
+    elseif source:size() == source:seq():length() then
         -- source covers whole sequence
         return true
     else
