@@ -99,11 +99,11 @@ describe("model.row", function()
                         if dist_l == dist_r then
                             assert(nearest == left or
                                    nearest == right)
-                       elseif dist_l < dist_r then
+                        elseif dist_l < dist_r then
                             assert.equal(nearest, left)
-                       elseif dist_r < dist_l then
+                        elseif dist_r < dist_l then
                             assert.equal(nearest, right)
-                       end
+                        end
                     elseif left ~= -1 then
                         assert.equal(nearest, left)
                     elseif right ~= -1 then
