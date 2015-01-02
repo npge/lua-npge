@@ -76,6 +76,17 @@ describe("model.fragment", function()
         end)
     end)
 
+    it("has common positions with other fragment", function()
+        local s1 = model.Sequence("ABC&chromosome&c", "ATGC")
+        local F = Fragment
+        assert.equal(F(s1, 0, 0, 1):common(F(s1, 0, 0, 1)), 1)
+        assert.equal(F(s1, 0, 0, 1):common(F(s1, 0, 1, 1)), 1)
+        assert.equal(F(s1, 0, 0, 1):common(F(s1, 1, 1, 1)), 0)
+        assert.equal(F(s1, 1, 0, 1):common(F(s1, 2, 3, 1)), 2)
+        assert.equal(F(s1, 0, 3, -1):common(F(s1, 0, 3, 1)), 2)
+        assert.equal(F(s1, 0, 3, -1):common(F(s1, 2, 1, 1)), 2)
+    end)
+
     it("gets id", function()
         local s = model.Sequence("G&C&c", "ATGC")
         local f = Fragment(s, 1, 2, 1)

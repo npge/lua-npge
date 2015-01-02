@@ -195,6 +195,30 @@ f_mt.subfragment = function(self, start, stop, ori)
     return f
 end
 
+f_mt.common = function(self, other)
+    if self:parted() then
+        local a, b = self:parts()
+        return a:common(other) + b:common(other)
+    end
+    if other:parted() then
+        local a, b = other:parts()
+        return self:common(a) + self:common(b)
+    end
+    local math = require('math')
+    local self_min = math.min(self:start(), self:stop())
+    local self_max = math.max(self:start(), self:stop())
+    local other_min = math.min(other:start(), other:stop())
+    local other_max = math.max(other:start(), other:stop())
+    local common_min = math.max(self_min, other_min)
+    local common_max = math.min(self_max, other_max)
+    local common = common_max - common_min + 1
+    if common < 0 then
+        return 0
+    else
+        return common
+    end
+end
+
 f_mt.sub = function(self, start, stop, ori)
     return self:subfragment(start, stop, ori):text()
 end
