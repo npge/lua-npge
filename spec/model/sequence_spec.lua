@@ -17,6 +17,12 @@ describe("model.sequence", function()
         assert.are.equal(s:description(), "test description")
     end)
 
+    it("throws on empty sequence", function()
+        assert.has_error(function()
+            Sequence('name', '')
+        end)
+    end)
+
     it("sequence creation with no description", function()
         local s = Sequence("test_name", "ATGC")
         assert.are.equal(s:name(), "test_name")

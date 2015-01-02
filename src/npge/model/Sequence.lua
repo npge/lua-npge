@@ -14,6 +14,7 @@ Sequence_mt.__call = function(self, name, text, description)
     local seq = {}
     seq._name = name
     seq._text = Sequence.to_atgcn(text)
+    assert(#seq._text > 0)
     seq._description = description or ''
     return setmetatable(seq, seq_mt)
 end
