@@ -105,6 +105,11 @@ bs_mt.iter_seqs = function(self)
     end
 end
 
+local parent_or_fragment = function(self, f)
+    local parent = self._parent_of_parts[f]
+    return parent or f
+end
+
 bs_mt.overlapping_fragments = function(self, fragment)
     local arrays_concat = require 'npge.util.arrays_concat'
     local unique = require 'npge.util.unique'
@@ -119,11 +124,7 @@ bs_mt.overlapping_fragments = function(self, fragment)
     assert(fragments, "Sequence not in blockset")
     local result = {}
     local add_fragment_or_parent = function(f)
-        local parent = self._parent_of_parts[f]
-        if parent then
-            f = parent
-        end
-        table.insert(result, f)
+        table.insert(result, parent_or_fragment(self, f))
     end
     local upper = require('npge.util.binary_search').upper
     local index = upper(fragments, fragment)
@@ -142,6 +143,52 @@ bs_mt.overlapping_fragments = function(self, fragment)
         end
     end
     return unique(result)
+end
+
+bs_mt.next = function(self, fragment)
+    if fragment:parted() then
+        local a, b = fragment:parts()
+        local f = (a < b) and a or b
+        return self:next(f)
+    end
+    local seq = fragment:seq()
+    local fragments = self._seq2fragments[seq]
+    assert(fragments, "Sequence not in blockset")
+    local lower = require('npge.util.binary_search').lower
+    local index = lower(fragments, fragment)
+    assert(fragments[index] == fragment)
+    local f
+    if index < #fragments then
+        f = fragments[index + 1]
+    elseif index == #fragments and seq:circularity() == 'c' then
+        f = fragments[1]
+    else
+        return nil
+    end
+    return parent_or_fragment(self, f)
+end
+
+bs_mt.prev = function(self, fragment)
+    if fragment:parted() then
+        local a, b = fragment:parts()
+        local f = (a < b) and b or a
+        return self:prev(f)
+    end
+    local seq = fragment:seq()
+    local fragments = self._seq2fragments[seq]
+    assert(fragments, "Sequence not in blockset")
+    local lower = require('npge.util.binary_search').lower
+    local index = lower(fragments, fragment)
+    assert(fragments[index] == fragment)
+    local f
+    if index > 1 then
+        f = fragments[index - 1]
+    elseif index == 1 and seq:circularity() == 'c' then
+        f = fragments[#fragments]
+    else
+        return nil
+    end
+    return parent_or_fragment(self, f)
 end
 
 return setmetatable(BlockSet, BlockSet_mt)
