@@ -109,6 +109,10 @@ bs_mt.has_sequence = function(self, seq)
     return self._seq2fragments[seq] ~= nil
 end
 
+bs_mt.sequence_by_name = function(self, name)
+    return self._name2seq[name]
+end
+
 local parent_or_fragment = function(self, f)
     local parent = self._parent_of_parts[f]
     return parent or f

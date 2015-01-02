@@ -155,5 +155,13 @@ describe("model.blockset", function()
         assert.truthy(blockset:has_sequence(s1))
         assert.falsy(blockset:has_sequence(s2))
     end)
+
+    it("gets sequence by name", function()
+        local s1 = model.Sequence("s1", "ATAT")
+        local s2 = model.Sequence("s2", "ATAT")
+        local blockset = model.BlockSet({s1}, {})
+        assert.equal(blockset:sequence_by_name("s1"), s1)
+        assert.equal(blockset:sequence_by_name("s2"), nil)
+    end)
 end)
 
