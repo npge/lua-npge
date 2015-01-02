@@ -6,21 +6,58 @@ local bs_mt = {}
 BlockSet_mt.__index = BlockSet_mt
 bs_mt.__index = bs_mt
 
+local is_prepangenome = function(seq2fragments)
+    for seq, fragments in pairs(seq2fragments) do
+        local lengths_sum = 0
+        local prev
+        for _, fragment in ipairs(fragments) do
+            lengths_sum = lengths_sum + fragment:size()
+            if prev and prev:common(fragment) > 0 then
+                return false
+            end
+            prev = fragment
+        end
+        if lengths_sum ~= seq:size() then
+            return false
+        end
+    end
+    return true
+end
+
 BlockSet_mt.__call = function(self, sequences, blocks)
     local name2seq = {}
+    local seq2fragments = {}
     for _, sequence in ipairs(sequences) do
         assert(sequence:type() == 'Sequence')
         assert(not name2seq[sequence:name()])
         name2seq[sequence:name()] = sequence
+        seq2fragments[sequence] = {}
     end
+    local parent_of_parts = {}
     for _, block in ipairs(blocks) do
         for fragment in block:iter_fragments() do
             local seq = fragment:seq()
             local name = seq:name()
             assert(name2seq[name])
+            if not fragment:parted() then
+                table.insert(seq2fragments[seq], fragment)
+            else
+                local a, b = fragment:parts()
+                table.insert(seq2fragments[seq], a)
+                table.insert(seq2fragments[seq], b)
+                parent_of_parts[a] = fragment
+                parent_of_parts[b] = fragment
+            end
         end
     end
-    local bs = {_name2seq=name2seq, _blocks=blocks}
+    for seq, fragments in pairs(seq2fragments) do
+        table.sort(fragments)
+    end
+    local prepangenome = is_prepangenome(seq2fragments)
+    local bs = {_name2seq=name2seq, _blocks=blocks,
+        _seq2fragments=seq2fragments,
+        _parent_of_parts=parent_of_parts,
+        _prepangenome=prepangenome}
     return setmetatable(bs, bs_mt)
 end
 
@@ -30,6 +67,10 @@ end
 
 bs_mt.size = function(self)
     return #(self._blocks)
+end
+
+bs_mt.is_prepangenome = function(self)
+    return self._prepangenome
 end
 
 bs_mt.blocks = function(self)
