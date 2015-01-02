@@ -72,6 +72,10 @@ Block_mt.__call = function(self, fragments)
     return setmetatable(block, block_mt)
 end
 
+block_mt.type = function(self)
+    return "Block"
+end
+
 block_mt.length = function(self)
     return self._length
 end
