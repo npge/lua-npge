@@ -5,5 +5,6 @@ return {
     arrays_less = require 'npge.util.arrays_less',
     binary_search = require 'npge.util.binary_search',
     arrays_concat = require 'npge.util.arrays_concat',
+    unique = require 'npge.util.unique',
 }
 
