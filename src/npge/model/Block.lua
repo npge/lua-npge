@@ -102,6 +102,17 @@ block_mt.text = function(self, fragment)
     return row:text(fragment:text())
 end
 
+block_mt.at = function(self, fragment, blockpos)
+    local row = self._fragments[fragment]
+    assert(row)
+    local fragmentpos = row:block2fragment(blockpos)
+    if fragmentpos ~= -1 then
+        return fragment:at(fragmentpos)
+    else
+        return '-'
+    end
+end
+
 block_mt.block2fragment = function(self, fragment, blockpos)
     local row = self._fragments[fragment]
     assert(row)
