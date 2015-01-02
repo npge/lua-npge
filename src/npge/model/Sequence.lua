@@ -56,11 +56,9 @@ seq_mt.chromosome = function(self)
     return get_name_part(self._name, 2)
 end
 
-seq_mt.circularity = function(self)
+seq_mt.circular = function(self)
     local circularity = get_name_part(self._name, 3)
-    if circularity == 'c' or circularity == 'l' then
-        return circularity
-    end
+    return circularity == 'c'
 end
 
 seq_mt.text = function(self)

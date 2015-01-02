@@ -17,7 +17,7 @@ Fragment_mt.__call = function(self, seq, start, stop, ori)
     assert(stop >= 0)
     assert(stop < seq:length())
     assert(ori == 1 or ori == -1)
-    if seq:circularity() ~= 'c' then
+    if not seq:circular() then
         -- forbid parted fragments on linear sequences
         if ori == 1 then
             assert(start <= stop)

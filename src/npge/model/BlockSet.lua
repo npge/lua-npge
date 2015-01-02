@@ -160,7 +160,7 @@ bs_mt.next = function(self, fragment)
     local f
     if index < #fragments then
         f = fragments[index + 1]
-    elseif index == #fragments and seq:circularity() == 'c' then
+    elseif index == #fragments and seq:circular() then
         f = fragments[1]
     else
         return nil
@@ -183,7 +183,7 @@ bs_mt.prev = function(self, fragment)
     local f
     if index > 1 then
         f = fragments[index - 1]
-    elseif index == 1 and seq:circularity() == 'c' then
+    elseif index == 1 and seq:circular() then
         f = fragments[#fragments]
     else
         return nil
