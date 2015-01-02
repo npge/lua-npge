@@ -70,7 +70,6 @@ end
 
 local function f_as_arr2(self)
     assert(not self:parted())
-    local math = require('math')
     local min = math.min(self:start(), self:stop())
     local max = math.max(self:start(), self:stop())
     return {self:sequence():name(), min, max, self:ori()}
@@ -102,7 +101,6 @@ f_mt.parts = function(self)
 end
 
 f_mt.length = function(self)
-    local math = require('math')
     local absdiff = math.abs(self:stop() - self:start())
     if not self:parted() then
         return absdiff + 1
@@ -113,7 +111,6 @@ end
 
 f_mt.text = function(self)
     if not self:parted() then
-        local math = require('math')
         local min = math.min(self:start(), self:stop())
         local max = math.max(self:start(), self:stop())
         local text = self:sequence():sub(min, max)
@@ -205,7 +202,6 @@ f_mt.common = function(self, other)
         local a, b = other:parts()
         return self:common(a) + self:common(b)
     end
-    local math = require('math')
     local self_min = math.min(self:start(), self:stop())
     local self_max = math.max(self:start(), self:stop())
     local other_min = math.min(other:start(), other:stop())

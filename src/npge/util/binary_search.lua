@@ -1,6 +1,5 @@
 -- http://www.cplusplus.com/reference/algorithm/lower_bound/
 local lower = function(list, value)
-    local math = require 'math'
     local first = 1
     local count = #list
     while count > 0 do
@@ -18,7 +17,6 @@ end
 
 -- http://www.cplusplus.com/reference/algorithm/upper_bound/
 local upper = function(list, value)
-    local math = require 'math'
     local first = 1
     local count = #list
     while count > 0 do
