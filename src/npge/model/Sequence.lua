@@ -81,4 +81,19 @@ seq_mt.at = function(self, index)
     return self:sub(index, index)
 end
 
+seq_mt.tolua = function(self)
+    local text = {}
+    local step = 60
+    for i = 0, self:size() - 1, step do
+        table.insert(text, self:sub(i, i + step - 1))
+    end
+    text = table.concat(text, "\n")
+    local lua = [[
+do
+    local Sequence = require 'npge.model.Sequence'
+    return Sequence(%q, %q, %q)
+end]]
+    return lua:format(self:name(), text, self:description())
+end
+
 return setmetatable(Sequence, Sequence_mt)
