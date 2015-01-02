@@ -52,16 +52,22 @@ row_mt.text = function(self, fragment)
     else
         fragment = string.rep('N', self:fragment_length())
     end
+    local starts = self._starts
+    local lengths = self._lengths
     local result = {}
-    for bp = 0, self:length() - 1 do
-        local fp = self:block2fragment(bp)
-        local char
-        if fp ~= -1 then
-            char = fragment:sub(fp + 1, fp + 1)
-        else
-            char = '-'
+    local result_length = 0
+    for index, bp in ipairs(starts) do
+        -- gaps before this nongap group
+        local gaps_before = bp - result_length
+        local gap = string.rep('-', gaps_before)
+        table.insert(result, gap)
+        if index < #starts then
+            local start = lengths[index]
+            local stop = lengths[index + 1] - 1
+            local group = fragment:sub(start + 1, stop + 1)
+            table.insert(result, group)
+            result_length = bp + #group
         end
-        table.insert(result, char)
     end
     return table.concat(result)
 end
