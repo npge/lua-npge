@@ -93,40 +93,75 @@ row_mt.block2fragment = function(self, blockpos)
 end
 
 row_mt.block2left = function(self, blockpos)
-    for blockpos1 = blockpos, 0, -1 do
-        local fragmentpos = self:block2fragment(blockpos1)
-        if fragmentpos ~= -1 then
-            return fragmentpos
-        end
+    assert(blockpos >= 0)
+    assert(blockpos < self:length())
+    local starts = self._starts
+    local lengths = self._lengths
+    local upper = require('npge.util.binary_search').upper
+    local index = upper(starts, blockpos) - 1
+    if index == 0 then
+        -- we are in a gap before first letter
+        return -1
     end
-    return -1
+    local group_length = lengths[index + 1] - lengths[index]
+    local distance = blockpos - starts[index]
+    if distance < group_length then
+        return lengths[index] + distance
+    else
+        -- last member of the group
+        return lengths[index + 1] - 1
+    end
 end
 
 row_mt.block2right = function(self, blockpos)
-    for blockpos1 = blockpos, self:length() - 1 do
-        local fragmentpos = self:block2fragment(blockpos1)
-        if fragmentpos ~= -1 then
-            return fragmentpos
-        end
+    assert(blockpos >= 0)
+    assert(blockpos < self:length())
+    local starts = self._starts
+    local lengths = self._lengths
+    local upper = require('npge.util.binary_search').upper
+    local index = upper(starts, blockpos) - 1
+    if index == 0 then
+        -- we are in a gap before first letter
+        return 0
     end
-    return -1
+    local group_length = lengths[index + 1] - lengths[index]
+    local distance = blockpos - starts[index]
+    if distance < group_length then
+        return lengths[index] + distance
+    elseif index + 1 == #lengths then
+        -- after last group
+        return -1
+    else
+        -- last member of the group
+        return lengths[index + 1]
+    end
 end
 
 row_mt.block2nearest = function(self, blockpos)
-    for distance = 0, self:length() - 1 do
-        local left = blockpos - distance
-        if left >= 0 then
-            local fragmentpos = self:block2fragment(left)
-            if fragmentpos ~= -1 then
-                return fragmentpos
-            end
-        end
-        local right = blockpos + distance
-        if right < self:length() then
-            local fragmentpos = self:block2fragment(right)
-            if fragmentpos ~= -1 then
-                return fragmentpos
-            end
+    assert(blockpos >= 0)
+    assert(blockpos < self:length())
+    local starts = self._starts
+    local lengths = self._lengths
+    local upper = require('npge.util.binary_search').upper
+    local index = upper(starts, blockpos) - 1
+    if index == 0 then
+        -- we are in a gap before first letter
+        return 0
+    end
+    local group_length = lengths[index + 1] - lengths[index]
+    local distance = blockpos - starts[index]
+    if distance < group_length then
+        return lengths[index] + distance
+    elseif index + 1 == #lengths then
+        -- after last group
+        return lengths[#lengths] - 1
+    else
+        local left_distance = distance - group_length + 1
+        local right_distance = starts[index + 1] - blockpos
+        if left_distance <= right_distance then
+            return lengths[index + 1] - 1
+        else
+            return lengths[index + 1]
         end
     end
 end
