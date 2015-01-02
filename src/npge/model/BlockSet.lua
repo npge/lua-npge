@@ -34,8 +34,10 @@ BlockSet_mt.__call = function(self, sequences, blocks)
         seq2fragments[sequence] = {}
     end
     local parent_of_parts = {}
+    local block_by_fragment = {}
     for _, block in ipairs(blocks) do
         for fragment in block:iter_fragments() do
+            block_by_fragment[fragment] = block
             local seq = fragment:sequence()
             local name = seq:name()
             assert(name2seq[name])
@@ -57,6 +59,7 @@ BlockSet_mt.__call = function(self, sequences, blocks)
     local bs = {_name2seq=name2seq, _blocks=blocks,
         _seq2fragments=seq2fragments,
         _parent_of_parts=parent_of_parts,
+        _block_by_fragment=block_by_fragment,
         _prepangenome=prepangenome}
     return setmetatable(bs, bs_mt)
 end
@@ -111,6 +114,10 @@ end
 
 bs_mt.sequence_by_name = function(self, name)
     return self._name2seq[name]
+end
+
+bs_mt.block_by_fragment = function(self, fragment)
+    return self._block_by_fragment[fragment]
 end
 
 local parent_or_fragment = function(self, f)
