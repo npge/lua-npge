@@ -113,7 +113,7 @@ describe("model.block", function()
         assert.are.same(ff1, ff2)
     end)
 
-    it("itearte fragments of block", function()
+    it("iterate fragments of block", function()
         local s = model.Sequence("test_name", "ATAT")
         local f1 = model.Fragment(s, 0, 1, 1)
         local f2 = model.Fragment(s, 3, 2, -1)
