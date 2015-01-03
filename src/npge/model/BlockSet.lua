@@ -78,11 +78,8 @@ bs_mt.is_prepangenome = function(self)
 end
 
 bs_mt.blocks = function(self)
-    local blocks = {}
-    for _, block in ipairs(self._blocks) do
-        table.insert(blocks, block)
-    end
-    return blocks
+    local clone = require 'npge.util.clone'
+    return clone.array(self._blocks)
 end
 
 bs_mt.iter_blocks = function(self)
