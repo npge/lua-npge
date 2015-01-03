@@ -23,7 +23,7 @@ return {
   runreport = true,
 
   -- Delete stats file after reporting?
-  deletestats = true,
+  deletestats = false,
 
   -- Process Lua code loaded from raw strings
   -- (that is, when the 'source' field in the debug info
