@@ -89,6 +89,7 @@ end
 
 bs_mt.iter_blocks = function(self)
     local it, t, index = ipairs(self._blocks)
+    local block
     return function()
         index, block = it(t, index)
         return block
@@ -105,6 +106,7 @@ bs_mt.iter_fragments = function(self, sequence)
     local fragments = self._seq2fragments[sequence]
     assert(fragments, "Sequence not in blockset")
     local it, t, index = ipairs(fragments)
+    local fragment
     return function()
         index, fragment = it(t, index)
         local parent = parent_or_fragment(self, fragment)
