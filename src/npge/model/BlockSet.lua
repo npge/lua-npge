@@ -83,9 +83,9 @@ bs_mt.blocks = function(self)
 end
 
 bs_mt.iter_blocks = function(self)
-    local index, block
+    local it, t, index = ipairs(self._blocks)
     return function()
-        index, block = next(self._blocks, index)
+        index, block = it(t, index)
         return block
     end
 end
@@ -100,9 +100,9 @@ end
 bs_mt.iter_fragments = function(self, sequence)
     local fragments = self._seq2fragments[sequence]
     assert(fragments, "Sequence not in blockset")
-    local index, fragment
+    local it, t, index = ipairs(fragments)
     return function()
-        index, fragment = next(fragments, index)
+        index, fragment = it(t, index)
         return fragment
     end
 end
