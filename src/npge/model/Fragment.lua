@@ -20,9 +20,11 @@ Fragment_mt.__call = function(self, seq, start, stop, ori)
     if not seq:circular() then
         -- forbid parted fragments on linear sequences
         if ori == 1 then
-            assert(start <= stop)
+            assert(start <= stop,
+                "Found parted fragment on linear sequence")
         else
-            assert(start >= stop)
+            assert(start >= stop,
+                "Found parted fragment on linear sequence")
         end
     end
     local f = {_seq=seq, _start=start, _stop=stop, _ori=ori}
