@@ -65,6 +65,16 @@ seq_mt.text = function(self)
     return self._text
 end
 
+local function seq_as_arr(self)
+    return {self:name(), self:description(), self:text()}
+end
+
+seq_mt.__eq = function(self, other)
+    assert(other and other:type() == 'Sequence')
+    local arrays_equal = require 'npge.util.arrays_equal'
+    return arrays_equal(seq_as_arr(self), seq_as_arr(other))
+end
+
 seq_mt.sub = function(self, min, max)
     return self._text:sub(min + 1, max + 1)
 end

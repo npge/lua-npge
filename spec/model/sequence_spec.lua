@@ -140,4 +140,11 @@ describe("model.sequence", function()
         assert.equal(s1:description(), s2:description())
     end)
 
+    it("compares sequences", function()
+        local s1 = Sequence("test_name", 'ATGC')
+        local s2 = Sequence("test_name", 'ATGC')
+        assert.equal(s1, s1)
+        assert.equal(s1, s2)
+    end)
+
 end)
