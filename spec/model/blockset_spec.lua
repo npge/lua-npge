@@ -203,5 +203,24 @@ describe("model.blockset", function()
         assert.same(arr(blockset:iter_fragments(s1)), {f1, f2})
         assert.same(arr(blockset:iter_fragments(s2)), {f3})
     end)
+
+    it("gets fragments located on sequence (parted)", function()
+        local s1 = model.Sequence("g&c&c", "ATAT")
+        local f1 = model.Fragment(s1, 1, 2, 1)
+        local f2 = model.Fragment(s1, 3, 0, 1) -- parted
+        local b1 = model.Block({f1, f2})
+        local blockset = model.BlockSet({s1}, {b1})
+        local it = blockset:iter_fragments(s1)
+        local expected = {
+            {f2, model.Fragment(s1, 0, 0, 1)},
+            {f1, f1},
+            {f2, model.Fragment(s1, 3, 3, 1)},
+        }
+        for _, ff in ipairs(expected) do
+            local fragment, subfragment = it()
+            assert.same(fragment, ff[1])
+            assert.same(subfragment, ff[2])
+        end
+    end)
 end)
 

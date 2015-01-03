@@ -24,6 +24,11 @@ local is_prepangenome = function(seq2fragments)
     return true
 end
 
+local parent_or_fragment = function(self, f)
+    local parent = self._parent_of_parts[f]
+    return parent or f
+end
+
 BlockSet_mt.__call = function(self, sequences, blocks)
     local name2seq = {}
     local seq2fragments = {}
@@ -91,19 +96,19 @@ bs_mt.iter_blocks = function(self)
 end
 
 bs_mt.fragments = function(self, sequence)
-    local fragments = self._seq2fragments[sequence]
-    assert(fragments, "Sequence not in blockset")
     local clone = require 'npge.util.clone'
-    return clone.array(fragments)
+    return clone.array_from_it(self:iter_fragments(sequence))
 end
 
 bs_mt.iter_fragments = function(self, sequence)
+    -- iterate pairs (fragment, sub-fragment)
     local fragments = self._seq2fragments[sequence]
     assert(fragments, "Sequence not in blockset")
     local it, t, index = ipairs(fragments)
     return function()
         index, fragment = it(t, index)
-        return fragment
+        local parent = parent_or_fragment(self, fragment)
+        return parent, fragment
     end
 end
 
@@ -133,11 +138,6 @@ end
 
 bs_mt.block_by_fragment = function(self, fragment)
     return self._block_by_fragment[fragment]
-end
-
-local parent_or_fragment = function(self, f)
-    local parent = self._parent_of_parts[f]
-    return parent or f
 end
 
 bs_mt.overlapping_fragments = function(self, fragment)
