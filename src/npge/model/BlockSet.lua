@@ -90,6 +90,23 @@ bs_mt.iter_blocks = function(self)
     end
 end
 
+bs_mt.fragments = function(self, sequence)
+    local fragments = self._seq2fragments[sequence]
+    assert(fragments, "Sequence not in blockset")
+    local clone = require 'npge.util.clone'
+    return clone.array(fragments)
+end
+
+bs_mt.iter_fragments = function(self, sequence)
+    local fragments = self._seq2fragments[sequence]
+    assert(fragments, "Sequence not in blockset")
+    local index, fragment
+    return function()
+        index, fragment = next(fragments, index)
+        return fragment
+    end
+end
+
 bs_mt.seqs = function(self)
     local seqs = {}
     for name, seq in pairs(self._name2seq) do
