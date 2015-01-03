@@ -1,6 +1,6 @@
-local cc = require 'npge.util.arrays_concat'
+local cc = require 'npge.util.concat_arrays'
 
-describe("util.arrays_concat", function()
+describe("util.concat_arrays", function()
     it("check if arrays are concatenated", function()
         assert.same(cc({1, 2}, {3, 4}), {1, 2, 3, 4})
     end)

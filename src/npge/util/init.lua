@@ -4,7 +4,7 @@ return {
     arrays_equal = require 'npge.util.arrays_equal',
     arrays_less = require 'npge.util.arrays_less',
     binary_search = require 'npge.util.binary_search',
-    arrays_concat = require 'npge.util.arrays_concat',
+    concat_arrays = require 'npge.util.concat_arrays',
     unique = require 'npge.util.unique',
     clone = require 'npge.util.clone',
 }

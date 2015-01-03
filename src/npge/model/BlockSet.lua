@@ -141,11 +141,11 @@ local parent_or_fragment = function(self, f)
 end
 
 bs_mt.overlapping_fragments = function(self, fragment)
-    local arrays_concat = require 'npge.util.arrays_concat'
+    local concat_arrays = require 'npge.util.concat_arrays'
     local unique = require 'npge.util.unique'
     if fragment:parted() then
         local a, b = fragment:parts()
-        return unique(arrays_concat(
+        return unique(concat_arrays(
             self:overlapping_fragments(a),
             self:overlapping_fragments(b)))
     end
