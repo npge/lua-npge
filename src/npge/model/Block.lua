@@ -14,7 +14,7 @@ Block_mt.to_atgcn_and_gap = function(text)
 end
 
 Block_mt.__call = function(self, fragments)
-    assert(#fragments > 0)
+    assert(#fragments > 0, 'Empty block')
     local get0 = function(x)
         if x.type and x:type() == 'Fragment' then
             return x
