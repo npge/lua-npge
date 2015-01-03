@@ -107,7 +107,7 @@ bs_mt.iter_fragments = function(self, sequence)
     end
 end
 
-bs_mt.seqs = function(self)
+bs_mt.sequences = function(self)
     local seqs = {}
     for name, seq in pairs(self._name2seq) do
         table.insert(seqs, seq)
@@ -115,7 +115,7 @@ bs_mt.seqs = function(self)
     return seqs
 end
 
-bs_mt.iter_seqs = function(self)
+bs_mt.iter_sequences = function(self)
     local name, seq
     return function()
         name, seq = next(self._name2seq, name)
