@@ -7,5 +7,6 @@ return {
     concat_arrays = require 'npge.util.concat_arrays',
     unique = require 'npge.util.unique',
     clone = require 'npge.util.clone',
+    it_from_array = require 'npge.util.it_from_array',
 }
 
