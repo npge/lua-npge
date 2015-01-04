@@ -1,0 +1,17 @@
+describe("algo.Merge", function()
+    it("merges two blocksets", function()
+        local model = require 'npge.model'
+        local s = model.Sequence("s", "ATAT")
+        local f1 = model.Fragment(s, 0, 0, 1)
+        local b1 = model.Block({f1})
+        local bs1 = model.BlockSet({s}, {b1})
+        local f2 = model.Fragment(s, 1, 1, 1)
+        local b2 = model.Block({f2})
+        local bs2 = model.BlockSet({s}, {b2})
+        local Merge = require 'npge.algo.Merge'
+        local sum = Merge(bs1, bs2)
+        assert.truthy(sum:same_sequences(bs1))
+        assert.same(sum:fragments(s), {f1, f2})
+        assert.equal(sum:size(), 2)
+    end)
+end)
