@@ -160,5 +160,15 @@ TTAAGTTTGACTCAATAACTGCGATGGTTGAGGGTAAT----------------TT-ATG
 -ATATATGACTTGCTTTCATCAAGTATGTCGCGTGATTACTGAAGCTTTCTCTGCCCTGC
 ATAATGACCTATAATTATTC-----CAAAAAGCTTACTC
     ]]))
+
+    it("compares rows", function()
+        assert.equal(Row('A-T-G'), Row('A-T-G'))
+        assert.equal(Row('A-T-G'), Row('N-N-N'))
+        assert.not_equal(Row('A-T-G'), Row('ATG'))
+        assert.not_equal(Row('A-T-G'), Row('-A-T-G'))
+        assert.not_equal(Row('A-T-G'), Row('A-T-G-'))
+        assert.not_equal(Row('A-T-G-'), Row('A-T-G--'))
+        assert.not_equal(Row('-A-T-G-'), Row('--A-T-G-'))
+    end)
 end)
 
