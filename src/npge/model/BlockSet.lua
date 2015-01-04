@@ -70,6 +70,20 @@ BlockSet_mt.__call = function(self, sequences, blocks)
     return setmetatable(bs, bs_mt)
 end
 
+bs_mt.same_sequences = function(self, other)
+    assert(other and other:type() == 'BlockSet')
+    if #self:sequences() ~= #other:sequences() then
+        return false
+    end
+    for name, seq in pairs(self._name2seq) do
+        local seq1 = other._name2seq[name]
+        if not seq1 or seq1 ~= seq then
+            return false
+        end
+    end
+    return true
+end
+
 bs_mt.type = function(self)
     return "BlockSet"
 end

@@ -222,5 +222,22 @@ describe("model.blockset", function()
             assert.same(subfragment, ff[2])
         end
     end)
+
+    it("compares sets of sequences", function()
+        local s1 = model.Sequence("g1&c&c", "ATAT")
+        local s1a = model.Sequence("g1&c&c", "ATAT")
+        local s1b = model.Sequence("g1&c&c", "ATATA")
+        local s2 = model.Sequence("g2&c&c", "ATAT")
+        local BS = function(...)
+            return model.BlockSet({...}, {})
+        end
+        assert.truthy(BS(s1):same_sequences(BS(s1)))
+        assert.falsy(BS(s1):same_sequences(BS(s1, s2)))
+        assert.truthy(BS(s1, s2):same_sequences(BS(s1, s2)))
+        assert.truthy(BS(s2, s1):same_sequences(BS(s1, s2)))
+        assert.falsy(BS(s2):same_sequences(BS(s1)))
+        assert.truthy(BS(s1):same_sequences(BS(s1a)))
+        assert.falsy(BS(s1):same_sequences(BS(s1b)))
+    end)
 end)
 
