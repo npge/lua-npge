@@ -138,5 +138,26 @@ describe("model.block", function()
         table.sort(ff2)
         assert.are.same(ff1, ff2)
     end)
+
+    it("compares blocks", function()
+        local s = model.Sequence("test_name", "ATAT")
+        local f1 = model.Fragment(s, 0, 1, 1)
+        local f2 = model.Fragment(s, 2, 3, 1)
+        assert.equal(model.Block({f1, f2}),
+            model.Block({f1, f2}))
+        assert.equal(model.Block({{f1, 'AT'}, {f2, 'AT'}}),
+            model.Block({f1, f2}))
+        assert.equal(model.Block({{f1, 'AT'}, {f2, 'AT'}}),
+            model.Block({{f1, 'AT'}, {f2, 'AT'}}))
+        assert.not_equal(
+            model.Block({{f1, 'AT'}, {f2, 'AT'}}),
+            model.Block({{f1, 'A-T'}, {f2, 'AT-'}}))
+        assert.not_equal(
+            model.Block({{f1, 'AT'}, {f2, 'AT'}}),
+            model.Block({{f1, 'AT'}}))
+        assert.equal(
+            model.Block({{f1, 'A-T'}, {f2, 'AT-'}}),
+            model.Block({{f1, 'A-T'}, {f2, 'AT-'}}))
+    end)
 end)
 

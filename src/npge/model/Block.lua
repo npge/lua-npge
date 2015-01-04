@@ -71,6 +71,24 @@ Block_mt.__call = function(self, fragments)
     return setmetatable(block, block_mt)
 end
 
+block_mt.__eq = function(self, other)
+    assert(other and other:type() == 'Block')
+    if self:size() ~= other:size() then
+        return false
+    end
+    local id2row = {}
+    for fragment, row in pairs(self._fragments) do
+        id2row[fragment:id()] = row
+    end
+    for fragment1, row1 in pairs(other._fragments) do
+        local row = id2row[fragment1:id()]
+        if not row or row ~= row1 then
+            return false
+        end
+    end
+    return true
+end
+
 block_mt.type = function(self)
     return "Block"
 end
