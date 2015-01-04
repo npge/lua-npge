@@ -85,6 +85,42 @@ bs_mt.same_sequences = function(self, other)
     return true
 end
 
+bs_mt.__eq = function(self, other)
+    assert(other and other:type() == 'BlockSet')
+    if not self:same_sequences(other) then
+        return false
+    end
+    if self:size() ~= other:size() then
+        return false
+    end
+    local arrays_equal = require 'npge.util.arrays_equal'
+    -- compare fragments, collect list of blocks
+    local blocks = {}
+    local blocks1 = {}
+    for seq, fragments in pairs(self._seq2fragments) do
+        local seq1 = other._name2seq[seq:name()]
+        assert(seq1) -- checked above
+        local fragments1 = other._seq2fragments[seq1]
+        assert(fragments1)
+        if not arrays_equal(fragments, fragments1) then
+            return false
+        end
+        for _, f in ipairs(fragments) do
+            table.insert(blocks, self._block_by_fragment[f])
+        end
+        for _, f in ipairs(fragments1) do
+            table.insert(blocks1, other._block_by_fragment[f])
+        end
+    end
+    local unique = require 'npge.util.unique'
+    blocks = unique(blocks)
+    blocks1 = unique(blocks1)
+    if not arrays_equal(blocks, blocks1) then
+        return false
+    end
+    return true
+end
+
 bs_mt.type = function(self)
     return "BlockSet"
 end

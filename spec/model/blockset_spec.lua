@@ -239,5 +239,53 @@ describe("model.blockset", function()
         assert.truthy(BS(s1):same_sequences(BS(s1a)))
         assert.falsy(BS(s1):same_sequences(BS(s1b)))
     end)
+
+    it("compares blocksets", function()
+        local s1 = model.Sequence("g1&c&c", "ATAT")
+        local s2 = model.Sequence("g2&c&c", "ATAT")
+        local f1 = model.Fragment(s1, 0, 0, 1)
+        local f1a = model.Fragment(s1, 1, 1, 1)
+        local f2 = model.Fragment(s2, 0, 0, 1)
+        local B = function(...)
+            return model.Block({...})
+        end
+        local BS = model.BlockSet
+        assert.equal(BS({s1},{}), BS({s1}, {}))
+        assert.not_equal(BS({s1},{}), BS({s2}, {}))
+        assert.equal(BS({s1},{B(f1)}), BS({s1}, {B(f1)}))
+        assert.not_equal(BS({s1}, {B(f1)}), BS({s1}, {}))
+        assert.equal(BS({s1, s2}, {B(f1), B(f2)}),
+            BS({s1, s2}, {B(f1), B(f2)}))
+        assert.not_equal(BS({s1, s2}, {B(f1), B(f2)}),
+            BS({s1, s2}, {B(f1), B(f1)}))
+        assert.not_equal(BS({s1, s2}, {B(f1), B(f2)}),
+            BS({s1, s2}, {B(f1)}))
+        assert.equal(BS({s1, s2}, {B(f1), B(f2)}),
+            BS({s1, s2}, {B(f2), B(f1)}))
+        assert.equal(BS({s1}, {B(f1), B(f1a)}),
+            BS({s1}, {B(f1), B(f1a)}))
+        assert.equal(BS({s1, s2}, {B(f1), B(f1a)}),
+            BS({s1, s2}, {B(f1), B(f1a)}))
+        assert.equal(BS({s1, s2}, {B(f1), B(f1a), B(f2)}),
+            BS({s1, s2}, {B(f1), B(f1a), B(f2)}))
+        assert.not_equal(BS({s1, s2}, {B(f1), B(f1), B(f2)}),
+            BS({s1, s2}, {B(f1), B(f1a), B(f2)}))
+    end)
+
+    it("compares blocksets (different objects)", function()
+        local B = function(...)
+            return model.Block({...})
+        end
+        local BS = model.BlockSet
+        local make_bs = function()
+            local s1 = model.Sequence("g1&c&c", "ATAT")
+            local s2 = model.Sequence("g2&c&c", "ATAT")
+            local f1 = model.Fragment(s1, 0, 0, 1)
+            local f1a = model.Fragment(s1, 1, 1, 1)
+            local f2 = model.Fragment(s2, 0, 0, 1)
+            return BS({s1, s2}, {B(f1, f2), B(f1a)})
+        end
+        assert.equal(make_bs(), make_bs())
+    end)
 end)
 
