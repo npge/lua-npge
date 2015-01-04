@@ -1,6 +1,7 @@
 local members = {
     'NonCovered',
     'Merge',
+    'ReadSequencesFromFasta',
 }
 
 local algo = {}
