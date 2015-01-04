@@ -19,7 +19,7 @@ Block_mt.__call = function(self, fragments)
         if x.type and x:type() == 'Fragment' then
             return x
         else
-            assert(#x == 2)
+            assert(#x == 2, "Provide pairs {fragment, row}")
             local fragment = x[1]
             local row = Block.to_atgcn_and_gap(x[2])
             local Sequence = require 'npge.model.Sequence'
