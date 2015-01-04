@@ -41,6 +41,7 @@ BlockSet_mt.__call = function(self, sequences, blocks)
     local parent_of_parts = {}
     local block_by_fragment = {}
     for _, block in ipairs(blocks) do
+        assert(block:type() == 'Block')
         for fragment in block:iter_fragments() do
             block_by_fragment[fragment] = block
             local seq = fragment:sequence()
