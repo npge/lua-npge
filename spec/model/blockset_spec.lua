@@ -264,6 +264,8 @@ describe("model.blockset", function()
             BS({s1, s2}, {B(f2), B(f1)}))
         assert.equal(BS({s1}, {B(f1), B(f1a)}),
             BS({s1}, {B(f1), B(f1a)}))
+        assert.not_equal(BS({s1, s2}, {B(f1, f1a), B(f2)}),
+            BS({s1, s2}, {B(f1), B(f1a, f2)}))
         assert.equal(BS({s1, s2}, {B(f1), B(f1a)}),
             BS({s1, s2}, {B(f1), B(f1a)}))
         assert.equal(BS({s1, s2}, {B(f1), B(f1a), B(f2)}),
