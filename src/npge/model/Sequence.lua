@@ -22,9 +22,10 @@ end
 
 Sequence_mt.to_atgcn = function(text)
     assert(type(text) == 'string')
-    return text:upper()
+    text = text:upper()
         :gsub('[RYMKWSBVHD]', 'N')
         :gsub('[^ATGCN]', '')
+    return text
 end
 
 Sequence_mt.complement = function(text)
