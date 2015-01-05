@@ -277,7 +277,7 @@ end
 bs_mt.tolua = function(self)
     local as_lines = function(text)
         local result = {}
-        local step = 60
+        local step = 50
         for i = 0, #text, step do
             table.insert(result, text:sub(i, i + step - 1))
         end
