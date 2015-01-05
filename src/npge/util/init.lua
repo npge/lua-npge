@@ -8,5 +8,6 @@ return {
     unique = require 'npge.util.unique',
     clone = require 'npge.util.clone',
     it_from_array = require 'npge.util.it_from_array',
+    extract_value = require 'npge.util.extract_value',
 }
 
