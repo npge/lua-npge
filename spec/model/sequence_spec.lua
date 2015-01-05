@@ -119,4 +119,8 @@ describe("model.sequence", function()
         assert.equal(s1, s2)
     end)
 
+    it("makes string representation of sequence", function()
+        local s1 = Sequence("test_name", 'ATGC')
+        assert.truthy(tostring(s1))
+    end)
 end)

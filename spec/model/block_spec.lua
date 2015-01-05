@@ -159,5 +159,13 @@ describe("model.block", function()
             model.Block({{f1, 'A-T'}, {f2, 'AT-'}}),
             model.Block({{f1, 'A-T'}, {f2, 'AT-'}}))
     end)
+
+    it("makes string representation of block", function()
+        local s = model.Sequence("test_name", "ATAT")
+        local f1 = model.Fragment(s, 0, 1, 1)
+        local f2 = model.Fragment(s, 3, 2, -1)
+        local block = model.Block({f1, f2})
+        assert.truthy(tostring(block))
+    end)
 end)
 

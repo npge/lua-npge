@@ -76,6 +76,11 @@ seq_mt.__eq = function(self, other)
     return arrays_equal(seq_as_arr(self), seq_as_arr(other))
 end
 
+seq_mt.__tostring = function(self)
+    local text = 'Sequence %s of length %d'
+    return text:format(self:name(), self:length())
+end
+
 seq_mt.sub = function(self, min, max)
     return self._text:sub(min + 1, max + 1)
 end

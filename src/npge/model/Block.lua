@@ -89,6 +89,11 @@ block_mt.__eq = function(self, other)
     return true
 end
 
+block_mt.__tostring = function(self)
+    local text = 'Block of %d fragments, length %d'
+    return text:format(self:size(), self:length())
+end
+
 block_mt.type = function(self)
     return "Block"
 end

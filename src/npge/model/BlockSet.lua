@@ -121,6 +121,11 @@ bs_mt.__eq = function(self, other)
     return true
 end
 
+bs_mt.__tostring = function(self)
+    local text = 'BlockSet of %d sequences and %d blocks'
+    return text:format(#self:sequences(), self:size())
+end
+
 bs_mt.type = function(self)
     return "BlockSet"
 end

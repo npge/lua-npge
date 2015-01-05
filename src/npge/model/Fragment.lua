@@ -83,6 +83,15 @@ f_mt.__lt = function(self, other)
     return arrays_less(f_as_arr2(self), f_as_arr2(other))
 end
 
+f_mt.__tostring = function(self)
+    local text = 'Fragment %s of length %d'
+    text = text:format(self:id(), self:length())
+    if self:parted() then
+        text = text .. ' (parted)'
+    end
+    return text
+end
+
 f_mt.parted = function(self)
     local diff = self:stop() - self:start()
     -- (diff < 0 and self:ori() == 1) or ...
