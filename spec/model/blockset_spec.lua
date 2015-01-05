@@ -305,5 +305,18 @@ describe("model.blockset", function()
         local bs2 = loadstring(lua)()
         assert.equal(bs1, bs2)
     end)
+
+    it("serializes blocksets (fragment length 60)", function()
+        local B = function(...)
+            return model.Block({...})
+        end
+        local BS = model.BlockSet
+        local s = model.Sequence("g1&c&c", string.rep("A", 60))
+        local f = model.Fragment(s, 0, 0, 1)
+        local bs1 = BS({s}, {B(f)})
+        local lua = bs1:tolua()
+        local bs2 = loadstring(lua)()
+        assert.equal(bs1, bs2)
+    end)
 end)
 
