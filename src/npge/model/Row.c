@@ -114,12 +114,6 @@ static int Row_eq(Row* x, Row* y) {
 
 static int lua_Row_eq(lua_State *L) {
     int args = lua_gettop(L);
-    if (args != 2) {
-        return luaL_error(L, "to compare rows, I need 2 rows");
-    }
-    if (!lua_isuserdata(L, 2)) {
-        return luaL_error(L, "compare a Row to Row");
-    }
     Row* x = lua_touserdata(L, 1);
     Row* y = lua_touserdata(L, 2);
     int result = Row_eq(x, y);
