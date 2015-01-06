@@ -209,6 +209,7 @@ static int lua_Row_text(lua_State *L) {
     char* result = Row_text(self, fragment);
     int row_length = Row_length(self);
     lua_pushlstring(L, result, row_length);
+    free(result);
     return 1;
 }
 
@@ -426,6 +427,7 @@ static int lua_Row_fragment2block(lua_State *L) {
 }
 
 static const luaL_Reg rowlib[] = {
+    {"__gc", lua_Row_free},
     {"__eq", lua_Row_eq},
     {"type", lua_Row_type},
     {"length", lua_Row_length},
