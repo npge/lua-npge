@@ -25,7 +25,8 @@ static void Row_constructor(Row* self, const char* text,
     // count groups
     int groups = 0;
     char prev = '-';
-    for (int bp = 0; bp < row_length; bp++) {
+    int bp;
+    for (bp = 0; bp < row_length; bp++) {
         if (prev == '-' && text[bp] != '-') {
             groups += 1;
         }
@@ -41,7 +42,7 @@ static void Row_constructor(Row* self, const char* text,
     prev = '-';
     int group = 0;
     lengths[0] = 0;
-    for (int bp = 0; bp < row_length; bp++) {
+    for (bp = 0; bp < row_length; bp++) {
         if (prev == '-' && text[bp] != '-') {
             // new nongap opened
             starts[group] = bp;
@@ -94,7 +95,8 @@ static int lua_Row_free(lua_State *L) {
 
 // bool
 static int arrays_equal(int len, int* x, int* y) {
-    for (int i = 0; i < len; i++) {
+    int i;
+    for (i = 0; i < len; i++) {
         if (x[i] != y[i]) {
             return 0;
         }
@@ -162,7 +164,8 @@ static char* Row_text(Row* self, const char* fragment) {
     char* result = malloc(row_length);
     int cur = 0;
     int groups = self->len_;
-    for (int i = 0; i < groups - 1; i++) {
+    int i;
+    for (i = 0; i < groups - 1; i++) {
         int bp = starts[i];
         while (cur < bp) {
             result[cur] = '-';
@@ -170,7 +173,8 @@ static char* Row_text(Row* self, const char* fragment) {
         }
         int start = lengths[i];
         int stop = lengths[i + 1] - 1;
-        for (int j = start; j <= stop; j++) {
+        int j;
+        for (j = start; j <= stop; j++) {
             if (fragment) {
                 result[cur] = fragment[j];
             } else {
