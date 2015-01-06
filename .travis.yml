@@ -5,12 +5,14 @@ install:
   - sudo luarocks install busted
   - sudo luarocks install luacov
   - sudo luarocks install luacov-coveralls
+  - sudo pip install cpp-coveralls
 
 script:
   - busted -c
-  - luarocks make --local
+  - luarocks make --local CFLAGS="-O2 -fPIC -ftest-coverage -fprofile-arcs" LIBFLAG="-shared --coverage"
   - busted -c
   - valgrind --error-exitcode=1 --leak-check=full lua /usr/local/lib/luarocks/rocks/busted/*/bin/busted
 
 after_success:
-  - luacov-coveralls
+  - coveralls -b .. -r .. --dump c.report.json
+  - luacov-coveralls -j c.report.json -v
