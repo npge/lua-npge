@@ -14,5 +14,5 @@ script:
   - valgrind --error-exitcode=1 --leak-check=full lua /usr/local/lib/luarocks/rocks/busted/*/bin/busted
 
 after_success:
-  - coveralls -b .. -r .. --dump c.report.json
+  - coveralls -b . --dump c.report.json
   - luacov-coveralls -j c.report.json -v
