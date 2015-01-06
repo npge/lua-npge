@@ -1,7 +1,7 @@
 language: c
 
 install:
-  - sudo apt-get install luarocks
+  - sudo apt-get install luarocks valgrind
   - sudo luarocks install busted
   - sudo luarocks install luacov
   - sudo luarocks install luacov-coveralls
@@ -10,6 +10,7 @@ script:
   - busted -c
   - luarocks make --local
   - busted -c
+  - valgrind --error-exitcode=1 --leak-check=full lua /usr/local/lib/luarocks/rocks/busted/*/bin/busted
 
 after_success:
   - luacov-coveralls
