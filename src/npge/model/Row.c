@@ -439,7 +439,7 @@ static const luaL_Reg rowlib[] = {
     {NULL, NULL}
 };
 
-LUALIB_API int luaopen_npgeModelRow(lua_State *L) {
+LUALIB_API int luaopen_npge_model_cRow(lua_State *L) {
     // row_mt
     lua_newtable(L);
     luaL_register(L, NULL, rowlib);

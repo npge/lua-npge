@@ -1,3 +1,8 @@
+-- use C version if available
+local has_crow, crow = pcall(require, 'npge.model.cRow')
+if has_crow then
+    return crow
+end
 
 local Row = {}
 local Row_mt = {}
