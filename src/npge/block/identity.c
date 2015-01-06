@@ -1,9 +1,8 @@
 #include <stdlib.h>
+#include <assert.h>
 
 #define LUA_LIB
 #include <lua.h>
-
-#define EXAMPLE "call identity({'AA', 'A-', '-A'}, 3, 2)"
 
 // arguments:
 // 1. Lua table with rows
@@ -11,18 +10,10 @@
 // 3. length of a row
 static int lua_identity(lua_State *L) {
     int args = lua_gettop(L);
-    if (args != 3) {
-        return luaL_error(L, EXAMPLE);
-    }
-    if (!lua_istable(L, 1)) {
-        return luaL_error(L, EXAMPLE);
-    }
-    if (!lua_isnumber(L, 2)) {
-        return luaL_error(L, EXAMPLE);
-    }
-    if (!lua_isnumber(L, 3)) {
-        return luaL_error(L, EXAMPLE);
-    }
+    assert(args == 3);
+    assert(lua_istable(L, 1));
+    assert(lua_isnumber(L, 2));
+    assert(lua_isnumber(L, 3));
     int nrows = lua_tonumber(L, 2);
     int row_length = lua_tonumber(L, 3);
     const char** rows = malloc(nrows * sizeof(const char*));
@@ -32,20 +23,15 @@ static int lua_identity(lua_State *L) {
     lua_pushnil(L);  /* first key */
     while (lua_next(L, t) != 0) {
         // 'key' at index -2, 'value' at index -1
-        if (irow >= nrows) {
-            return luaL_error(L, "to many rows in table");
-        }
+        assert(irow < nrows);
         size_t len;
         rows[irow] = lua_tolstring(L, -1, &len);
-        if (!rows[irow]) {
-            return luaL_error(L, "row must be a string");
-        }
-        if (len != row_length) {
-            return luaL_error(L, "bad row length");
-        }
+        assert(rows[irow]);
+        assert(len == row_length);
         lua_pop(L, 1); // remove 'value'
         irow++;
     }
+    assert(irow == nrows);
     // calculate identity
     int bp;
     double ident = 0;
