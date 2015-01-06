@@ -6,7 +6,10 @@ install:
   - sudo luarocks install luacov
   - sudo luarocks install luacov-coveralls
 
-script: busted -c
+script:
+  - busted -c
+  - luarocks make --local
+  - busted -c
 
 after_success:
   - luacov-coveralls
