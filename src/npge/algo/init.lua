@@ -3,6 +3,7 @@ local members = {
     'Merge',
     'ReadSequencesFromFasta',
     'ReadFromBs',
+    'ConsensusSequences',
 }
 
 local algo = {}
