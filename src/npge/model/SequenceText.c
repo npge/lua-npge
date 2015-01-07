@@ -39,6 +39,24 @@ static int lua_SequenceText_free(lua_State *L) {
     return 0;
 }
 
+static int SequenceText_eq(SequenceText* self,
+                           SequenceText* other) {
+    if (self->len_ != other->len_) {
+        return 0;
+    }
+    if (memcmp(self->text_, other->text_, other->len_) != 0) {
+        return 0;
+    }
+    return 1;
+}
+
+static int lua_SequenceText_eq(lua_State *L) {
+    SequenceText* self = lua_touserdata(L, 1);
+    SequenceText* other = lua_touserdata(L, 2);
+    lua_pushboolean(L, SequenceText_eq(self, other));
+    return 1;
+}
+
 // arguments:
 // 1. SequenceText self
 // returns length
@@ -75,6 +93,7 @@ static int lua_SequenceText_sub(lua_State *L) {
 
 static const luaL_Reg seqtextlib[] = {
     {"__gc", lua_SequenceText_free},
+    {"__eq", lua_SequenceText_eq},
     {"length", lua_SequenceText_length},
     {"sub", lua_SequenceText_sub},
     {NULL, NULL}

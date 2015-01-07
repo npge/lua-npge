@@ -83,12 +83,13 @@ else
 end
 
 local function seq_as_arr(self)
-    return {self:name(), self:description(), self:text()}
+    return {self:name(), self:description()}
 end
 
 seq_mt.__eq = function(self, other)
     local arrays_equal = require 'npge.util.arrays_equal'
     return arrays_equal(seq_as_arr(self), seq_as_arr(other))
+        and self._text == other._text
 end
 
 seq_mt.__tostring = function(self)
