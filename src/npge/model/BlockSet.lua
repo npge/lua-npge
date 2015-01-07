@@ -86,7 +86,6 @@ bs_mt.same_sequences = function(self, other)
 end
 
 bs_mt.__eq = function(self, other)
-    assert(other and other:type() == 'BlockSet')
     if not self:same_sequences(other) then
         return false
     end

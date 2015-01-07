@@ -37,7 +37,6 @@ Row_mt.__call = function(self, text)
 end
 
 row_mt.__eq = function(self, other)
-    assert(other and other:type() == 'Row')
     local arrays_equal = require 'npge.util.arrays_equal'
     return arrays_equal(self._starts, other._starts) and
         arrays_equal(self._lengths, other._lengths)

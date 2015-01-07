@@ -72,7 +72,6 @@ local function seq_as_arr(self)
 end
 
 seq_mt.__eq = function(self, other)
-    assert(other and other:type() == 'Sequence')
     local arrays_equal = require 'npge.util.arrays_equal'
     return arrays_equal(seq_as_arr(self), seq_as_arr(other))
 end

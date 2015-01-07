@@ -72,7 +72,6 @@ Block_mt.__call = function(self, fragments)
 end
 
 block_mt.__eq = function(self, other)
-    assert(other and other:type() == 'Block')
     if self:size() ~= other:size() then
         return false
     end
