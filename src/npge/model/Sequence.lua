@@ -1,3 +1,6 @@
+-- use C version if available
+local has_c, cSequenceText =
+    pcall(require, 'npge.model.cSequenceText')
 
 local Sequence = {}
 local Sequence_mt = {}
@@ -13,10 +16,15 @@ Sequence_mt.__call = function(self, name, text, description)
         type(description) == 'nil')
     local seq = {}
     seq._name = name
-    seq._text = Sequence.to_atgcn(text)
-    assert(#seq._text > 0)
+    text = Sequence.to_atgcn(text)
+    assert(#text > 0)
     assert(#seq._name > 0)
     seq._description = description or ''
+    if has_c then
+        seq._text = cSequenceText(text)
+    else
+        seq._text = text
+    end
     return setmetatable(seq, seq_mt)
 end
 
@@ -63,8 +71,15 @@ seq_mt.circular = function(self)
     return circularity == 'c'
 end
 
-seq_mt.text = function(self)
-    return self._text
+if has_c then
+    seq_mt.text = function(self)
+        local length = self._text:length()
+        return self._text:sub(0, length - 1)
+    end
+else
+    seq_mt.text = function(self)
+        return self._text
+    end
 end
 
 local function seq_as_arr(self)
@@ -82,15 +97,28 @@ seq_mt.__tostring = function(self)
 end
 
 seq_mt.sub = function(self, min, max)
-    return self._text:sub(min + 1, max + 1)
+    assert(min >= 0)
+    assert(min <= max)
+    assert(max <= self:length())
+    if has_c then
+        return self._text:sub(min, max)
+    else
+        return self._text:sub(min + 1, max + 1)
+    end
 end
 
 seq_mt.description = function(self)
     return self._description
 end
 
-seq_mt.length = function(self)
-    return #self._text
+if has_c then
+    seq_mt.length = function(self)
+        return self._text:length()
+    end
+else
+    seq_mt.length = function(self)
+        return #self._text
+    end
 end
 
 seq_mt.at = function(self, index)
