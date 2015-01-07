@@ -14,6 +14,10 @@
 *-build-*
 
 *.out
+c.report.json
+*.gcov
+*.gcda
+*.gcno
 
 usr
 include
