@@ -135,73 +135,6 @@ f_mt.text = function(self)
     end
 end
 
-f_mt.has = function(self, index)
-    if not self:parted() then
-        if self:ori() == 1 then
-            return index >= self:start() and
-                index <= self:stop()
-        else
-            return index <= self:start() and
-                index >= self:stop()
-        end
-    else
-        local a, b = self:parts()
-        return a:has(index) or b:has(index)
-    end
-end
-
-local fix_coord = function(seq, x)
-    if x < 0 then
-        return x + seq:length()
-    elseif x >= seq:length() then
-        return x - seq:length()
-    else
-        return x
-    end
-end
-
-f_mt.is_subfragment_of = function(self, source)
-    assert(self:sequence() == source:sequence())
-    if not source:has(self:start())
-            or not source:has(self:stop()) then
-        return false
-    end
-    if not source:parted() and not self:parted() then
-        return true
-    elseif source:length() == source:sequence():length() then
-        -- source covers whole sequence
-        return true
-    else
-        -- check all boundaries of source
-        local points = {source:start(), source:stop()}
-        local points1 = {}
-        for _, point in ipairs(points) do
-            table.insert(points1, point - 1)
-            table.insert(points1, point)
-            table.insert(points1, point + 1)
-        end
-        for _, point in ipairs(points1) do
-            point = fix_coord(self:sequence(), point)
-            if self:has(point) and not source:has(point) then
-                return false
-            end
-        end
-        return true
-    end
-end
-
-f_mt.subfragment = function(self, start, stop, ori)
-    -- ori is related to source fragment
-    local start2 = self:start() + self:ori() * start
-    local stop2 = self:start() + self:ori() * stop
-    local ori2 = self:ori() * ori
-    start2 = fix_coord(self:sequence(), start2)
-    stop2 = fix_coord(self:sequence(), stop2)
-    local f = Fragment(self:sequence(), start2, stop2, ori2)
-    assert(f:is_subfragment_of(self))
-    return f
-end
-
 f_mt.common = function(self, other)
     if self:parted() then
         local a, b = self:parts()
@@ -225,21 +158,4 @@ f_mt.common = function(self, other)
     end
 end
 
-f_mt.sub = function(self, start, stop, ori)
-    return self:subfragment(start, stop, ori):text()
-end
-
-f_mt.at = function(self, index)
-    local seq_index = self:start() + index * self:ori()
-    seq_index = fix_coord(self:sequence(), seq_index)
-    local letter = self:sequence():at(seq_index)
-    if self:ori() == 1 then
-        return letter
-    else
-        local Sequence = require 'npge.model.Sequence'
-        return Sequence.complement(letter)
-    end
-end
-
 return setmetatable(Fragment, Fragment_mt)
-

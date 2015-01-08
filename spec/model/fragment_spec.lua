@@ -135,62 +135,6 @@ describe("model.fragment", function()
         assert.are.equal(Fragment(s, 3, 1, -1):length(), 3)
     end)
 
-    it("checks if fragment has sequence index", function()
-        local s = model.Sequence("genome&chromosome&c", "ATGC")
-        local f = Fragment(s, 3, 1, 1)
-        assert.is.truthy(f:has(3))
-        assert.is.truthy(f:has(0))
-        assert.is.truthy(f:has(1))
-        assert.is.falsy(f:has(2))
-        local f = Fragment(s, 1, 3, -1)
-        assert.is.truthy(f:has(3))
-        assert.is.truthy(f:has(0))
-        assert.is.truthy(f:has(1))
-        assert.is.falsy(f:has(2))
-    end)
-
-    it("#is_subfragment", function()
-        local s = model.Sequence("genome&chromosome&c", "ATGC")
-        local f = Fragment(s, 3, 1, 1)
-        assert.is.truthy(
-            Fragment(s, 3, 1, 1):is_subfragment_of(f))
-        assert.is.truthy(
-            Fragment(s, 3, 0, 1):is_subfragment_of(f))
-        assert.is.falsy(
-            Fragment(s, 2, 2, 1):is_subfragment_of(f))
-        assert.is.falsy(
-            Fragment(s, 1, 3, 1):is_subfragment_of(f))
-    end)
-
-    it("#is_subfragment whole sequence", function()
-        local s = model.Sequence("genome&chromosome&c", "ATGC")
-        local f = Fragment(s, 3, 2, 1)
-        assert.is.truthy(
-            Fragment(s, 0, 3, 1):is_subfragment_of(f))
-        assert.is.truthy(
-            Fragment(s, 2, 1, 1):is_subfragment_of(f))
-        assert.is.truthy(
-            Fragment(s, 2, 0, 1):is_subfragment_of(f))
-        assert.is.truthy(
-            Fragment(s, 2, 0, -1):is_subfragment_of(f))
-    end)
-
-    it("#is_subfragment source parted", function()
-        local s = model.Sequence("genome&chromosome&c", "ATGC")
-        local f = Fragment(s, 3, 0, 1)
-        assert.is.falsy(
-            Fragment(s, 0, 3, 1):is_subfragment_of(f))
-        assert.is.truthy(
-            Fragment(s, 0, 3, -1):is_subfragment_of(f))
-    end)
-
-    it("#is_subfragment self parted", function()
-        local s = model.Sequence("genome&chromosome&c", "ATGC")
-        local f = Fragment(s, 1, 3, 1)
-        assert.is.falsy(
-            Fragment(s, 1, 3, -1):is_subfragment_of(f))
-    end)
-
     it("gets text of fragment", function()
         local s = model.Sequence("genome&chromosome&c", "ATGC")
         assert.are.equal(Fragment(s, 0, 0, 1):text(), "A")
@@ -198,41 +142,6 @@ describe("model.fragment", function()
         assert.are.equal(Fragment(s, 0, 1, 1):text(), "AT")
         assert.are.equal(Fragment(s, 0, 1, -1):text(), "TGCA")
         assert.are.equal(Fragment(s, 1, 0, 1):text(), "TGCA")
-    end)
-
-    it("gets subfragment", function()
-        local s = model.Sequence("genome&chromosome&c", "ATGC")
-        local f = Fragment(s, 1, 2, 1)
-        assert.are.equal(f:subfragment(0, 0, 1):text(), "T")
-        assert.are.equal(f:subfragment(0, 0, -1):text(), "A")
-        assert.are.equal(f:subfragment(0, 1, 1):text(), "TG")
-        assert.are.equal(f:subfragment(1, 0, -1):text(), "CA")
-        local f = Fragment(s, 2, 0, 1)
-        assert.are.equal(f:subfragment(0, 0, 1):text(), "G")
-        assert.are.equal(f:subfragment(0, 0, -1):text(), "C")
-        assert.are.equal(f:subfragment(0, 2, 1):text(), "GCA")
-        assert.are.equal(f:subfragment(2, 0, -1):text(), "TGC")
-        local f = Fragment(s, 0, 2, -1)
-        assert.are.equal(f:sub(1, 2, 1), "GC")
-        assert.has_error(function()
-            f:subfragment(1, 2, -1)
-        end)
-    end)
-
-    it("gets char by index (positive)", function()
-        local s = model.Sequence("genome&chromosome&c", "ATGC")
-        local f = Fragment(s, 1, 2, 1)
-        assert.are.equal(f:at(0), "T")
-        assert.are.equal(f:at(1), "G")
-    end)
-
-    it("gets char by index (negative)", function()
-        local s = model.Sequence("genome&chromosome&c", "ATGC")
-        local f = Fragment(s, 1, 2, -1)
-        assert.are.equal(f:at(0), "A")
-        assert.are.equal(f:at(1), "T")
-        assert.are.equal(f:at(2), "G")
-        assert.are.equal(f:at(3), "C")
     end)
 
     it("makes string representation of fragment", function()
