@@ -23,7 +23,8 @@ Block_mt.__call = function(self, fragments)
             local fragment = x[1]
             local row = Block.to_atgcn_and_gap(x[2])
             local Sequence = require 'npge.model.Sequence'
-            assert(fragment:text() == Sequence.to_atgcn(row))
+            assert(fragment:text() == Sequence.to_atgcn(row),
+                "Row's text doesn't match Fragment's text")
             return fragment, row
         end
     end
