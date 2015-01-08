@@ -1,3 +1,3 @@
 return {
-    reverse = require 'npge.block.reverse',
+    reverse = require 'npge.fragment.reverse',
 }
