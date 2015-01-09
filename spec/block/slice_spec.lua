@@ -52,4 +52,37 @@ describe("block.slice", function()
         })
         assert.are.equal(block_slice, block_slice_exp)
     end)
+
+    it("slices vertical parts of block (less fragments)",
+    function()
+        local model = require 'npge.model'
+        local s = model.Sequence("g&c&c", "AATAT")
+        local f1 = model.Fragment(s, 0, 2, -1)
+        local f2 = model.Fragment(s, 4, 3, 1)
+        local block = model.Block({
+            {f1, 'TA-TA'},
+            {f2, 'TAATA'},
+        })
+        local slice = require 'npge.block.slice'
+        local block_slice = slice(block, 2, 2)
+        local block_slice_exp = model.Block({
+            {model.Fragment(s, 1, 1, 1), 'A'},
+        })
+        assert.are.equal(block_slice, block_slice_exp)
+    end)
+
+    it("slices vertical parts of block (no fragments)",
+    function()
+        local model = require 'npge.model'
+        local s = model.Sequence("g&c&c", "AATAT")
+        local f1 = model.Fragment(s, 0, 2, -1)
+        local f2 = model.Fragment(s, 4, 3, 1)
+        local block = model.Block({
+            {f1, 'TA--TA'},
+            {f2, 'TA-ATA'},
+        })
+        local slice = require 'npge.block.slice'
+        local block_slice = slice(block, 2, 2)
+        assert.are.equal(block_slice, nil)
+    end)
 end)
