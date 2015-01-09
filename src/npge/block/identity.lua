@@ -21,7 +21,8 @@ else
         for bp = 0, block:length() - 1 do
             local gap, first, bad
             for fragment in block:iter_fragments() do
-                local letter = block:at(fragment, bp)
+                local at = require 'npge.block.at'
+                local letter = at(block, fragment, bp)
                 if letter == '-' then
                     gap = true
                 elseif first and letter ~= first then
