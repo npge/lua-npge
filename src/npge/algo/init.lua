@@ -4,6 +4,7 @@ local members = {
     'ReadSequencesFromFasta',
     'ReadFromBs',
     'ConsensusSequences',
+    'UnwindBlocks',
 }
 
 local algo = {}
