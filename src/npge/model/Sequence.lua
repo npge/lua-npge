@@ -17,8 +17,8 @@ Sequence_mt.__call = function(self, name, text, description)
     local seq = {}
     seq._name = name
     text = Sequence.to_atgcn(text)
-    assert(#text > 0)
-    assert(#seq._name > 0)
+    assert(#text > 0, "No empty sequences allowed")
+    assert(#seq._name > 0, "No unknown sequences allowed")
     seq._description = description or ''
     if has_c then
         seq._text = cSequenceText(text)
