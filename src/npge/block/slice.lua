@@ -43,6 +43,7 @@ return function(block, min, max, row)
             local orig_row = block:text(fragment)
             orig_row = orig_row:sub(min + 1, max + 1)
             local new_row = slice_row(row, orig_row)
+            assert(#new_row == #row)
             table.insert(for_block, {new_f, new_row})
         end
     end
