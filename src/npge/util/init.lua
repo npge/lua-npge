@@ -9,5 +9,6 @@ return {
     clone = require 'npge.util.clone',
     it_from_array = require 'npge.util.it_from_array',
     extract_value = require 'npge.util.extract_value',
+    as_lines = require 'npge.util.as_lines',
 }
 

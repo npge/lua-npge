@@ -279,14 +279,7 @@ bs_mt.prev = function(self, fragment)
 end
 
 bs_mt.tolua = function(self)
-    local as_lines = function(text)
-        local result = {}
-        local step = 50
-        for i = 1, #text, step do
-            table.insert(result, text:sub(i, i + step - 1))
-        end
-        return table.concat(result, "\n")
-    end
+    local as_lines = require 'npge.util.as_lines'
     local seq_to_lua = function(seq)
         local text = as_lines(seq:text())
         local lua = "Sequence(%q,\n%q,\n%q)"
