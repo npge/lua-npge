@@ -13,4 +13,5 @@ return {
     starts_with = require 'npge.util.starts_with',
     ends_with = require 'npge.util.ends_with',
     trim = require 'npge.util.trim',
+    write_it = require 'npge.util.write_it',
 }
