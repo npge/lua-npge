@@ -12,5 +12,5 @@ return {
     as_lines = require 'npge.util.as_lines',
     starts_with = require 'npge.util.starts_with',
     ends_with = require 'npge.util.ends_with',
+    trim = require 'npge.util.trim',
 }
-
