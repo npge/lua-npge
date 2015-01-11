@@ -6,6 +6,7 @@ local members = {
     'ReadFromBs',
     'ConsensusSequences',
     'UnwindBlocks',
+    'BlastHits',
 }
 
 local algo = {}
