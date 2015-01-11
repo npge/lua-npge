@@ -311,7 +311,7 @@ bs_mt.tolua = function(self)
             table.insert(ff, lua:format(fragment_str, text))
         end
         ff = table.concat(ff, ',\n')
-        local lua = "Block({%s})"
+        local lua = "(function() return Block({%s}) end)()"
         return lua:format(ff)
     end
     local blocks_to_lua = function(blocks)
