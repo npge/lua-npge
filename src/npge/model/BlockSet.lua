@@ -34,7 +34,8 @@ BlockSet_mt.__call = function(self, sequences, blocks)
     local seq2fragments = {}
     for _, sequence in ipairs(sequences) do
         assert(sequence:type() == 'Sequence')
-        assert(not name2seq[sequence:name()])
+        assert(not name2seq[sequence:name()],
+            'Repeated sequence name: ' .. sequence:name())
         name2seq[sequence:name()] = sequence
         seq2fragments[sequence] = {}
     end
