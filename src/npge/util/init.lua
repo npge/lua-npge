@@ -14,4 +14,5 @@ return {
     ends_with = require 'npge.util.ends_with',
     trim = require 'npge.util.trim',
     write_it = require 'npge.util.write_it',
+    file_exists = require 'npge.util.file_exists',
 }
