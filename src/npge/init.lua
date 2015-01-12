@@ -1,4 +1,5 @@
 return {
+    config = require 'npge.config',
     util = require 'npge.util',
     model = require 'npge.model',
     sequence = require 'npge.sequence',
