@@ -5,4 +5,5 @@ return {
     reverse = require 'npge.block.reverse',
     slice = require 'npge.block.slice',
     unwind = require 'npge.block.unwind',
+    is_good = require 'npge.block.is_good',
 }
