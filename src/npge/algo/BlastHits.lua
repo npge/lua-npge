@@ -12,9 +12,10 @@ local makeblastdb = function(bank_fname, consensus_fname)
 end
 
 local blastn_cmd = function(bank, input, evalue, workers, dust)
-    evalue = evalue or 0.001
+    local config = require 'npge.config'
+    evalue = evalue or config.blast.EVALUE
     workers = workers or 1
-    dust = dust or false
+    dust = dust or config.blast.DUST
     dust = dust and 'yes' or 'no'
     local args = {
         'blastn',
