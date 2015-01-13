@@ -17,7 +17,7 @@ describe("algo.BlastHits", function()
         local BlockSet = require 'npge.model.BlockSet'
         local bs_with_seqs = BlockSet({s1, s2}, {})
         local BlastHits = require 'npge.algo.BlastHits'
-        local hits = BlastHits(bs_with_seqs, 0.01)
+        local hits = BlastHits(bs_with_seqs, {evalue=0.01})
         assert.truthy(#hits:blocks() > 0)
     end)
 end)

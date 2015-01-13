@@ -11,12 +11,12 @@ local makeblastdb = function(bank_fname, consensus_fname)
     f:close()
 end
 
-local blastn_cmd = function(bank, input, evalue, workers, dust)
+local blastn_cmd = function(bank, input, options)
     local config = require 'npge.config'
-    evalue = evalue or config.blast.EVALUE
-    workers = workers or 1
-    dust = dust or config.blast.DUST
-    dust = dust and 'yes' or 'no'
+    local evalue = options.evalue or config.blast.EVALUE
+    local workers = options.workers or 1
+    local dust = options.dust or config.blast.DUST
+    local dust = dust and 'yes' or 'no'
     local args = {
         'blastn',
         '-task blastn',
@@ -130,7 +130,12 @@ local read_blast = function(file, bs)
     return BlockSet(bs:sequences(), new_blocks)
 end
 
-return function(blockset, evalue)
+return function(blockset, options)
+    -- possible options:
+    -- - evalue
+    -- - dust
+    -- - workers
+    options = options or {}
     local algo = require 'npge.algo'
     local util = require 'npge.util'
     local consensus_fname = os.tmpname()
@@ -139,7 +144,7 @@ return function(blockset, evalue)
     local bank_fname = os.tmpname()
     makeblastdb(bank_fname, consensus_fname)
     assert(util.file_exists(bank_fname .. '.nhr'))
-    local cmd = blastn_cmd(bank_fname, consensus_fname, evalue)
+    local cmd = blastn_cmd(bank_fname, consensus_fname, options)
     local f = assert(io.popen(cmd, 'r'))
     local hits = read_blast(f, blockset)
     f:close()
