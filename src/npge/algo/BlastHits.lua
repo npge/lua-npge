@@ -37,7 +37,7 @@ local ori = function(start, stop)
     end
 end
 
-local read_blast = function(file, bs)
+local read_blast = function(file, bs, hits_filter)
     local new_blocks = {}
     local query, subject
     local query_row, subject_row
@@ -74,7 +74,9 @@ local read_blast = function(file, bs)
                 {query_f, query_row1},
                 {subject_f, subject_row1},
             })
-            table.insert(new_blocks, block)
+            if not hits_filter or hits_filter(block) then
+                table.insert(new_blocks, block)
+            end
         end
         query_row = nil
         subject_row = nil
@@ -135,6 +137,8 @@ return function(blockset, options)
     -- - evalue
     -- - dust
     -- - workers
+    -- - hits_filter
+    --   (filtering function, accepts hit, returns true/false)
     options = options or {}
     local algo = require 'npge.algo'
     local util = require 'npge.util'
@@ -146,7 +150,7 @@ return function(blockset, options)
     assert(util.file_exists(bank_fname .. '.nhr'))
     local cmd = blastn_cmd(bank_fname, consensus_fname, options)
     local f = assert(io.popen(cmd, 'r'))
-    local hits = read_blast(f, blockset)
+    local hits = read_blast(f, blockset, options.hits_filter)
     f:close()
     os.remove(consensus_fname)
     os.remove(bank_fname)
