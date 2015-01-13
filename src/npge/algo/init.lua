@@ -7,6 +7,7 @@ local members = {
     'ConsensusSequences',
     'UnwindBlocks',
     'BlastHits',
+    'FilterGoodBlocks',
 }
 
 local algo = {}
