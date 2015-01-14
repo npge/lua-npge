@@ -1,5 +1,5 @@
 describe("algo.ReadFromBs", function()
-    it("reads blockset from .bs format", function()
+    it("reads blockset from .bs format #old_bs", function()
         -- prepare sequences
         local Sequence = require 'npge.model.Sequence'
         local s1 = Sequence('name', 'ATGC', 'description')
