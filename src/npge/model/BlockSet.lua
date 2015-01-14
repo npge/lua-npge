@@ -86,12 +86,12 @@ bs_mt.same_sequences = function(self, other)
     return true
 end
 
-bs_mt.__eq = function(self, other)
+bs_mt.cmp = function(self, other)
     if not self:same_sequences(other) then
-        return false
+        return false, 'sequences'
     end
     if self:size() ~= other:size() then
-        return false
+        return false, 'size'
     end
     local arrays_equal = require 'npge.util.arrays_equal'
     -- compare fragments, collect list of blocks
@@ -103,7 +103,7 @@ bs_mt.__eq = function(self, other)
         local fragments1 = other._seq2fragments[seq1]
         assert(fragments1)
         if not arrays_equal(fragments, fragments1) then
-            return false
+            return false, 'fragments', seq:name()
         end
         for _, f in ipairs(fragments) do
             table.insert(blocks, self._block_by_fragment[f])
@@ -116,9 +116,13 @@ bs_mt.__eq = function(self, other)
     blocks = unique(blocks)
     blocks1 = unique(blocks1)
     if not arrays_equal(blocks, blocks1) then
-        return false
+        return false, 'blocks'
     end
     return true
+end
+
+bs_mt.__eq = function(self, other)
+    return self:cmp(other)
 end
 
 bs_mt.__tostring = function(self)
