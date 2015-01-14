@@ -6,4 +6,5 @@ return {
     slice = require 'npge.block.slice',
     unwind = require 'npge.block.unwind',
     is_good = require 'npge.block.is_good',
+    good_subblocks = require 'npge.block.good_subblocks',
 }
