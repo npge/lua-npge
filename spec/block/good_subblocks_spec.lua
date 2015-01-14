@@ -247,4 +247,26 @@ describe("block.good_subblocks", function()
         assert.truthy(#gs >= 1)
         assert.truthy(is_good(gs[1]))
     end)
+
+    it("extracts good parts from block (whole block is bad)",
+    function()
+        -- AAA
+        -- CCC
+        local config = require 'npge.config'
+        local min_len = config.general.MIN_LENGTH
+        local Sequence = require 'npge.model.Sequence'
+        local s1 = Sequence('s1', string.rep('A', min_len))
+        local s2 = Sequence('s2', string.rep('C', min_len))
+        local Fragment = require 'npge.model.Fragment'
+        local f1 = Fragment(s1, 0, s1:length() - 1, 1)
+        local f2 = Fragment(s2, 0, s2:length() - 1, 1)
+        local Block = require 'npge.model.Block'
+        local block = Block({f1, f2})
+        local is_good = require 'npge.block.is_good'
+        assert.falsy(is_good(block))
+        local good_subblocks =
+            require 'npge.block.good_subblocks'
+        local gs = good_subblocks(block)
+        assert.same(gs, {})
+    end)
 end)
