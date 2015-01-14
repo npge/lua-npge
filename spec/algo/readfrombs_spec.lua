@@ -28,9 +28,9 @@ A
 >seq2_5_-1 block=b2
 A
 
->name_0_1 block=b3
+>name_1_0 block=b3
 AT-
->seq1_0_1 block=b3
+>seq1_1_0 block=b3
 A-T
 >seq2_5_4 block=b3
 AT-
@@ -53,8 +53,8 @@ AT-
                 Fragment(s3, 5, 5, -1),
             }),
             Block({
-                {Fragment(s1, 0, 1, 1), 'AT-'},
-                {Fragment(s2, 0, 1, 1), 'A-T'},
+                {Fragment(s1, 1, 0, -1), 'AT-'},
+                {Fragment(s2, 1, 0, -1), 'A-T'},
                 {Fragment(s3, 5, 4, -1), 'AT-'},
             }),
         })
