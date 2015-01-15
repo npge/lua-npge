@@ -6,7 +6,7 @@ local bs_mt = {}
 BlockSet_mt.__index = BlockSet_mt
 bs_mt.__index = bs_mt
 
-local is_prepangenome = function(seq2fragments)
+local is_partition = function(seq2fragments)
     for seq, fragments in pairs(seq2fragments) do
         local lengths_sum = 0
         local prev
@@ -63,12 +63,12 @@ BlockSet_mt.__call = function(self, sequences, blocks)
     for seq, fragments in pairs(seq2fragments) do
         table.sort(fragments)
     end
-    local prepangenome = is_prepangenome(seq2fragments)
+    local partition = is_partition(seq2fragments)
     local bs = {_name2seq=name2seq, _blocks=blocks,
         _seq2fragments=seq2fragments,
         _parent_of_parts=parent_of_parts,
         _block_by_fragment=block_by_fragment,
-        _prepangenome=prepangenome}
+        _partition=partition}
     return setmetatable(bs, bs_mt)
 end
 
@@ -138,8 +138,8 @@ bs_mt.size = function(self)
     return #(self._blocks)
 end
 
-bs_mt.is_prepangenome = function(self)
-    return self._prepangenome
+bs_mt.is_partition = function(self)
+    return self._partition
 end
 
 bs_mt.blocks = function(self)
