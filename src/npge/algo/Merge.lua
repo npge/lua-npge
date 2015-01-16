@@ -1,6 +1,10 @@
 return function(...)
     local blocksets = {...}
     local bs1 = assert(blocksets[1])
+    if #blocksets == 1 then
+        assert(bs1:type() == 'BlockSet')
+        return bs1
+    end
     for _, bs in ipairs(blocksets) do
         assert(bs:type() == 'BlockSet')
         assert(bs:same_sequences(bs1))
