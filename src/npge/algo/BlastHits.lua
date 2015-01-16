@@ -95,12 +95,14 @@ local read_blast = function(file, bs, hits_filter)
         if starts_with(line, 'Query=') then
             -- Example: Query= consensus000567
             try_add()
-            query = split(line, '=')[2]
+            query = split(line, '=', 1)[2]
             query = trim(query)
+            query = split(query)[1]
         elseif line:sub(1, 1) == '>' then
             -- Example: > consensus000567
             try_add()
             subject = trim(line:sub(2))
+            subject = split(subject)[1]
         elseif starts_with(line, ' Score =') then
             -- Example:  Score = 82.4 bits (90),  ...
             try_add()
