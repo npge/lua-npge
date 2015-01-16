@@ -9,6 +9,7 @@ local members = {
     'BlastHits',
     'FilterGoodBlocks',
     'BlocksWithoutOverlaps',
+    'GoodSubblocks',
 }
 
 local algo = {}
