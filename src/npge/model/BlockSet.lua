@@ -203,6 +203,7 @@ bs_mt.block_by_fragment = function(self, fragment)
 end
 
 bs_mt.overlapping_fragments = function(self, fragment)
+    assert(fragment:type() == 'Fragment')
     local concat_arrays = require 'npge.util.concat_arrays'
     local unique = require 'npge.util.unique'
     if fragment:parted() then
