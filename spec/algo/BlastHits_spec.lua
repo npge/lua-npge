@@ -36,7 +36,8 @@ describe("algo.BlastHits", function()
         assert.truthy(#hits:blocks() > 0)
     end)
 
-    it("finds hits using blast+ (hits filter=false)", function()
+    it("finds hits using blast+ (hits filter=false)",
+    function()
         local Sequence = require 'npge.model.Sequence'
         local s1 = Sequence('s1', string.rep('ATGC', 100))
         local s2 = Sequence('s2', string.rep('ATGC', 100))
