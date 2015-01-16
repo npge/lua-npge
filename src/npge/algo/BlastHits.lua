@@ -107,21 +107,37 @@ local read_blast = function(file, bs, hits_filter)
             query_row = {}
             subject_row = {}
         elseif good_hit() then
+            local parse_alignment = function(line)
+                local parts = split(line)
+                assert(#parts == 4 or #parts == 3)
+                if #parts == 4 then
+                    local _, start, row, stop = unpack(parts)
+                    return start, row, stop
+                end
+                if #parts == 3 then
+                    local _, row = unpack(parts)
+                    return nil, row, nil
+                end
+            end
             if starts_with(line, 'Query ') then
                 -- Example: Query  1  GCGCG  5
-                local _, start, row, stop = unpack(split(line))
-                if not query_start then
-                    query_start = assert(tonumber(start))
+                local start, row, stop = parse_alignment(line)
+                if start and stop then
+                    if not query_start then
+                        query_start = assert(tonumber(start))
+                    end
+                    query_stop = assert(tonumber(stop))
                 end
-                query_stop = assert(tonumber(stop))
                 table.insert(query_row, row)
             elseif starts_with(line, 'Sbjct ') then
                 -- Example: Sbjct  1  GCGCG  5
-                local _, start, row, stop = unpack(split(line))
-                if not subject_start then
-                    subject_start = assert(tonumber(start))
+                local start, row, stop = parse_alignment(line)
+                if start and stop then
+                    if not subject_start then
+                        subject_start = assert(tonumber(start))
+                    end
+                    subject_stop = assert(tonumber(stop))
                 end
-                subject_stop = assert(tonumber(stop))
                 table.insert(subject_row, row)
             end
         end
