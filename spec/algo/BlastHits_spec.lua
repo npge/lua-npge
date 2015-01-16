@@ -10,6 +10,14 @@ describe("algo.BlastHits", function()
         assert.truthy(#hits:blocks() > 0)
     end)
 
+    it("works if set of sequences is empty", function()
+        local BlockSet = require 'npge.model.BlockSet'
+        local bs = BlockSet({}, {})
+        local BlastHits = require 'npge.algo.BlastHits'
+        local hits = BlastHits(bs)
+        assert.equal(hits, bs)
+    end)
+
     it("finds hits using blast+ (set evalue)", function()
         local Sequence = require 'npge.model.Sequence'
         local s1 = Sequence('s1', string.rep('ATGC', 100))

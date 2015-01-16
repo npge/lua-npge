@@ -158,6 +158,11 @@ return function(blockset, options)
     options = options or {}
     local algo = require 'npge.algo'
     local util = require 'npge.util'
+    if #blockset:sequences() == 0 then
+        assert(#blockset:blocks() == 0)
+        local BlockSet = require 'npge.model.BlockSet'
+        return BlockSet({}, {})
+    end
     local consensus_fname = os.tmpname()
     util.write_it(consensus_fname,
         algo.WriteSequencesToFasta(blockset))
