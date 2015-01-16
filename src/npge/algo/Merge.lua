@@ -1,6 +1,6 @@
 return function(...)
     local blocksets = {...}
-    local bs1 = blocksets[1]
+    local bs1 = assert(blocksets[1])
     for _, bs in ipairs(blocksets) do
         assert(bs:type() == 'BlockSet')
         assert(bs:same_sequences(bs1))

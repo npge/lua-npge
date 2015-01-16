@@ -42,4 +42,11 @@ describe("algo.Merge", function()
         local sum = Merge(bs1)
         assert.equal(sum, model.BlockSet({s}, {b1}))
     end)
+
+    it("throws if called with no arguments", function()
+        assert.has_error(function()
+            local Merge = require 'npge.algo.Merge'
+            local blockset = Merge()
+        end)
+    end)
 end)
