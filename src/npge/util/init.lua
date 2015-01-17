@@ -16,4 +16,5 @@ return {
     write_it = require 'npge.util.write_it',
     file_exists = require 'npge.util.file_exists',
     sandbox = require 'npge.util.sandbox',
+    read_file = require 'npge.util.read_file',
 }
