@@ -18,7 +18,6 @@ return function(blockset)
         for fragment, part in blockset:iter_fragments(seq) do
             local last = prev and max(prev) or -1
             local first = min(part)
-            assert(first > last)
             if first - last > 1 then
                 local f = F(seq, last + 1, first - 1, 1)
                 table.insert(fragments, f)

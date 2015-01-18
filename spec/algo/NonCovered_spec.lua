@@ -93,4 +93,18 @@ describe("algo.NonCovered", function()
         assert.same(nc:blocks()[1]:fragments(),
             {model.Fragment(s, 1, 2, 1)})
     end)
+
+    it("finds noncovered parts of sequence (overlaps)",
+    function()
+        local model = require 'npge.model'
+        local s = model.Sequence("g&c&c", "ATAT")
+        local f1 = model.Fragment(s, 0, 1, 1)
+        local f2 = model.Fragment(s, 1, 2, 1)
+        local b = model.Block({f1, f2})
+        local blockset = model.BlockSet({s}, {b})
+        local NonCovered = require 'npge.algo.NonCovered'
+        local nc = NonCovered(blockset)
+        assert.equal(nc, model.BlockSet({s},
+            {model.Block({model.Fragment(s, 3, 3, 1)})}))
+    end)
 end)
