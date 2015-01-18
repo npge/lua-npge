@@ -11,6 +11,7 @@ local members = {
     'BlocksWithoutOverlaps',
     'GoodSubblocks',
     'LoadFromLua',
+    'Cover',
 }
 
 local algo = {}
