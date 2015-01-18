@@ -9,6 +9,7 @@ local config = {
         -- Minimum number of end identical and gapless  cols
         MIN_END_IDENTICAL_COLUMNS = 3,
     },
+
     blast = {
         -- Filter out low complexity regions
         DUST = false,
@@ -18,7 +19,18 @@ local config = {
 
         -- Maximum number of subsequent N's in consensus
         MAX_NS = 3,
-    }
+    },
+
+    alignment = {
+        -- Min number of equal columns around single mismatch
+        MISMATCH_CHECK = 1,
+
+        -- Min number of equal columns around single mismatch
+        GAP_CHECK = 1,
+
+        -- Min equal aligned part
+        ANCHOR = 7,
+    },
 }
 
 local update_keys = function(env)
