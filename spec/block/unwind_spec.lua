@@ -139,4 +139,29 @@ describe("block.unwind", function()
         })
         assert.are.equal(unwound, unwound_exp)
     end)
+
+    it("unwinds blocks from consensus (parted unique)",
+    function()
+        local model = require 'npge.model'
+        local s = model.Sequence("g&c&c", "AATAT")
+        local block = model.Block({
+            model.Fragment(s, 0, 4, 1),
+        })
+        local bs = model.BlockSet({s}, {block})
+        --
+        local CS = require 'npge.algo.ConsensusSequences'
+        local cs, seq2block = CS(bs)
+        assert(#cs:sequences() == 1)
+        local cons_seq = cs:sequences()[1]
+        if cons_seq == s then
+            local cons_b = model.Block({
+                model.Fragment(cons_seq, 4, 0, 1),
+            })
+            --
+            local unwind = require 'npge.block.unwind'
+            local unwound = unwind(cons_b, seq2block)
+            local unwound_exp = cons_b
+            assert.are.equal(unwound, unwound_exp)
+        end
+    end)
 end)
