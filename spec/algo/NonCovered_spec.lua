@@ -80,6 +80,21 @@ describe("algo.NonCovered", function()
             {model.Fragment(s, 3, 0, 1)})
     end)
 
+    it("finds noncovered parts of sequence (5' and 3')",
+    function()
+        local model = require 'npge.model'
+        local s = model.Sequence("g&c&l", "ATAT")
+        local f = model.Fragment(s, 1, 2, 1)
+        local b = model.Block({f})
+        local blockset = model.BlockSet({s}, {b})
+        local NonCovered = require 'npge.algo.NonCovered'
+        local nc = NonCovered(blockset)
+        assert.equal(nc, model.BlockSet({s}, {
+            model.Block({model.Fragment(s, 0, 0, 1)}),
+            model.Block({model.Fragment(s, 3, 3, 1)}),
+        }))
+    end)
+
     it("finds noncovered parts of sequence (parted)", function()
         local model = require 'npge.model'
         local s = model.Sequence("g&c&c", "ATAT")

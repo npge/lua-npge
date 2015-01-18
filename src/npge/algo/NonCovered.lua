@@ -33,7 +33,7 @@ return function(blockset)
             local f = F(seq, max(prev) + 1, last_pos, 1)
             table.insert(fragments, f)
         end
-        if #fragments >= 2 then
+        if #fragments >= 2 and seq:circular() then
             -- join first and last into one parted fragment
             local f1 = fragments[1]
             local fn = fragments[#fragments]
