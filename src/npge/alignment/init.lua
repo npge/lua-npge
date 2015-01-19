@@ -7,4 +7,5 @@ return {
     to_atgcn_and_gap = to_atgcn2,
     unwind_row = require 'npge.alignment.unwind_row',
     complement = require 'npge.alignment.complement',
+    move_identical = require 'npge.alignment.move_identical',
 }
