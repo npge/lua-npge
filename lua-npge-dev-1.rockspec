@@ -16,8 +16,10 @@ build = {
     modules = {
         -- TODO Lua modules
         ['npge.model.cRow'] = "src/npge/model/Row.c",
-        ['npge.model.cSequenceText'] = "src/npge/model/SequenceText.c",
-        ['npge.block.cidentity'] = "src/npge/block/identity.c",
+        ['npge.model.cSequenceText'] =
+            "src/npge/model/SequenceText.c",
+        ['npge.alignment.cidentity'] =
+            "src/npge/alignment/identity.c",
     },
 }
 

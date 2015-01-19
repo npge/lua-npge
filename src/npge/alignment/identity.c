@@ -62,7 +62,7 @@ static int lua_identity(lua_State *L) {
     return 1;
 }
 
-LUALIB_API int luaopen_npge_block_cidentity(lua_State *L) {
+LUALIB_API int luaopen_npge_alignment_cidentity(lua_State *L) {
     lua_pushcfunction(L, lua_identity);
     return 1;
 }

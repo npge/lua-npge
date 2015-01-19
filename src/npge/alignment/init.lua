@@ -11,4 +11,5 @@ return {
     move_identical = require 'npge.alignment.move_identical',
     join = require 'npge.alignment.join',
     align_rows = require 'npge.alignment.align_rows',
+    identity = require 'npge.alignment.identity',
 }
