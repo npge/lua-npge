@@ -26,7 +26,7 @@ local config = {
         MISMATCH_CHECK = 1,
 
         -- Min number of equal columns around single mismatch
-        GAP_CHECK = 1,
+        GAP_CHECK = 2,
 
         -- Min equal aligned part
         ANCHOR = 7,
