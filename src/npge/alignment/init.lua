@@ -9,4 +9,5 @@ return {
     complement = require 'npge.alignment.complement',
     complement_rows = require 'npge.alignment.complement_rows',
     move_identical = require 'npge.alignment.move_identical',
+    join = require 'npge.alignment.join',
 }
