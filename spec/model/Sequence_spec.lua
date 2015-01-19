@@ -1,10 +1,6 @@
 local Sequence = require 'npge.model.Sequence'
 
 describe("model.sequence", function()
-    it("calculates complement", function()
-        assert.are.equal(Sequence.complement("ATGC"), "GCAT")
-    end)
-
     it("sequence creation", function()
         local s = Sequence("test_name", "ATGC",
             "test description")

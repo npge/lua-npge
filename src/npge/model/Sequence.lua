@@ -29,12 +29,6 @@ Sequence_mt.__call = function(self, name, text, description)
     return setmetatable(seq, seq_mt)
 end
 
-Sequence_mt.complement = function(text)
-    text = text:reverse():gsub('[ATGC]',
-        {A='T', T='A', C='G', G='C'})
-    return text
-end
-
 seq_mt.type = function()
     return 'Sequence'
 end

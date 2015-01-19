@@ -126,8 +126,8 @@ f_mt.text = function(self)
         if self:ori() == 1 then
             return text
         else
-            local Sequence = require 'npge.model.Sequence'
-            return Sequence.complement(text)
+            local C = require 'npge.alignment.complement'
+            return C(text)
         end
     else
         local a, b = self:parts()

@@ -6,7 +6,7 @@ return function(self, index)
     if self:ori() == 1 then
         return letter
     else
-        local Sequence = require 'npge.model.Sequence'
-        return Sequence.complement(letter)
+        local C = require 'npge.alignment.complement'
+        return C(letter)
     end
 end

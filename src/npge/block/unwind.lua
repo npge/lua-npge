@@ -22,8 +22,8 @@ return function(block, seqs2blocks)
         else
             local row = block:text(fragment)
             if fragment:ori() == -1 then
-                local Sequence = require 'npge.model.Sequence'
-                row = Sequence.complement(row)
+                local C = require 'npge.alignment.complement'
+                row = C(row)
             end
             local min, max = get_min_max(fragment)
             local slice = require 'npge.block.slice'
