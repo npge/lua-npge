@@ -11,7 +11,6 @@ return function(rows)
     for _, row in ipairs(rows) do
         -- list of char's
         table.insert(aligned, {})
-        assert(#row >= 1)
     end
     local pos = 1
     while true do

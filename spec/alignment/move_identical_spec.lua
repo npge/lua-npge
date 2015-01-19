@@ -51,6 +51,39 @@ describe("alignment.move_identical", function()
         })
     end)
 
+    it("move identical columns from left (empty)",
+    function()
+        local move_identical =
+            require 'npge.alignment.move_identical'
+        local left, right = move_identical({
+            'ATGC',
+            '',
+        })
+        assert.same(left, {
+            '',
+            '',
+        })
+        assert.same(right, {
+            'ATGC',
+            '',
+        })
+    end)
+
+    it("move identical columns from left (empty 2)",
+    function()
+        local move_identical =
+            require 'npge.alignment.move_identical'
+        local left, right = move_identical({
+            '',
+        })
+        assert.same(left, {
+            '',
+        })
+        assert.same(right, {
+            '',
+        })
+    end)
+
     it("move identical columns from left (gap)",
     function()
         local move_identical =
