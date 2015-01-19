@@ -9,23 +9,8 @@ local slice_f = function(fragment, frag_min, frag_max)
     return Fragment(seq, seq_min, seq_max, ori)
 end
 
-local slice_row = function(row, orig_row)
-    local new_row = {}
-    local orig_i = 1
-    for i = 1, #row do
-        local c = row:sub(i, i)
-        if c == '-' then
-            table.insert(new_row, '-')
-        else
-            table.insert(new_row, orig_row:sub(orig_i, orig_i))
-            orig_i = orig_i + 1
-        end
-    end
-    assert(orig_i == #orig_row + 1)
-    return table.concat(new_row)
-end
-
 return function(block, min, max, row)
+    local unwind_row = require 'npge.alignment.unwind_row'
     assert(min <= max)
     if not row then
         local length = max - min + 1
@@ -42,7 +27,7 @@ return function(block, min, max, row)
             local new_f = slice_f(fragment, frag_min, frag_max)
             local orig_row = block:text(fragment)
             orig_row = orig_row:sub(min + 1, max + 1)
-            local new_row = slice_row(row, orig_row)
+            local new_row = unwind_row(row, orig_row)
             assert(#new_row == #row)
             table.insert(for_block, {new_f, new_row})
         end
