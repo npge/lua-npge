@@ -177,7 +177,6 @@ return function(rows, right_aligned)
         -- list of char's
         table.insert(aligned, {})
         table.insert(pos0, 1)
-        assert(#row >= 1)
     end
 
     local moveToPos = function(pos1)

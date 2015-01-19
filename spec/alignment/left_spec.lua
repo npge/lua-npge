@@ -16,6 +16,37 @@ describe("alignment.left", function()
         })
     end)
 
+    it("align sequences from left to right (allow empty row)",
+    function()
+        local left = require 'npge.alignment.left'
+        local aligned, right = left({
+            'ATG',
+            '',
+        })
+        assert.same(aligned, {
+            '',
+            '',
+        })
+        assert.same(right, {
+            'ATG',
+            '',
+        })
+    end)
+
+    it("align sequences from left to right (allow empty row 2)",
+    function()
+        local left = require 'npge.alignment.left'
+        local aligned, right = left({
+            '',
+        })
+        assert.same(aligned, {
+            '',
+        })
+        assert.same(right, {
+            '',
+        })
+    end)
+
     it("align sequences from left to right (#mismatches)",
     function()
         local config = require 'npge.config'
