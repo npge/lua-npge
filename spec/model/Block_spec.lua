@@ -1,14 +1,6 @@
 local model = require 'npge.model'
 
 describe("model.block", function()
-    it("cleans all except ATGCN and gaps", function()
-        local Block = model.Block
-        local f = Block.to_atgcn_and_gap
-        assert.are.equal(f("a T g"), "ATG")
-        assert.are.equal(f("a T-g"), "AT-G")
-        assert.are.equal(f("a T--\ng"), "AT--G")
-    end)
-
     it("has type 'Block'", function()
         local s = model.Sequence("test_name", "ATAT")
         local f1 = model.Fragment(s, 0, 1, 1)

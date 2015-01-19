@@ -16,7 +16,8 @@ Sequence_mt.__call = function(self, name, text, description)
         type(description) == 'nil')
     local seq = {}
     seq._name = name
-    text = Sequence.to_atgcn(text)
+    local to_atgcn = require 'npge.alignment.to_atgcn'
+    text = to_atgcn(text)
     assert(#text > 0, "No empty sequences allowed")
     assert(#seq._name > 0, "No unknown sequences allowed")
     seq._description = description or ''
@@ -26,14 +27,6 @@ Sequence_mt.__call = function(self, name, text, description)
         seq._text = text
     end
     return setmetatable(seq, seq_mt)
-end
-
-Sequence_mt.to_atgcn = function(text)
-    assert(type(text) == 'string')
-    text = text:upper()
-        :gsub('[RYMKWSBVHD]', 'N')
-        :gsub('[^ATGCN]', '')
-    return text
 end
 
 Sequence_mt.complement = function(text)

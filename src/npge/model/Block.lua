@@ -6,13 +6,6 @@ local block_mt = {}
 Block_mt.__index = Block_mt
 block_mt.__index = block_mt
 
-Block_mt.to_atgcn_and_gap = function(text)
-    assert(type(text) == 'string')
-    return text:upper()
-        :gsub('[RYMKWSBVHD]', 'N')
-        :gsub('[^ATGCN%-]', '')
-end
-
 Block_mt.__call = function(self, fragments)
     assert(#fragments > 0, 'Empty block')
     local get0 = function(x)
@@ -21,9 +14,11 @@ Block_mt.__call = function(self, fragments)
         else
             assert(#x == 2, "Provide pairs {fragment, row}")
             local fragment = x[1]
-            local row = Block.to_atgcn_and_gap(x[2])
-            local Sequence = require 'npge.model.Sequence'
-            assert(fragment:text() == Sequence.to_atgcn(row),
+            local to_atgcn_and_gap =
+                require 'npge.alignment.to_atgcn_and_gap'
+            local row = to_atgcn_and_gap(x[2])
+            local to_atgcn = require 'npge.alignment.to_atgcn'
+            assert(fragment:text() == to_atgcn(row),
                 "Row's text doesn't match Fragment's text")
             return fragment, row
         end

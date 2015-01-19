@@ -66,13 +66,15 @@ describe("model.row", function()
     end)
 
     local check_row = function(text)
-        local Block = require 'npge.model.Block'
-        text = Block.to_atgcn_and_gap(text)
+        local to_atgcn = require 'npge.alignment.to_atgcn'
+        local to_atgcn_and_gap =
+            require 'npge.alignment.to_atgcn_and_gap'
+        text = to_atgcn_and_gap(text)
         return function()
             local r = Row(text)
             assert.are.equal(r:length(), #text)
             local Sequence = require 'npge.model.Sequence'
-            local ungapped = Sequence.to_atgcn(text)
+            local ungapped = to_atgcn(text)
             assert.are.equal(r:fragment_length(), #ungapped)
             local text1 = text:gsub('[^-]', 'N')
             assert.are.equal(r:text(), text1)
