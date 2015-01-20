@@ -1,4 +1,4 @@
-describe("blockset.genomes", function()
+describe("algo.Genomes", function()
     local sorted = function(x)
         table.sort(x)
         return x
@@ -10,8 +10,8 @@ describe("blockset.genomes", function()
             model.Sequence("genome1&chr1&c", "ATAT"),
             model.Sequence("genome2&chr1&c", "ATAT"),
         }, {})
-        local genomes = require 'npge.blockset.genomes'
-        local gg1 = genomes(bs)
+        local Genomes = require 'npge.algo.Genomes'
+        local gg1 = Genomes(bs)
         local gg2 = {'genome1', 'genome2'}
         assert.same(sorted(gg1), sorted(gg2))
     end)
@@ -24,8 +24,8 @@ describe("blockset.genomes", function()
                 model.Sequence("genome1chr1c", "ATAT"),
                 model.Sequence("genome2chr1c", "ATAT"),
             }, {})
-            local genomes = require 'npge.blockset.genomes'
-            local gg1 = genomes(bs)
+            local Genomes = require 'npge.algo.Genomes'
+            local gg1 = Genomes(bs)
         end)
     end)
 end)

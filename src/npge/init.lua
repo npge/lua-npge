@@ -5,7 +5,6 @@ return {
     sequence = require 'npge.sequence',
     fragment = require 'npge.fragment',
     block = require 'npge.block',
-    blockset = require 'npge.blockset',
     alignment = require 'npge.alignment',
     algo = require 'npge.algo',
 }
