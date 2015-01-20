@@ -145,4 +145,44 @@ describe("alignment.align_rows", function()
         --
         config.alignment = orig
     end)
+
+    it("align multiple rows (#addGapsForBetterIdentity_2)",
+    function()
+        local config = require 'npge.config'
+        local clone = require 'npge.util.clone'.dict
+        local orig = clone(config.alignment)
+        config.alignment.MISMATCH_CHECK = 2
+        config.alignment.GAP_CHECK = 2
+        --
+        local f = require 'npge.alignment.align_rows'
+        assert.same(f({
+            "ATGCGAT",
+            "TACTAG",
+        }), {
+            "ATGCGAT",
+            "-TACTAG",
+        })
+        --
+        config.alignment = orig
+    end)
+
+    it("align multiple rows (#addGapsForBetterIdentity_3)",
+    function()
+        local config = require 'npge.config'
+        local clone = require 'npge.util.clone'.dict
+        local orig = clone(config.alignment)
+        config.alignment.MISMATCH_CHECK = 2
+        config.alignment.GAP_CHECK = 2
+        --
+        local f = require 'npge.alignment.align_rows'
+        assert.same(f({
+            "ATGCGAT",
+            "ATACTA",
+        }), {
+            "ATGCGAT",
+            "ATACTA-",
+        })
+        --
+        config.alignment = orig
+    end)
 end)
