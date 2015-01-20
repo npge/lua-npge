@@ -59,6 +59,33 @@ describe("alignment.align_rows", function()
         config.alignment = orig
     end)
 
+    it("align multiple rows (long gap, 4 rows, empty row)",
+    function()
+        local config = require 'npge.config'
+        local clone = require 'npge.util.clone'.dict
+        local orig = clone(config.alignment)
+        config.alignment.MISMATCH_CHECK = 1
+        config.alignment.GAP_CHECK = 1
+        config.alignment.ANCHOR = 4
+        --
+        local f = require 'npge.alignment.align_rows'
+        assert.same(f({
+            "ATGCTTATTATTTAATGC",
+            "ATGCTTTTTATTTAATGC",
+            "ATGCTTTTTTTTAATGC",
+            "ATGCATGC",
+            "",
+        }), {
+            "ATGCTTATTATTTAATGC",
+            "ATGCTTTTTATTTAATGC",
+            "ATGCTTTTT-TTTAATGC",
+            "ATGC----------ATGC",
+            "------------------",
+        })
+        --
+        config.alignment = orig
+    end)
+
     it("align multiple rows (long gap, #4_rows, double)",
     function()
         local config = require 'npge.config'
