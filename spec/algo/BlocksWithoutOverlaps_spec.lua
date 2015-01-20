@@ -32,6 +32,21 @@ describe("algo.BlocksWithoutOverlaps", function()
         assert.equal(BWO(orig, added), BS({s}, {b2}))
     end)
 
+    it("merges blocksets without overlaps (one blockset)",
+    function()
+        local model = require 'npge.model'
+        local S = model.Sequence
+        local F = model.Fragment
+        local B = model.Block
+        local BS = model.BlockSet
+        local s = S("s", "ATAT")
+        local b1 = B({F(s, 0, 1, 1)})
+        local b2 = B({F(s, 0, 0, 1), F(s, 1, 1, -1)})
+        local orig = BS({s}, {b1, b2})
+        local BWO = require 'npge.algo.BlocksWithoutOverlaps'
+        assert.equal(BWO(orig), BS({s}, {b2}))
+    end)
+
     it("merges blocksets without overlaps (prefers from orig)",
     function()
         local model = require 'npge.model'

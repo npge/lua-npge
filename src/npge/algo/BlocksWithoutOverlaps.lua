@@ -1,5 +1,7 @@
 return function(orig, added)
-    assert(orig:same_sequences(added))
+    if added then
+        assert(orig:same_sequences(added))
+    end
     local concat = require 'npge.util.concat_arrays'
     local BlockSet = require 'npge.model.BlockSet'
     local bs = BlockSet(orig:sequences(), {})
@@ -40,7 +42,10 @@ return function(orig, added)
     for block in orig:iter_blocks() do
         from_orig[block] = true
     end
-    local bb = concat(orig:blocks(), added:blocks())
+    local bb = orig:blocks()
+    if added then
+        bb = concat(bb, added:blocks())
+    end
     table.sort(bb, function(b1, b2)
         -- sort by size, then length, prefer blocks from orig
         local arrays_less = require 'npge.util.arrays_less'
