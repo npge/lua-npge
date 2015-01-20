@@ -15,6 +15,7 @@ local members = {
     'Align',
     'ReAlign',
     'Orient',
+    'Join',
 }
 
 local algo = {}
