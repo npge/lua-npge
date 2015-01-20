@@ -12,6 +12,7 @@ local members = {
     'GoodSubblocks',
     'LoadFromLua',
     'Cover',
+    'Align',
 }
 
 local algo = {}
