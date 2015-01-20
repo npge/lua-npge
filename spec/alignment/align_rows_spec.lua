@@ -121,4 +121,28 @@ describe("alignment.align_rows", function()
         --
         config.alignment = orig
     end)
+
+    it("align multiple rows (#addGapsForBetterIdentity)",
+    function()
+        local config = require 'npge.config'
+        local clone = require 'npge.util.clone'.dict
+        local orig = clone(config.alignment)
+        config.alignment.MISMATCH_CHECK = 1
+        config.alignment.GAP_CHECK = 2
+        --
+        local f = require 'npge.alignment.align_rows'
+        assert.same(f({
+            "GTAGTACCTGTTTTAGCCTTTGCTTCGAGAACCATGTGAA",
+            "GTAGTACCTGCTCTGGCCTTTGCTTCGAGAACCATGTAAA",
+            "GTAGTACCTGTCTGCCCTTCGCTCCGAGGACCATGTGAA",
+            "GTAGTACCTGTTTTAGCCTTTGCTTCGAGAACCATGTGAA",
+        }), {
+            "GTAGTACCTGTTTTAGCCTTTGCTTCGAGAACCATGTGAA",
+            "GTAGTACCTGCTCTGGCCTTTGCTTCGAGAACCATGTAAA",
+            "GTAGTACCTG-TCTGCCCTTCGCTCCGAGGACCATGTGAA",
+            "GTAGTACCTGTTTTAGCCTTTGCTTCGAGAACCATGTGAA",
+        })
+        --
+        config.alignment = orig
+    end)
 end)

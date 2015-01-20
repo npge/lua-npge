@@ -45,10 +45,23 @@ local addGaps = function(rows)
     return result
 end
 
+local addGapsForBetterIdentity = function(rows)
+    local alignment = require 'npge.alignment'
+    local var1 = addGaps(rows)
+    local cr = alignment.complement_rows
+    local var2 = cr(addGaps(cr(rows)))
+    local identity = alignment.identity
+    if identity(var1) >= identity(var2) then
+        return var1
+    else
+        return var2
+    end
+end
+
 local alignRemaining = function(rows)
     local rows1, decompression_info = compress(rows)
     if #rows1 == #rows or #rows1 == 0 then
-        return addGaps(rows)
+        return addGapsForBetterIdentity(rows)
     else
         local rows2 = align_rows(rows1)
         return decompress(rows2, decompression_info)
