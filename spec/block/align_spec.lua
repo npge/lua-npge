@@ -15,7 +15,7 @@ describe("block.align", function()
         --
         local align = require 'npge.block.align'
         local block_aligned = align(block)
-        assert.equal(align(block),
+        assert.equal(block_aligned,
             model.Block({
                 {f1, "ATGCTTGCTATTTAATGC"},
                 {f2, "ATGC----------ATGC"},
@@ -32,7 +32,7 @@ describe("block.align", function()
         --
         local align = require 'npge.block.align'
         local block_aligned = align(block)
-        assert.equal(align(block),
+        assert.equal(block_aligned,
             model.Block({
                 {f1, "ATG"},
         }))
