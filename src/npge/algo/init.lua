@@ -14,6 +14,7 @@ local members = {
     'Cover',
     'Align',
     'ReAlign',
+    'Orient',
 }
 
 local algo = {}
