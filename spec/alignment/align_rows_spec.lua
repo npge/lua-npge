@@ -59,7 +59,7 @@ describe("alignment.align_rows", function()
         config.alignment = orig
     end)
 
-    it("align multiple rows (long gap, 4 rows, double)",
+    it("align multiple rows (long gap, #4_rows, double)",
     function()
         local config = require 'npge.config'
         local clone = require 'npge.util.clone'.dict
@@ -70,14 +70,14 @@ describe("alignment.align_rows", function()
         --
         local f = require 'npge.alignment.align_rows'
         assert.same(f({
-            "ATGCTCATTATTTAATGCTTATTATTTAATGC",
-            "ATGCTCTTTATTTAATGCTTTTTATTTAATGC",
-            "ATGCTCTTTTTTAATGCTTTTTTTTAATGC",
+            "ATGCTCCTTATTTAATGCATTTATTCCTATGC",
+            "ATGCTCCTTATTTAATGCATTTATTCCTATGC",
+            "ATGCTCCTTTTTAATGCATTTTTCCTATGC",
             "ATGCATGCATGC",
         }), {
-            "ATGCTCATTATTTAATGCTTATTATTTAATGC",
-            "ATGCTCTTTATTTAATGCTTTTTATTTAATGC",
-            "ATGCTCTTT-TTTAATGCTTTTT-TTTAATGC",
+            "ATGCTCCTTATTTAATGCATTTATTCCTATGC",
+            "ATGCTCCTTATTTAATGCATTTATTCCTATGC",
+            "ATGCTCCTT-TTTAATGCATTT-TTCCTATGC",
             "ATGC----------ATGC----------ATGC",
         })
         --
