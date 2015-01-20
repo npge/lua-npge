@@ -13,6 +13,7 @@ local members = {
     'LoadFromLua',
     'Cover',
     'Align',
+    'ReAlign',
 }
 
 local algo = {}
