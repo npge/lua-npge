@@ -17,4 +17,5 @@ return {
     file_exists = require 'npge.util.file_exists',
     sandbox = require 'npge.util.sandbox',
     read_file = require 'npge.util.read_file',
+    timer = require 'npge.util.timer',
 }
