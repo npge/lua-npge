@@ -2,17 +2,25 @@
 local has_c, cidentity = pcall(require,
     'npge.alignment.cidentity')
 
-return function(rows)
+return function(rows, start, stop)
     local length = #rows[1]
+    if length == 0 then
+        return 0
+    end
+    start = start or 0
+    stop = stop or length - 1
+    assert(start >= 0)
+    assert(start <= stop)
+    assert(stop <= length - 1)
     for _, row in ipairs(rows) do
         assert(type(row) == 'string')
         assert(#row == length)
     end
     if has_c then
-        return cidentity(rows, #rows, length)
+        return cidentity(rows, #rows, start, stop)
     else
         local ident = 0
-        for col = 1, length do
+        for col = start + 1, stop + 1 do
             local gap, first, bad
             for _, row in ipairs(rows) do
                 local letter = row:sub(col, col)
@@ -31,6 +39,7 @@ return function(rows)
                 ident = ident + 0.5
             end
         end
-        return ident / length
+        local l = stop - start + 1
+        return ident / l
     end
 end

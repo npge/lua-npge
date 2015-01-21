@@ -7,15 +7,18 @@
 // arguments:
 // 1. Lua table with rows
 // 2. number of rows
-// 3. length of a row
+// 3. start position
+// 4. stop position
 static int lua_identity(lua_State *L) {
     int args = lua_gettop(L);
-    assert(args == 3);
+    assert(args == 4);
     assert(lua_istable(L, 1));
     assert(lua_isnumber(L, 2));
     assert(lua_isnumber(L, 3));
+    assert(lua_isnumber(L, 4));
     int nrows = lua_tonumber(L, 2);
-    int row_length = lua_tonumber(L, 3);
+    int start = lua_tonumber(L, 3);
+    int stop = lua_tonumber(L, 4);
     const char** rows = malloc(nrows * sizeof(const char*));
     // populate rows
     int irow = 0;
@@ -27,7 +30,6 @@ static int lua_identity(lua_State *L) {
         size_t len;
         rows[irow] = lua_tolstring(L, -1, &len);
         assert(rows[irow]);
-        assert(len == row_length);
         lua_pop(L, 1); // remove 'value'
         irow++;
     }
@@ -35,7 +37,7 @@ static int lua_identity(lua_State *L) {
     // calculate identity
     int bp;
     double ident = 0;
-    for (bp = 0; bp < row_length; bp++) {
+    for (bp = start; bp <= stop; bp++) {
         int gap = 0;
         char first = 0;
         int bad = 0;
@@ -56,7 +58,8 @@ static int lua_identity(lua_State *L) {
             ident += 0.5;
         }
     }
-    double result = ident / ((double)row_length);
+    double l = stop - start + 1;
+    double result = ident / l;
     lua_pushnumber(L, result);
     free(rows);
     return 1;
