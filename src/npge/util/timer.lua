@@ -10,11 +10,10 @@ local wrap = function(name, f)
         elseif args[1] == ORIGINAL then
             return f
         else
-            -- TODO milliseconds
-            local t1 = os.time()
+            local t1 = os.clock()
             local results = {f(...)}
-            local t2 = os.time()
-            time_spent = time_spent +  os.difftime(t2, t1)
+            local t2 = os.clock()
+            time_spent = time_spent + (t2 - t1)
             local unpack = require 'npge.util.unpack'
             return unpack(results)
         end
