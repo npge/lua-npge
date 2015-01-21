@@ -17,6 +17,7 @@ local members = {
     'Orient',
     'Join',
     'Genomes',
+    'PangenomeMaker',
 }
 
 local algo = {}
