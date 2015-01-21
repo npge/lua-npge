@@ -1,7 +1,9 @@
+local timer = {}
+
 local TIME = {}
 local ORIGINAL = {}
 
-local wrap = function(name, f)
+timer.wrapFunction = function(f)
     local time_spent = 0
     return function(...)
         local args = {...}
@@ -20,9 +22,15 @@ local wrap = function(name, f)
     end
 end
 
-local timer = {}
+timer.unwrapFunction = function(f)
+    return f(ORIGINAL)
+end
 
-timer.wrap = function(namespace)
+timer.spentTime = function(f)
+    return f(TIME)
+end
+
+timer.wrapModule = function(namespace)
     -- replaces all functions in namespace
     -- with time-counting wrappers
     local copy = {}
@@ -31,23 +39,12 @@ timer.wrap = function(namespace)
     end
     for k, v in pairs(copy) do
         if type(v) == 'function' then
-            namespace[k] = wrap(k, v)
+            namespace[k] = timer.wrapFunction(v)
         end
     end
 end
 
-timer.spentTime = function(namespace)
-    -- returns table {'name': time_spent}
-    local result = {}
-    for k, v in pairs(namespace) do
-        if type(v) == 'function' then
-            result[k] = v(TIME)
-        end
-    end
-    return result
-end
-
-timer.unwrap = function(namespace)
+timer.unwrapModule = function(namespace)
     -- reverts timer.wrap
     local copy = {}
     for k, v in pairs(namespace) do
