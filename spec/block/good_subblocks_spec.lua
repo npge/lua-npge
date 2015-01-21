@@ -269,4 +269,40 @@ describe("block.good_subblocks", function()
         local gs = good_subblocks(block)
         assert.same(gs, {})
     end)
+
+    it("extracts good parts from block (#one_gap near the end)",
+    function()
+        local config = require 'npge.config'
+        local clone = require 'npge.util.clone'.dict
+        local orig = clone(config.general)
+        config.general.MIN_LENGTH = 60
+        config.general.MIN_END_IDENTICAL_COLUMNS = 3
+        --
+        local Sequence = require 'npge.model.Sequence'
+        local s1 = Sequence('s1', [[
+TACGTATTGTGAATCTCTGGGGTGGCTGGTGATTGCGCAAACAAACTCACTCTGTAGGGA
+GGCaAA
+        ]])
+        local s2 = Sequence('s2', [[
+TACGTATTGTGAATCTCTGGGGTGGCTGGTGATTGCGCAAACAAACTCACTCTGTAGGGA
+GGCgAA
+        ]])
+        local Fragment = require 'npge.model.Fragment'
+        local f1 = Fragment(s1, 0, s1:length() - 1, 1)
+        local f2 = Fragment(s2, 0, s2:length() - 1, 1)
+        local Block = require 'npge.model.Block'
+        local block = Block({f1, f2})
+        local is_good = require 'npge.block.is_good'
+        assert.falsy(is_good(block))
+        local good_subblocks =
+            require 'npge.block.good_subblocks'
+        local gs = good_subblocks(block)
+        assert.equal(#gs, 1)
+        assert.equal(gs[1], Block({
+            Fragment(s1, 0, s1:length() - 3 - 1, 1),
+            Fragment(s2, 0, s2:length() - 3 - 1, 1),
+        }))
+        --
+        config.general = orig
+    end)
 end)
