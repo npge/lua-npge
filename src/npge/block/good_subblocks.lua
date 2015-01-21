@@ -83,13 +83,8 @@ end
 
 
 local group_identity = function(rows, group)
-    local rows1 = {}
-    for _, row in ipairs(rows) do
-        table.insert(rows1, row:sub(group.start + 1,
-            group.stop + 1))
-    end
     local identity = require 'npge.alignment.identity'
-    return identity(rows1)
+    return identity(rows, group.start, group.stop)
 end
 
 local find_min_good_group = function(rows, groups)
