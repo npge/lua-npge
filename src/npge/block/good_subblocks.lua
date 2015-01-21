@@ -81,31 +81,15 @@ local group_of_min_length = function(groups, i, min_length)
     end
 end
 
-local ident_of_col = function(rows, col)
-    local first, gap
-    for _, row in ipairs(rows) do
-        local letter = row:sub(col + 1, col + 1)
-        if letter == '-' then
-            gap = true
-        elseif first and letter ~= first then
-            return 0
-        else
-            first = letter
-        end
-    end
-    if gap then
-        return 0.5
-    else
-        return 1
-    end
-end
 
 local group_identity = function(rows, group)
-    local ident_sum = 0
-    for col = group.start, group.stop do
-        ident_sum = ident_sum + ident_of_col(rows, col)
+    local rows1 = {}
+    for _, row in ipairs(rows) do
+        table.insert(rows1, row:sub(group.start + 1,
+            group.stop + 1))
     end
-    return ident_sum / group_length(group)
+    local identity = require 'npge.alignment.identity'
+    return identity(rows1)
 end
 
 local find_min_good_group = function(rows, groups)
