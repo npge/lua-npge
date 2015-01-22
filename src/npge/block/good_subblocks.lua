@@ -197,6 +197,7 @@ local remove_most_distant = function(block)
             table.insert(for_block, {fragment, row})
         end
     end
+    assert(#for_block == block:size() - 1)
     for_block = remove_pure_gap_cols(for_block)
     local Block = require 'npge.model.Block'
     return Block(for_block)
