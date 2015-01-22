@@ -83,12 +83,13 @@ describe("block.unwind", function()
     it("unwinds blocks from consensus (reversed on consensus)",
     function()
         local model = require 'npge.model'
-        local s = model.Sequence("g&c&c", "AATAT")
+        local s1 = model.Sequence("g1&c&c", "AATAT")
+        local s2 = model.Sequence("g2&c&c", "AATAT")
         local block = model.Block({
-            {model.Fragment(s, 2, 4, 1), 'TAT'},
-            {model.Fragment(s, 0, 3, -1), 'TAT'},
+            {model.Fragment(s1, 2, 4, 1), 'TAT'},
+            {model.Fragment(s2, 0, 3, -1), 'TAT'},
         })
-        local bs = model.BlockSet({s}, {block})
+        local bs = model.BlockSet({s1, s2}, {block})
         --
         local CS = require 'npge.algo.ConsensusSequences'
         local cs, seq2block = CS(bs)
@@ -102,10 +103,10 @@ describe("block.unwind", function()
         local unwind = require 'npge.block.unwind'
         local unwound = unwind(cons_b, seq2block)
         local unwound_exp = model.Block({
-            {model.Fragment(s, 2, 4, 1), 'TAT'},
-            {model.Fragment(s, 0, 3, -1), 'TAT'},
-            {model.Fragment(s, 3, 2, -1), 'TA-'},
-            {model.Fragment(s, 4, 0, 1), 'TA-'},
+            {model.Fragment(s1, 2, 4, 1), 'TAT'},
+            {model.Fragment(s2, 0, 3, -1), 'TAT'},
+            {model.Fragment(s1, 3, 2, -1), 'TA-'},
+            {model.Fragment(s2, 4, 0, 1), 'TA-'},
         })
         assert.are.equal(unwound, unwound_exp)
     end)

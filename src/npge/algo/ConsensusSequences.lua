@@ -1,4 +1,6 @@
 return function(blockset)
+    local HasOverlap = require 'npge.algo.HasOverlap'
+    assert(not HasOverlap(blockset))
     local seq2block = {}
     local sequences = {}
     for i, block in ipairs(blockset:blocks()) do

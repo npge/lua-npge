@@ -16,7 +16,8 @@ describe("algo.ConsensusSequences", function()
         assert.equal(seq2block[sequence], b)
     end)
 
-    it("makes consensus sequences from blocks (2)", function()
+    it("throws if original blocks overlap",
+    function()
         local model = require 'npge.model'
         local s = model.Sequence("g&c&c", "ATAT")
         local b1 = model.Block({model.Fragment(s, 0, 3, 1)})
@@ -27,23 +28,8 @@ describe("algo.ConsensusSequences", function()
         local blockset = model.BlockSet({s}, {b1, b2})
         local ConsensusSequences =
             require 'npge.algo.ConsensusSequences'
-        local cs, seq2block = ConsensusSequences(blockset)
-        assert.same(cs:blocks(), {})
-        local seqs = cs:sequences()
-        assert.equal(#seqs, 2)
-        local seq1, seq2
-        if seq2block[seqs[1]] == b1 then
-            seq1 = seqs[1]
-            seq2 = seqs[2]
-        elseif seq2block[seqs[1]] == b2 then
-            seq2 = seqs[1]
-            seq1 = seqs[2]
-        else
-            error('bad consensus sequences')
-        end
-        assert.equal(seq1:text(), "ATAT")
-        assert.equal(seq2block[seq1], b1)
-        assert.equal(seq2:text(), "TA")
-        assert.equal(seq2block[seq2], b2)
+        assert.has_error(function()
+            local cs, seq2block = ConsensusSequences(blockset)
+        end)
     end)
 end)
