@@ -18,6 +18,7 @@ local members = {
     'Join',
     'Genomes',
     'PangenomeMaker',
+    'HasOverlap',
 }
 
 local algo = {}
