@@ -127,7 +127,11 @@ end
 
 bs_mt.__tostring = function(self)
     local text = 'BlockSet of %d sequences and %d blocks'
-    return text:format(#self:sequences(), self:size())
+    text = text:format(#self:sequences(), self:size())
+    if self:is_partition() then
+        text = text .. ' (partition)'
+    end
+    return text
 end
 
 bs_mt.type = function(self)
