@@ -15,7 +15,7 @@ typedef struct {
 // closure, first upvalue is metatable of instance
 // arguments:
 // 1. SequenceText_mt (dummy)
-// 1. string text
+// 2. string text
 // returns userdata SequenceText
 static int lua_SequenceText_constructor(lua_State *L) {
     int args = lua_gettop(L);
