@@ -79,10 +79,15 @@ static int lua_Fragment_eq(lua_State *L) {
         a->stop_ == b->stop_ &&
         a->ori_ == b->ori_;
     if (equal) {
-        lua_cpcall(L, lua_Sequence_name, a);
+        lua_pushcfunction(L, lua_Sequence_name);
+        lua_pushvalue(L, 1);
+        lua_call(L, 1, 1);
         size_t a_size;
         const char* a_name = lua_tolstring(L, -1, &a_size);
-        lua_cpcall(L, lua_Sequence_name, b);
+        //
+        lua_pushcfunction(L, lua_Sequence_name);
+        lua_pushvalue(L, 2);
+        lua_call(L, 1, 1);
         size_t b_size;
         const char* b_name = lua_tolstring(L, -1, &b_size);
         if (a_size != b_size ||
