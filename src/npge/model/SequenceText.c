@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 #define LUA_LIB
 #include <lua.h>
@@ -18,11 +17,9 @@ typedef struct {
 // 2. string text
 // returns userdata SequenceText
 static int lua_SequenceText_constructor(lua_State *L) {
-    int args = lua_gettop(L);
-    assert(args == 2);
     size_t len;
-    const char* text = lua_tolstring(L, 2, &len);
-    assert(len > 0);
+    const char* text = luaL_checklstring(L, 2, &len);
+    luaL_argcheck(L, len > 0, 2, "Empty sequence text");
     SequenceText* t = lua_newuserdata(L, sizeof(SequenceText));
     t->text_ = malloc(len);
     memcpy(t->text_, text, len);
@@ -34,7 +31,8 @@ static int lua_SequenceText_constructor(lua_State *L) {
 }
 
 static int lua_SequenceText_free(lua_State *L) {
-    SequenceText* text = lua_touserdata(L, 1);
+    SequenceText* text = luaL_checkudata(L, 1,
+            "npge_model_cSequenceText");
     free(text->text_);
     return 0;
 }
@@ -51,8 +49,10 @@ static int SequenceText_eq(SequenceText* self,
 }
 
 static int lua_SequenceText_eq(lua_State *L) {
-    SequenceText* self = lua_touserdata(L, 1);
-    SequenceText* other = lua_touserdata(L, 2);
+    SequenceText* self = luaL_checkudata(L, 1,
+            "npge_model_cSequenceText");
+    SequenceText* other = luaL_checkudata(L, 2,
+            "npge_model_cSequenceText");
     lua_pushboolean(L, SequenceText_eq(self, other));
     return 1;
 }
@@ -61,10 +61,8 @@ static int lua_SequenceText_eq(lua_State *L) {
 // 1. SequenceText self
 // returns length
 static int lua_SequenceText_length(lua_State *L) {
-    int args = lua_gettop(L);
-    assert(args == 1);
-    SequenceText* t = lua_touserdata(L, 1);
-    assert(t);
+    SequenceText* t = luaL_checkudata(L, 1,
+            "npge_model_cSequenceText");
     lua_pushnumber(L, t->len_);
     return 1;
 }
@@ -75,18 +73,17 @@ static int lua_SequenceText_length(lua_State *L) {
 // 3. max
 // returns slice (string)
 static int lua_SequenceText_sub(lua_State *L) {
-    int args = lua_gettop(L);
-    assert(args == 3);
-    SequenceText* t = lua_touserdata(L, 1);
-    int min = lua_tonumber(L, 2);
-    int max = lua_tonumber(L, 3);
-    assert(min >= 0);
-    assert(min <= max);
-    assert(max < t->len_);
+    SequenceText* t = luaL_checkudata(L, 1,
+            "npge_model_cSequenceText");
+    int min = luaL_checknumber(L, 2);
+    int max = luaL_checknumber(L, 3);
+    luaL_argcheck(L, min >= 0, 2, "min must be >= 0");
+    luaL_argcheck(L, min <= max, 3, "min must be <= max");
+    luaL_argcheck(L, max < t->len_, 3, "max must be < L");
     char* text = t->text_;
     char* start = text + min;
     int length = max - min + 1;
-    assert(length > 0);
+    luaL_argcheck(L, length > 0, 3, "length must be > 0");
     lua_pushlstring(L, start, length);
     return 1;
 }
@@ -101,7 +98,7 @@ static const luaL_Reg seqtextlib[] = {
 
 LUALIB_API int luaopen_npge_model_cSequenceText(lua_State *L) {
     // instance mt
-    lua_newtable(L);
+    luaL_newmetatable(L, "npge_model_cSequenceText");
     luaL_register(L, NULL, seqtextlib);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index"); // mt.__index = mt
