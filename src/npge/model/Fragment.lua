@@ -75,6 +75,12 @@ if not has_c then
         local arrays_equal = require 'npge.util.arrays_equal'
         return arrays_equal(f_as_arr(self), f_as_arr(other))
     end
+
+    f_mt.parted = function(self)
+        local diff = self:stop() - self:start()
+        -- (diff < 0 and self:ori() == 1) or ...
+        return diff * self:ori() < 0
+    end
 end
 
 f_mt.id = function(self)
@@ -104,12 +110,6 @@ f_mt.__tostring = function(self)
         text = text .. ' (parted)'
     end
     return text
-end
-
-f_mt.parted = function(self)
-    local diff = self:stop() - self:start()
-    -- (diff < 0 and self:ori() == 1) or ...
-    return diff * self:ori() < 0
 end
 
 f_mt.parts = function(self)

@@ -63,6 +63,17 @@ static int lua_Fragment_ori(lua_State *L) {
     return 1;
 }
 
+static int Fragment_parted(Fragment* f) {
+    int diff = f->stop_ - f->start_;
+    return (diff * f->ori_ < 0);
+}
+
+static int lua_Fragment_parted(lua_State *L) {
+    Fragment* f = lua_touserdata(L, 1);
+    lua_pushboolean(L, Fragment_parted(f));
+    return 1;
+}
+
 // argument: Fragment
 // output: Sequence name
 static int lua_Sequence_name(lua_State *L) {
@@ -105,6 +116,7 @@ static const luaL_Reg fragmentlib[] = {
     {"start", lua_Fragment_start},
     {"stop", lua_Fragment_stop},
     {"ori", lua_Fragment_ori},
+    {"parted", lua_Fragment_parted},
     {"__eq", lua_Fragment_eq},
     {NULL, NULL}
 };
