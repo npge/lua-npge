@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
@@ -71,6 +72,22 @@ static int Fragment_parted(Fragment* f) {
 static int lua_Fragment_parted(lua_State *L) {
     Fragment* f = lua_touserdata(L, 1);
     lua_pushboolean(L, Fragment_parted(f));
+    return 1;
+}
+
+static int lua_Fragment_length(lua_State *L) {
+    Fragment* f = lua_touserdata(L, 1);
+    int absdiff = abs(f->stop_ - f->start_);
+    int length;
+    if (!Fragment_parted(f)) {
+        length = absdiff + 1;
+    } else {
+        lua_rawgeti(L, LUA_REGISTRYINDEX, f->sequence_);
+        luaL_callmeta(L, -1, "length");
+        int seq_length = lua_tonumber(L, -1);
+        length = seq_length - absdiff + 1;
+    }
+    lua_pushnumber(L, length);
     return 1;
 }
 
@@ -190,6 +207,7 @@ static const luaL_Reg fragmentlib[] = {
     {"stop", lua_Fragment_stop},
     {"ori", lua_Fragment_ori},
     {"parted", lua_Fragment_parted},
+    {"length", lua_Fragment_length},
     {"__eq", lua_Fragment_eq},
     {"__lt", lua_Fragment_lt},
     {NULL, NULL}

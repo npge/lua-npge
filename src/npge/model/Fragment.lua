@@ -72,6 +72,15 @@ if not has_c then
         return diff * self:ori() < 0
     end
 
+    f_mt.length = function(self)
+        local absdiff = math.abs(self:stop() - self:start())
+        if not self:parted() then
+            return absdiff + 1
+        else
+            return self:sequence():length() - absdiff + 1
+        end
+    end
+
     local function f_as_arr(self)
         return {self:sequence():name(), self:start(),
             self:stop(), self:ori()}
@@ -122,15 +131,6 @@ f_mt.parts = function(self)
     else
         return Fragment(seq, self:start(), 0, -1),
                Fragment(seq, last, self:stop(), -1)
-    end
-end
-
-f_mt.length = function(self)
-    local absdiff = math.abs(self:stop() - self:start())
-    if not self:parted() then
-        return absdiff + 1
-    else
-        return self:sequence():length() - absdiff + 1
     end
 end
 
