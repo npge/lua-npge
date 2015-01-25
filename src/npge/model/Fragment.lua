@@ -89,7 +89,7 @@ local function f_as_arr2(self)
     assert(not self:parted())
     local min = math.min(self:start(), self:stop())
     local max = math.max(self:start(), self:stop())
-    return {self:sequence():name(), min, max, self:ori()}
+    return {min, max, self:ori(), self:sequence():name()}
 end
 
 f_mt.__lt = function(self, other)
