@@ -1,7 +1,7 @@
+#include <string.h>
 #include <assert.h>
 
 #define LUA_LIB
-#define LUA_COMPAT_ALL
 #include <lua.h>
 #include <lauxlib.h>
 
@@ -63,6 +63,15 @@ static int lua_Fragment_ori(lua_State *L) {
     return 1;
 }
 
+// argument: Fragment
+// output: Sequence name
+static int lua_Sequence_name(lua_State *L) {
+    Fragment* f = lua_touserdata(L, 1);
+    lua_rawgeti(L, LUA_REGISTRYINDEX, f->sequence_);
+    luaL_callmeta(L, -1, "name");
+    return 1;
+}
+
 static int lua_Fragment_eq(lua_State *L) {
     Fragment* a = lua_touserdata(L, 1);
     Fragment* b = lua_touserdata(L, 2);
@@ -70,9 +79,14 @@ static int lua_Fragment_eq(lua_State *L) {
         a->stop_ == b->stop_ &&
         a->ori_ == b->ori_;
     if (equal) {
-        lua_rawgeti(L, LUA_REGISTRYINDEX, a->sequence_);
-        lua_rawgeti(L, LUA_REGISTRYINDEX, b->sequence_);
-        if (!lua_equal(L, -2, -1)) {
+        lua_cpcall(L, lua_Sequence_name, a);
+        size_t a_size;
+        const char* a_name = lua_tolstring(L, -1, &a_size);
+        lua_cpcall(L, lua_Sequence_name, b);
+        size_t b_size;
+        const char* b_name = lua_tolstring(L, -1, &b_size);
+        if (a_size != b_size ||
+                memcmp(a_name, b_name, a_size) != 0) {
             equal = 0;
         }
     }
