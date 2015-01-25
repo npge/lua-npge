@@ -77,13 +77,9 @@ static int lua_SequenceText_sub(lua_State *L) {
             "npge_model_cSequenceText");
     int min = luaL_checknumber(L, 2);
     int max = luaL_checknumber(L, 3);
-    luaL_argcheck(L, min >= 0, 2, "min must be >= 0");
-    luaL_argcheck(L, min <= max, 3, "min must be <= max");
-    luaL_argcheck(L, max < t->len_, 3, "max must be < L");
     char* text = t->text_;
     char* start = text + min;
     int length = max - min + 1;
-    luaL_argcheck(L, length > 0, 3, "length must be > 0");
     lua_pushlstring(L, start, length);
     return 1;
 }
