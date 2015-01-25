@@ -16,6 +16,7 @@ build = {
     modules = {
         -- TODO Lua modules
         ['npge.model.cRow'] = "src/npge/model/Row.c",
+        ['npge.model.cFragment'] = "src/npge/model/Fragment.c",
         ['npge.model.cSequenceText'] =
             "src/npge/model/SequenceText.c",
         ['npge.alignment.cidentity'] =

@@ -1,7 +1,16 @@
+-- use C version if available
+local has_c, f_mt =
+    pcall(require, 'npge.model.cFragment')
+local Fragment_constructor
+if has_c then
+    Fragment_constructor = f_mt.constructor
+    f_mt.constructor = nil
+else
+    f_mt = {}
+end
 
 local Fragment = {}
 local Fragment_mt = {}
-local f_mt = {}
 
 Fragment_mt.__index = Fragment_mt
 f_mt.__index = f_mt
@@ -27,28 +36,35 @@ Fragment_mt.__call = function(self, seq, start, stop, ori)
                 "Found parted fragment on linear sequence")
         end
     end
-    local f = {_seq=seq, _start=start, _stop=stop, _ori=ori}
-    return setmetatable(f, f_mt)
+    if has_c then
+        return Fragment_constructor(seq, start, stop, ori)
+    else
+        local f = {_seq=seq, _start=start,
+            _stop=stop, _ori=ori}
+        return setmetatable(f, f_mt)
+    end
 end
 
 f_mt.type = function(self)
     return 'Fragment'
 end
 
-f_mt.sequence = function(self)
-    return self._seq
-end
+if not has_c then
+    f_mt.sequence = function(self)
+        return self._seq
+    end
 
-f_mt.start = function(self)
-    return self._start
-end
+    f_mt.start = function(self)
+        return self._start
+    end
 
-f_mt.stop = function(self)
-    return self._stop
-end
+    f_mt.stop = function(self)
+        return self._stop
+    end
 
-f_mt.ori = function(self)
-    return self._ori
+    f_mt.ori = function(self)
+        return self._ori
+    end
 end
 
 f_mt.id = function(self)
