@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 #define LUA_LIB
 #include <lua.h>
@@ -20,14 +19,12 @@ typedef struct {
 // 3. stop
 // 4. ori
 static int lua_Fragment_constructor(lua_State *L) {
-    int args = lua_gettop(L);
-    assert(args == 4);
     Fragment* f = lua_newuserdata(L, sizeof(Fragment));
     lua_pushvalue(L, 1); // sequence
     f->sequence_ = luaL_ref(L, LUA_REGISTRYINDEX);
-    f->start_ = lua_tonumber(L, 2);
-    f->stop_ = lua_tonumber(L, 3);
-    f->ori_ = lua_tonumber(L, 4);
+    f->start_ = luaL_checknumber(L, 2);
+    f->stop_ = luaL_checknumber(L, 3);
+    f->ori_ = luaL_checknumber(L, 4);
     // get metatable of Fragment
     lua_pushvalue(L, lua_upvalueindex(1));
     lua_setmetatable(L, -2);
@@ -35,31 +32,31 @@ static int lua_Fragment_constructor(lua_State *L) {
 }
 
 static int lua_Fragment_free(lua_State *L) {
-    Fragment* f = lua_touserdata(L, 1);
+    Fragment* f = luaL_checkudata(L, 1, "npge_model_cFragment");
     luaL_unref(L, LUA_REGISTRYINDEX, f->sequence_);
     return 0;
 }
 
 static int lua_Fragment_sequence(lua_State *L) {
-    Fragment* f = lua_touserdata(L, 1);
+    Fragment* f = luaL_checkudata(L, 1, "npge_model_cFragment");
     lua_rawgeti(L, LUA_REGISTRYINDEX, f->sequence_);
     return 1;
 }
 
 static int lua_Fragment_start(lua_State *L) {
-    Fragment* f = lua_touserdata(L, 1);
+    Fragment* f = luaL_checkudata(L, 1, "npge_model_cFragment");
     lua_pushnumber(L, f->start_);
     return 1;
 }
 
 static int lua_Fragment_stop(lua_State *L) {
-    Fragment* f = lua_touserdata(L, 1);
+    Fragment* f = luaL_checkudata(L, 1, "npge_model_cFragment");
     lua_pushnumber(L, f->stop_);
     return 1;
 }
 
 static int lua_Fragment_ori(lua_State *L) {
-    Fragment* f = lua_touserdata(L, 1);
+    Fragment* f = luaL_checkudata(L, 1, "npge_model_cFragment");
     lua_pushnumber(L, f->ori_);
     return 1;
 }
@@ -70,13 +67,13 @@ static int Fragment_parted(Fragment* f) {
 }
 
 static int lua_Fragment_parted(lua_State *L) {
-    Fragment* f = lua_touserdata(L, 1);
+    Fragment* f = luaL_checkudata(L, 1, "npge_model_cFragment");
     lua_pushboolean(L, Fragment_parted(f));
     return 1;
 }
 
 static int lua_Fragment_length(lua_State *L) {
-    Fragment* f = lua_touserdata(L, 1);
+    Fragment* f = luaL_checkudata(L, 1, "npge_model_cFragment");
     int absdiff = abs(f->stop_ - f->start_);
     int length;
     if (!Fragment_parted(f)) {
@@ -108,8 +105,10 @@ static int mymax(int a, int b) {
 }
 
 static int lua_Fragment_simple_common(lua_State *L) {
-    Fragment* self = lua_touserdata(L, 1);
-    Fragment* other = lua_touserdata(L, 2);
+    Fragment* self = luaL_checkudata(L, 1,
+            "npge_model_cFragment");
+    Fragment* other = luaL_checkudata(L, 2,
+            "npge_model_cFragment");
     int self_min = mymin(self->start_, self->stop_);
     int self_max = mymax(self->start_, self->stop_);
     int other_min = mymin(other->start_, other->stop_);
@@ -127,15 +126,15 @@ static int lua_Fragment_simple_common(lua_State *L) {
 // argument: Fragment
 // output: Sequence name
 static int lua_Sequence_name(lua_State *L) {
-    Fragment* f = lua_touserdata(L, 1);
+    Fragment* f = luaL_checkudata(L, 1, "npge_model_cFragment");
     lua_rawgeti(L, LUA_REGISTRYINDEX, f->sequence_);
     luaL_callmeta(L, -1, "name");
     return 1;
 }
 
 static int lua_Fragment_eq(lua_State *L) {
-    Fragment* a = lua_touserdata(L, 1);
-    Fragment* b = lua_touserdata(L, 2);
+    Fragment* a = luaL_checkudata(L, 1, "npge_model_cFragment");
+    Fragment* b = luaL_checkudata(L, 2, "npge_model_cFragment");
     int equal = a->start_ == b->start_ &&
         a->stop_ == b->stop_ &&
         a->ori_ == b->ori_;
@@ -169,8 +168,8 @@ static int Fragment_max(Fragment* f) {
 }
 
 static int Fragment_lt(lua_State* L) {
-    Fragment* a = lua_touserdata(L, 1);
-    Fragment* b = lua_touserdata(L, 2);
+    Fragment* a = luaL_checkudata(L, 1, "npge_model_cFragment");
+    Fragment* b = luaL_checkudata(L, 2, "npge_model_cFragment");
     luaL_argcheck(L, !Fragment_parted(a), 1,
             "Fragment compared must not be parted");
     luaL_argcheck(L, !Fragment_parted(b), 2,
@@ -244,7 +243,7 @@ static const luaL_Reg fragmentlib[] = {
 // and should be removed from the table on Lua side
 // Lua must do the following as well: mt.__index = mt
 LUALIB_API int luaopen_npge_model_cFragment(lua_State *L) {
-    lua_newtable(L); // fragment_mt
+    luaL_newmetatable(L, "npge_model_cFragment"); // fragment_mt
     luaL_register(L, NULL, fragmentlib);
     lua_pushvalue(L, -1); // fragment_mt
     // constructor
