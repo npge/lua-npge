@@ -21,7 +21,6 @@ static int* Row_lengths(Row* self) {
 
 static void Row_constructor(Row* self, const char* text,
                             int row_length) {
-    assert(row_length > 0);
     // count groups
     int groups = 0;
     char prev = '-';
@@ -60,21 +59,12 @@ static void Row_constructor(Row* self, const char* text,
 // closure, first upvalue is metatable of Row instance
 static int lua_Row_constructor(lua_State *L) {
     int args = lua_gettop(L);
-    if (args != 2) {
-        return luaL_error(L,
-                "Row's constructor must be called "
-                "with one argument (text of row)");
-    }
-    if (!lua_isstring(L, 2)) {
-        return luaL_error(L,
-                "Row's constructor must be called "
-                 "with a string");
-    }
+    luaL_argcheck(L, args == 2, 2,
+            "Row's constructor must be called "
+            "with one argument (text of row)");
     size_t len;
-    const char* text = lua_tolstring(L, 2, &len);
-    if (len == 0) {
-        return luaL_error(L, "Row('') called");
-    }
+    const char* text = luaL_checklstring(L, 2, &len);
+    luaL_argcheck(L, len > 0, 2, "Row('') called");
     Row* row = lua_newuserdata(L, sizeof(Row));
     Row_constructor(row, text, len);
     // get metatable of Row
@@ -113,9 +103,8 @@ static int Row_eq(Row* x, Row* y) {
 }
 
 static int lua_Row_eq(lua_State *L) {
-    int args = lua_gettop(L);
-    Row* x = lua_touserdata(L, 1);
-    Row* y = lua_touserdata(L, 2);
+    Row* x = luaL_checkudata(L, 1, "npge_model_cRow");
+    Row* y = luaL_checkudata(L, 2, "npge_model_cRow");
     int result = Row_eq(x, y);
     lua_pushboolean(L, result);
     return 1;
@@ -132,7 +121,7 @@ static int Row_length(Row* self) {
 }
 
 static int lua_Row_length(lua_State *L) {
-    Row* self = lua_touserdata(L, 1);
+    Row* self = luaL_checkudata(L, 1, "npge_model_cRow");
     int length = Row_length(self);
     lua_pushnumber(L, length);
     return 1;
@@ -144,7 +133,7 @@ static int Row_fragment_length(Row* self) {
 }
 
 static int lua_Row_fragment_length(lua_State *L) {
-    Row* self = lua_touserdata(L, 1);
+    Row* self = luaL_checkudata(L, 1, "npge_model_cRow");
     int fragment_length = Row_fragment_length(self);
     lua_pushnumber(L, fragment_length);
     return 1;
@@ -187,15 +176,12 @@ static char* Row_text(Row* self, const char* fragment) {
 }
 
 static int lua_Row_text(lua_State *L) {
-    Row* self = lua_touserdata(L, 1);
+    Row* self = luaL_checkudata(L, 1, "npge_model_cRow");
     const char* fragment = 0;
     int args = lua_gettop(L);
     if (args == 2) {
-        if (!lua_isstring(L, 2)) {
-            return luaL_error(L, "call Row:text(string)");
-        }
         size_t len;
-        fragment = lua_tolstring(L, 2, &len);
+        fragment = luaL_checklstring(L, 2, &len);
         if (len != Row_fragment_length(self)) {
             return luaL_error(L, "Row:text: bad length");
         }
@@ -226,9 +212,6 @@ static int upper(int* list, int len, int value) {
 static int Row_block2fragment(Row* self, int blockpos) {
     int* starts = Row_starts(self);
     int* lengths = Row_lengths(self);
-    int row_length = Row_length(self);
-    assert(blockpos >= 0);
-    assert(blockpos < row_length);
     int index = upper(starts, self->len_, blockpos) - 1;
     if (index == -1) {
         // we are in a gap before first letter
@@ -244,18 +227,10 @@ static int Row_block2fragment(Row* self, int blockpos) {
 }
 
 static int lua_Row_block2fragment(lua_State *L) {
-    int args = lua_gettop(L);
-    if (args != 2) {
-        return luaL_error(L, "call Row:block2fragment(int)");
-    }
-    if (!lua_isnumber(L, 2)) {
-        return luaL_error(L, "call Row:block2fragment(int)");
-    }
-    Row* self = lua_touserdata(L, 1);
-    int bp = lua_tonumber(L, 2);
-    if (bp < 0 || bp >= Row_length(self)) {
-        return luaL_error(L, "block2fragment: out of range");
-    }
+    Row* self = luaL_checkudata(L, 1, "npge_model_cRow");
+    int bp = luaL_checknumber(L, 2);
+    luaL_argcheck(L, 0 <= bp && bp < Row_length(self), 2,
+            "block2fragment: out of range");
     int result = Row_block2fragment(self, bp);
     lua_pushnumber(L, result);
     return 1;
@@ -264,9 +239,6 @@ static int lua_Row_block2fragment(lua_State *L) {
 static int Row_block2left(Row* self, int blockpos) {
     int* starts = Row_starts(self);
     int* lengths = Row_lengths(self);
-    int row_length = Row_length(self);
-    assert(blockpos >= 0);
-    assert(blockpos < row_length);
     int index = upper(starts, self->len_, blockpos) - 1;
     if (index == -1) {
         // we are in a gap before first letter
@@ -283,18 +255,10 @@ static int Row_block2left(Row* self, int blockpos) {
 }
 
 static int lua_Row_block2left(lua_State *L) {
-    int args = lua_gettop(L);
-    if (args != 2) {
-        return luaL_error(L, "call Row:block2left(int)");
-    }
-    if (!lua_isnumber(L, 2)) {
-        return luaL_error(L, "call Row:block2left(int)");
-    }
-    Row* self = lua_touserdata(L, 1);
-    int bp = lua_tonumber(L, 2);
-    if (bp < 0 || bp >= Row_length(self)) {
-        return luaL_error(L, "block2left: out of range");
-    }
+    Row* self = luaL_checkudata(L, 1, "npge_model_cRow");
+    int bp = luaL_checknumber(L, 2);
+    luaL_argcheck(L, 0 <= bp && bp < Row_length(self), 2,
+            "block2left: out of range");
     int result = Row_block2left(self, bp);
     lua_pushnumber(L, result);
     return 1;
@@ -303,9 +267,6 @@ static int lua_Row_block2left(lua_State *L) {
 static int Row_block2right(Row* self, int blockpos) {
     int* starts = Row_starts(self);
     int* lengths = Row_lengths(self);
-    int row_length = Row_length(self);
-    assert(blockpos >= 0);
-    assert(blockpos < row_length);
     int index = upper(starts, self->len_, blockpos) - 1;
     if (index == -1) {
         // we are in a gap before first letter
@@ -326,18 +287,10 @@ static int Row_block2right(Row* self, int blockpos) {
 }
 
 static int lua_Row_block2right(lua_State *L) {
-    int args = lua_gettop(L);
-    if (args != 2) {
-        return luaL_error(L, "call Row:block2right(int)");
-    }
-    if (!lua_isnumber(L, 2)) {
-        return luaL_error(L, "call Row:block2right(int)");
-    }
-    Row* self = lua_touserdata(L, 1);
-    int bp = lua_tonumber(L, 2);
-    if (bp < 0 || bp >= Row_length(self)) {
-        return luaL_error(L, "block2right: out of range");
-    }
+    Row* self = luaL_checkudata(L, 1, "npge_model_cRow");
+    int bp = luaL_checknumber(L, 2);
+    luaL_argcheck(L, 0 <= bp && bp < Row_length(self), 2,
+            "block2right: out of range");
     int result = Row_block2right(self, bp);
     lua_pushnumber(L, result);
     return 1;
@@ -346,9 +299,6 @@ static int lua_Row_block2right(lua_State *L) {
 static int Row_block2nearest(Row* self, int blockpos) {
     int* starts = Row_starts(self);
     int* lengths = Row_lengths(self);
-    int row_length = Row_length(self);
-    assert(blockpos >= 0);
-    assert(blockpos < row_length);
     int index = upper(starts, self->len_, blockpos) - 1;
     if (index == -1) {
         // we are in a gap before first letter
@@ -374,18 +324,10 @@ static int Row_block2nearest(Row* self, int blockpos) {
 }
 
 static int lua_Row_block2nearest(lua_State *L) {
-    int args = lua_gettop(L);
-    if (args != 2) {
-        return luaL_error(L, "call Row:block2nearest(int)");
-    }
-    if (!lua_isnumber(L, 2)) {
-        return luaL_error(L, "call Row:block2nearest(int)");
-    }
-    Row* self = lua_touserdata(L, 1);
-    int bp = lua_tonumber(L, 2);
-    if (bp < 0 || bp >= Row_length(self)) {
-        return luaL_error(L, "block2nearest: out of range");
-    }
+    Row* self = luaL_checkudata(L, 1, "npge_model_cRow");
+    int bp = luaL_checknumber(L, 2);
+    luaL_argcheck(L, 0 <= bp && bp < Row_length(self), 2,
+            "block2nearest: out of range");
     int result = Row_block2nearest(self, bp);
     lua_pushnumber(L, result);
     return 1;
@@ -394,27 +336,17 @@ static int lua_Row_block2nearest(lua_State *L) {
 static int Row_fragment2block(Row* self, int fragmentpos) {
     int* starts = Row_starts(self);
     int* lengths = Row_lengths(self);
-    int fragment_length = Row_fragment_length(self);
-    assert(fragmentpos >= 0);
-    assert(fragmentpos < fragment_length);
     int index = upper(lengths, self->len_, fragmentpos) - 1;
     int distance = fragmentpos - lengths[index];
     return starts[index] + distance;
 }
 
 static int lua_Row_fragment2block(lua_State *L) {
-    int args = lua_gettop(L);
-    if (args != 2) {
-        return luaL_error(L, "call Row:fragment2block(int)");
-    }
-    if (!lua_isnumber(L, 2)) {
-        return luaL_error(L, "call Row:fragment2block(int)");
-    }
-    Row* self = lua_touserdata(L, 1);
-    int fp = lua_tonumber(L, 2);
-    if (fp < 0 || fp >= Row_fragment_length(self)) {
-        return luaL_error(L, "fragment2block: out of range");
-    }
+    Row* self = luaL_checkudata(L, 1, "npge_model_cRow");
+    int fp = luaL_checknumber(L, 2);
+    luaL_argcheck(L,
+            0 <= fp && fp < Row_fragment_length(self), 2,
+            "fragment2block: out of range");
     int result = Row_fragment2block(self, fp);
     lua_pushnumber(L, result);
     return 1;
@@ -437,7 +369,7 @@ static const luaL_Reg rowlib[] = {
 
 LUALIB_API int luaopen_npge_model_cRow(lua_State *L) {
     // row_mt
-    lua_newtable(L);
+    luaL_newmetatable(L, "npge_model_cRow");
     luaL_register(L, NULL, rowlib);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index"); // mt.__index = mt
