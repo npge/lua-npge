@@ -160,6 +160,9 @@ f_mt.common = function(self, other)
         local a, b = other:parts()
         return self:common(a) + self:common(b)
     end
+    if has_c then
+        return self:_simple_common(other)
+    end
     local self_min = math.min(self:start(), self:stop())
     local self_max = math.max(self:start(), self:stop())
     local other_min = math.min(other:start(), other:stop())

@@ -91,6 +91,39 @@ static int lua_Fragment_length(lua_State *L) {
     return 1;
 }
 
+static int mymin(int a, int b) {
+    if (a < b) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
+static int mymax(int a, int b) {
+    if (a > b) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
+static int lua_Fragment_simple_common(lua_State *L) {
+    Fragment* self = lua_touserdata(L, 1);
+    Fragment* other = lua_touserdata(L, 2);
+    int self_min = mymin(self->start_, self->stop_);
+    int self_max = mymax(self->start_, self->stop_);
+    int other_min = mymin(other->start_, other->stop_);
+    int other_max = mymax(other->start_, other->stop_);
+    int common_min = mymax(self_min, other_min);
+    int common_max = mymin(self_max, other_max);
+    int common = common_max - common_min + 1;
+    if (common < 0) {
+        common = 0;
+    }
+    lua_pushnumber(L, common);
+    return 1;
+}
+
 // argument: Fragment
 // output: Sequence name
 static int lua_Sequence_name(lua_State *L) {
@@ -128,19 +161,11 @@ static int lua_Fragment_eq(lua_State *L) {
 }
 
 static int Fragment_min(Fragment* f) {
-    if (f->start_ < f->stop_) {
-        return f->start_;
-    } else {
-        return f->stop_;
-    }
+    return mymin(f->start_, f->stop_);
 }
 
 static int Fragment_max(Fragment* f) {
-    if (f->start_ > f->stop_) {
-        return f->start_;
-    } else {
-        return f->stop_;
-    }
+    return mymax(f->start_, f->stop_);
 }
 
 static int Fragment_lt(lua_State* L) {
@@ -208,6 +233,7 @@ static const luaL_Reg fragmentlib[] = {
     {"ori", lua_Fragment_ori},
     {"parted", lua_Fragment_parted},
     {"length", lua_Fragment_length},
+    {"_simple_common", lua_Fragment_simple_common},
     {"__eq", lua_Fragment_eq},
     {"__lt", lua_Fragment_lt},
     {NULL, NULL}
