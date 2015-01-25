@@ -1,6 +1,7 @@
 #include <assert.h>
 
 #define LUA_LIB
+#define LUA_COMPAT_ALL
 #include <lua.h>
 #include <lauxlib.h>
 
@@ -62,12 +63,30 @@ static int lua_Fragment_ori(lua_State *L) {
     return 1;
 }
 
+static int lua_Fragment_eq(lua_State *L) {
+    Fragment* a = lua_touserdata(L, 1);
+    Fragment* b = lua_touserdata(L, 2);
+    int equal = a->start_ == b->start_ &&
+        a->stop_ == b->stop_ &&
+        a->ori_ == b->ori_;
+    if (equal) {
+        lua_rawgeti(L, LUA_REGISTRYINDEX, a->sequence_);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, b->sequence_);
+        if (!lua_equal(L, -2, -1)) {
+            equal = 0;
+        }
+    }
+    lua_pushboolean(L, equal);
+    return 1;
+}
+
 static const luaL_Reg fragmentlib[] = {
     {"__gc", lua_Fragment_free},
     {"sequence", lua_Fragment_sequence},
     {"start", lua_Fragment_start},
     {"stop", lua_Fragment_stop},
     {"ori", lua_Fragment_ori},
+    {"__eq", lua_Fragment_eq},
     {NULL, NULL}
 };
 

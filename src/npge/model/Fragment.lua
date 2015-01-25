@@ -65,6 +65,16 @@ if not has_c then
     f_mt.ori = function(self)
         return self._ori
     end
+
+    local function f_as_arr(self)
+        return {self:sequence():name(), self:start(),
+            self:stop(), self:ori()}
+    end
+
+    f_mt.__eq = function(self, other)
+        local arrays_equal = require 'npge.util.arrays_equal'
+        return arrays_equal(f_as_arr(self), f_as_arr(other))
+    end
 end
 
 f_mt.id = function(self)
@@ -73,16 +83,6 @@ f_mt.id = function(self)
         self:start(),
         self:stop(),
         self:ori())
-end
-
-local function f_as_arr(self)
-    return {self:sequence():name(), self:start(),
-        self:stop(), self:ori()}
-end
-
-f_mt.__eq = function(self, other)
-    local arrays_equal = require 'npge.util.arrays_equal'
-    return arrays_equal(f_as_arr(self), f_as_arr(other))
 end
 
 local function f_as_arr2(self)
