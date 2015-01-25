@@ -110,6 +110,79 @@ static int lua_Fragment_eq(lua_State *L) {
     return 1;
 }
 
+static int Fragment_min(Fragment* f) {
+    if (f->start_ < f->stop_) {
+        return f->start_;
+    } else {
+        return f->stop_;
+    }
+}
+
+static int Fragment_max(Fragment* f) {
+    if (f->start_ > f->stop_) {
+        return f->start_;
+    } else {
+        return f->stop_;
+    }
+}
+
+static int Fragment_lt(lua_State* L) {
+    Fragment* a = lua_touserdata(L, 1);
+    Fragment* b = lua_touserdata(L, 2);
+    luaL_argcheck(L, !Fragment_parted(a), 1,
+            "Fragment compared must not be parted");
+    luaL_argcheck(L, !Fragment_parted(b), 2,
+            "Fragment compared must not be parted");
+    //
+    int a_min = Fragment_min(a);
+    int b_min = Fragment_min(b);
+    if (a_min < b_min) {
+        return 1;
+    }
+    if (a_min > b_min) {
+        return 0;
+    }
+    //
+    int a_max = Fragment_max(a);
+    int b_max = Fragment_max(b);
+    if (a_max < b_max) {
+        return 1;
+    }
+    if (a_max > b_max) {
+        return 0;
+    }
+    //
+    if (a->ori_ < b->ori_) {
+        return 1;
+    }
+    if (a->ori_ > b->ori_) {
+        return 0;
+    }
+    //
+    lua_pushcfunction(L, lua_Sequence_name);
+    lua_pushvalue(L, 1);
+    lua_call(L, 1, 1);
+    size_t a_size;
+    const char* a_name = lua_tolstring(L, -1, &a_size);
+    //
+    lua_pushcfunction(L, lua_Sequence_name);
+    lua_pushvalue(L, 2);
+    lua_call(L, 1, 1);
+    size_t b_size;
+    const char* b_name = lua_tolstring(L, -1, &b_size);
+    //
+    if (strcmp(a_name, b_name) < 0) {
+        return 1;
+    }
+    return 0;
+}
+
+static int lua_Fragment_lt(lua_State *L) {
+    int result = Fragment_lt(L);
+    lua_pushboolean(L, result);
+    return 1;
+}
+
 static const luaL_Reg fragmentlib[] = {
     {"__gc", lua_Fragment_free},
     {"sequence", lua_Fragment_sequence},
@@ -118,6 +191,7 @@ static const luaL_Reg fragmentlib[] = {
     {"ori", lua_Fragment_ori},
     {"parted", lua_Fragment_parted},
     {"__eq", lua_Fragment_eq},
+    {"__lt", lua_Fragment_lt},
     {NULL, NULL}
 };
 

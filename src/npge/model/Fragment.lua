@@ -81,6 +81,18 @@ if not has_c then
         -- (diff < 0 and self:ori() == 1) or ...
         return diff * self:ori() < 0
     end
+
+    local function f_as_arr2(self)
+        assert(not self:parted())
+        local min = math.min(self:start(), self:stop())
+        local max = math.max(self:start(), self:stop())
+        return {min, max, self:ori(), self:sequence():name()}
+    end
+
+    f_mt.__lt = function(self, other)
+        local arrays_less = require 'npge.util.arrays_less'
+        return arrays_less(f_as_arr2(self), f_as_arr2(other))
+    end
 end
 
 f_mt.id = function(self)
@@ -89,18 +101,6 @@ f_mt.id = function(self)
         self:start(),
         self:stop(),
         self:ori())
-end
-
-local function f_as_arr2(self)
-    assert(not self:parted())
-    local min = math.min(self:start(), self:stop())
-    local max = math.max(self:start(), self:stop())
-    return {min, max, self:ori(), self:sequence():name()}
-end
-
-f_mt.__lt = function(self, other)
-    local arrays_less = require 'npge.util.arrays_less'
-    return arrays_less(f_as_arr2(self), f_as_arr2(other))
 end
 
 f_mt.__tostring = function(self)
