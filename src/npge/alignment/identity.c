@@ -3,6 +3,7 @@
 
 #define LUA_LIB
 #include <lua.h>
+#include <lauxlib.h>
 
 // arguments:
 // 1. Lua table with rows
@@ -10,15 +11,10 @@
 // 3. start position
 // 4. stop position
 static int lua_identity(lua_State *L) {
-    int args = lua_gettop(L);
-    assert(args == 4);
-    assert(lua_istable(L, 1));
-    assert(lua_isnumber(L, 2));
-    assert(lua_isnumber(L, 3));
-    assert(lua_isnumber(L, 4));
-    int nrows = lua_tonumber(L, 2);
-    int start = lua_tonumber(L, 3);
-    int stop = lua_tonumber(L, 4);
+    luaL_checktype(L, 1, LUA_TTABLE);
+    int nrows = luaL_checknumber(L, 2);
+    int start = luaL_checknumber(L, 3);
+    int stop = luaL_checknumber(L, 4);
     const char** rows = malloc(nrows * sizeof(const char*));
     // populate rows
     int irow = 0;
