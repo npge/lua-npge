@@ -66,6 +66,12 @@ if not has_c then
         return self._ori
     end
 
+    f_mt.parted = function(self)
+        local diff = self:stop() - self:start()
+        -- (diff < 0 and self:ori() == 1) or ...
+        return diff * self:ori() < 0
+    end
+
     local function f_as_arr(self)
         return {self:sequence():name(), self:start(),
             self:stop(), self:ori()}
@@ -74,12 +80,6 @@ if not has_c then
     f_mt.__eq = function(self, other)
         local arrays_equal = require 'npge.util.arrays_equal'
         return arrays_equal(f_as_arr(self), f_as_arr(other))
-    end
-
-    f_mt.parted = function(self)
-        local diff = self:stop() - self:start()
-        -- (diff < 0 and self:ori() == 1) or ...
-        return diff * self:ori() < 0
     end
 
     local function f_as_arr2(self)
