@@ -18,6 +18,7 @@ local members = {
     'Orient',
     'Join',
     'Genomes',
+    'PrimaryHits',
     'PangenomeMaker',
     'HasOverlap',
 }
