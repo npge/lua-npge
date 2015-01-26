@@ -32,6 +32,26 @@ describe("algo.Merge", function()
         assert.equal(sum, model.BlockSet({s}, {b1, b2, b3}))
     end)
 
+    it("merges 3 blocksets (different sets of sequences)",
+    function()
+        local model = require 'npge.model'
+        local s1 = model.Sequence("s1", "ATAT")
+        local s2 = model.Sequence("s2", "ATAT")
+        local f1 = model.Fragment(s1, 0, 0, 1)
+        local b1 = model.Block({f1})
+        local bs1 = model.BlockSet({s1}, {b1})
+        local f2 = model.Fragment(s2, 1, 1, 1)
+        local b2 = model.Block({f2})
+        local bs2 = model.BlockSet({s2}, {b2})
+        local f3 = model.Fragment(s2, 2, 2, 1)
+        local b3 = model.Block({f3})
+        local bs3 = model.BlockSet({s2}, {b3})
+        local Merge = require 'npge.algo.Merge'
+        local sum = Merge(bs1, bs2, bs3)
+        assert.equal(sum, model.BlockSet({s1, s2},
+            {b1, b2, b3}))
+    end)
+
     it("merges 1 blocksets (return the argument)", function()
         local model = require 'npge.model'
         local s = model.Sequence("s", "ATAT")
