@@ -30,6 +30,8 @@ return function(blockset)
         b = Cover(b)
         local Merge = require 'npge.algo.Merge'
         local ab = Merge(a, b)
+        local HasOverlap = require 'npge.algo.HasOverlap'
+        assert(not HasOverlap(ab))
         local BlastHitsUnwound =
             require 'npge.algo.BlastHitsUnwound'
         local hits = BlastHitsUnwound(ab)
