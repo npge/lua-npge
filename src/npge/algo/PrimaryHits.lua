@@ -2,8 +2,17 @@ return function(blockset)
     local BlockSet = require 'npge.model.BlockSet'
     local level2bss = {}
     level2bss[1] = {}
-    for seq in blockset:iter_sequences() do
-        table.insert(level2bss[1], BlockSet({seq}, {}))
+
+    local Genomes = require 'npge.algo.Genomes'
+    local has_genomes, _, genome2seqs = pcall(Genomes, blockset)
+    if has_genomes then
+        for genome, seqs in pairs(genome2seqs) do
+            table.insert(level2bss[1], BlockSet(seqs, {}))
+        end
+    else
+        for seq in blockset:iter_sequences() do
+            table.insert(level2bss[1], BlockSet({seq}, {}))
+        end
     end
 
     local function popBs()
@@ -21,7 +30,7 @@ return function(blockset)
         table.insert(level2bss[level], bs)
     end
 
-    local niterations = #blockset:sequences() - 1
+    local niterations = #(level2bss[1]) - 1
     for i = 1, niterations do
         local a, level_a = popBs()
         local b, level_b = popBs()
