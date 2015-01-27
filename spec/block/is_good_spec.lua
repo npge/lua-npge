@@ -22,6 +22,44 @@ describe("block.is_good", function()
         assert.falsy(is_good(block))
     end)
 
+    it("does not throw if beginning of block is full of gaps",
+    function()
+        local Sequence = require 'npge.model.Sequence'
+        local config = require 'npge.config'
+        local length = config.general.MIN_LENGTH
+        local gaps = config.general.MIN_END_IDENTICAL_COLUMNS
+        local s = Sequence('seq', string.rep('A', length))
+        local Fragment = require 'npge.model.Fragment'
+        local f1 = Fragment(s, 0, s:length() - 1, 1)
+        local f2 = Fragment(s, 0, s:length() - 1, 1)
+        local Block = require 'npge.model.Block'
+        local block = Block({
+            {f1, string.rep('-', gaps) .. s:text()},
+            {f2, string.rep('-', gaps) .. s:text()},
+        })
+        local is_good = require 'npge.block.is_good'
+        assert.falsy(is_good(block))
+    end)
+
+    it("does not throw if ending of block is full of gaps",
+    function()
+        local Sequence = require 'npge.model.Sequence'
+        local config = require 'npge.config'
+        local length = config.general.MIN_LENGTH
+        local gaps = config.general.MIN_END_IDENTICAL_COLUMNS
+        local s = Sequence('seq', string.rep('A', length))
+        local Fragment = require 'npge.model.Fragment'
+        local f1 = Fragment(s, 0, s:length() - 1, 1)
+        local f2 = Fragment(s, 0, s:length() - 1, 1)
+        local Block = require 'npge.model.Block'
+        local block = Block({
+            {f1, s:text() .. string.rep('-', gaps)},
+            {f2, s:text() .. string.rep('-', gaps)},
+        })
+        local is_good = require 'npge.block.is_good'
+        assert.falsy(is_good(block))
+    end)
+
     it("checks if a block is bad (short)", function()
         local Sequence = require 'npge.model.Sequence'
         local config = require 'npge.config'

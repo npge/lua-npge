@@ -46,12 +46,18 @@ return function(block)
     local slice = require 'npge.block.slice'
     local min_cols = config.general.MIN_END_IDENTICAL_COLUMNS
     local beginning = slice(block, 0, min_cols - 1)
+    if not beginning then
+        return false, 'beginning identity', 0
+    end
     local ident = identity(beginning)
     if identity.less(ident, 1.0) then
         return false, 'beginning identity', ident
     end
     local ending = slice(block, block:length() - min_cols,
         block:length() - 1)
+    if not ending then
+        return false, 'ending identity', 0
+    end
     local ident = identity(ending)
     if identity.less(identity(ending), 1.0) then
         return false, 'ending identity', ident
