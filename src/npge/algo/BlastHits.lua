@@ -11,7 +11,7 @@ local makeblastdb = function(bank_fname, consensus_fname)
     f:close()
 end
 
-local blastn_cmd = function(bank, input, options)
+local blastn_cmd = function(bank_fname, input, options)
     local config = require 'npge.config'
     local evalue = options.evalue or config.blast.EVALUE
     local workers = options.workers or 1
@@ -20,7 +20,7 @@ local blastn_cmd = function(bank, input, options)
     local args = {
         'blastn',
         '-task blastn',
-        '-db', bank,
+        '-db', bank_fname,
         '-query', input,
         '-evalue', tostring(evalue),
         '-num_threads', workers,
