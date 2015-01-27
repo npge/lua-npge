@@ -32,8 +32,8 @@ return function(blockset)
 
     local niterations = #(level2bss[1]) - 1
     for i = 1, niterations do
-        local a, level_a = popBs()
-        local b, level_b = popBs()
+        local a, level_a = assert(popBs())
+        local b, level_b = assert(popBs())
         local Cover = require 'npge.algo.Cover'
         a = Cover(a)
         b = Cover(b)
@@ -49,6 +49,6 @@ return function(blockset)
         hits = BlocksWithoutOverlaps(hits)
         pushBs(hits, math.max(level_a, level_b) + 1)
     end
-    local bs = popBs()
+    local bs = assert(popBs())
     return bs
 end
