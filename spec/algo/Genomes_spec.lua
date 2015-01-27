@@ -16,6 +16,17 @@ describe("algo.Genomes", function()
         assert.same(sorted(gg1), sorted(gg2))
     end)
 
+    it("gets a dict from genome to list of sequences",
+    function()
+        local model = require 'npge.model'
+        local s1 = model.Sequence("genome1&chr1&c", "ATAT")
+        local s2 = model.Sequence("genome2&chr1&c", "ATAT")
+        local bs = model.BlockSet({s1, s2}, {})
+        local Genomes = require 'npge.algo.Genomes'
+        local list, dict = Genomes(bs)
+        assert.same(dict, {genome1={s1}, genome2={s2}})
+    end)
+
     it("throws if sequence name does not contain genome",
     function()
         assert.has_error(function()
