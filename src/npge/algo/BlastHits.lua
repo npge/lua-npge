@@ -155,7 +155,7 @@ local read_blast = function(file, bs, hits_filter, bank)
     local seqs = bs:sequences()
     if bank ~= bs then
         for seq in bank:iter_sequences() do
-            if not bs:sequence_by_name(seq) then
+            if not bs:sequence_by_name(seq:name()) then
                 table.insert(seqs, seq)
             end
         end

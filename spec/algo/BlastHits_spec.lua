@@ -22,6 +22,19 @@ describe("algo.BlastHits", function()
         assert.truthy(#hits:blocks() > 0)
     end)
 
+    it("finds blast+ hits (another bank, shared sequence)",
+    function()
+        local Sequence = require 'npge.model.Sequence'
+        local s1 = Sequence('s1', string.rep('ATGC', 100))
+        local s2 = Sequence('s2', string.rep('ATGC', 100))
+        local s3 = Sequence('s3', string.rep('ATGC', 100))
+        local BlockSet = require 'npge.model.BlockSet'
+        local BlastHits = require 'npge.algo.BlastHits'
+        local hits = BlastHits(BlockSet({s1, s2}, {}),
+            {bank=BlockSet({s2, s3}, {})})
+        assert.truthy(#hits:blocks() > 0)
+    end)
+
     it("finds hits using blast+ (empty bank)",
     function()
         local Sequence = require 'npge.model.Sequence'
