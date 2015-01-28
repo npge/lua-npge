@@ -59,7 +59,7 @@ return function(block)
         return false, 'ending identity', 0
     end
     local ident = identity(ending)
-    if identity.less(identity(ending), 1.0) then
+    if identity.less(ident, 1.0) then
         return false, 'ending identity', ident
     end
     -- check gap length
