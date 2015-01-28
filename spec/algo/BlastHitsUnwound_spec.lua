@@ -28,6 +28,22 @@ describe("algo.BlastHitsUnwound", function()
         assert.truthy(#hits:blocks() > 0)
     end)
 
+    it("finds blast hits (different bank, shared sequence)",
+    function()
+        local Sequence = require 'npge.model.Sequence'
+        local s1 = Sequence('s1', string.rep('ATGC', 100))
+        local s2 = Sequence('s2', string.rep('ATGC', 100))
+        local s3 = Sequence('s3', string.rep('ATGC', 100))
+        local BlockSet = require 'npge.model.BlockSet'
+        local Cover = require 'npge.algo.Cover'
+        local query = Cover(BlockSet({s1, s2}, {}))
+        local bank = Cover(BlockSet({s2, s3}, {}))
+        local BlastHitsUnwound =
+            require 'npge.algo.BlastHitsUnwound'
+        local hits = BlastHitsUnwound(query, {bank=bank})
+        assert.truthy(#hits:blocks() > 0)
+    end)
+
     it("finds nothing if no blocks", function()
         local Sequence = require 'npge.model.Sequence'
         local s1 = Sequence('s1', string.rep('ATGC', 100))

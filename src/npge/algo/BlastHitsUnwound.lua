@@ -1,11 +1,12 @@
 return function(blockset, options)
     local algo = require 'npge.algo'
     local consensuses, seq2block =
-        algo.ConsensusSequences(blockset)
+        algo.ConsensusSequences(blockset, 'query')
     local orig_bank = options and options.bank
     if orig_bank then
         local s2b
-        options.bank, s2b = algo.ConsensusSequences(orig_bank)
+        options.bank, s2b = algo.ConsensusSequences(orig_bank,
+            'bank')
         for seq, block in pairs(s2b) do
             seq2block[seq] = block
         end
