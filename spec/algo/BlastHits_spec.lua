@@ -35,6 +35,19 @@ describe("algo.BlastHits", function()
         assert.truthy(#hits:blocks() > 0)
     end)
 
+    it("throws an error on sequence #names_conflist",
+    function()
+        local Sequence = require 'npge.model.Sequence'
+        local s1a = Sequence('s1', string.rep('ATGC', 100))
+        local s1b = Sequence('s1', string.rep('ATGC', 100))
+        local BlockSet = require 'npge.model.BlockSet'
+        local BlastHits = require 'npge.algo.BlastHits'
+        assert.has_error(function()
+            local hits = BlastHits(BlockSet({s1a}, {}),
+                {bank=BlockSet({s1b}, {})})
+        end)
+    end)
+
     it("finds hits using blast+ (empty bank)",
     function()
         local Sequence = require 'npge.model.Sequence'
