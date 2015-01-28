@@ -16,6 +16,22 @@ describe("algo.ConsensusSequences", function()
         assert.equal(seq2block[sequence], b)
     end)
 
+    it("produces sequences' names with specified prefix",
+    function()
+        local model = require 'npge.model'
+        local s = model.Sequence("s", "ATAT")
+        local f = model.Fragment(s, 0, 3, 1)
+        local b = model.Block({f})
+        local blockset = model.BlockSet({s}, {b})
+        local ConsensusSequences =
+            require 'npge.algo.ConsensusSequences'
+        local cs = ConsensusSequences(blockset, 'nameprefix')
+        local sequences = cs:sequences()
+        assert.equal(#sequences, 1)
+        local sequence = sequences[1]
+        assert.truthy(sequence:name():sub(1, 10), 'nameprefix')
+    end)
+
     it("throws if original blocks overlap",
     function()
         local model = require 'npge.model'

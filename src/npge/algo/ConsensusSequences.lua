@@ -1,6 +1,7 @@
-return function(blockset)
+return function(blockset, prefix)
     local HasOverlap = require 'npge.algo.HasOverlap'
     assert(not HasOverlap(blockset))
+    prefix = prefix or ''
     local seq2block = {}
     local sequences = {}
     for i, block in ipairs(blockset:blocks()) do
@@ -19,7 +20,7 @@ return function(blockset)
         if not seq then
             local consensus = require 'npge.block.consensus'
             local text = consensus(block)
-            local name = ('consensus%06d'):format(i)
+            local name = ('%sconsensus%06d'):format(prefix, i)
             local Sequence = require 'npge.model.Sequence'
             seq = Sequence(name, text)
         end
