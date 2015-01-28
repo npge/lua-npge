@@ -49,6 +49,8 @@ BlockSet_mt.__call = function(self, sequences, blocks)
             local name = seq:name()
             assert(name2seq[name],
                 ("No sequence with name %q"):format(seq:name()))
+            assert(seq2fragments[seq],
+                ("No sequence with name %q"):format(seq:name()))
             if not fragment:parted() then
                 table.insert(seq2fragments[seq], fragment)
             else
