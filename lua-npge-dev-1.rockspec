@@ -21,6 +21,8 @@ build = {
             "src/npge/model/SequenceText.c",
         ['npge.alignment.cidentity'] =
             "src/npge/alignment/identity.c",
+        ['npge.alignment.cunwind_row'] =
+            "src/npge/alignment/unwind_row.c",
     },
 }
 

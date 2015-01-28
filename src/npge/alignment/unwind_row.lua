@@ -1,3 +1,10 @@
+-- use C version if available
+local has_c, cunwind_row = pcall(require,
+    'npge.alignment.cunwind_row')
+if has_c then
+    return cunwind_row
+end
+
 return function(row, orig_row)
     local new_row = {}
     local orig_i = 1
