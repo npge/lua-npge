@@ -25,6 +25,8 @@ build = {
             "src/npge/alignment/unwind_row.c",
         ['npge.alignment.cto_atgcn_and_gap'] =
             "src/npge/alignment/to_atgcn_and_gap.c",
+        ['npge.alignment.cto_atgcn'] =
+            "src/npge/alignment/to_atgcn.c",
     },
 }
 
