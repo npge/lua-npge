@@ -1,9 +1,25 @@
 #include <stdlib.h>
-#include <ctype.h>
 
 #define LUA_LIB
 #include <lua.h>
 #include <lauxlib.h>
+
+static const unsigned char ATGCN_GAP_MAP[] = {
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, '-', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 'A', 'N', 'C', 'N', 0, 0, 'G', 'N', 0, 0,
+'N', 0, 'N', 'N', 0, 0, 0, 'N', 'N', 'T', 0, 'N', 'N', 0,
+'N', 0, 0, 0, 0, 0, 0, 0, 'A', 'N', 'C', 'N', 0, 0, 'G',
+'N', 0, 0, 'N', 0, 'N', 'N', 0, 0, 0, 'N', 'N', 'T', 0,
+'N', 'N', 0, 'N', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
 
 // arguments:
 // 1. text
@@ -18,16 +34,10 @@ static int lua_to_atgcn_and_gap(lua_State *L) {
     int result_i = 0;
     int i;
     for (i = 0; i < text_size; i++) {
-        char c = toupper(text[i]);
-        if (c == 'R' || c == 'Y' || c == 'M' ||
-                c == 'K' || c == 'W' || c == 'S' ||
-                c == 'B' || c == 'V' || c == 'H' ||
-                c == 'D') {
-            result[result_i] = 'N';
-            result_i += 1;
-        } else if (c == 'A' || c == 'T' || c == 'G' ||
-                c == 'C' || c == 'N' || c == '-') {
-            result[result_i] = c;
+        unsigned char c = text[i];
+        char c1 = ATGCN_GAP_MAP[c];
+        if (c1) {
+            result[result_i] = c1;
             result_i += 1;
         }
     }
