@@ -23,6 +23,8 @@ build = {
             "src/npge/alignment/identity.c",
         ['npge.alignment.cunwind_row'] =
             "src/npge/alignment/unwind_row.c",
+        ['npge.alignment.cto_atgcn_and_gap'] =
+            "src/npge/alignment/to_atgcn_and_gap.c",
     },
 }
 
