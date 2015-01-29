@@ -27,6 +27,8 @@ build = {
             "src/npge/alignment/to_atgcn_and_gap.c",
         ['npge.alignment.cto_atgcn'] =
             "src/npge/alignment/to_atgcn.c",
+        ['npge.alignment.ccomplement'] =
+            "src/npge/alignment/complement.c",
     },
 }
 
