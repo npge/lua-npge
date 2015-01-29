@@ -7,7 +7,7 @@ local members = {
     'ConsensusSequences',
     'UnwindBlocks',
     'BlastHits',
-    'BlastHitsUnwound',
+    'AddGoodBlast',
     'FilterGoodBlocks',
     'BlocksWithoutOverlaps',
     'GoodSubblocks',
