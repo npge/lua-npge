@@ -4,18 +4,22 @@ local TIME = {}
 local ORIGINAL = {}
 
 timer.wrapFunction = function(f)
-    local time_spent = 0
+    local user = 0
+    local real = 0
     return function(...)
         local args = {...}
         if args[1] == TIME then
-            return time_spent
+            return user, real
         elseif args[1] == ORIGINAL then
             return f
         else
             local t1 = os.clock()
+            local t1a = os.time()
             local results = {f(...)}
             local t2 = os.clock()
-            time_spent = time_spent + (t2 - t1)
+            local t2a = os.time()
+            user = user + (t2 - t1)
+            real = real + os.difftime(t2a, t1a)
             local unpack = require 'npge.util.unpack'
             return unpack(results)
         end
