@@ -1,3 +1,10 @@
+-- use C version if available
+local has_c, cmove_identical = pcall(require,
+    'npge.alignment.cmove_identical')
+if has_c then
+    return cmove_identical
+end
+
 return function(rows)
     -- Input:
     --     ......

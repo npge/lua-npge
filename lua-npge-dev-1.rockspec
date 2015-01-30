@@ -29,6 +29,8 @@ build = {
             "src/npge/alignment/to_atgcn.c",
         ['npge.alignment.ccomplement'] =
             "src/npge/alignment/complement.c",
+        ['npge.alignment.cmove_identical'] =
+            "src/npge/alignment/move_identical.c",
     },
 }
 
