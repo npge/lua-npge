@@ -33,10 +33,11 @@ return function(rows)
         end
         pos = pos + 1
     end
+    local aligned_row = table.concat(aligned[1] or {})
     local result = {}
     local tails = {}
-    for i, aligned_row in ipairs(aligned) do
-        table.insert(result, table.concat(aligned_row))
+    for i, _ in ipairs(aligned) do
+        table.insert(result, aligned_row)
         table.insert(tails, rows[i]:sub(pos))
     end
     return result, tails
