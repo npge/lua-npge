@@ -14,6 +14,9 @@ return function(rows)
     --     ***   ....
     --     *** , ..
     --     ***   ....
+    if #rows == 0 then
+        return {}, {}
+    end
     local aligned = {}
     for _, row in ipairs(rows) do
         -- list of char's
@@ -40,7 +43,7 @@ return function(rows)
         end
         pos = pos + 1
     end
-    local aligned_row = table.concat(aligned[1] or {})
+    local aligned_row = table.concat(aligned[1])
     local result = {}
     local tails = {}
     for i, _ in ipairs(aligned) do
