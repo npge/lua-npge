@@ -12,9 +12,13 @@ return function(rows, right_aligned)
     -- This function allows point mutations: mismatches and
     -- gaps. Module config.alignment specifies how many
     -- identical columns must be around a point mutation.
+
     local config = require 'npge.config'
     local MISMATCH_CHECK = config.alignment.MISMATCH_CHECK
     local GAP_CHECK = config.alignment.GAP_CHECK
+
+    local identical_group = math.max(MISMATCH_CHECK, GAP_CHECK)
+    local pos0 = {} -- array of 1-based indexes inside row
 
     local posShifted = function(shift, pos)
         local result = {}
@@ -56,21 +60,8 @@ return function(rows, right_aligned)
         return true
     end
 
-    local identicalLeft = function(n_columns, pos)
-        for i = 1, n_columns do
-            local pos1 = posShifted(-i, pos)
-            if allExist(pos1) then
-                if not isIdentical(pos1) then
-                    return false
-                end
-            elseif anyExists(pos1) then
-                return false
-            end
-            -- if all rows do not exist at the position,
-            -- then it is considered identical,
-            -- because it is to left of the alignment
-        end
-        return true
+    local identicalLeft = function(n_columns)
+        return identical_group >= n_columns
     end
 
     local identicalRight = function(n_columns, pos)
@@ -89,9 +80,9 @@ return function(rows, right_aligned)
         return true
     end
 
-    local identicalAround = function(n_columns, pos)
-        return identicalLeft(n_columns, pos) and
-            identicalRight(n_columns, pos)
+    local identicalAround = function(n_columns)
+        return identicalLeft(n_columns) and
+            identicalRight(n_columns, pos0)
     end
 
     local allLetters = function(pos)
@@ -172,7 +163,6 @@ return function(rows, right_aligned)
     ---
 
     local aligned = {}
-    local pos0 = {} -- array of 1-based indexes inside row
     for _, row in ipairs(rows) do
         -- list of char's
         table.insert(aligned, {})
@@ -198,19 +188,17 @@ return function(rows, right_aligned)
         moveToPos(posShifted(1, pos0))
     end
 
-    local identical_group = 0
     while anyExists(pos0) do
         if allExist(pos0) and isIdentical(pos0) then
             moveWholeRow()
             identical_group = identical_group + 1
         else
-            identical_group = 0
             local ok = false
             if allExist(pos0) and
-                    identicalAround(MISMATCH_CHECK, pos0) then
+                    identicalAround(MISMATCH_CHECK) then
                 moveWholeRow()
                 ok = true
-            elseif identicalLeft(GAP_CHECK, pos0) then
+            elseif identicalLeft(GAP_CHECK) then
                 local gap_pos = findBestGap(pos0)
                 if gap_pos then
                     moveToPos(gap_pos)
@@ -220,6 +208,7 @@ return function(rows, right_aligned)
             if not ok then
                 break
             end
+            identical_group = 0
         end
     end
 
