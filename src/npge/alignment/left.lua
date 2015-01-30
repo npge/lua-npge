@@ -1,3 +1,9 @@
+-- use C version if available
+local has_c, cleft = pcall(require, 'npge.alignment.cleft')
+if has_c then
+    return cleft
+end
+
 return function(rows, right_aligned)
     -- Input:
     --     ......

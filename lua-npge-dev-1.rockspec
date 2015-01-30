@@ -31,6 +31,8 @@ build = {
             "src/npge/alignment/complement.c",
         ['npge.alignment.cmove_identical'] =
             "src/npge/alignment/move_identical.c",
+        ['npge.alignment.cleft'] =
+            "src/npge/alignment/left.c",
     },
 }
 
