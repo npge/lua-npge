@@ -7,29 +7,51 @@
 
 // arguments:
 // 1. Lua table with rows
-// 2. number of rows
-// 3. start position
-// 4. stop position
+// 2. start position
+// 3. stop position
 static int lua_identity(lua_State *L) {
     luaL_checktype(L, 1, LUA_TTABLE);
-    int nrows = luaL_checknumber(L, 2);
-    int start = luaL_checknumber(L, 3);
-    int stop = luaL_checknumber(L, 4);
-    const char** rows = malloc(nrows * sizeof(const char*));
-    // populate rows
-    int irow = 0;
-    int t = 1; // index of table
-    lua_pushnil(L);  /* first key */
-    while (lua_next(L, t) != 0) {
-        // 'key' at index -2, 'value' at index -1
-        assert(irow < nrows);
-        size_t len;
-        rows[irow] = lua_tolstring(L, -1, &len);
-        assert(rows[irow]);
-        lua_pop(L, 1); // remove 'value'
-        irow++;
+    int nrows = lua_objlen(L, 1);
+    if (nrows == 0) {
+        lua_pushnil(L);
+        return 1;
     }
-    assert(irow == nrows);
+    // populate rows
+    const char** rows = malloc(nrows * sizeof(const char*));
+    int length;
+    int irow;
+    for (irow = 0; irow < nrows; irow++) {
+        lua_rawgeti(L, 1, irow + 1);
+        size_t len;
+        const char* row = luaL_checklstring(L, -1, &len);
+        rows[irow] = row;
+        if (irow == 0) {
+            length = len;
+        } else {
+            luaL_argcheck(L, len == length, 1,
+                    "All rows must be of equal length");
+        }
+        lua_pop(L, 1);
+    }
+    if (length == 0) {
+        lua_pushnumber(L, 0);
+        lua_pushnumber(L, 0);
+        lua_pushnumber(L, 0);
+        return 3;
+    }
+    // start and stop
+    int start = 0;
+    int stop = length - 1;
+    if (lua_gettop(L) >= 2) {
+        start = luaL_checknumber(L, 2);
+        luaL_argcheck(L, start >= 0, 2, "start >= 0");
+    }
+    if (lua_gettop(L) >= 3) {
+        stop = luaL_checknumber(L, 3);
+        luaL_argcheck(L, start <= stop, 3, "start <= stop");
+        luaL_argcheck(L, stop <= length - 1, 3,
+                "stop <= length - 1");
+    }
     // calculate identity
     int bp;
     double ident = 0;
