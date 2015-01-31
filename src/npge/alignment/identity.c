@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #define LUA_LIB
 #include <lua.h>
 #include <lauxlib.h>
@@ -9,6 +7,7 @@
 // 2. start position
 // 3. stop position
 static int lua_identity(lua_State *L) {
+    int args = lua_gettop(L);
     luaL_checktype(L, 1, LUA_TTABLE);
     int nrows = lua_objlen(L, 1);
     if (nrows == 0) {
@@ -16,7 +15,8 @@ static int lua_identity(lua_State *L) {
         return 1;
     }
     // populate rows
-    const char** rows = malloc(nrows * sizeof(const char*));
+    const char** rows = lua_newuserdata(L,
+            nrows * sizeof(const char*));
     int length;
     int irow;
     for (irow = 0; irow < nrows; irow++) {
@@ -41,11 +41,11 @@ static int lua_identity(lua_State *L) {
     // start and stop
     int start = 0;
     int stop = length - 1;
-    if (lua_gettop(L) >= 2) {
+    if (args >= 2) {
         start = luaL_checknumber(L, 2);
         luaL_argcheck(L, start >= 0, 2, "start >= 0");
     }
-    if (lua_gettop(L) >= 3) {
+    if (args >= 3) {
         stop = luaL_checknumber(L, 3);
         luaL_argcheck(L, start <= stop, 3, "start <= stop");
         luaL_argcheck(L, stop <= length - 1, 3,
@@ -80,7 +80,6 @@ static int lua_identity(lua_State *L) {
     lua_pushnumber(L, result);
     lua_pushnumber(L, ident);
     lua_pushnumber(L, l);
-    free(rows);
     return 3;
 }
 
