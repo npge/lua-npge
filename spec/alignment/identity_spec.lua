@@ -13,6 +13,20 @@ describe("alignment.identity", function()
         assert.truthy(eq(identity({'AT', 'TT'}, 1, 1), 1))
     end)
 
+    it("finds identity of rows (throws if bad slice)",
+    function()
+        local identity = require 'npge.alignment.identity'
+        assert.has_error(function()
+            identity({'AT', 'TT'}, -1, 0)
+        end)
+        assert.has_error(function()
+            identity({'AT', 'TT'}, 1, 0)
+        end)
+        assert.has_error(function()
+            identity({'AT', 'TT'}, 1, 2)
+        end)
+    end)
+
     it("returns number of ident columns and total length",
     function()
         local identity = require 'npge.alignment.identity'
