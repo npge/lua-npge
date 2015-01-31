@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <assert.h>
 
 #define LUA_LIB
 #include <lua.h>
