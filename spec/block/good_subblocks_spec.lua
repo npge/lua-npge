@@ -115,6 +115,48 @@ describe("block.good_subblocks", function()
         assert.truthy(is_good(gs[1]))
     end)
 
+    it("finds nothing in block of 1 fragment",
+    function()
+        local config = require 'npge.config'
+        local min_len = config.general.MIN_LENGTH
+        local Sequence = require 'npge.model.Sequence'
+        local s = Sequence('seq', string.rep('A', min_len * 2))
+        local Fragment = require 'npge.model.Fragment'
+        local f1 = Fragment(s, 0, s:length() - 1, 1)
+        local Block = require 'npge.model.Block'
+        local block = Block({f1})
+        local good_subblocks =
+            require 'npge.block.good_subblocks'
+        local gs = good_subblocks(block)
+        assert.truthy(#gs == 0)
+    end)
+
+    it("extracts good parts from block (opening gap)",
+    function()
+        -- AAAAA
+        -- --AAA
+        local config = require 'npge.config'
+        local min_len = config.general.MIN_LENGTH
+        local gap_len = min_len - 1
+        local Sequence = require 'npge.model.Sequence'
+        local s = Sequence('seq', string.rep('A', min_len * 2))
+        local Fragment = require 'npge.model.Fragment'
+        local f1 = Fragment(s, 0, s:length() - 1, 1)
+        local f2 = Fragment(s, 0, s:length() - gap_len - 1, 1)
+        local Block = require 'npge.model.Block'
+        local block = Block({
+            {f1, string.rep('A', min_len * 2)},
+            {f2, string.rep('-', gap_len) ..
+                string.rep('A', s:length() - gap_len)},
+        })
+        local good_subblocks =
+            require 'npge.block.good_subblocks'
+        local gs = good_subblocks(block)
+        assert.truthy(#gs == 1)
+        local is_good = require 'npge.block.is_good'
+        assert.truthy(is_good(gs[1]))
+    end)
+
     it("extracts good parts from block (terminal long gap)",
     function()
         -- AAAAAA

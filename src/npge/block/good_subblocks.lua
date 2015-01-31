@@ -60,6 +60,13 @@ local find_ident_groups = function(rows, min_cols)
             group = nil
         end
     end
+    if group then
+        local length = group_length(group)
+        if length >= min_cols then
+            table.insert(ident_groups, group)
+        end
+        group = nil
+    end
     return ident_groups
 end
 
@@ -223,6 +230,10 @@ good_subblocks = function(block)
     local min_length = config.general.MIN_LENGTH
     if block:length() < min_length then
         -- block is too short
+        return {}
+    end
+    -- block of 1 fragments: nothing to do
+    if block:size() < 2 then
         return {}
     end
     -- make rows
