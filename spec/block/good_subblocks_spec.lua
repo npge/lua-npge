@@ -32,7 +32,7 @@ describe("block.good_subblocks", function()
         assert.same(gs, {Block({f1, f2})})
     end)
 
-    it("finds identical parts of MIN_END_IDENTICAL_COLUMNS",
+    it("finds identical parts of #MIN_END_IDENTICAL_COLUMNS",
     function()
         local config = require 'npge.config'
         local clone = require 'npge.util.clone'.dict
@@ -40,7 +40,6 @@ describe("block.good_subblocks", function()
         config.general.MIN_LENGTH = 10
         config.general.MIN_IDENTITY = 0.5
         config.general.MIN_END_IDENTICAL_COLUMNS = 3
-        --
         --
         local Sequence = require 'npge.model.Sequence'
         local s1 = Sequence('s1', "CAAAGCGCGCGCAAAC")
@@ -58,6 +57,38 @@ describe("block.good_subblocks", function()
                 "AAAGCGCGCGCAAA"},
             {Fragment(s2, 1, s2:length() - 1 - 1, 1),
                 "AAAGGGGGGGGAAA"},
+        })})
+        --
+        config.general = orig
+    end)
+
+    it("finds identical parts of #MIN_END_IDENTICAL_COLUMNS2",
+    function()
+        local config = require 'npge.config'
+        local clone = require 'npge.util.clone'.dict
+        local orig = clone(config.general)
+        config.general.MIN_LENGTH = 4
+        config.general.MIN_IDENTITY = 0.5
+        config.general.MIN_END_IDENTICAL_COLUMNS = 3
+        --
+        local Sequence = require 'npge.model.Sequence'
+        local s1 = Sequence('s1',
+            "CAAATTTTTTTTAAAACGCGCGCAAAC")
+        local s2 = Sequence('s2',
+            "GAAAGGGGGGGGAAAAGGGGGGGAAAT")
+        local Fragment = require 'npge.model.Fragment'
+        local f1 = Fragment(s1, 0, s1:length() - 1, 1)
+        local f2 = Fragment(s2, 0, s1:length() - 1, 1)
+        local Block = require 'npge.model.Block'
+        local block = Block({f1, f2})
+        local good_subblocks =
+            require 'npge.block.good_subblocks'
+        local gs = good_subblocks(block)
+        assert.same(gs, {Block({
+            {Fragment(s1, 1, s1:length() - 1 - 1, 1),
+                "AAATTTTTTTTAAAACGCGCGCAAA"},
+            {Fragment(s2, 1, s2:length() - 1 - 1, 1),
+                "AAAGGGGGGGGAAAAGGGGGGGAAA"},
         })})
         --
         config.general = orig
