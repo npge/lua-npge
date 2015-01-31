@@ -45,7 +45,7 @@ local find_ident_groups = function(rows, min_cols)
     end
     local block_length = #(rows[1])
     local group
-    for bp = 0, block_length do
+    for bp = 0, block_length - 1 do
         local ident = ident_col(bp)
         if ident then
             if group then
