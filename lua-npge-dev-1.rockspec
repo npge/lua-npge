@@ -35,6 +35,8 @@ build = {
             "src/npge/alignment/left.c",
         ['npge.alignment.canchor'] =
             "src/npge/alignment/anchor.c",
+        ['npge.alignment.cfindIdentGroups'] =
+            "src/npge/alignment/findIdentGroups.c",
     },
 }
 
