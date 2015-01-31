@@ -53,6 +53,9 @@ return function(rows)
     --  ..  ,  *** , ..
     --  ...    ***   ....
     -- left  middle  right
+    if #rows == 0 then
+        return nil
+    end
     local config = require 'npge.config'
     local ANCHOR = config.alignment.ANCHOR
     local max_length = maxLength(rows)

@@ -24,6 +24,13 @@ describe("alignment.anchor", function()
         config.alignment.ANCHOR = orig_ANCHOR
     end)
 
+    it("returns nil if list of rows is empty",
+    function()
+        local anchor = require 'npge.alignment.anchor'
+        local left, middle, right = anchor({})
+        assert.same(left, nil)
+    end)
+
     it("finds anchor (shift in #one fragment)",
     function()
         local config = require 'npge.config'
