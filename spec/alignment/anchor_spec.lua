@@ -147,6 +147,22 @@ describe("alignment.anchor", function()
         config.alignment.ANCHOR = orig_ANCHOR
     end)
 
+    it("works if no anchor and rows are long",
+    function()
+        local config = require 'npge.config'
+        local orig_ANCHOR = config.alignment.ANCHOR
+        config.alignment.ANCHOR = 7
+        local anchor = require 'npge.alignment.anchor'
+        local left, middle, right = anchor({
+            string.rep('A', 10000),
+            string.rep('G', 10000),
+        })
+        assert.falsy(left)
+        assert.falsy(middle)
+        assert.falsy(right)
+        config.alignment.ANCHOR = orig_ANCHOR
+    end)
+
     it("finds anchor (3 fragments)",
     function()
         local config = require 'npge.config'
