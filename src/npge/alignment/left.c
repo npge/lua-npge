@@ -172,10 +172,8 @@ int* findBestGap(Aln* aln) {
             free(used);
         }
     }
-    if (variants_found == 1) {
+    if (variants_found == 1 || variants_found == 0) {
         return getSome(variants);
-    } else if (variants_found == 0) {
-        return 0;
     }
     int* variant = getBestVariant(aln, variants);
     for (i = 0; i < NLETTERS; i++) {
