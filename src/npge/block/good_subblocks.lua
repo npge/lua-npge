@@ -1,9 +1,8 @@
-local find_long_gap = function(block, min_length)
+local find_long_gap = function(rows, block_length, min_length)
     -- return min and max block positions of long gap OR nil
-    for fragment in block:iter_fragments() do
-        local row = block:text(fragment)
+    for _, row in ipairs(rows) do
         local gap_length = 0
-        for i = 1, block:length() do
+        for i = 1, block_length do
             if row:sub(i, i) == '-' then
                 gap_length = gap_length + 1
             else
@@ -16,8 +15,8 @@ local find_long_gap = function(block, min_length)
             end
         end
         if gap_length >= min_length then
-            local stop = block:length() - 1
-            local start = block:length() - gap_length
+            local stop = block_length - 1
+            local start = block_length - gap_length
             return start, stop
         end
     end
@@ -226,8 +225,14 @@ good_subblocks = function(block)
         -- block is too short
         return {}
     end
+    -- make rows
+    local rows = {}
+    for fragment in block:iter_fragments() do
+        table.insert(rows, block:text(fragment))
+    end
     -- find long gap
-    local gap_start, gap_stop = find_long_gap(block, min_length)
+    local gap_start, gap_stop = find_long_gap(rows,
+        block:length(), min_length)
     local slice = require 'npge.block.slice'
     if gap_start and gap_stop then
         local subblocks = {}
@@ -249,10 +254,6 @@ good_subblocks = function(block)
     end
     -- no long gaps here
     -- find continous groups of identical columns
-    local rows = {}
-    for fragment in block:iter_fragments() do
-        table.insert(rows, block:text(fragment))
-    end
     local min_cols = config.general.MIN_END_IDENTICAL_COLUMNS
     local ident_groups = find_ident_groups(rows, min_cols)
     local good_slice = find_good_group(rows, ident_groups)
