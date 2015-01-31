@@ -12,4 +12,13 @@ describe("alignment.identity", function()
         assert.truthy(eq(identity({'AT', 'TT'}, 0, 1), 0.5))
         assert.truthy(eq(identity({'AT', 'TT'}, 1, 1), 1))
     end)
+
+    it("returns number of ident columns and total length",
+    function()
+        local identity = require 'npge.alignment.identity'
+        local eq = require 'npge.block.identity'.eq
+        local _, nident, ncols = identity({'A-T', 'TTT'})
+        assert.truthy(eq(nident, 1.5))
+        assert.truthy(eq(ncols, 3))
+    end)
 end)

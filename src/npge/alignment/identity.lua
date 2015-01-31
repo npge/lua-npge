@@ -40,6 +40,6 @@ return function(rows, start, stop)
             end
         end
         local l = stop - start + 1
-        return ident / l
+        return ident / l, ident, l
     end
 end

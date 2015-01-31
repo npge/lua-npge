@@ -57,8 +57,10 @@ static int lua_identity(lua_State *L) {
     double l = stop - start + 1;
     double result = ident / l;
     lua_pushnumber(L, result);
+    lua_pushnumber(L, ident);
+    lua_pushnumber(L, l);
     free(rows);
-    return 1;
+    return 3;
 }
 
 LUALIB_API int luaopen_npge_alignment_cidentity(lua_State *L) {
