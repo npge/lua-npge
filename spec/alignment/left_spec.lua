@@ -433,4 +433,39 @@ describe("alignment.left", function()
         --
         config.alignment = orig
     end)
+
+    it("align sequences (#alternative gaps same lengths)",
+    function()
+        local config = require 'npge.config'
+        local clone = require 'npge.util.clone'.dict
+        local orig = clone(config.alignment)
+        config.alignment.GAP_CHECK = 1
+        config.alignment.MISMATCH_CHECK = 1
+        --
+        local left = require 'npge.alignment.left'
+        local aligned, right = left({
+            'ATTATATACC',
+            'ATTTATATC',
+        })
+        --
+        config.alignment = orig
+    end)
+
+    it("align sequences (#alternative gaps long)",
+    function()
+        local config = require 'npge.config'
+        local clone = require 'npge.util.clone'.dict
+        local orig = clone(config.alignment)
+        config.alignment.GAP_CHECK = 1
+        config.alignment.MISMATCH_CHECK = 1
+        --
+        local TA = string.rep('TA', 1000)
+        local left = require 'npge.alignment.left'
+        local aligned, right = left({
+            'ATTA' .. TA,
+            'ATT' .. TA,
+        })
+        --
+        config.alignment = orig
+    end)
 end)
