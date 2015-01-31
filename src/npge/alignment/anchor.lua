@@ -1,3 +1,9 @@
+-- use C version if available
+local has_c, canchor = pcall(require, 'npge.alignment.canchor')
+if has_c then
+    return canchor
+end
+
 local maxLength = function(rows)
     local max_length = #rows[1]
     for _, row in ipairs(rows) do

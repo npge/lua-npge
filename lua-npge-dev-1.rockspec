@@ -33,6 +33,8 @@ build = {
             "src/npge/alignment/move_identical.c",
         ['npge.alignment.cleft'] =
             "src/npge/alignment/left.c",
+        ['npge.alignment.canchor'] =
+            "src/npge/alignment/anchor.c",
     },
 }
 

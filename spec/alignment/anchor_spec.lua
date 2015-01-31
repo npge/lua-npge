@@ -81,6 +81,31 @@ describe("alignment.anchor", function()
         config.alignment.ANCHOR = orig_ANCHOR
     end)
 
+    it("finds anchor (shift in all fragments, long anchor)",
+    function()
+        local config = require 'npge.config'
+        local orig_ANCHOR = config.alignment.ANCHOR
+        config.alignment.ANCHOR = 20
+        local anchor = require 'npge.alignment.anchor'
+        local left, middle, right = anchor({
+            'TTTTTTTATTATTCGGAGTTCAGCTTTG',
+            'GGGGGGGATTATTCGGAGTTCAGCTTTG',
+        })
+        assert.same(left, {
+            'TTTTTTT',
+            'GGGGGGG',
+        })
+        assert.same(middle, {
+            'ATTATTCGGAGTTCAGCTTT',
+            'ATTATTCGGAGTTCAGCTTT',
+        })
+        assert.same(right, {
+            'G',
+            'G',
+        })
+        config.alignment.ANCHOR = orig_ANCHOR
+    end)
+
     it("finds anchor (prefer same shift)",
     function()
         local config = require 'npge.config'
