@@ -33,6 +33,14 @@ describe("alignment.left", function()
         })
     end)
 
+    it("align sequences from left to right (empty rows list)",
+    function()
+        local left = require 'npge.alignment.left'
+        local aligned, right = left({})
+        assert.same(aligned, {})
+        assert.same(right, {})
+    end)
+
     it("align sequences from left to right (allow empty row 2)",
     function()
         local left = require 'npge.alignment.left'
