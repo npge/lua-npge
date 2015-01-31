@@ -187,12 +187,12 @@ end
 
 local remove_most_distant = function(block)
     local consensus = require 'npge.block.consensus'
+    local identity = require 'npge.alignment.identity'
     local c = consensus(block)
     local worst_ident, worst_fragment
     for fragment in block:iter_fragments() do
         local row = block:text(fragment)
-        local group = {start=0, stop=#c-1}
-        local ident = group_identity({c, row}, group)
+        local ident = identity({c, row})
         if not worst_ident or ident < worst_ident then
             worst_ident = ident
             worst_fragment = fragment
