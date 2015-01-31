@@ -107,22 +107,32 @@ end
 local extend_good_group = function(rows, groups, i, i1)
     local config = require 'npge.config'
     local min_ident = config.general.MIN_IDENTITY
-    local identity = require 'npge.block.identity'
-    local good_group = function(a, b)
-        local group = make_group(groups, a, b)
-        local ident = group_identity(rows, group)
-        return not identity.less(ident, min_ident)
-    end
-    for b = i1, #groups do
-        if good_group(i, b) then
-            i1 = b
+    local less = require 'npge.block.identity'.less
+    local identity = require 'npge.alignment.identity'
+    local group = make_group(groups, i, i1)
+    local _, ident, all = group_identity(rows, group)
+    while i1 < #groups do
+        local start = groups[i1].stop + 1
+        local stop = groups[i1 + 1].stop
+        local _, ident1, all1 = identity(rows, start, stop)
+        local new_id = (ident + ident1) / (all + all1)
+        if not less(new_id, min_ident) then
+            ident = ident + ident1
+            all = all + all1
+            i1 = i1 + 1
         else
             break
         end
     end
-    for a = i, 1, -1 do
-        if good_group(a, i1) then
-            i = a
+    while i > 1 do
+        local start = groups[i - 1].start
+        local stop = groups[i].start - 1
+        local _, ident1, all1 = identity(rows, start, stop)
+        local new_id = (ident + ident1) / (all + all1)
+        if not less(new_id, min_ident) then
+            ident = ident + ident1
+            all = all + all1
+            i = i - 1
         else
             break
         end
