@@ -54,7 +54,7 @@ local find_ident_groups = function(rows, min_cols)
             end
         elseif group then
             local length = group_length(group)
-            if length > min_cols then
+            if length >= min_cols then
                 table.insert(ident_groups, group)
             end
             group = nil
