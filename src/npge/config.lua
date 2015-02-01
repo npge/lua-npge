@@ -55,7 +55,10 @@ if file_exists('npge.conf') then
     local conf = conf_file:read('*a')
     conf_file:close()
     local sandbox = require 'npge.util.sandbox'
-    local env = {general={}, blast={}}
+    local env = {}
+    for section_name, section in pairs(config) do
+        env[section_name] = {}
+    end
     local conf_sandboxed, message = sandbox(env, conf)
     if conf_sandboxed then
         local status = pcall(conf_sandboxed)
