@@ -14,7 +14,7 @@ end
 local blastn_cmd = function(bank_fname, input, options)
     local config = require 'npge.config'
     local evalue = options.evalue or config.blast.EVALUE
-    local workers = options.workers or 1
+    local workers = options.workers or config.util.WORKERS
     local dust = options.dust or config.blast.DUST
     local dust = dust and 'yes' or 'no'
     local args = {
