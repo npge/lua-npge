@@ -31,7 +31,9 @@ describe("algo.LoadFromLua", function()
             local lua1 = readIt(SequencesToLua(blockset))
             local BlockSetToLua =
                 require 'npge.algo.BlockSetToLua'
-            local lua2 = readIt(BlockSetToLua(blockset))
+            local has_sequences = true
+            local lua2 = readIt(BlockSetToLua(blockset,
+                has_sequences))
             local LoadFromLua =
                 require 'npge.algo.LoadFromLua'
             local enable_fromRef = true
