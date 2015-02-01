@@ -12,6 +12,7 @@ local members = {
     'BlocksWithoutOverlaps',
     'GoodSubblocks',
     'LoadFromLua',
+    'SequencesToLua',
     'Cover',
     'Align',
     'ReAlign',

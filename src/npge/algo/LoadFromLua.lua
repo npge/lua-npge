@@ -1,7 +1,15 @@
-return function(code)
+return function(code, enable_fromRef)
+    local UnsafeSequence = require 'npge.model.Sequence'
+    local Sequence = function(...)
+        -- Sequence.fromRef is disabled
+        return UnsafeSequence(...)
+    end
+    if enable_fromRef then
+        Sequence = UnsafeSequence
+    end
     local sandboxed = {
         model = {
-            Sequence = require 'npge.model.Sequence',
+            Sequence = Sequence,
             Fragment = require 'npge.model.Fragment',
             Block = require 'npge.model.Block',
             BlockSet = require 'npge.model.BlockSet',
