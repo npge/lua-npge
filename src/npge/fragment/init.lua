@@ -6,7 +6,6 @@ return {
     is_subfragment_of = iso, -- FIXME
     subfragment = require 'npge.fragment.subfragment',
     sub = require 'npge.fragment.sub',
-    at = require 'npge.fragment.at',
     sequence_to_fragment = require 'npge.fragment.sequence_to_fragment',
     fragment_to_sequence = require 'npge.fragment.fragment_to_sequence',
 }

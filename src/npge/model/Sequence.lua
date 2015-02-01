@@ -109,10 +109,6 @@ else
     end
 end
 
-seq_mt.at = function(self, index)
-    return self:sub(index, index)
-end
-
 if has_c then
     seq_mt.toRef = function(self)
         local text = "{%q, %q, %q}"
