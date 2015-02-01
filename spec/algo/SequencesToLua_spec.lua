@@ -11,7 +11,7 @@ describe("algo.SequencesToLua", function()
             local lua = readIt(SequencesToLua(blockset))
             local LoadFromLua = require 'npge.algo.LoadFromLua'
             local enable_fromRef = true
-            local name2seq = LoadFromLua(lua, enable_fromRef)
+            local name2seq = LoadFromLua(lua, enable_fromRef)()
             local seqs = {}
             for name, seq in pairs(name2seq) do
                 table.insert(seqs, seq)

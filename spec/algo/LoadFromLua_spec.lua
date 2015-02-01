@@ -11,7 +11,7 @@ describe("algo.LoadFromLua", function()
         local readIt = require 'npge.util.readIt'
         local lua = readIt(BlockSetToLua(blockset))
         local LoadFromLua = require 'npge.algo.LoadFromLua'
-        local blockset1 = LoadFromLua(lua)
+        local blockset1 = LoadFromLua(lua)()
         assert.equal(blockset1, blockset)
     end)
 end)

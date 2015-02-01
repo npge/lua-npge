@@ -63,5 +63,5 @@ return function(code, enable_fromRef)
     local sandbox = require 'npge.util.sandbox'
     local f, message = sandbox(env, code)
     assert(f, message)
-    return f()
+    return f
 end
