@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
@@ -222,8 +221,9 @@ static int lua_anchor(lua_State *L) {
         lua_pushnil(L);
         return 1;
     }
-    const char** rows = malloc(nrows * sizeof(const char*));
-    int* lens = malloc(nrows * sizeof(int));
+    const char** rows = lua_newuserdata(L,
+            nrows * sizeof(const char*));
+    int* lens = lua_newuserdata(L, nrows * sizeof(int));
     // populate rows
     int irow;
     for (irow = 0; irow < nrows; irow++) {
@@ -241,8 +241,6 @@ static int lua_anchor(lua_State *L) {
     // results
     if (!anchor) {
         lua_pushnil(L);
-        free(rows);
-        free(lens);
         return 1;
     }
     lua_pushlstring(L, rows[0] + anchor[0], ANCHOR);
@@ -259,8 +257,6 @@ static int lua_anchor(lua_State *L) {
                 lens[irow] - suffix_len); // suffix
         lua_rawseti(L, -2, irow + 1);
     }
-    free(rows);
-    free(lens);
     // anchor is part of Lua state (uservalue in table)
     return 3;
 }

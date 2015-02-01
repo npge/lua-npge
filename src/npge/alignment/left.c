@@ -263,8 +263,9 @@ static int lua_left(lua_State *L) {
         lua_newtable(L); // tails
         return 2;
     }
-    aln.rows = malloc(aln.nrows * sizeof(const char*));
-    aln.lens = malloc(aln.nrows * sizeof(size_t));
+    aln.rows = lua_newuserdata(L,
+            aln.nrows * sizeof(const char*));
+    aln.lens = lua_newuserdata(L, aln.nrows * sizeof(size_t));
     // populate rows
     size_t min_len;
     int irow;
@@ -290,9 +291,12 @@ static int lua_left(lua_State *L) {
     aln.GAP_CHECK = luaL_checkint(L, -1);
     // make alignment
     aln.max_row_len = min_len * 2 + aln.GAP_CHECK * 2;
-    aln.aligned = malloc(aln.max_row_len * aln.nrows);
-    aln.used_aln = malloc(aln.nrows * sizeof(size_t));
-    aln.used_row = malloc(aln.nrows * sizeof(size_t));
+    aln.aligned = lua_newuserdata(L,
+            aln.max_row_len * aln.nrows);
+    aln.used_aln = lua_newuserdata(L,
+            aln.nrows * sizeof(size_t));
+    aln.used_row = lua_newuserdata(L,
+            aln.nrows * sizeof(size_t));
     memset(aln.used_aln, 0, aln.nrows * sizeof(size_t));
     memset(aln.used_row, 0, aln.nrows * sizeof(size_t));
     // align
@@ -310,11 +314,6 @@ static int lua_left(lua_State *L) {
                 aln.lens[irow] - used); // tail
         lua_rawseti(L, -2, irow + 1);
     }
-    free(aln.aligned);
-    free(aln.rows);
-    free(aln.lens);
-    free(aln.used_row);
-    free(aln.used_aln);
     return 2;
 }
 

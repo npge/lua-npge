@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #define LUA_LIB
 #include <lua.h>
 #include <lauxlib.h>
@@ -33,8 +31,9 @@ static int lua_move_identical(lua_State *L) {
         lua_newtable(L); // tails
         return 2;
     }
-    const char** rows = malloc(nrows * sizeof(const char*));
-    size_t* lens = malloc(nrows * sizeof(size_t));
+    const char** rows = lua_newuserdata(L,
+            nrows * sizeof(const char*));
+    size_t* lens = lua_newuserdata(L, nrows * sizeof(size_t));
     // populate rows
     int irow;
     size_t min_len;
@@ -62,8 +61,6 @@ static int lua_move_identical(lua_State *L) {
                 lens[irow] - prefix_len); // tail
         lua_rawseti(L, -2, irow + 1);
     }
-    free(rows);
-    free(lens);
     return 2;
 }
 
