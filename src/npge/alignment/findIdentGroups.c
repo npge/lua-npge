@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #define LUA_LIB
 #include <lua.h>
 #include <lauxlib.h>
@@ -33,10 +35,7 @@ static void createGroup(lua_State* L, int start, int stop) {
 static int lua_findIdentGroups(lua_State *L) {
     luaL_checktype(L, 1, LUA_TTABLE);
     int nrows = lua_objlen(L, 1);
-    if (nrows == 0) {
-        lua_pushnil(L);
-        return 1;
-    }
+    assert(nrows > 0);
     int min_cols = luaL_checknumber(L, 2);
     // populate rows
     const char** rows = lua_newuserdata(L,
