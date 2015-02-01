@@ -5,17 +5,6 @@ local seq_to_lua = function(seq)
     return lua:format(seq:name(), text, seq:description())
 end
 
-local seqs_to_lua = function(seqs)
-    local seqs_list = {}
-    for _, seq in ipairs(seqs) do
-        local lua = "[%q] =\n%s"
-        lua = lua:format(seq:name(), seq_to_lua(seq))
-        table.insert(seqs_list, lua)
-    end
-    local seqs_str = table.concat(seqs_list, ',\n')
-    return ("{%s}"):format(seqs_str)
-end
-
 local fragment_to_lua = function(fragment)
     local lua = "Fragment(name2seq[%q], %i, %i, %i)"
     return lua:format(fragment:sequence():name(),
@@ -37,22 +26,16 @@ local block_to_lua = function(block)
     return lua:format(ff)
 end
 
-local blocks_to_lua = function(blocks)
-    local blocks_list = {}
-    for _, block in ipairs(blocks) do
-        table.insert(blocks_list, block_to_lua(block))
-    end
-    local blocks_str = table.concat(blocks_list, ',\n')
-    return ("{%s}"):format(blocks_str)
-end
-
-local lua = [[do
+local preamble = [[do
     local Sequence = require 'npge.model.Sequence'
     local Fragment = require 'npge.model.Fragment'
     local Block = require 'npge.model.Block'
     local BlockSet = require 'npge.model.BlockSet'
-    local name2seq = %s
-    local blocks = %s
+    local name2seq = {}
+    local blocks = {}
+]]
+
+local closing = [[
     local seqs = {}
     for name, seq in pairs(name2seq) do
         table.insert(seqs, seq)
@@ -61,7 +44,17 @@ local lua = [[do
 end]]
 
 return function(blockset)
-    return lua:format(
-        seqs_to_lua(blockset:sequences()),
-        blocks_to_lua(blockset:blocks()))
+    local wrap, yield = coroutine.wrap, coroutine.yield
+    return wrap(function()
+        yield(preamble)
+        for seq in blockset:iter_sequences() do
+            local text = "name2seq[%q] = %s\n"
+            yield(text:format(seq:name(), seq_to_lua(seq)))
+        end
+        for block in blockset:iter_blocks() do
+            local text = "table.insert(blocks, %s)\n"
+            yield(text:format(block_to_lua(block)))
+        end
+        yield(closing)
+    end)
 end

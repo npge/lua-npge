@@ -12,7 +12,8 @@ describe("algo.BlockSetToLua", function()
         local f2 = model.Fragment(s2, 0, 0, 1)
         local bs1 = BS({s1, s2}, {B(f1, f2), B(f1a)})
         local BlockSetToLua = require 'npge.algo.BlockSetToLua'
-        local lua = BlockSetToLua(bs1)
+        local readIt = require 'npge.util.readIt'
+        local lua = readIt(BlockSetToLua(bs1))
         local bs2 = loadstring(lua)()
         assert.equal(bs1, bs2)
     end)
@@ -27,7 +28,8 @@ describe("algo.BlockSetToLua", function()
         local f = model.Fragment(s, 0, 0, 1)
         local bs1 = BS({s}, {B(f)})
         local BlockSetToLua = require 'npge.algo.BlockSetToLua'
-        local lua = BlockSetToLua(bs1)
+        local readIt = require 'npge.util.readIt'
+        local lua = readIt(BlockSetToLua(bs1))
         local bs2 = loadstring(lua)()
         assert.equal(bs1, bs2)
     end)
