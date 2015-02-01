@@ -35,4 +35,22 @@ describe("alignment.identity", function()
         assert.truthy(eq(nident, 1.5))
         assert.truthy(eq(ncols, 3))
     end)
+
+    it("returns 0,0,0 if list of rows is empty", function()
+        local identity = require 'npge.alignment.identity'
+        local eq = require 'npge.block.identity'.eq
+        local identity, nident, ncols = identity({})
+        assert.truthy(eq(identity, 0))
+        assert.truthy(eq(nident, 0))
+        assert.truthy(eq(ncols, 0))
+    end)
+
+    it("returns 0,0,0 if length is 0", function()
+        local identity = require 'npge.alignment.identity'
+        local eq = require 'npge.block.identity'.eq
+        local identity, nident, ncols = identity({'', ''})
+        assert.truthy(eq(identity, 0))
+        assert.truthy(eq(nident, 0))
+        assert.truthy(eq(ncols, 0))
+    end)
 end)

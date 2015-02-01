@@ -6,6 +6,9 @@ if has_c then
 end
 
 return function(rows, start, stop)
+    if #rows == 0 then
+        return 0, 0, 0
+    end
     local length = #rows[1]
     if length == 0 then
         return 0, 0, 0

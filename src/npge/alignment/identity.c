@@ -11,8 +11,10 @@ static int lua_identity(lua_State *L) {
     luaL_checktype(L, 1, LUA_TTABLE);
     int nrows = lua_objlen(L, 1);
     if (nrows == 0) {
-        lua_pushnil(L);
-        return 1;
+        lua_pushnumber(L, 0);
+        lua_pushnumber(L, 0);
+        lua_pushnumber(L, 0);
+        return 3;
     }
     // populate rows
     const char** rows = lua_newuserdata(L,
