@@ -31,6 +31,11 @@ local config = {
         -- Min equal aligned part
         ANCHOR = 7,
     },
+
+    util = {
+        -- Number of workers for concurrent tasks
+        WORKERS = 1,
+    },
 }
 
 local update_keys = function(env)
