@@ -13,6 +13,7 @@ local members = {
     'GoodSubblocks',
     'LoadFromLua',
     'SequencesToLua',
+    'BlockSetToLua',
     'Cover',
     'Align',
     'ReAlign',

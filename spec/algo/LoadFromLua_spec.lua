@@ -7,7 +7,8 @@ describe("algo.LoadFromLua", function()
         local block1 = model.Block({f2})
         local block2 = model.Block({f1})
         local blockset = model.BlockSet({s}, {block1, block2})
-        local lua = blockset:tolua()
+        local BlockSetToLua = require 'npge.algo.BlockSetToLua'
+        local lua = BlockSetToLua(blockset)
         local LoadFromLua = require 'npge.algo.LoadFromLua'
         local blockset1 = LoadFromLua(lua)
         assert.equal(blockset1, blockset)
