@@ -113,4 +113,24 @@ seq_mt.at = function(self, index)
     return self:sub(index, index)
 end
 
+if has_c then
+    seq_mt.toRef = function(self)
+        local text = "{%q, %q, %q}"
+        return text:format(self:name(), self._text:toRef(),
+            self:description())
+    end
+
+    -- dangerous method. Should not be available from sandbox
+    Sequence.fromRef = function(ref)
+        local sandbox = require 'npge.util.sandbox'
+        local env = {}
+        local f = sandbox(env, 'return ' .. ref)
+        local unpack = require 'npge.util.unpack'
+        local name, textref, description = unpack(assert(f()))
+        local seq = Sequence(name, 'AAA', description)
+        seq._text = cSequenceText.fromRef(textref)
+        return seq
+    end
+end
+
 return setmetatable(Sequence, Sequence_mt)
