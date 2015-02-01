@@ -33,4 +33,22 @@ describe("algo.BlockSetToLua", function()
         local bs2 = loadstring(lua)()
         assert.equal(bs1, bs2)
     end)
+
+    it("serializes blockset without sequences", function()
+        local model = require 'npge.model'
+        local B = function(...)
+            return model.Block({...})
+        end
+        local BS = model.BlockSet
+        local s = model.Sequence("g1&c&c", string.rep("A", 60))
+        local f = model.Fragment(s, 0, 0, 1)
+        local bs1 = BS({s}, {B(f)})
+        local BlockSetToLua = require 'npge.algo.BlockSetToLua'
+        local readIt = require 'npge.util.readIt'
+        local has_sequences = true
+        local lua = readIt(BlockSetToLua(bs1, true))
+        local name2seq = {[s:name()] = s}
+        local bs2 = loadstring(lua)(name2seq)
+        assert.equal(bs1, bs2)
+    end)
 end)

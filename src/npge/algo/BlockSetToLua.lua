@@ -43,13 +43,17 @@ local closing = [[
     return BlockSet(seqs, blocks)
 end]]
 
-return function(blockset)
+return function(blockset, has_sequences)
     local wrap, yield = coroutine.wrap, coroutine.yield
     return wrap(function()
         yield(preamble)
-        for seq in blockset:iter_sequences() do
-            local text = "name2seq[%q] = %s\n"
-            yield(text:format(seq:name(), seq_to_lua(seq)))
+        if has_sequences then
+            yield("name2seq = ...\n")
+        else
+            for seq in blockset:iter_sequences() do
+                local text = "name2seq[%q] = %s\n"
+                yield(text:format(seq:name(), seq_to_lua(seq)))
+            end
         end
         for block in blockset:iter_blocks() do
             local text = "table.insert(blocks, %s)\n"
