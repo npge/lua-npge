@@ -59,8 +59,7 @@ Block_mt.__call = function(self, fragments)
             local gaps = length - f:length()
             row = f:text() .. ("-"):rep(gaps)
         end
-        local Row = require 'npge.model.Row'
-        ff[f] = Row(row)
+        ff[f] = row
     end
     local block = {_fragments=ff, _length=length,
         _size=#fragments}
@@ -118,27 +117,46 @@ block_mt.iter_fragments = function(self)
 end
 
 block_mt.text = function(self, fragment)
-    local row = self._fragments[fragment]
-    assert(row)
-    return row:text(fragment:text())
+    local text = assert(self._fragments[fragment])
+    return text
 end
 
 block_mt.block2fragment = function(self, fragment, blockpos)
     local row = self._fragments[fragment]
     assert(row)
-    return row:block2fragment(blockpos)
+    if row:sub(blockpos + 1, blockpos + 1) == '-' then
+        return -1
+    end
+    local part = row:sub(1, blockpos + 1)
+    local to_atgcn = require 'npge.alignment.to_atgcn'
+    local bases = #(to_atgcn(part))
+    return bases - 1
 end
 
 block_mt.block2left = function(self, fragment, blockpos)
     local row = self._fragments[fragment]
     assert(row)
-    return row:block2left(blockpos)
+    local part = row:sub(1, blockpos + 1)
+    local to_atgcn = require 'npge.alignment.to_atgcn'
+    local bases = #(to_atgcn(part))
+    return bases - 1
+    -- -1 if before first
 end
 
 block_mt.block2right = function(self, fragment, blockpos)
     local row = self._fragments[fragment]
     assert(row)
-    return row:block2right(blockpos)
+    local part = row:sub(1, blockpos + 1)
+    local to_atgcn = require 'npge.alignment.to_atgcn'
+    local bases = #(to_atgcn(part))
+    if row:sub(blockpos + 1, blockpos + 1) ~= '-' then
+        return bases - 1
+    end
+    if bases == fragment:length() then
+        -- after all bases
+        return -1
+    end
+    return bases
 end
 
 return setmetatable(Block, Block_mt)
