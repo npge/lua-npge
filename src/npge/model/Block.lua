@@ -141,17 +141,4 @@ block_mt.block2right = function(self, fragment, blockpos)
     return row:block2right(blockpos)
 end
 
-block_mt.block2nearest = function(self, fragment, blockpos)
-    local row = self._fragments[fragment]
-    assert(row)
-    return row:block2nearest(blockpos)
-end
-
-block_mt.fragment2block = function(self, fragment, fragmentpos)
-    local row = self._fragments[fragment]
-    assert(row)
-    return row:fragment2block(fragmentpos)
-end
-
 return setmetatable(Block, Block_mt)
-
