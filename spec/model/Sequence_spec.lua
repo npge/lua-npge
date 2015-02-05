@@ -106,7 +106,7 @@ describe("model.sequence", function()
         assert.equal(s1, s2)
         assert.not_equal(s1, s3)
         assert.not_equal(s1, s4)
-        assert.not_equal(s1, s5)
+        assert.equal(s1, s5)
     end)
 
     it("makes string representation of sequence", function()

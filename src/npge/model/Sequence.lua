@@ -74,9 +74,7 @@ local function seq_as_arr(self)
 end
 
 seq_mt.__eq = function(self, other)
-    local arrays_equal = require 'npge.util.arrays_equal'
-    return arrays_equal(seq_as_arr(self), seq_as_arr(other))
-        and self._text == other._text
+    return self:name() == other:name()
 end
 
 seq_mt.__tostring = function(self)
