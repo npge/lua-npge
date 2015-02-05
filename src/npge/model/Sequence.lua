@@ -1,6 +1,9 @@
 -- use C version if available
-local has_c, cSequenceText =
-    pcall(require, 'npge.model.cSequenceText')
+local has_c, cmodel =
+    pcall(require, 'npge.cmodel')
+if has_c then
+    return cmodel.Sequence
+end
 
 local Sequence = {}
 local Sequence_mt = {}

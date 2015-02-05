@@ -34,6 +34,15 @@ build = {
             "src/npge/alignment/anchor.c",
         ['npge.alignment.cfindIdentGroups'] =
             "src/npge/alignment/findIdentGroups.c",
+        ['npge.cmodel'] = {
+            sources = {
+                "src/npge/cpp/model.cpp",
+                "src/npge/cpp/throw_assert.cpp",
+                "src/npge/cpp/lua_model.cpp",
+                "src/npge/cpp/strings.cpp",
+            },
+            libraries = {"stdc++"},
+        },
     },
 }
 
