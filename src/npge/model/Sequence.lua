@@ -61,10 +61,6 @@ seq_mt.text = function(self)
     return self._text
 end
 
-local function seq_as_arr(self)
-    return {self:name(), self:description()}
-end
-
 seq_mt.__eq = function(self, other)
     return self:name() == other:name()
 end
