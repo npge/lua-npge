@@ -80,8 +80,7 @@ bs_mt.same_sequences = function(self, other)
         return false
     end
     for name, seq in pairs(self._name2seq) do
-        local seq1 = other._name2seq[name]
-        if not seq1 or seq1 ~= seq then
+        if not other._name2seq[name] then
             return false
         end
     end

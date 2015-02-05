@@ -237,7 +237,7 @@ describe("model.blockset", function()
         assert.truthy(BS(s2, s1):same_sequences(BS(s1, s2)))
         assert.falsy(BS(s2):same_sequences(BS(s1)))
         assert.truthy(BS(s1):same_sequences(BS(s1a)))
-        assert.falsy(BS(s1):same_sequences(BS(s1b)))
+        assert.truthy(BS(s1):same_sequences(BS(s1b)))
     end)
 
     it("compares blocksets", function()

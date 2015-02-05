@@ -92,9 +92,7 @@ std::string Sequence::tostring() const {
 }
 
 bool Sequence::operator==(const Sequence& other) const {
-    return length() == other.length() &&
-        name() == other.name() &&
-        description() == other.description();
+    return name() == other.name();
 }
 
 bool Sequence::operator!=(const Sequence& other) const {
