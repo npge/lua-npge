@@ -113,16 +113,4 @@ describe("model.sequence", function()
         local s1 = Sequence("test_name", 'ATGC')
         assert.truthy(tostring(s1))
     end)
-
-    it("makes reference to Sequence", function()
-        local Sequence = require 'npge.model.Sequence'
-        if Sequence.fromRef then
-            local s1 = Sequence("name", 'ATGC', 'description')
-            local ref = s1:toRef()
-            local s2 = Sequence.fromRef(ref)
-            assert.equal(s2:name(), 'name')
-            assert.equal(s2:description(), 'description')
-            assert.equal(s2:text(), 'ATGC')
-        end
-    end)
 end)
