@@ -21,11 +21,7 @@ Sequence_mt.__call = function(self, name, text, description)
     assert(#text > 0, "No empty sequences allowed")
     assert(#seq._name > 0, "No unknown sequences allowed")
     seq._description = description or ''
-    if has_c then
-        seq._text = cSequenceText(text)
-    else
-        seq._text = text
-    end
+    seq._text = text
     return setmetatable(seq, seq_mt)
 end
 
@@ -58,15 +54,8 @@ seq_mt.circular = function(self)
     return circularity == 'c'
 end
 
-if has_c then
-    seq_mt.text = function(self)
-        local length = self._text:length()
-        return self._text:sub(0, length - 1)
-    end
-else
-    seq_mt.text = function(self)
-        return self._text
-    end
+seq_mt.text = function(self)
+    return self._text
 end
 
 local function seq_as_arr(self)
@@ -86,25 +75,15 @@ seq_mt.sub = function(self, min, max)
     assert(min >= 0)
     assert(min <= max)
     assert(max <= self:length())
-    if has_c then
-        return self._text:sub(min, max)
-    else
-        return self._text:sub(min + 1, max + 1)
-    end
+    return self._text:sub(min + 1, max + 1)
 end
 
 seq_mt.description = function(self)
     return self._description
 end
 
-if has_c then
-    seq_mt.length = function(self)
-        return self._text:length()
-    end
-else
-    seq_mt.length = function(self)
-        return #self._text
-    end
+seq_mt.length = function(self)
+    return #self._text
 end
 
 return setmetatable(Sequence, Sequence_mt)
