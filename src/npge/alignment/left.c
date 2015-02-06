@@ -317,7 +317,7 @@ static int lua_left(lua_State *L) {
     return 2;
 }
 
-LUALIB_API int luaopen_npge_alignment_cleft(
+int luaopen_npge_alignment_cleft(
         lua_State *L) {
     lua_pushcfunction(L, lua_left);
     return 1;

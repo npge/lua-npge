@@ -46,7 +46,7 @@ static int lua_to_atgcn(lua_State *L) {
     return 1;
 }
 
-LUALIB_API int luaopen_npge_alignment_cto_atgcn(
+int luaopen_npge_alignment_cto_atgcn(
         lua_State *L) {
     lua_pushcfunction(L, lua_to_atgcn);
     return 1;

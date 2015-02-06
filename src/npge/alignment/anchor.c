@@ -261,7 +261,7 @@ static int lua_anchor(lua_State *L) {
     return 3;
 }
 
-LUALIB_API int luaopen_npge_alignment_canchor(lua_State *L) {
+int luaopen_npge_alignment_canchor(lua_State *L) {
     lua_pushcfunction(L, lua_anchor);
     return 1;
 }

@@ -35,7 +35,7 @@ static int lua_unwind_row(lua_State *L) {
     return 1;
 }
 
-LUALIB_API int luaopen_npge_alignment_cunwind_row(
+int luaopen_npge_alignment_cunwind_row(
         lua_State *L) {
     lua_pushcfunction(L, lua_unwind_row);
     return 1;

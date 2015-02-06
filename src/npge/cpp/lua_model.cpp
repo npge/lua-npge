@@ -25,7 +25,7 @@ using namespace npge;
 }
 
 // first upvalue: metatable for Sequence instance
-LUALIB_API int lua_Sequence(lua_State *L) {
+int lua_Sequence(lua_State *L) {
     size_t name_size, text_size;
     const char* name = luaL_checklstring(L, 1, &name_size);
     const char* text = luaL_checklstring(L, 2, &text_size);
@@ -55,25 +55,25 @@ static SequencePtr& lua_toseq(lua_State* L, int index) {
     return *s;
 }
 
-LUALIB_API int lua_Sequence_gc(lua_State *L) {
+int lua_Sequence_gc(lua_State *L) {
     SequencePtr& seq = lua_toseq(L, 1);
     seq.reset();
     return 0;
 }
 
-LUALIB_API int lua_Sequence_type(lua_State *L) {
+int lua_Sequence_type(lua_State *L) {
     lua_pushstring(L, "Sequence");
     return 1;
 }
 
-LUALIB_API int lua_Sequence_name(lua_State *L) {
+int lua_Sequence_name(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
     const std::string& name = seq->name();
     lua_pushlstring(L, name.c_str(), name.size());
     return 1;
 }
 
-LUALIB_API int lua_Sequence_description(lua_State *L) {
+int lua_Sequence_description(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
     const std::string& description = seq->description();
     lua_pushlstring(L, description.c_str(),
@@ -81,7 +81,7 @@ LUALIB_API int lua_Sequence_description(lua_State *L) {
     return 1;
 }
 
-LUALIB_API int lua_Sequence_genome(lua_State *L) {
+int lua_Sequence_genome(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
     std::string genome = seq->genome();
     if (!genome.empty()) {
@@ -92,7 +92,7 @@ LUALIB_API int lua_Sequence_genome(lua_State *L) {
     return 1;
 }
 
-LUALIB_API int lua_Sequence_chromosome(lua_State *L) {
+int lua_Sequence_chromosome(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
     std::string chr = seq->chromosome();
     if (!chr.empty()) {
@@ -103,27 +103,27 @@ LUALIB_API int lua_Sequence_chromosome(lua_State *L) {
     return 1;
 }
 
-LUALIB_API int lua_Sequence_circular(lua_State *L) {
+int lua_Sequence_circular(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
     int circular = seq->circular();
     lua_pushboolean(L, circular);
     return 1;
 }
 
-LUALIB_API int lua_Sequence_text(lua_State *L) {
+int lua_Sequence_text(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
     const std::string& text = seq->text();
     lua_pushlstring(L, text.c_str(), text.size());
     return 1;
 }
 
-LUALIB_API int lua_Sequence_length(lua_State *L) {
+int lua_Sequence_length(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
     lua_pushinteger(L, seq->length());
     return 1;
 }
 
-LUALIB_API int lua_Sequence_sub(lua_State *L) {
+int lua_Sequence_sub(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
     int min = luaL_checkint(L, 2);
     int max = luaL_checkint(L, 3);
@@ -137,14 +137,14 @@ LUALIB_API int lua_Sequence_sub(lua_State *L) {
     return 1;
 }
 
-LUALIB_API int lua_Sequence_tostring(lua_State *L) {
+int lua_Sequence_tostring(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
     std::string repr = seq->tostring();
     lua_pushlstring(L, repr.c_str(), repr.size());
     return 1;
 }
 
-LUALIB_API int lua_Sequence_eq(lua_State *L) {
+int lua_Sequence_eq(lua_State *L) {
     const SequencePtr& a = lua_toseq(L, 1);
     const SequencePtr& b = lua_toseq(L, 2);
     int eq = ((*a) == (*b));
@@ -183,7 +183,7 @@ static void registerType(lua_State *L,
 }
 
 extern "C" {
-LUALIB_API int luaopen_npge_cmodel(lua_State *L) {
+int luaopen_npge_cmodel(lua_State *L) {
     lua_newtable(L);
     registerType(L, "Sequence", "npge_Sequence",
                  lua_Sequence, Sequence_methods);

@@ -48,7 +48,7 @@ static int lua_complement(lua_State *L) {
     return 1;
 }
 
-LUALIB_API int luaopen_npge_alignment_ccomplement(
+int luaopen_npge_alignment_ccomplement(
         lua_State *L) {
     lua_pushcfunction(L, lua_complement);
     return 1;

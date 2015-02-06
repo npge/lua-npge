@@ -64,7 +64,7 @@ static int lua_move_identical(lua_State *L) {
     return 2;
 }
 
-LUALIB_API int luaopen_npge_alignment_cmove_identical(
+int luaopen_npge_alignment_cmove_identical(
         lua_State *L) {
     lua_pushcfunction(L, lua_move_identical);
     return 1;

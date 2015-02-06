@@ -93,7 +93,7 @@ static int lua_findIdentGroups(lua_State *L) {
     return 1;
 }
 
-LUALIB_API int luaopen_npge_alignment_cfindIdentGroups(
+int luaopen_npge_alignment_cfindIdentGroups(
         lua_State *L) {
     lua_pushcfunction(L, lua_findIdentGroups);
     return 1;
