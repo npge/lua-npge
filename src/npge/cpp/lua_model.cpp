@@ -135,18 +135,24 @@ int lua_Sequence_length(lua_State *L) {
     return 1;
 }
 
-int lua_Sequence_sub(lua_State *L) {
+int lua_Sequence_sub_impl(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
     int min = luaL_checkint(L, 2);
     int max = luaL_checkint(L, 3);
+LUA_TRY
     ASSERT_LTE(0, min);
     ASSERT_LTE(min, max);
     ASSERT_LT(max, seq->length());
+LUA_CATCH
     int len = max - min + 1;
     const std::string& text = seq->text();
     const char* slice = text.c_str() + min;
     lua_pushlstring(L, slice, len);
     return 1;
+}
+
+int lua_Sequence_sub(lua_State *L) {
+    LUA_CALL_WRAPPED(lua_Sequence_sub_impl);
 }
 
 int lua_Sequence_tostring(lua_State *L) {
