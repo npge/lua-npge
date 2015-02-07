@@ -31,9 +31,9 @@ typedef std::vector<std::string> Strings;
 class Sequence :
     public boost::intrusive_ref_counter<Sequence> {
 public:
-    Sequence(const std::string& name,
-             const std::string& description,
-             const char* text, int len);
+    static SequencePtr make(const std::string& name,
+                            const std::string& description,
+                            const char* text, int len);
 
     const std::string& name() const;
 
@@ -59,6 +59,8 @@ public:
 
 private:
     std::string name_, description_, text_;
+
+    Sequence();
 };
 
 }

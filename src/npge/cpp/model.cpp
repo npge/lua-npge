@@ -21,15 +21,21 @@ namespace npge {
 
 typedef boost::scoped_array<char> Buffer;
 
-Sequence::Sequence(const std::string& name,
-                   const std::string& description,
-                   const char* text, int len):
-    name_(name), description_(description) {
+Sequence::Sequence() {
+}
+
+SequencePtr Sequence::make(const std::string& name,
+                           const std::string& description,
+                           const char* text, int len) {
     Buffer b(new char[len]);
     int b_len = toAtgcn(b.get(), text, len);
-    text_.assign(b.get(), b_len);
-    ASSERT_GT(name_.length(), 0);
-    ASSERT_GT(text_.length(), 0);
+    ASSERT_GT(name.length(), 0);
+    ASSERT_GT(b_len, 0);
+    SequencePtr seq(new Sequence);
+    seq->text_.assign(b.get(), b_len);
+    seq->name_ = name;
+    seq->description_ = description;
+    return seq;
 }
 
 const std::string& Sequence::name() const {

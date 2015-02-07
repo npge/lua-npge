@@ -35,14 +35,12 @@ int lua_Sequence(lua_State *L) {
         description = luaL_checklstring(L, 3,
                 &description_size);
     }
-    std::allocator<Sequence> a;
-    std::auto_ptr<Sequence> seq(a.allocate(1));
-LUA_TRY
-    new (seq.get()) Sequence(name, description,
-            text, text_size);
-LUA_CATCH
     void* s = lua_newuserdata(L, sizeof(SequencePtr));
-    new (s) SequencePtr(seq.release());
+LUA_TRY
+    SequencePtr seq = Sequence::make(name, description,
+            text, text_size);
+    new (s) SequencePtr(seq);
+LUA_CATCH
     // get metatable of Sequence
     lua_pushvalue(L, lua_upvalueindex(1));
     lua_setmetatable(L, -2);
