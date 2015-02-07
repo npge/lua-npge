@@ -19,13 +19,23 @@ using namespace npge;
 #define LUA_TRY try {
 
 #define LUA_CATCH } catch (std::exception& e) { \
-    return luaL_error(L, e.what()); \
+    lua_pushstring(L, e.what()); \
+    return -1; \
 } catch (...) { \
-    return luaL_error(L, "Unknown error occurred"); \
+    lua_pushstring(L, "Unknown error occurred"); \
+    return -1; \
 }
 
+#define LUA_CALL_WRAPPED(f) \
+    int results = f(L); \
+    if (results == -1) { \
+        return lua_error(L); \
+    } else { \
+        return results; \
+    }
+
 // first upvalue: metatable for Sequence instance
-int lua_Sequence(lua_State *L) {
+int lua_Sequence_impl(lua_State *L) {
     size_t name_size, text_size;
     const char* name = luaL_checklstring(L, 1, &name_size);
     const char* text = luaL_checklstring(L, 2, &text_size);
@@ -45,6 +55,10 @@ LUA_CATCH
     lua_pushvalue(L, lua_upvalueindex(1));
     lua_setmetatable(L, -2);
     return 1;
+}
+
+int lua_Sequence(lua_State *L) {
+    LUA_CALL_WRAPPED(lua_Sequence_impl);
 }
 
 static SequencePtr& lua_toseq(lua_State* L, int index) {
