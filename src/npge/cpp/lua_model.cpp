@@ -16,16 +16,6 @@
 
 using namespace npge;
 
-#define LUA_TRY try {
-
-#define LUA_CATCH } catch (std::exception& e) { \
-    lua_pushstring(L, e.what()); \
-    return -1; \
-} catch (...) { \
-    lua_pushstring(L, "Unknown error occurred"); \
-    return -1; \
-}
-
 #define LUA_CALL_WRAPPED(f) \
     int results = f(L); \
     if (results == -1) { \
@@ -46,11 +36,14 @@ int lua_Sequence_impl(lua_State *L) {
                 &description_size);
     }
     void* s = lua_newuserdata(L, sizeof(SequencePtr));
-LUA_TRY
-    SequencePtr seq = Sequence::make(name, description,
-            text, text_size);
-    new (s) SequencePtr(seq);
-LUA_CATCH
+    try {
+        SequencePtr seq = Sequence::make(name, description,
+                text, text_size);
+        new (s) SequencePtr(seq);
+    } catch (std::exception& e) {
+        lua_pushstring(L, e.what());
+        return -1;
+    }
     // get metatable of Sequence
     lua_pushvalue(L, lua_upvalueindex(1));
     lua_setmetatable(L, -2);
@@ -139,11 +132,14 @@ int lua_Sequence_sub_impl(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
     int min = luaL_checkint(L, 2);
     int max = luaL_checkint(L, 3);
-LUA_TRY
-    ASSERT_LTE(0, min);
-    ASSERT_LTE(min, max);
-    ASSERT_LT(max, seq->length());
-LUA_CATCH
+    try {
+        ASSERT_LTE(0, min);
+        ASSERT_LTE(min, max);
+        ASSERT_LT(max, seq->length());
+    } catch (std::exception& e) {
+        lua_pushstring(L, e.what());
+        return -1;
+    }
     int len = max - min + 1;
     const std::string& text = seq->text();
     const char* slice = text.c_str() + min;
