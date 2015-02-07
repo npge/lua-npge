@@ -89,7 +89,7 @@ std::string Sequence::sub(int min, int max) const {
     ASSERT_LTE(min, max);
     ASSERT_LT(max, length());
     int len = max - min + 1;
-    return text_.substr(min, 1);
+    return text_.substr(min, len);
 }
 
 std::string Sequence::tostring() const {
