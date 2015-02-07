@@ -64,7 +64,7 @@ describe("model.fragment", function()
         assert(Fragment(s1, 0, 1, 1) < Fragment(s1, 0, 2, 1))
     end)
 
-    it("throws in 'a < b' if a or a is parted", function()
+    it("throws in 'a < b' if a or b is parted", function()
         local s1 = model.Sequence("ABC&chromosome&c", "ATGC")
         local b
         assert.has_error(function()
