@@ -1,3 +1,5 @@
+BUSTED := $(wildcard /usr/local/lib/luarocks/rocks/busted/*/bin/busted)
+
 clean:
 	rm -f luacov.*.out
 	rm -f src/npge/*/*.gcov
@@ -9,3 +11,6 @@ clean:
 test:
 	busted -c
 	gcov src/npge/*/*.c
+
+exitless-busted:
+	sed 's/os.exit/--os.exit/' > $@ < $(BUSTED)
