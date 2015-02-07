@@ -6,6 +6,7 @@
  */
 
 #include <cstdlib>
+#include <cassert>
 #include <memory>
 
 #define LUA_LIB
@@ -24,7 +25,14 @@ using namespace npge;
         return results; \
     }
 
-// first upvalue: metatable for Sequence instance
+void lua_pushseq(lua_State* L, const SequencePtr& t) {
+    void* v = lua_newuserdata(L, sizeof(SequencePtr));
+    new (v) SequencePtr(t);
+    luaL_getmetatable(L, "npge_Sequence");
+    assert(lua_type(L, -1) == LUA_TTABLE);
+    lua_setmetatable(L, -2);
+}
+
 int lua_Sequence_impl(lua_State *L) {
     size_t name_size, text_size;
     const char* name = luaL_checklstring(L, 1, &name_size);
@@ -35,19 +43,15 @@ int lua_Sequence_impl(lua_State *L) {
         description = luaL_checklstring(L, 3,
                 &description_size);
     }
-    void* s = lua_newuserdata(L, sizeof(SequencePtr));
+    SequencePtr s;
     try {
-        SequencePtr seq = Sequence::make(name, description,
-                text, text_size);
-        new (s) SequencePtr(seq);
+        s = Sequence::make(name, description, text, text_size);
+        lua_pushseq(L, s);
+        return 1;
     } catch (std::exception& e) {
         lua_pushstring(L, e.what());
         return -1;
     }
-    // get metatable of Sequence
-    lua_pushvalue(L, lua_upvalueindex(1));
-    lua_setmetatable(L, -2);
-    return 1;
 }
 
 int lua_Sequence(lua_State *L) {
@@ -192,7 +196,9 @@ static void registerType(lua_State *L,
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index"); // mt.__index = mt
     luaL_register(L, NULL, methods);
-    lua_pushcclosure(L, constructor, 1);
+    lua_pop(L, 1); // metatable of instance
+    // constructor
+    lua_pushcfunction(L, constructor);
     lua_setfield(L, -2, type_name);
 }
 
