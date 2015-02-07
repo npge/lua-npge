@@ -48,7 +48,20 @@ return function(blockset, has_sequences)
     return wrap(function()
         yield(preamble)
         if has_sequences then
-            yield("name2seq = ...\n")
+            yield("local names = {\n")
+            for seq in blockset:iter_sequences() do
+                local text = " %q,\n"
+                yield(text:format(seq:name()))
+            end
+            yield("}")
+            local text = [[
+            local seqs_bs = ...
+            for _, name in ipairs(names) do
+                local s = seqs_bs:sequence_by_name(name)
+                name2seq[name] = assert(s)
+            end
+            ]]
+            yield(text)
         else
             for seq in blockset:iter_sequences() do
                 local text = "name2seq[%q] = %s\n"
