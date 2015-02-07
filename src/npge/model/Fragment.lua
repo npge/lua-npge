@@ -1,14 +1,11 @@
 -- use C version if available
-local has_c, f_mt =
-    pcall(require, 'npge.model.cFragment')
-local Fragment_constructor
+local has_c, cmodel =
+    pcall(require, 'npge.cmodel')
 if has_c then
-    Fragment_constructor = f_mt.constructor
-    f_mt.constructor = nil
-else
-    f_mt = {}
+    return cmodel.Fragment
 end
 
+local f_mt = {}
 local Fragment = {}
 local Fragment_mt = {}
 
@@ -36,72 +33,66 @@ Fragment_mt.__call = function(self, seq, start, stop, ori)
                 "Found parted fragment on linear sequence")
         end
     end
-    if has_c then
-        return Fragment_constructor(seq, start, stop, ori)
-    else
-        local f = {_seq=seq, _start=start,
-            _stop=stop, _ori=ori}
-        return setmetatable(f, f_mt)
-    end
+    local f = {_seq=seq, _start=start,
+        _stop=stop, _ori=ori}
+    return setmetatable(f, f_mt)
 end
 
 f_mt.type = function(self)
     return 'Fragment'
 end
 
-if not has_c then
-    f_mt.sequence = function(self)
-        return self._seq
-    end
+f_mt.sequence = function(self)
+    return self._seq
+end
 
-    f_mt.start = function(self)
-        return self._start
-    end
+f_mt.start = function(self)
+    return self._start
+end
 
-    f_mt.stop = function(self)
-        return self._stop
-    end
+f_mt.stop = function(self)
+    return self._stop
+end
 
-    f_mt.ori = function(self)
-        return self._ori
-    end
+f_mt.ori = function(self)
+    return self._ori
+end
 
-    f_mt.parted = function(self)
-        local diff = self:stop() - self:start()
-        -- (diff < 0 and self:ori() == 1) or ...
-        return diff * self:ori() < 0
-    end
+f_mt.parted = function(self)
+    local diff = self:stop() - self:start()
+    -- (diff < 0 and self:ori() == 1) or ...
+    return diff * self:ori() < 0
+end
 
-    f_mt.length = function(self)
-        local absdiff = math.abs(self:stop() - self:start())
-        if not self:parted() then
-            return absdiff + 1
-        else
-            return self:sequence():length() - absdiff + 1
-        end
+f_mt.length = function(self)
+    local absdiff = math.abs(self:stop() - self:start())
+    if not self:parted() then
+        return absdiff + 1
+    else
+        return self:sequence():length() - absdiff + 1
     end
+end
 
-    local function f_as_arr(self)
-        return {self:sequence():name(), self:start(),
-            self:stop(), self:ori()}
-    end
+local function f_as_arr(self)
+    return {self:sequence():name(), self:start(),
+        self:stop(), self:ori()}
+end
 
-    f_mt.__eq = function(self, other)
-        local arrays_equal = require 'npge.util.arrays_equal'
-        return arrays_equal(f_as_arr(self), f_as_arr(other))
-    end
+f_mt.__eq = function(self, other)
+    local arrays_equal = require 'npge.util.arrays_equal'
+    return arrays_equal(f_as_arr(self), f_as_arr(other))
+end
 
-    local function f_as_arr2(self)
-        assert(not self:parted())
-        local min = math.min(self:start(), self:stop())
-        local max = math.max(self:start(), self:stop())
-        return {min, max, self:ori(), self:sequence():name()}
-    end
+local function f_as_arr2(self)
+    assert(not self:parted())
+    local min = math.min(self:start(), self:stop())
+    local max = math.max(self:start(), self:stop())
+    return {min, max, self:ori(), self:sequence():name()}
+end
 
-    f_mt.__lt = function(self, other)
-        local arrays_less = require 'npge.util.arrays_less'
-        return arrays_less(f_as_arr2(self), f_as_arr2(other))
-    end
+f_mt.__lt = function(self, other)
+    local arrays_less = require 'npge.util.arrays_less'
+    return arrays_less(f_as_arr2(self), f_as_arr2(other))
 end
 
 f_mt.id = function(self)
@@ -159,9 +150,6 @@ f_mt.common = function(self, other)
     if other:parted() then
         local a, b = other:parts()
         return self:common(a) + self:common(b)
-    end
-    if has_c then
-        return self:_simple_common(other)
     end
     local self_min = math.min(self:start(), self:stop())
     local self_max = math.max(self:start(), self:stop())

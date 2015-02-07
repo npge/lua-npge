@@ -23,10 +23,15 @@ int toAtgcn(char* dst, const char* src, int length);
 int toAtgcnAndGap(char* dst, const char* src, int length);
 
 class Sequence;
+class Fragment;
 
 typedef boost::intrusive_ptr<Sequence> SequencePtr;
 
 typedef std::vector<std::string> Strings;
+typedef std::vector<SequencePtr> Sequences;
+typedef std::vector<Fragment> Fragments;
+
+typedef std::pair<Fragment, Fragment> TwoFragments;
 
 class Sequence :
     public boost::intrusive_ref_counter<Sequence> {
@@ -59,6 +64,43 @@ private:
     std::string name_, description_, text_;
 
     Sequence();
+};
+
+class Fragment {
+public:
+    static Fragment make(SequencePtr sequence,
+                         int start, int stop, int ori);
+
+    const SequencePtr& sequence() const;
+
+    int start() const;
+
+    int stop() const;
+
+    int ori() const;
+
+    bool parted() const;
+
+    int length() const;
+
+    std::string id() const;
+
+    std::string tostring() const;
+
+    TwoFragments parts() const;
+
+    std::string text() const;
+
+    int common(const Fragment& other) const;
+
+    bool operator==(const Fragment& other) const;
+
+    bool operator<(const Fragment& other) const;
+
+private:
+    SequencePtr sequence_;
+    int start_;
+    int stop_; // (stop + 1) * ori
 };
 
 }
