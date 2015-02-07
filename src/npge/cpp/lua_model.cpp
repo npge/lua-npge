@@ -191,7 +191,7 @@ static void registerType(lua_State *L,
     luaL_newmetatable(L, mt_name);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index"); // mt.__index = mt
-    luaL_register(L, NULL, Sequence_methods);
+    luaL_register(L, NULL, methods);
     lua_pushcclosure(L, constructor, 1);
     lua_setfield(L, -2, type_name);
 }
