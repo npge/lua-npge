@@ -19,12 +19,7 @@ namespace npge {
 
 const char* reduce_path(const char* file) {
     const char* subpath = strstr(file, SRC_PATTERN);
-    if (subpath) {
-        subpath += strlen(SRC_PATTERN);
-        return subpath;
-    } else {
-        return file;
-    }
+    return subpath ? (subpath + strlen(SRC_PATTERN)) : file;
 }
 
 void assertion_failed_msg(char const* expr, char const* msg,
