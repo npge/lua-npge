@@ -22,11 +22,13 @@ describe("model.block", function()
         local s = model.Sequence("test_name", "AATAT")
         local f1 = model.Fragment(s, 0, 2, 1) -- AAT
         local f2 = model.Fragment(s, 4, 3, -1) -- AT
+        local f3 = model.Fragment(s, 0, 1, 1) -- AA
         local block = model.Block({
             {f1, 'AAT'},
             {f2, 'A-T'},
+            {f3, 'AA-'},
         })
-        assert.are.equal(block:size(), 2)
+        assert.are.equal(block:size(), 3)
         assert.are.equal(block:length(), 3)
         assert.are.equal(block:text(f1), 'AAT')
         assert.are.equal(block:text(f2), 'A-T')
@@ -42,6 +44,9 @@ describe("model.block", function()
         assert.are.equal(block:block2right(f2, 0), 0)
         assert.are.equal(block:block2right(f2, 1), 1)
         assert.are.equal(block:block2right(f2, 2), 1)
+        assert.are.equal(block:block2right(f3, 0), 0)
+        assert.are.equal(block:block2right(f3, 1), 1)
+        assert.are.equal(block:block2right(f3, 2), -1)
     end)
 
     it("throws on poor formed blocks", function()
