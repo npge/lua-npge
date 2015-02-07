@@ -101,8 +101,4 @@ bool Sequence::operator==(const Sequence& other) const {
     return name() == other.name();
 }
 
-bool Sequence::operator!=(const Sequence& other) const {
-    return !(*this == other);
-}
-
 }

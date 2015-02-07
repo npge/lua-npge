@@ -55,8 +55,6 @@ public:
 
     bool operator==(const Sequence& other) const;
 
-    bool operator!=(const Sequence& other) const;
-
 private:
     std::string name_, description_, text_;
 
