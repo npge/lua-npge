@@ -458,14 +458,10 @@ int lua_Block_impl(lua_State *L) {
             fragments[i] = lua_tofragment(L, -1);
             lua_pop(L, 1); // fragment
         }
-        try {
-            BlockPtr block = Block::make(fragments);
-            lua_pushblock(L, block);
-            return 1;
-        } catch (std::exception& e) {
-            lua_pushstring(L, e.what());
-            return -1;
-        }
+        // must not throw
+        BlockPtr block = Block::make(fragments);
+        lua_pushblock(L, block);
+        return 1;
     }
 }
 
