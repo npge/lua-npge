@@ -18,6 +18,7 @@ script:
   - valgrind --error-exitcode=1 --leak-check=full lua exitless-busted
   - luarocks make --local CFLAGS="-O0 -fPIC -ftest-coverage -fprofile-arcs" LIBFLAG="-shared --coverage"
   - busted
+  - cat exitless-busted
 
 after_success:
   - coveralls -b . --dump c.report.json
