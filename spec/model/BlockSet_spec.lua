@@ -1,6 +1,6 @@
 local model = require 'npge.model'
 
-describe("model.blockset", function()
+describe("model.BlockSet", function()
     it("creates blockset of one block", function()
         local s = model.Sequence("test_name", "ATAT")
         local f1 = model.Fragment(s, 0, 1, 1)

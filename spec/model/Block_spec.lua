@@ -1,6 +1,6 @@
 local model = require 'npge.model'
 
-describe("model.block", function()
+describe("model.Block", function()
     it("has type 'Block'", function()
         local s = model.Sequence("test_name", "ATAT")
         local f1 = model.Fragment(s, 0, 1, 1)

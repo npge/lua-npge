@@ -1,6 +1,6 @@
 local Sequence = require 'npge.model.Sequence'
 
-describe("model.sequence", function()
+describe("model.Sequence", function()
     it("sequence creation", function()
         local s = Sequence("test_name", "ATGC",
             "test description")
