@@ -38,7 +38,7 @@ void toLua(lua_State* L, const T& t,
            const char* mt_name, const char* cache_name) {
     // check in cache
     // http://lua-users.org/lists/lua-l/2007-01/msg00128.html
-    P* p = t.get();
+    P* p = const_cast<P*>(t.get());
     lua_getfield(L, LUA_REGISTRYINDEX, cache_name);
     lua_pushlightuserdata(L, p);
     lua_rawget(L, -2);

@@ -34,11 +34,11 @@ SequencePtr Sequence::make(const std::string& name,
     int b_len = toAtgcn(b.get(), text, len);
     ASSERT_MSG(name.length(), "No unknown sequences allowed");
     ASSERT_MSG(b_len, "No empty sequences allowed");
-    SequencePtr seq(new Sequence);
+    Sequence* seq = new Sequence;
     seq->text_.assign(b.get(), b_len);
     seq->name_ = name;
     seq->description_ = description;
-    return seq;
+    return SequencePtr(seq);
 }
 
 const std::string& Sequence::name() const {
@@ -115,15 +115,16 @@ FragmentPtr Fragment::make(SequencePtr sequence,
     ASSERT_LTE(0, stop);
     ASSERT_LT(stop, sequence->length());
     ASSERT_TRUE(ori == 1 || ori == -1);
-    FragmentPtr fragment(new Fragment);
+    Fragment* fragment = new Fragment;
     fragment->sequence_ = sequence;
     fragment->start_ = start;
     fragment->stop_ = (stop + 1) * ori;
+    FragmentPtr fr(fragment);
     if (!sequence->circular()) {
         ASSERT_MSG(!fragment->parted(), "Found parted "
                    "fragment on linear sequence");
     }
-    return fragment;
+    return fr;
 }
 
 const SequencePtr& Fragment::sequence() const {

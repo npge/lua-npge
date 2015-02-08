@@ -25,8 +25,8 @@ int toAtgcnAndGap(char* dst, const char* src, int length);
 class Sequence;
 class Fragment;
 
-typedef boost::intrusive_ptr<Sequence> SequencePtr;
-typedef boost::intrusive_ptr<Fragment> FragmentPtr;
+typedef boost::intrusive_ptr<const Sequence> SequencePtr;
+typedef boost::intrusive_ptr<const Fragment> FragmentPtr;
 
 typedef std::vector<std::string> Strings;
 typedef std::vector<SequencePtr> Sequences;
