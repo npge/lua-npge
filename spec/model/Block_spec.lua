@@ -49,6 +49,33 @@ describe("model.Block", function()
         assert.are.equal(block:block2right(f3, 2), -1)
     end)
 
+    it("throws on out of range index for block2* methods",
+    function()
+        local s = model.Sequence("test_name", "AATAT")
+        local f1 = model.Fragment(s, 0, 2, 1) -- AAT
+        local block = model.Block({
+            {f1, 'AAT'},
+        })
+        assert.has_error(function()
+            block:block2fragment(-1)
+        end)
+        assert.has_error(function()
+            block:block2left(-1)
+        end)
+        assert.has_error(function()
+            block:block2right(-1)
+        end)
+        assert.has_error(function()
+            block:block2fragment(3)
+        end)
+        assert.has_error(function()
+            block:block2left(3)
+        end)
+        assert.has_error(function()
+            block:block2right(3)
+        end)
+    end)
+
     it("block:text(unknown fragment) throws", function()
         local s = model.Sequence("test_name", "AATAT")
         local f1 = model.Fragment(s, 0, 2, 1) -- AAT
