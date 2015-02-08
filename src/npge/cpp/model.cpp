@@ -104,20 +104,23 @@ bool Sequence::operator==(const Sequence& other) const {
     return name() == other.name();
 }
 
-Fragment Fragment::make(SequencePtr sequence,
-                        int start, int stop, int ori) {
+Fragment::Fragment() {
+}
+
+FragmentPtr Fragment::make(SequencePtr sequence,
+                           int start, int stop, int ori) {
     ASSERT_TRUE(sequence);
     ASSERT_LTE(0, start);
     ASSERT_LT(start, sequence->length());
     ASSERT_LTE(0, stop);
     ASSERT_LT(stop, sequence->length());
     ASSERT_TRUE(ori == 1 || ori == -1);
-    Fragment fragment;
-    fragment.sequence_ = sequence;
-    fragment.start_ = start;
-    fragment.stop_ = (stop + 1) * ori;
+    FragmentPtr fragment(new Fragment);
+    fragment->sequence_ = sequence;
+    fragment->start_ = start;
+    fragment->stop_ = (stop + 1) * ori;
     if (!sequence->circular()) {
-        ASSERT_MSG(!fragment.parted(), "Found parted "
+        ASSERT_MSG(!fragment->parted(), "Found parted "
                    "fragment on linear sequence");
     }
     return fragment;
@@ -197,19 +200,19 @@ std::string Fragment::text() const {
         }
     } else {
         TwoFragments two = parts();
-        return two.first.text() + two.second.text();
+        return two.first->text() + two.second->text();
     }
 }
 
 int Fragment::common(const Fragment& other) const {
     if (parted()) {
         TwoFragments two = parts();
-        return two.first.common(other) +
-               two.second.common(other);
+        return two.first->common(other) +
+               two.second->common(other);
     }
     if (other.parted()) {
         TwoFragments two = other.parts();
-        return common(two.first) + common(two.second);
+        return common(*two.first) + common(*two.second);
     }
     int self_min = std::min(start(), stop());
     int self_max = std::max(start(), stop());

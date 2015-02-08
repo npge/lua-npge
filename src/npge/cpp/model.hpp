@@ -26,12 +26,13 @@ class Sequence;
 class Fragment;
 
 typedef boost::intrusive_ptr<Sequence> SequencePtr;
+typedef boost::intrusive_ptr<Fragment> FragmentPtr;
 
 typedef std::vector<std::string> Strings;
 typedef std::vector<SequencePtr> Sequences;
-typedef std::vector<Fragment> Fragments;
+typedef std::vector<FragmentPtr> Fragments;
 
-typedef std::pair<Fragment, Fragment> TwoFragments;
+typedef std::pair<FragmentPtr, FragmentPtr> TwoFragments;
 
 class Sequence :
     public boost::intrusive_ref_counter<Sequence> {
@@ -66,10 +67,11 @@ private:
     Sequence();
 };
 
-class Fragment {
+class Fragment :
+    public boost::intrusive_ref_counter<Fragment> {
 public:
-    static Fragment make(SequencePtr sequence,
-                         int start, int stop, int ori);
+    static FragmentPtr make(SequencePtr sequence,
+                            int start, int stop, int ori);
 
     const SequencePtr& sequence() const;
 
@@ -101,6 +103,8 @@ private:
     SequencePtr sequence_;
     int start_;
     int stop_; // (stop + 1) * ori
+
+    Fragment();
 };
 
 }
