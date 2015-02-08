@@ -114,6 +114,13 @@ describe("model.fragment", function()
         assert.are.equal(b:ori(), 1)
     end)
 
+    it("parts() throws if sequence is linear", function()
+        local s = model.Sequence("genome&chromosome&l", "ATGC")
+        assert.has_error(function()
+            local a, b = Fragment(s, 2, 0, 1):parts()
+        end)
+    end)
+
     it("gets parts of parted fragment (negative)", function()
         local s = model.Sequence("genome&chromosome&c", "ATGC")
         local a, b = Fragment(s, 1, 2, -1):parts()
