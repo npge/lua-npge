@@ -37,7 +37,7 @@ static void range(Ints& ints, int n) {
 template<typename It, typename V, typename Cmp>
 It binarySearch(It begin, It end, const V& v, const Cmp& less) {
     It it = std::lower_bound(begin, end, v, less);
-    if (less(v, *it)) {
+    if (it != end && less(v, *it)) {
         it = end;
     }
     return it;
@@ -46,7 +46,7 @@ It binarySearch(It begin, It end, const V& v, const Cmp& less) {
 template<typename It, typename V>
 It binarySearch(It begin, It end, const V& v) {
     It it = std::lower_bound(begin, end, v);
-    if (!(*it == v)) {
+    if (it != end && !(*it == v)) {
         it = end;
     }
     return it;
