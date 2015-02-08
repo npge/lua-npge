@@ -393,8 +393,10 @@ static void registerType(lua_State *L,
                          const luaL_Reg* methods) {
     // cache
     lua_newtable(L);
+    lua_newtable(L); // mt of cache
     lua_pushliteral(L, "v");
     lua_setfield(L, -2, "__mode");
+    lua_setmetatable(L, -2);
     lua_setfield(L, LUA_REGISTRYINDEX, cache_name);
     // metatable for instance
     luaL_newmetatable(L, mt_name);
