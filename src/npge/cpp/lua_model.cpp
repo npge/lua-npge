@@ -46,7 +46,7 @@ void toLua(lua_State* L, const T& t,
         lua_remove(L, -2); // remove cache table from stack
     } else {
         lua_pop(L, 1); // nil
-        // make new userdata with SequencePtr
+        // make new userdata
         void* v = lua_newuserdata(L, sizeof(T));
         new (v) T(t);
         luaL_getmetatable(L, mt_name);
