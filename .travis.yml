@@ -13,6 +13,7 @@ script:
   - busted -c
   - luarocks make --local
   - busted -c
+  - luarocks make --local CFLAGS="-O0 -g -fPIC"
   - make exitless-busted
   - valgrind --error-exitcode=1 --leak-check=full lua exitless-busted
   - luarocks make --local CFLAGS="-O0 -fPIC -ftest-coverage -fprofile-arcs" LIBFLAG="-shared --coverage"
