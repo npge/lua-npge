@@ -1,8 +1,8 @@
 -- use C version if available
-local has_c, cto_atgcn = pcall(require,
-    'npge.alignment.cto_atgcn')
+local has_c, cmodel = pcall(require,
+    'npge.cmodel')
 if has_c then
-    return cto_atgcn
+    return cmodel.toAtgcn
 end
 
 return function(text)

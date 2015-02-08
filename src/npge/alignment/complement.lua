@@ -1,8 +1,8 @@
 -- use C version if available
-local has_c, ccomplement = pcall(require,
-    'npge.alignment.ccomplement')
+local has_c, cmodel = pcall(require,
+    'npge.cmodel')
 if has_c then
-    return ccomplement
+    return cmodel.complement
 end
 
 return function(text)

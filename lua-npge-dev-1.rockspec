@@ -19,12 +19,6 @@ build = {
             "src/npge/alignment/identity.c",
         ['npge.alignment.cunwind_row'] =
             "src/npge/alignment/unwind_row.c",
-        ['npge.alignment.cto_atgcn_and_gap'] =
-            "src/npge/alignment/to_atgcn_and_gap.c",
-        ['npge.alignment.cto_atgcn'] =
-            "src/npge/alignment/to_atgcn.c",
-        ['npge.alignment.ccomplement'] =
-            "src/npge/alignment/complement.c",
         ['npge.alignment.cmove_identical'] =
             "src/npge/alignment/move_identical.c",
         ['npge.alignment.cleft'] =

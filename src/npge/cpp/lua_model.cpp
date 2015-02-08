@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <memory>
+#include <boost/scoped_array.hpp>
 
 #define LUA_LIB
 #include <lua.hpp>
@@ -378,6 +379,49 @@ static const luaL_Reg Fragment_methods[] = {
     {NULL, NULL}
 };
 
+/////////
+
+typedef boost::scoped_array<char> Buffer;
+
+int lua_toAtgcn(lua_State* L) {
+    size_t text_size;
+    const char* text = luaL_checklstring(L, 1, &text_size);
+    if (text_size == 0) {
+        lua_pushlstring(L, text, text_size);
+        return 1;
+    }
+    Buffer buffer(new char[text_size]);
+    int size = toAtgcn(buffer.get(), text, text_size);
+    lua_pushlstring(L, buffer.get(), size);
+    return 1;
+}
+
+int lua_toAtgcnAndGap(lua_State* L) {
+    size_t text_size;
+    const char* text = luaL_checklstring(L, 1, &text_size);
+    if (text_size == 0) {
+        lua_pushlstring(L, text, text_size);
+        return 1;
+    }
+    Buffer buffer(new char[text_size]);
+    int size = toAtgcnAndGap(buffer.get(), text, text_size);
+    lua_pushlstring(L, buffer.get(), size);
+    return 1;
+}
+
+int lua_complement(lua_State* L) {
+    size_t text_size;
+    const char* text = luaL_checklstring(L, 1, &text_size);
+    if (text_size == 0) {
+        lua_pushlstring(L, text, text_size);
+        return 1;
+    }
+    Buffer buffer(new char[text_size]);
+    int size = complement(buffer.get(), text, text_size);
+    lua_pushlstring(L, buffer.get(), size);
+    return 1;
+}
+
 // -1 is module "model"
 static void registerType(lua_State *L,
                          const char* type_name,
@@ -403,6 +447,13 @@ static void registerType(lua_State *L,
     lua_setfield(L, -2, type_name);
 }
 
+static const luaL_Reg free_functions[] = {
+    {"toAtgcn", lua_toAtgcn},
+    {"toAtgcnAndGap", lua_toAtgcnAndGap},
+    {"complement", lua_complement},
+    {NULL, NULL}
+};
+
 extern "C" {
 int luaopen_npge_cmodel(lua_State *L) {
     lua_newtable(L);
@@ -412,6 +463,7 @@ int luaopen_npge_cmodel(lua_State *L) {
     registerType(L, "Fragment", "npge_Fragment",
                  "npge_Fragment_cache",
                  lua_Fragment, Fragment_methods);
+    luaL_register(L, NULL, free_functions);
     return 1;
 }
 
