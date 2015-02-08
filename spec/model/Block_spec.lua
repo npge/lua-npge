@@ -49,6 +49,16 @@ describe("model.block", function()
         assert.are.equal(block:block2right(f3, 2), -1)
     end)
 
+    it("block:text(unknown fragment) throws", function()
+        local s = model.Sequence("test_name", "AATAT")
+        local f1 = model.Fragment(s, 0, 2, 1) -- AAT
+        local f2 = model.Fragment(s, 4, 3, -1) -- AT
+        local block = model.Block({f1})
+        assert.has_error(function()
+            block:text(f2)
+        end)
+    end)
+
     it("throws on poor formed blocks", function()
         local s = model.Sequence("test_name", "AATAT")
         local f1 = model.Fragment(s, 0, 2, 1) -- AAT
