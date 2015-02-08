@@ -80,6 +80,18 @@ static void lua_pushfr(lua_State* L, const FragmentPtr& fr) {
             "npge_Fragment", "npge_Fragment_cache");
 }
 
+static BlockPtr& lua_toblock(lua_State* L, int index) {
+    return fromLua<BlockPtr>(L, index, "npge_Block");
+}
+
+static void lua_pushblock(lua_State* L,
+                          const BlockPtr& block) {
+    return toLua<BlockPtr, Block>(L, block,
+            "npge_Block", "npge_Block_cache");
+}
+
+////////
+
 int lua_Sequence_impl(lua_State *L) {
     size_t name_size, text_size;
     const char* name = luaL_checklstring(L, 1, &name_size);
@@ -379,6 +391,248 @@ static const luaL_Reg Fragment_methods[] = {
     {NULL, NULL}
 };
 
+static bool hasRows(lua_State* L, int index) {
+    return lua_type(L, -1) == LUA_TTABLE &&
+           lua_objlen(L, -1) == 2;
+}
+
+// Block({fragment1, fragment2, ...})
+int lua_Block_impl(lua_State *L) {
+    luaL_argcheck(L, lua_gettop(L) >= 1, 1,
+                  "Provide list of fragments to Block()");
+    luaL_argcheck(L, lua_type(L, 1) == LUA_TTABLE, 1,
+                  "Provide list of fragments to Block()");
+    int nrows = lua_objlen(L, 1);
+    luaL_argcheck(L, nrows >= 1, 1,
+                  "Empty block is not allowed");
+    lua_rawgeti(L, 1, 1); // first fragment
+    bool has_rows = hasRows(L, -1);
+    lua_pop(L, 1); // first fragment
+    if (has_rows) {
+        // check all
+        for (int i = 0; i < nrows; i++) {
+            lua_rawgeti(L, 1, i + 1); // {fragment, row}
+            luaL_argcheck(L, hasRows(L, -1), 1,
+                          "Provide {fragment, row}");
+            lua_rawgeti(L, -1, 1); // fragment
+            lua_tofragment(L, -1);
+            lua_pop(L, 1); // fragment
+            lua_rawgeti(L, -1, 2); // row
+            size_t s;
+            luaL_checklstring(L, -1, &s);
+            lua_pop(L, 2); // row, {fragment, row}
+        }
+        // now fill
+        Fragments fragments(nrows);
+        CStrings rows(nrows);
+        for (int i = 0; i < nrows; i++) {
+            lua_rawgeti(L, 1, i + 1); // {fragment, row}
+            lua_rawgeti(L, -1, 1); // fragment
+            fragments[i] = lua_tofragment(L, -1);
+            lua_pop(L, 1); // fragment
+            lua_rawgeti(L, -1, 2); // row
+            size_t s;
+            const char* t = luaL_checklstring(L, -1, &s);
+            rows[i] = CString(t, s);
+            lua_pop(L, 2); // row, {fragment, row}
+        }
+        try {
+            BlockPtr block = Block::make(fragments, rows);
+            lua_pushblock(L, block);
+            return 1;
+        } catch (std::exception& e) {
+            lua_pushstring(L, e.what());
+            return -1;
+        }
+    } else {
+        // check
+        for (int i = 0; i < nrows; i++) {
+            lua_rawgeti(L, 1, i + 1); // fragment
+            lua_tofragment(L, -1);
+            lua_pop(L, 1); // fragment
+        }
+        // now fill
+        Fragments fragments(nrows);
+        for (int i = 0; i < nrows; i++) {
+            lua_rawgeti(L, 1, i + 1); // fragment
+            fragments[i] = lua_tofragment(L, -1);
+            lua_pop(L, 1); // fragment
+        }
+        try {
+            BlockPtr block = Block::make(fragments);
+            lua_pushblock(L, block);
+            return 1;
+        } catch (std::exception& e) {
+            lua_pushstring(L, e.what());
+            return -1;
+        }
+    }
+}
+
+int lua_Block(lua_State *L) {
+    LUA_CALL_WRAPPED(lua_Block_impl);
+}
+
+int lua_Block_gc(lua_State *L) {
+    BlockPtr& block = lua_toblock(L, 1);
+    block.reset();
+    return 0;
+}
+
+int lua_Block_type(lua_State *L) {
+    lua_pushstring(L, "Block");
+    return 1;
+}
+
+int lua_Block_length(lua_State *L) {
+    const BlockPtr& block = lua_toblock(L, 1);
+    lua_pushinteger(L, block->length());
+    return 1;
+}
+
+int lua_Block_size(lua_State *L) {
+    const BlockPtr& block = lua_toblock(L, 1);
+    lua_pushinteger(L, block->size());
+    return 1;
+}
+
+int lua_Block_text_impl(lua_State *L) {
+    const BlockPtr& block = lua_toblock(L, 1);
+    const FragmentPtr& fragment = lua_tofragment(L, 2);
+    try {
+        const std::string& text = block->text(fragment);
+        lua_pushlstring(L, text.c_str(), text.length());
+        return 1;
+    } catch (std::exception& e) {
+        lua_pushstring(L, e.what());
+        return -1;
+    }
+}
+
+int lua_Block_text(lua_State *L) {
+    LUA_CALL_WRAPPED(lua_Block_text_impl);
+}
+
+int lua_Block_fragments(lua_State *L) {
+    const BlockPtr& block = lua_toblock(L, 1);
+    const Fragments& fragments = block->fragments();
+    int n = fragments.size();
+    lua_createtable(L, n, 0);
+    for (int i = 0; i < n; i++) {
+        const FragmentPtr& fragment = fragments[i];
+        lua_pushfr(L, fragment);
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
+// first upvalue: block
+// second upvalue: index of fragment
+static int Block_iterator(lua_State *L) {
+    const BlockPtr& b = lua_toblock(L, lua_upvalueindex(1));
+    int index = lua_tointeger(L, lua_upvalueindex(2));
+    if (index < b->size()) {
+        lua_pushfr(L, b->fragments()[index]);
+        lua_pushinteger(L, index + 1);
+        lua_replace(L, lua_upvalueindex(2));
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int lua_Block_iter_fragments(lua_State *L) {
+    const BlockPtr& block = lua_toblock(L, 1);
+    lua_pushvalue(L, 1); // upvalue 1 (block)
+    lua_pushinteger(L, 0); // upvalue 2 (index)
+    lua_pushcclosure(L, Block_iterator, 2);
+    return 1;
+}
+
+int lua_Block_block2fragment_impl(lua_State *L) {
+    const BlockPtr& block = lua_toblock(L, 1);
+    const FragmentPtr& fragment = lua_tofragment(L, 2);
+    int blockpos = luaL_checkint(L, 3);
+    try {
+        int fp = block->block2fragment(fragment, blockpos);
+        lua_pushinteger(L, fp);
+        return 1;
+    } catch (std::exception& e) {
+        lua_pushstring(L, e.what());
+        return -1;
+    }
+}
+
+int lua_Block_block2fragment(lua_State *L) {
+    LUA_CALL_WRAPPED(lua_Block_block2fragment_impl);
+}
+
+int lua_Block_block2right_impl(lua_State *L) {
+    const BlockPtr& block = lua_toblock(L, 1);
+    const FragmentPtr& fragment = lua_tofragment(L, 2);
+    int blockpos = luaL_checkint(L, 3);
+    try {
+        int fp = block->block2right(fragment, blockpos);
+        lua_pushinteger(L, fp);
+        return 1;
+    } catch (std::exception& e) {
+        lua_pushstring(L, e.what());
+        return -1;
+    }
+}
+
+int lua_Block_block2right(lua_State *L) {
+    LUA_CALL_WRAPPED(lua_Block_block2right_impl);
+}
+
+int lua_Block_block2left_impl(lua_State *L) {
+    const BlockPtr& block = lua_toblock(L, 1);
+    const FragmentPtr& fragment = lua_tofragment(L, 2);
+    int blockpos = luaL_checkint(L, 3);
+    try {
+        int fp = block->block2left(fragment, blockpos);
+        lua_pushinteger(L, fp);
+        return 1;
+    } catch (std::exception& e) {
+        lua_pushstring(L, e.what());
+        return -1;
+    }
+}
+
+int lua_Block_block2left(lua_State *L) {
+    LUA_CALL_WRAPPED(lua_Block_block2left_impl);
+}
+
+int lua_Block_tostring(lua_State *L) {
+    const BlockPtr& block = lua_toblock(L, 1);
+    std::string repr = block->tostring();
+    lua_pushlstring(L, repr.c_str(), repr.size());
+    return 1;
+}
+
+int lua_Block_eq(lua_State *L) {
+    const BlockPtr& a = lua_toblock(L, 1);
+    const BlockPtr& b = lua_toblock(L, 2);
+    lua_pushboolean(L, (*a) == (*b));
+    return 1;
+}
+
+static const luaL_Reg Block_methods[] = {
+    {"__gc", lua_Block_gc},
+    {"type", lua_Block_type},
+    {"size", lua_Block_size},
+    {"length", lua_Block_length},
+    {"text", lua_Block_text},
+    {"fragments", lua_Block_fragments},
+    {"iter_fragments", lua_Block_iter_fragments},
+    {"block2fragment", lua_Block_block2fragment},
+    {"block2left", lua_Block_block2left},
+    {"block2right", lua_Block_block2right},
+    {"__tostring", lua_Block_tostring},
+    {"__eq", lua_Block_eq},
+    {NULL, NULL}
+};
+
 /////////
 
 typedef boost::scoped_array<char> Buffer;
@@ -463,6 +717,9 @@ int luaopen_npge_cmodel(lua_State *L) {
     registerType(L, "Fragment", "npge_Fragment",
                  "npge_Fragment_cache",
                  lua_Fragment, Fragment_methods);
+    registerType(L, "Block", "npge_Block",
+                 "npge_Block_cache",
+                 lua_Block, Block_methods);
     luaL_register(L, NULL, free_functions);
     return 1;
 }

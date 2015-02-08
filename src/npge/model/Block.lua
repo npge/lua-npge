@@ -1,3 +1,9 @@
+-- use C version if available
+local has_c, cmodel =
+    pcall(require, 'npge.cmodel')
+if has_c then
+    return cmodel.Block
+end
 
 local Block = {}
 local Block_mt = {}

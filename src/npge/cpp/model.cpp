@@ -9,6 +9,7 @@
 #include <cstring>
 #include <algorithm>
 #include <iterator>
+#include <map>
 #include <boost/foreach.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -23,6 +24,47 @@
 namespace npge {
 
 typedef boost::scoped_array<char> Buffer;
+
+typedef std::vector<int> Ints;
+
+static void range(Ints& ints, int n) {
+    ints.resize(n);
+    for (int i = 0; i < n; i++) {
+        ints[i] = i;
+    }
+}
+
+template<typename It, typename V, typename Cmp>
+It binarySearch(It begin, It end, const V& v, const Cmp& less) {
+    It it = std::lower_bound(begin, end, v, less);
+    if (less(v, *it)) {
+        it = end;
+    }
+    return it;
+}
+
+template<typename It, typename V>
+It binarySearch(It begin, It end, const V& v) {
+    It it = std::lower_bound(begin, end, v);
+    if (!(*it == v)) {
+        it = end;
+    }
+    return it;
+}
+
+struct IndexedFragmentLess {
+    IndexedFragmentLess(const Fragments& fragments):
+        fragments_(fragments) {
+    }
+
+    bool operator()(int a, int b) const {
+        return fragments_[a] < fragments_[b];
+    }
+
+    const Fragments& fragments_;
+};
+
+///////
 
 Sequence::Sequence() {
 }
@@ -243,6 +285,182 @@ bool Fragment::operator<(const Fragment& other) const {
     T t1(start_, stop_, sequence()->name());
     T t2(other.start_, other.stop_, other.sequence()->name());
     return t1 < t2;
+}
+
+Block::Block() {
+}
+
+BlockPtr Block::make(const Fragments& fragments) {
+    ASSERT_MSG(fragments.size(), "Empty block is not allowed");
+    Block* block = new Block;
+    BlockPtr b(block);
+    block->fragments_ = fragments;
+    Fragments& ff = block->fragments_;
+    std::sort(ff.begin(), ff.end());
+    int n = ff.size();
+    block->rows_.resize(n);
+    size_t max_len = 0;
+    for (int i = 0; i < n; i++) {
+        const FragmentPtr& fragment = ff[i];
+        std::string& row = block->rows_[i];
+        row = fragment->text();
+        max_len = std::max(max_len, row.length());
+    }
+    BOOST_FOREACH (std::string& row, block->rows_) {
+        row.resize(max_len, '-');
+    }
+    block->length_ = max_len;
+    return b;
+}
+
+BlockPtr Block::make(const Fragments& fragments,
+                     const CStrings& rows) {
+    ASSERT_EQ(fragments.size(), rows.size());
+    ASSERT_MSG(fragments.size(), "Empty block is not allowed");
+    int n = fragments.size();
+    Ints indexes;
+    range(indexes, n);
+    std::sort(indexes.begin(), indexes.end(),
+              IndexedFragmentLess(fragments));
+    //
+    Block* block = new Block;
+    BlockPtr b(block);
+    block->fragments_.resize(n);
+    block->rows_.resize(n);
+    for (int i = 0; i < n; i++) {
+        int index = indexes[i];
+        const FragmentPtr& fragment = fragments[index];
+        block->fragments_[i] = fragment;
+        const CString& row0 = rows[index];
+        const char* row_text = row0.first;
+        int row_size = row0.second;
+        Buffer b(new char[row0.second]);
+        int len = toAtgcnAndGap(b.get(), row_text, row_size);
+        block->rows_[i].assign(b.get(), len);
+#ifndef NPGE_NO_ASSERTS
+        // compare with fragment text
+        int len2 = toAtgcn(b.get(), row_text, row_size);
+        std::string fr_str = fragment->text();
+        ASSERT_EQ(len2, fr_str.size());
+        ASSERT_EQ(memcmp(b.get(), fr_str.c_str(), len2), 0);
+#endif
+    }
+    //
+    block->length_ = block->rows_[0].length();
+    ASSERT_GT(block->length_, 0);
+    BOOST_FOREACH (const std::string& row, block->rows_) {
+        ASSERT_EQ(row.length(), block->length_);
+    }
+    return b;
+}
+
+bool Block::operator==(const Block& other) const {
+    if (size() != other.size()) {
+        return false;
+    }
+    typedef std::map<std::string, const std::string*> Id2Text;
+    Id2Text id2text;
+    int n = size();
+    for (int i = 0; i < n; i++) {
+        const FragmentPtr& f = fragments_[i];
+        const std::string& text = rows_[i];
+        id2text[f->id()] = &text;
+    }
+    for (int i = 0; i < n; i++) {
+        const FragmentPtr& f = other.fragments_[i];
+        Id2Text::const_iterator it = id2text.find(f->id());
+        if (it == id2text.end()) {
+            return false;
+        }
+        const std::string& t1 = *(it->second);
+        const std::string& t2 = other.rows_[i];
+        if (t1 != t2) {
+            return false;
+        }
+    }
+    return true;
+}
+
+int Block::length() const {
+    return length_;
+}
+
+int Block::size() const {
+    return fragments_.size();
+}
+
+const Fragments& Block::fragments() const {
+    return fragments_;
+}
+
+const std::string& Block::text(
+        const FragmentPtr& fragment) const {
+    Fragments::const_iterator it = binarySearch(
+            fragments_.begin(), fragments_.end(),
+            fragment);
+    ASSERT_MSG(it != fragments_.end(),
+               "Fragment not in block");
+    int index = std::distance(fragments_.begin(), it);
+    return rows_[index];
+}
+
+std::string Block::tostring() const {
+    return "Block of " + TO_S(size()) + " fragments, "
+           "length " + TO_S(length());
+}
+
+static int countNongaps(const char* t, int length) {
+    int nongaps_before = 0;
+    for (int bp = 0; bp < length; bp++) {
+        if (t[bp] != '-') {
+            nongaps_before += 1;
+        }
+    }
+    return nongaps_before;
+}
+
+int Block::block2fragment(const FragmentPtr& fragment,
+                          int blockpos) const {
+    ASSERT_LTE(0, blockpos);
+    ASSERT_LT(blockpos, length());
+    const std::string& t_str = text(fragment);
+    const char* t = t_str.c_str();
+    if (t[blockpos] == '-') {
+        return -1;
+    } else {
+        return countNongaps(t, blockpos);
+    }
+}
+
+int Block::block2left(const FragmentPtr& fragment,
+                      int blockpos) const {
+    ASSERT_LTE(0, blockpos);
+    ASSERT_LT(blockpos, length());
+    const std::string& t_str = text(fragment);
+    const char* t = t_str.c_str();
+    if (t[blockpos] == '-') {
+        return countNongaps(t, blockpos) - 1;
+    } else {
+        return countNongaps(t, blockpos);
+    }
+}
+
+int Block::block2right(const FragmentPtr& fragment,
+                       int blockpos) const {
+    ASSERT_LTE(0, blockpos);
+    ASSERT_LT(blockpos, length());
+    const std::string& t_str = text(fragment);
+    const char* t = t_str.c_str();
+    if (t[blockpos] == '-') {
+        int nongaps = countNongaps(t, blockpos);
+        if (nongaps < fragment->length()) {
+            return nongaps;
+        } else {
+            return -1;
+        }
+    } else {
+        return countNongaps(t, blockpos);
+    }
 }
 
 }

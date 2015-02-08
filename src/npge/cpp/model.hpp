@@ -24,15 +24,20 @@ int toAtgcnAndGap(char* dst, const char* src, int length);
 
 class Sequence;
 class Fragment;
+class Block;
 
 typedef boost::intrusive_ptr<const Sequence> SequencePtr;
 typedef boost::intrusive_ptr<const Fragment> FragmentPtr;
+typedef boost::intrusive_ptr<const Block> BlockPtr;
 
+typedef std::pair<FragmentPtr, FragmentPtr> TwoFragments;
+typedef std::pair<const char*, int> CString;
+
+typedef std::vector<CString> CStrings;
 typedef std::vector<std::string> Strings;
 typedef std::vector<SequencePtr> Sequences;
 typedef std::vector<FragmentPtr> Fragments;
-
-typedef std::pair<FragmentPtr, FragmentPtr> TwoFragments;
+typedef std::vector<BlockPtr> Blocks;
 
 class Sequence :
     public boost::intrusive_ref_counter<Sequence> {
@@ -105,6 +110,43 @@ private:
     int stop_; // (stop + 1) * ori
 
     Fragment();
+};
+
+class Block :
+    public boost::intrusive_ref_counter<Block> {
+public:
+    static BlockPtr make(const Fragments& fragments);
+
+    static BlockPtr make(const Fragments& fragments,
+                         const CStrings& rows);
+
+    bool operator==(const Block& other) const;
+
+    int length() const;
+
+    int size() const;
+
+    const Fragments& fragments() const;
+
+    const std::string& text(const FragmentPtr& fragment) const;
+
+    std::string tostring() const;
+
+    int block2fragment(const FragmentPtr& fragment,
+                       int blockpos) const;
+
+    int block2left(const FragmentPtr& fragment,
+                   int blockpos) const;
+
+    int block2right(const FragmentPtr& fragment,
+                    int blockpos) const;
+
+private:
+    Fragments fragments_;
+    Strings rows_;
+    int length_;
+
+    Block();
 };
 
 }
