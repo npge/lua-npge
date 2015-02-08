@@ -13,4 +13,4 @@ test:
 	gcov src/npge/*/*.c
 
 exitless-busted:
-	sed 's/os.exit/--os.exit/' > $@ < $(BUSTED)
+	sed '1 s/^.*$/os.exit = function() end/g' > $@ < $(BUSTED)
