@@ -128,6 +128,8 @@ block_mt.text = function(self, fragment)
 end
 
 block_mt.block2fragment = function(self, fragment, blockpos)
+    assert(0 <= blockpos)
+    assert(blockpos < self:length())
     local row = self._fragments[fragment]
     assert(row)
     if row:sub(blockpos + 1, blockpos + 1) == '-' then
@@ -140,6 +142,8 @@ block_mt.block2fragment = function(self, fragment, blockpos)
 end
 
 block_mt.block2left = function(self, fragment, blockpos)
+    assert(0 <= blockpos)
+    assert(blockpos < self:length())
     local row = self._fragments[fragment]
     assert(row)
     local part = row:sub(1, blockpos + 1)
@@ -150,6 +154,8 @@ block_mt.block2left = function(self, fragment, blockpos)
 end
 
 block_mt.block2right = function(self, fragment, blockpos)
+    assert(0 <= blockpos)
+    assert(blockpos < self:length())
     local row = self._fragments[fragment]
     assert(row)
     local part = row:sub(1, blockpos + 1)
