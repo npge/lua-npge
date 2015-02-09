@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <iterator>
 #include <map>
+#include <set>
 #include <boost/foreach.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -52,6 +53,35 @@ It binarySearch(It begin, It end, const V& v) {
     return it;
 }
 
+struct SequenceLess {
+    bool operator()(const SequencePtr& a,
+                    const SequencePtr& b) const {
+        return a->name() < b->name();
+    }
+
+    bool operator()(const SequencePtr& a,
+                    const std::string& b) const {
+        return a->name() < b;
+    }
+
+    bool operator()(const std::string& a,
+                    const SequencePtr& b) const {
+        return a < b->name();
+    }
+};
+
+struct IndexedFragmentPtrLess {
+    IndexedFragmentPtrLess(const Fragments& fragments):
+        fragments_(fragments) {
+    }
+
+    bool operator()(int a, int b) const {
+        return fragments_[a] < fragments_[b];
+    }
+
+    const Fragments& fragments_;
+};
+
 struct IndexedFragmentLess {
     IndexedFragmentLess(const Fragments& fragments):
         fragments_(fragments) {
@@ -62,6 +92,13 @@ struct IndexedFragmentLess {
     }
 
     const Fragments& fragments_;
+};
+
+struct FragmentLess {
+    bool operator()(const FragmentPtr& a,
+                    const FragmentPtr& b) const {
+        return *a < *b;
+    }
 };
 
 ///////
@@ -465,6 +502,443 @@ int Block::block2right(const FragmentPtr& fragment,
     } else {
         return countNongaps(t, blockpos);
     }
+}
+
+///////
+
+// sorted by name
+static int rawSeq2index(const std::string& name,
+                        const Sequences& seqs) {
+    Sequences::const_iterator it = binarySearch(
+            seqs.begin(), seqs.end(), name, SequenceLess());
+    if (it == seqs.end()) {
+        return seqs.size();
+    } else {
+        return std::distance(seqs.begin(), it);
+    }
+}
+
+static int seq2index(const std::string& name,
+                     const Sequences& seqs) {
+    int index = rawSeq2index(name, seqs);
+    ASSERT_MSG(index != seqs.size(),
+               ("Sequence not in BlockSet: " + name).c_str());
+    return index;
+}
+
+static void prepareSequences(Sequences& dst,
+                             const Sequences& src) {
+    dst = src;
+    std::sort(dst.begin(), dst.end(), SequenceLess());
+    int nseqs = src.size();
+    for (int i = 1; i < nseqs; i++) {
+        ASSERT_NE(dst[i - 1]->name(), dst[i]->name());
+    }
+}
+
+typedef std::vector<Fragments> FMap;
+typedef std::vector<Blocks> BMap;
+
+static void collectFragments(FMap& fmap, BMap& bmap,
+                             Fragments& parts,
+                             Fragments& parent_of_parts,
+                             const Blocks& blocks,
+                             const Sequences& sequences) {
+    int nseqs = sequences.size();
+    fmap.resize(nseqs);
+    bmap.resize(nseqs);
+    BOOST_FOREACH (const BlockPtr& b, blocks) {
+        BOOST_FOREACH (const FragmentPtr& f, b->fragments()) {
+            const SequencePtr& seq = f->sequence();
+            int i = seq2index(seq->name(), sequences);
+            Fragments& flist = fmap[i];
+            Blocks& blist = bmap[i];
+            if (!f->parted()) {
+                flist.push_back(f);
+                blist.push_back(b);
+            } else {
+                TwoFragments two = f->parts();
+                flist.push_back(two.first);
+                flist.push_back(two.second);
+                blist.push_back(b);
+                blist.push_back(b);
+                //
+                parts.push_back(two.first);
+                parts.push_back(two.second);
+                parent_of_parts.push_back(f);
+                parent_of_parts.push_back(f);
+            }
+        }
+    }
+}
+
+static void sortFragments(FMap& fmap, BMap& bmap) {
+    int nseqs = fmap.size();
+    for (int i = 0; i < nseqs; i++) {
+        Fragments& fragments = fmap[i];
+        Blocks& blocks = bmap[i];
+        int n = fragments.size();
+        Ints indexes;
+        range(indexes, n);
+        std::sort(indexes.begin(), indexes.end(),
+                  IndexedFragmentLess(fragments));
+        Fragments new_fragments(n);
+        Blocks new_blocks(n);
+        for (int j = 0; j < n; j++) {
+            int index = indexes[j];
+            new_fragments[j] = fragments[index];
+            new_blocks[j] = blocks[index];
+        }
+        fragments.swap(new_fragments);
+        blocks.swap(new_blocks);
+    }
+}
+
+static void sortParts(Fragments& parts, Fragments& parents) {
+    int n = parts.size();
+    Ints indexes;
+    range(indexes, n);
+    std::sort(indexes.begin(), indexes.end(),
+              IndexedFragmentPtrLess(parts));
+    Fragments new_parts(n);
+    Fragments new_parents(n);
+    for (int i = 0; i < n; i++) {
+        int index = indexes[i];
+        new_parts[i] = parts[index];
+        new_parents[i] = parents[index];
+    }
+    parts.swap(new_parts);
+    parents.swap(new_parents);
+}
+
+static bool testPartition(const FMap& fmap,
+                          const Sequences& sequences) {
+    int n = sequences.size();
+    for (int i = 0; i < n; i++) {
+        const SequencePtr& seq = sequences[i];
+        const Fragments& fragments = fmap[i];
+        int sum = 0;
+        int prev_stop = -1;
+        BOOST_FOREACH (const FragmentPtr& f, fragments) {
+            sum += f->length();
+            if (f->start() <= prev_stop) {
+                // overlap
+                return false;
+            }
+            prev_stop = f->stop();
+        }
+        if (sum != seq->length()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+BlockSet::BlockSet() {
+}
+
+BlockSetPtr BlockSet::make(const Sequences& sequences,
+                           const Blocks& blocks) {
+    BlockSet* bs = new BlockSet;
+    BlockSetPtr ptr(bs);
+    prepareSequences(bs->sequences_, sequences);
+    //
+    bs->blocks_ = blocks;
+    //
+    collectFragments(bs->to_fragments_, bs->to_blocks_,
+                     bs->parts_, bs->parent_of_parts_,
+                     blocks, bs->sequences_);
+    sortFragments(bs->to_fragments_, bs->to_blocks_);
+    sortParts(bs->parts_, bs->parent_of_parts_);
+    //
+    bs->is_partition_ = testPartition(bs->to_fragments_,
+            bs->sequences_);
+    //
+    return ptr;
+}
+
+bool BlockSet::sameSequences(const BlockSet& other) const {
+    if (sequences_.size() != other.sequences_.size()) {
+        return false;
+    }
+    int n = sequences_.size();
+    for (int i = 0; i < n; i++) {
+        const SequencePtr& a = sequences_[i];
+        const SequencePtr& b = other.sequences_[i];
+        if (a->name() != b->name()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+std::pair<bool, std::string>
+BlockSet::cmp(const BlockSet& other) const {
+    if (!sameSequences(other)) {
+        return std::make_pair(false, "sequences");
+    }
+    if (size() != other.size()) {
+        return std::make_pair(false, "size");
+    }
+    int nseqs = sequences_.size();
+    Blocks blocks1, blocks2;
+    std::set<BlockPtr> blocks1_set, blocks2_set;
+    for (int i = 0; i < nseqs; i++) {
+        const Fragments& ff1 = to_fragments_[i];
+        const Fragments& ff2 = other.to_fragments_[i];
+        const Blocks& bb1 = to_blocks_[i];
+        const Blocks& bb2 = other.to_blocks_[i];
+        if (ff1.size() != ff2.size()) {
+            return std::make_pair(false, "fragments");
+        }
+        int n = ff1.size();
+        for (int j = 0; j < n; j++) {
+            const FragmentPtr& f1 = ff1[j];
+            const FragmentPtr& f2 = ff2[j];
+            if (!(*f1 == *f2)) {
+                return std::make_pair(false, "fragments");
+            }
+            const BlockPtr& b1 = bb1[j];
+            const BlockPtr& b2 = bb2[j];
+            if (blocks1_set.find(b1) == blocks1_set.end()) {
+                blocks1_set.insert(b1);
+                blocks1.push_back(b1);
+            }
+            if (blocks2_set.find(b2) == blocks2_set.end()) {
+                blocks2_set.insert(b2);
+                blocks2.push_back(b2);
+            }
+        }
+    }
+    if (blocks1.size() != blocks2.size()) {
+        return std::make_pair(false, "blocks");
+    }
+    int n = blocks1.size();
+    for (int i = 0; i < n; i++) {
+        const BlockPtr& a = blocks1[i];
+        const BlockPtr& b = blocks2[i];
+        if (!(*a == *b)) {
+            return std::make_pair(false, "blocks");
+        }
+    }
+    return std::make_pair(true, "");
+}
+
+bool BlockSet::operator==(const BlockSet& other) const {
+    std::pair<bool, std::string> r = cmp(other);
+    return r.first;
+}
+
+int BlockSet::size() const {
+    return blocks_.size();
+}
+
+bool BlockSet::isPartition() const {
+    return is_partition_;
+}
+
+const Blocks& BlockSet::blocks() const {
+    return blocks_;
+}
+
+const Fragments& BlockSet::parts(
+        const SequencePtr& sequence) const {
+    int index = seq2index(sequence->name(), sequences_);
+    return to_fragments_[index];
+}
+
+const Sequences& BlockSet::sequences() const {
+    return sequences_;
+}
+
+bool BlockSet::hasSequence(const SequencePtr& sequence) const {
+    int index = rawSeq2index(sequence->name(), sequences_);
+    return index != sequences_.size();
+}
+
+SequencePtr BlockSet::sequenceByName(
+        const std::string& name) const {
+    int index = rawSeq2index(name, sequences_);
+    if (index != sequences_.size()) {
+        return sequences_[index];
+    } else {
+        return SequencePtr();
+    }
+}
+
+BlockPtr BlockSet::blockByFragment(
+        const FragmentPtr& fragment) const {
+    if (fragment->parted()) {
+        TwoFragments two = fragment->parts();
+        return blockByFragment(two.first);
+    }
+    const SequencePtr& sequence = fragment->sequence();
+    int index = rawSeq2index(sequence->name(), sequences_);
+    if (index == sequences_.size()) {
+        return BlockPtr();
+    }
+    const Fragments& fragments = to_fragments_[index];
+    Fragments::const_iterator it = binarySearch(
+            fragments.begin(), fragments.end(),
+            fragment, FragmentLess());
+    if (it == fragments.end()) {
+        return BlockPtr();
+    }
+    while (*it != fragment) {
+        // fragments are equal but different instances
+        it++;
+        if (it == fragments.end() || !(*(*it) == *fragment)) {
+            return BlockPtr();
+        }
+    }
+    int index2 = std::distance(fragments.begin(), it);
+    return to_blocks_[index][index2];
+}
+
+const FragmentPtr& BlockSet::parentOrFragment(
+        const FragmentPtr& f) const {
+    Fragments::const_iterator it = binarySearch(
+            parts_.begin(), parts_.end(), f);
+    if (it == parts_.end()) {
+        return f;
+    } else {
+        int index = std::distance(parts_.begin(), it);
+        return parent_of_parts_[index];
+    }
+}
+
+void sortAndUnique(const BlockSet* self, Fragments& ff) {
+    BOOST_FOREACH (FragmentPtr& f, ff) {
+        f = self->parentOrFragment(f);
+    }
+    std::sort(ff.begin(), ff.end());
+    ff.erase(std::unique(ff.begin(), ff.end()), ff.end());
+}
+
+Fragments BlockSet::overlapping(
+        const FragmentPtr& fragment) const {
+    if (fragment->parted()) {
+        TwoFragments two = fragment->parts();
+        Fragments o1 = overlapping(two.first);
+        Fragments o2 = overlapping(two.second);
+        Fragments result;
+        BOOST_FOREACH (const FragmentPtr& f, o1) {
+            result.push_back(f);
+        }
+        BOOST_FOREACH (const FragmentPtr& f, o2) {
+            result.push_back(f);
+        }
+        sortAndUnique(this, result);
+        return result;
+    }
+    const SequencePtr& sequence = fragment->sequence();
+    int index = rawSeq2index(sequence->name(), sequences_);
+    if (index == sequences_.size()) {
+        return Fragments();
+    }
+    const Fragments& fragments = to_fragments_[index];
+    const Fragments::const_iterator it = std::upper_bound(
+            fragments.begin(), fragments.end(),
+            fragment, FragmentLess());
+    if (it == fragments.end()) {
+        return Fragments();
+    }
+    int index2 = std::distance(fragments.begin(), it);
+    Fragments result;
+    for (int j = index2; j < fragments.size(); j++) {
+        const FragmentPtr& f = fragments[j];
+        if (f->common(*fragment)) {
+            result.push_back(f);
+        } else {
+            break;
+        }
+    }
+    for (int j = index2 - 1; j >= 0; j--) {
+        const FragmentPtr& f = fragments[j];
+        if (f->common(*fragment)) {
+            result.push_back(f);
+        } else {
+            break;
+        }
+    }
+    sortAndUnique(this, result);
+    return result;
+}
+
+FragmentPtr BlockSet::next(const FragmentPtr& fragment) const {
+    const SequencePtr& sequence = fragment->sequence();
+    if (fragment->parted()) {
+        TwoFragments two = fragment->parts();
+        FragmentPtr part = two.first;
+        if (*two.second < *two.first) {
+            part = two.second;
+        }
+        return next(part);
+    }
+    int index = rawSeq2index(sequence->name(), sequences_);
+    if (index == sequences_.size()) {
+        return FragmentPtr();
+    }
+    ASSERT_TRUE(sequence == sequences_[index]);
+    const Fragments& fragments = to_fragments_[index];
+    Fragments::const_iterator it = binarySearch(
+            fragments.begin(), fragments.end(),
+            fragment, FragmentLess());
+    if (it == fragments.end()) {
+        return FragmentPtr();
+    }
+    it++;
+    if (it == fragments.end()) {
+        if (!sequence->circular()) {
+            return FragmentPtr();
+        }
+        it = fragments.begin();
+    }
+    const FragmentPtr& f = *it;
+    return parentOrFragment(f);
+}
+
+FragmentPtr BlockSet::prev(const FragmentPtr& fragment) const {
+    const SequencePtr& sequence = fragment->sequence();
+    if (fragment->parted()) {
+        TwoFragments two = fragment->parts();
+        FragmentPtr part = two.first;
+        if (*two.first < *two.second) {
+            part = two.second;
+        }
+        return prev(part);
+    }
+    int index = rawSeq2index(sequence->name(), sequences_);
+    if (index == sequences_.size()) {
+        return FragmentPtr();
+    }
+    ASSERT_TRUE(sequence == sequences_[index]);
+    const Fragments& fragments = to_fragments_[index];
+    Fragments::const_iterator it = binarySearch(
+            fragments.begin(), fragments.end(),
+            fragment, FragmentLess());
+    if (it == fragments.end()) {
+        return FragmentPtr();
+    }
+    if (it == fragments.begin()) {
+        if (!sequence->circular()) {
+            return FragmentPtr();
+        }
+        it = fragments.end();
+    }
+    it--;
+    const FragmentPtr& f = *it;
+    return parentOrFragment(f);
+}
+
+std::string BlockSet::tostring() const {
+    std::string text = "BlockSet of " +
+        TO_S(sequences().size()) + " sequences and " +
+        TO_S(size()) + " blocks";
+    if (isPartition()) {
+        text += " (partition)";
+    }
+    return text;
 }
 
 }
