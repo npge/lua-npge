@@ -542,7 +542,7 @@ static int Block_iterator(lua_State *L) {
     }
 }
 
-int lua_Block_iter_fragments(lua_State *L) {
+int lua_Block_iterFragments(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
     lua_pushvalue(L, 1); // upvalue 1 (block)
     lua_pushinteger(L, 0); // upvalue 2 (index)
@@ -625,7 +625,7 @@ static const luaL_Reg Block_methods[] = {
     {"length", lua_Block_length},
     {"text", lua_Block_text},
     {"fragments", lua_Block_fragments},
-    {"iter_fragments", lua_Block_iter_fragments},
+    {"iter_fragments", lua_Block_iterFragments},
     {"block2fragment", lua_Block_block2fragment},
     {"block2left", lua_Block_block2left},
     {"block2right", lua_Block_block2right},
