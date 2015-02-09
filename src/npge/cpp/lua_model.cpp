@@ -36,6 +36,11 @@ T& fromLua(lua_State* L, int index, const char* mt_name) {
 template <typename T, typename P>
 void toLua(lua_State* L, const T& t,
            const char* mt_name, const char* cache_name) {
+    if (!t) {
+        // empty shared pointer
+        lua_pushnil(L);
+        return;
+    }
     // check in cache
     // http://lua-users.org/lists/lua-l/2007-01/msg00128.html
     P* p = const_cast<P*>(t.get());
