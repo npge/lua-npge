@@ -325,7 +325,7 @@ BlockPtr Block::make(const Fragments& fragments,
     Ints indexes;
     range(indexes, n);
     std::sort(indexes.begin(), indexes.end(),
-              IndexedFragmentLess(fragments));
+              IndexedFragmentPtrLess(fragments));
     //
     Block* block = new Block;
     BlockPtr b(block);
