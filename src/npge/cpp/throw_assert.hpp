@@ -11,7 +11,7 @@
 
 #include "cast.hpp"
 
-namespace npge {
+namespace lnpge {
 void assertion_failed_msg(char const* expr, char const* msg,
                           char const* function,
                           char const* file, long line);
@@ -21,7 +21,7 @@ void assertion_failed_msg(char const* expr, char const* msg,
 
 #define ASSERT_MSG(expr, msg) ((expr) \
     ? ((void)0) \
-    : ::npge::assertion_failed_msg(#expr, msg,\
+    : ::lnpge::assertion_failed_msg(#expr, msg,\
         BOOST_CURRENT_FUNCTION, __FILE__, __LINE__))
 
 #else

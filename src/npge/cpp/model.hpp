@@ -14,7 +14,7 @@
 #include <boost/intrusive_ptr.hpp>
 #include "intrusive_ref_counter.hpp"
 
-namespace npge {
+namespace lnpge {
 
 int complement(char* dst, const char* src, int length);
 

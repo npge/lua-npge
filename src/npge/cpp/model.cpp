@@ -22,7 +22,7 @@
 #include "throw_assert.hpp"
 #include "cast.hpp"
 
-namespace npge {
+namespace lnpge {
 
 typedef boost::scoped_array<char> Buffer;
 

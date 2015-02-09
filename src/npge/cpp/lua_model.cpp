@@ -16,7 +16,7 @@
 #include "model.hpp"
 #include "throw_assert.hpp"
 
-using namespace npge;
+using namespace lnpge;
 
 #define LUA_CALL_WRAPPED(f) \
     int results = f(L); \

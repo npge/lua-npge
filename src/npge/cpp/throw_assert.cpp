@@ -13,7 +13,7 @@
 
 #include "throw_assert.hpp"
 
-namespace npge {
+namespace lnpge {
 
 #define SRC_PATTERN "src/"
 
