@@ -76,7 +76,7 @@ static void lua_pushseq(lua_State* L,
             "npge_Sequence", "npge_Sequence_cache");
 }
 
-static FragmentPtr& lua_tofragment(lua_State* L, int index) {
+static FragmentPtr& lua_tofr(lua_State* L, int index) {
     return fromLua<FragmentPtr>(L, index, "npge_Fragment");
 }
 
@@ -263,7 +263,7 @@ int lua_Fragment(lua_State *L) {
 }
 
 int lua_Fragment_gc(lua_State *L) {
-    FragmentPtr& fragment = lua_tofragment(L, 1);
+    FragmentPtr& fragment = lua_tofr(L, 1);
     fragment.reset();
     return 0;
 }
@@ -274,50 +274,50 @@ int lua_Fragment_type(lua_State *L) {
 }
 
 int lua_Fragment_sequence(lua_State *L) {
-    const FragmentPtr& fragment = lua_tofragment(L, 1);
+    const FragmentPtr& fragment = lua_tofr(L, 1);
     lua_pushseq(L, fragment->sequence());
     return 1;
 }
 
 int lua_Fragment_start(lua_State *L) {
-    const FragmentPtr& fragment = lua_tofragment(L, 1);
+    const FragmentPtr& fragment = lua_tofr(L, 1);
     lua_pushinteger(L, fragment->start());
     return 1;
 }
 
 int lua_Fragment_stop(lua_State *L) {
-    const FragmentPtr& fragment = lua_tofragment(L, 1);
+    const FragmentPtr& fragment = lua_tofr(L, 1);
     lua_pushinteger(L, fragment->stop());
     return 1;
 }
 
 int lua_Fragment_ori(lua_State *L) {
-    const FragmentPtr& fragment = lua_tofragment(L, 1);
+    const FragmentPtr& fragment = lua_tofr(L, 1);
     lua_pushinteger(L, fragment->ori());
     return 1;
 }
 
 int lua_Fragment_parted(lua_State *L) {
-    const FragmentPtr& fragment = lua_tofragment(L, 1);
+    const FragmentPtr& fragment = lua_tofr(L, 1);
     lua_pushboolean(L, fragment->parted());
     return 1;
 }
 
 int lua_Fragment_length(lua_State *L) {
-    const FragmentPtr& fragment = lua_tofragment(L, 1);
+    const FragmentPtr& fragment = lua_tofr(L, 1);
     lua_pushinteger(L, fragment->length());
     return 1;
 }
 
 int lua_Fragment_id(lua_State *L) {
-    const FragmentPtr& fragment = lua_tofragment(L, 1);
+    const FragmentPtr& fragment = lua_tofr(L, 1);
     std::string id = fragment->id();
     lua_pushlstring(L, id.c_str(), id.length());
     return 1;
 }
 
 int lua_Fragment_parts_impl(lua_State *L) {
-    const FragmentPtr& fragment = lua_tofragment(L, 1);
+    const FragmentPtr& fragment = lua_tofr(L, 1);
     try {
         TwoFragments two = fragment->parts();
         lua_pushfr(L, two.first);
@@ -334,36 +334,36 @@ int lua_Fragment_parts(lua_State *L) {
 }
 
 int lua_Fragment_text(lua_State *L) {
-    const FragmentPtr& fragment = lua_tofragment(L, 1);
+    const FragmentPtr& fragment = lua_tofr(L, 1);
     std::string text = fragment->text();
     lua_pushlstring(L, text.c_str(), text.length());
     return 1;
 }
 
 int lua_Fragment_tostring(lua_State *L) {
-    const FragmentPtr& fragment = lua_tofragment(L, 1);
+    const FragmentPtr& fragment = lua_tofr(L, 1);
     std::string repr = fragment->tostring();
     lua_pushlstring(L, repr.c_str(), repr.size());
     return 1;
 }
 
 int lua_Fragment_common(lua_State *L) {
-    const FragmentPtr& a = lua_tofragment(L, 1);
-    const FragmentPtr& b = lua_tofragment(L, 2);
+    const FragmentPtr& a = lua_tofr(L, 1);
+    const FragmentPtr& b = lua_tofr(L, 2);
     lua_pushinteger(L, a->common(*b));
     return 1;
 }
 
 int lua_Fragment_eq(lua_State *L) {
-    const FragmentPtr& a = lua_tofragment(L, 1);
-    const FragmentPtr& b = lua_tofragment(L, 2);
+    const FragmentPtr& a = lua_tofr(L, 1);
+    const FragmentPtr& b = lua_tofr(L, 2);
     lua_pushboolean(L, (*a) == (*b));
     return 1;
 }
 
 int lua_Fragment_lt_impl(lua_State *L) {
-    const FragmentPtr& a = lua_tofragment(L, 1);
-    const FragmentPtr& b = lua_tofragment(L, 2);
+    const FragmentPtr& a = lua_tofr(L, 1);
+    const FragmentPtr& b = lua_tofr(L, 2);
     try {
         lua_pushboolean(L, (*a) < (*b));
         return 1;
@@ -420,7 +420,7 @@ int lua_Block_impl(lua_State *L) {
             luaL_argcheck(L, hasRows(L, -1), 1,
                           "Provide {fragment, row}");
             lua_rawgeti(L, -1, 1); // fragment
-            lua_tofragment(L, -1);
+            lua_tofr(L, -1);
             lua_pop(L, 1); // fragment
             lua_rawgeti(L, -1, 2); // row
             size_t s;
@@ -433,7 +433,7 @@ int lua_Block_impl(lua_State *L) {
         for (int i = 0; i < nrows; i++) {
             lua_rawgeti(L, 1, i + 1); // {fragment, row}
             lua_rawgeti(L, -1, 1); // fragment
-            fragments[i] = lua_tofragment(L, -1);
+            fragments[i] = lua_tofr(L, -1);
             lua_pop(L, 1); // fragment
             lua_rawgeti(L, -1, 2); // row
             size_t s;
@@ -453,14 +453,14 @@ int lua_Block_impl(lua_State *L) {
         // check
         for (int i = 0; i < nrows; i++) {
             lua_rawgeti(L, 1, i + 1); // fragment
-            lua_tofragment(L, -1);
+            lua_tofr(L, -1);
             lua_pop(L, 1); // fragment
         }
         // now fill
         Fragments fragments(nrows);
         for (int i = 0; i < nrows; i++) {
             lua_rawgeti(L, 1, i + 1); // fragment
-            fragments[i] = lua_tofragment(L, -1);
+            fragments[i] = lua_tofr(L, -1);
             lua_pop(L, 1); // fragment
         }
         // must not throw
@@ -499,7 +499,7 @@ int lua_Block_size(lua_State *L) {
 
 int lua_Block_text_impl(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
-    const FragmentPtr& fragment = lua_tofragment(L, 2);
+    const FragmentPtr& fragment = lua_tofr(L, 2);
     try {
         const std::string& text = block->text(fragment);
         lua_pushlstring(L, text.c_str(), text.length());
@@ -552,7 +552,7 @@ int lua_Block_iter_fragments(lua_State *L) {
 
 int lua_Block_block2fragment_impl(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
-    const FragmentPtr& fragment = lua_tofragment(L, 2);
+    const FragmentPtr& fragment = lua_tofr(L, 2);
     int blockpos = luaL_checkint(L, 3);
     try {
         int fp = block->block2fragment(fragment, blockpos);
@@ -570,7 +570,7 @@ int lua_Block_block2fragment(lua_State *L) {
 
 int lua_Block_block2right_impl(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
-    const FragmentPtr& fragment = lua_tofragment(L, 2);
+    const FragmentPtr& fragment = lua_tofr(L, 2);
     int blockpos = luaL_checkint(L, 3);
     try {
         int fp = block->block2right(fragment, blockpos);
@@ -588,7 +588,7 @@ int lua_Block_block2right(lua_State *L) {
 
 int lua_Block_block2left_impl(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
-    const FragmentPtr& fragment = lua_tofragment(L, 2);
+    const FragmentPtr& fragment = lua_tofr(L, 2);
     int blockpos = luaL_checkint(L, 3);
     try {
         int fp = block->block2left(fragment, blockpos);
