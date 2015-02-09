@@ -58,7 +58,7 @@ struct IndexedFragmentLess {
     }
 
     bool operator()(int a, int b) const {
-        return fragments_[a] < fragments_[b];
+        return *(fragments_[a]) < *(fragments_[b]);
     }
 
     const Fragments& fragments_;
