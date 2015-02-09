@@ -103,6 +103,26 @@ describe("model.BlockSet", function()
             model.Fragment(s, 0, 1, 1))), toset({f1, f2}))
     end)
 
+    it("finds overlapping fragments (pattern is last fragmen)",
+    function()
+        local s = model.Sequence("genome&chr&c", "ATAT")
+        local f1 = model.Fragment(s, 0, 2, 1)
+        local f2 = model.Fragment(s, 1, 3, 1)
+        local block1 = model.Block({f1, f2})
+        local blockset = model.BlockSet({s}, {block1})
+        local toset = function(x)
+            local set = {}
+            for _, item in ipairs(x) do
+                set[item] = true
+            end
+            return set
+        end
+        assert.same(toset(blockset:overlapping_fragments(f1)),
+            toset({f1, f2}))
+        assert.same(toset(blockset:overlapping_fragments(f2)),
+            toset({f1, f2}))
+    end)
+
     it("finds next and prev fragments (circular)", function()
         local s = model.Sequence("genome&chr&c", "ATAT")
         local f1 = model.Fragment(s, 0, 3, -1)

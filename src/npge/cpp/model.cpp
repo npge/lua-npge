@@ -841,10 +841,12 @@ Fragments BlockSet::overlapping(
     const Fragments::const_iterator it = std::upper_bound(
             fragments.begin(), fragments.end(),
             fragment, FragmentLess());
+    int index2;
     if (it == fragments.end()) {
-        return Fragments();
+        index2 = fragments.size();
+    } else {
+        index2 = std::distance(fragments.begin(), it);
     }
-    int index2 = std::distance(fragments.begin(), it);
     Fragments result;
     for (int j = index2; j < fragments.size(); j++) {
         const FragmentPtr& f = fragments[j];
