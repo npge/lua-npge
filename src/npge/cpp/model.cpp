@@ -318,13 +318,14 @@ bool Fragment::operator==(const Fragment& other) const {
 bool Fragment::operator<(const Fragment& other) const {
     ASSERT_TRUE(!parted());
     ASSERT_TRUE(!other.parted());
-    typedef boost::tuple<int, int, const std::string&> T;
+    typedef boost::tuple<int, int, int, const std::string&> T;
     int self_min = std::min(start(), stop());
     int self_max = std::max(start(), stop());
     int other_min = std::min(other.start(), other.stop());
     int other_max = std::max(other.start(), other.stop());
-    T t1(self_min, self_max, sequence()->name());
-    T t2(other_min, other_max, other.sequence()->name());
+    T t1(self_min, self_max, ori(), sequence()->name());
+    T t2(other_min, other_max, other.ori(),
+            other.sequence()->name());
     return t1 < t2;
 }
 
