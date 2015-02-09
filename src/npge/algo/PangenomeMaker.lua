@@ -4,6 +4,7 @@ return function(bs)
     --      no new good blocks can be found neither in blast
     --      hits, not in results of joining neighbour blocks)
     local algo = require 'npge.algo'
+    assert(not algo.HasOverlap(bs))
     bs = algo.GoodSubblocks(bs)
     local bs1
     while not bs1 or bs1 ~= bs do
