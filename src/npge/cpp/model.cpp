@@ -785,11 +785,17 @@ BlockPtr BlockSet::blockByFragment(
     if (it == fragments.end()) {
         return BlockPtr();
     }
-    while (*it != fragment) {
-        // fragments are equal but different instances
-        it++;
-        if (it == fragments.end() || !(*(*it) == *fragment)) {
-            return BlockPtr();
+    if (parentOrFragment(*it) == *it) {
+        // found fragment is not parted
+        // TODO this is good example why no equal
+        // fragments must be allowed in block and in blockset
+        while (*it != fragment) {
+            // fragments are equal but different instances
+            it++;
+            if (it == fragments.end() ||
+                    !(*(*it) == *fragment)) {
+                return BlockPtr();
+            }
         }
     }
     int index2 = std::distance(fragments.begin(), it);
