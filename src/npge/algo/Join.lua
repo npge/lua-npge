@@ -107,7 +107,7 @@ end
 
 local findJoined = function(blockset)
     -- for each block look through left and right neighbours
-    -- of each fragment; add joined block,
+    -- of each fragment;
     -- add joined block, if all fragments have
     -- corresponding fragment in neighbour
     local joined = {}
