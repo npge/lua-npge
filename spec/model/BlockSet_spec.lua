@@ -103,6 +103,17 @@ describe("model.BlockSet", function()
             model.Fragment(s, 0, 1, 1))), toset({f1, f2}))
     end)
 
+    it("finds overlapping fragments (wrong sequence)",
+    function()
+        local s = model.Sequence("genome&chr&c", "ATAT")
+        local s1 = model.Sequence("genome1&chr&c", "ATAT")
+        local f = model.Fragment(s, 0, 0, 1)
+        local f1 = model.Fragment(s1, 0, 0, 1)
+        local block = model.Block({f})
+        local blockset = model.BlockSet({s}, {block})
+        assert.same(blockset:overlapping_fragments(f1), {})
+    end)
+
     it("finds overlapping fragments (pattern is last fragment)",
     function()
         local s = model.Sequence("genome&chr&c", "ATAT")

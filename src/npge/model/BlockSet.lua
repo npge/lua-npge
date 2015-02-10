@@ -225,7 +225,9 @@ bs_mt.overlapping_fragments = function(self, fragment)
     end
     local seq = fragment:sequence()
     local fragments = self._seq2fragments[seq]
-    assert(fragments, "Sequence not in blockset")
+    if not fragments then
+        return {}
+    end
     local result = {}
     local add_fragment_or_parent = function(f)
         table.insert(result, parent_or_fragment(self, f))
