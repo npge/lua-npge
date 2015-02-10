@@ -884,18 +884,12 @@ FragmentPtr BlockSet::next(const FragmentPtr& fragment) const {
         }
         return next(part);
     }
-    int index = rawSeq2index(sequence->name(), sequences_);
-    if (index == sequences_.size()) {
-        return FragmentPtr();
-    }
-    ASSERT_TRUE(sequence == sequences_[index]);
+    int index = seq2index(sequence->name(), sequences_);
     const Fragments& fragments = to_fragments_[index];
     Fragments::const_iterator it = binarySearch(
             fragments.begin(), fragments.end(),
             fragment, FragmentLess());
-    if (it == fragments.end()) {
-        return FragmentPtr();
-    }
+    ASSERT_MSG(it != fragments.end(), "No such fragment");
     it++;
     if (it == fragments.end()) {
         if (!sequence->circular()) {
@@ -917,18 +911,12 @@ FragmentPtr BlockSet::prev(const FragmentPtr& fragment) const {
         }
         return prev(part);
     }
-    int index = rawSeq2index(sequence->name(), sequences_);
-    if (index == sequences_.size()) {
-        return FragmentPtr();
-    }
-    ASSERT_TRUE(sequence == sequences_[index]);
+    int index = seq2index(sequence->name(), sequences_);
     const Fragments& fragments = to_fragments_[index];
     Fragments::const_iterator it = binarySearch(
             fragments.begin(), fragments.end(),
             fragment, FragmentLess());
-    if (it == fragments.end()) {
-        return FragmentPtr();
-    }
+    ASSERT_MSG(it != fragments.end(), "No such fragment");
     if (it == fragments.begin()) {
         if (!sequence->circular()) {
             return FragmentPtr();

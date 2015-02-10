@@ -919,20 +919,38 @@ int lua_BlockSet_overlappingFragments(lua_State *L) {
     return 1;
 }
 
-int lua_BlockSet_next(lua_State *L) {
+int lua_BlockSet_next_impl(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     const FragmentPtr& fr = lua_tofr(L, 2);
-    FragmentPtr next = bs->next(fr);
-    lua_pushfr(L, next);
-    return 1;
+    try {
+        FragmentPtr next = bs->next(fr);
+        lua_pushfr(L, next);
+        return 1;
+    } catch (std::exception& e) {
+        lua_pushstring(L, e.what());
+        return -1;
+    }
+}
+
+int lua_BlockSet_next(lua_State *L) {
+    LUA_CALL_WRAPPED(lua_BlockSet_next_impl);
+}
+
+int lua_BlockSet_prev_impl(lua_State *L) {
+    const BlockSetPtr& bs = lua_tobs(L, 1);
+    const FragmentPtr& fr = lua_tofr(L, 2);
+    try {
+        FragmentPtr prev = bs->prev(fr);
+        lua_pushfr(L, prev);
+        return 1;
+    } catch (std::exception& e) {
+        lua_pushstring(L, e.what());
+        return -1;
+    }
 }
 
 int lua_BlockSet_prev(lua_State *L) {
-    const BlockSetPtr& bs = lua_tobs(L, 1);
-    const FragmentPtr& fr = lua_tofr(L, 2);
-    FragmentPtr prev = bs->prev(fr);
-    lua_pushfr(L, prev);
-    return 1;
+    LUA_CALL_WRAPPED(lua_BlockSet_prev_impl);
 }
 
 int lua_BlockSet_tostring(lua_State *L) {
