@@ -384,5 +384,18 @@ describe("model.BlockSet", function()
         local blockset = model.BlockSet({s1}, {b1})
         assert.truthy(tostring(blockset))
     end)
+
+    it("converts blockset to reference and back", function()
+        local s1 = model.Sequence("g&c&c", "ATAT")
+        local f1 = model.Fragment(s1, 1, 2, 1)
+        local f2 = model.Fragment(s1, 3, 0, 1) -- parted
+        local b1 = model.Block({f1, f2})
+        local blockset = model.BlockSet({s1}, {b1})
+        if blockset.toRef and model.BlockSet.fromRef then
+            local ref = blockset:toRef()
+            local blockset2 = model.BlockSet.fromRef(ref)
+            assert.equal(blockset, blockset2)
+        end
+    end)
 end)
 

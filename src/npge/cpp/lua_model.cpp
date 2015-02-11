@@ -960,8 +960,27 @@ int lua_BlockSet_tostring(lua_State *L) {
     return 1;
 }
 
+int lua_BlockSet_toRef(lua_State *L) {
+    const BlockSetPtr& bs = lua_tobs(L, 1);
+    char buffer[100];
+    sprintf(buffer, "BlockSet.fromRef(%p)", bs.get());
+    lua_pushstring(L, buffer);
+    return 1;
+}
+
+int lua_BlockSet_fromRef(lua_State *L) {
+    size_t len;
+    const char* ref = luaL_checklstring(L, 1, &len);
+    const BlockSet* raw_bs;
+    sscanf(ref, "BlockSet.fromRef(%p)", &raw_bs);
+    BlockSetPtr bs(raw_bs); // adds reference count
+    lua_pushbs(L, bs);
+    return 1;
+}
+
 static const luaL_Reg BlockSet_methods[] = {
     {"__gc", lua_BlockSet_gc},
+    {"toRef", lua_BlockSet_toRef},
     {"type", lua_BlockSet_type},
     {"size", lua_BlockSet_size},
     {"same_sequences", lua_BlockSet_sameSequences},
@@ -988,12 +1007,15 @@ static const luaL_Reg BlockSet_methods[] = {
 // table "model" is on stack index -1
 // model.BlockSet is function
 // replaces model.BlockSet with callable table
-void registerBlockSet(lua_State* L) {
+// with member fromRef
+void registerBlockSetFromRef(lua_State* L) {
     lua_newtable(L); // callable table BlockSet
     lua_newtable(L); // metatable of callable table
     lua_getfield(L, -3, "BlockSet");
     lua_setfield(L, -2, "__call"); // mt.__call = BlockSet
     lua_setmetatable(L, -2);
+    lua_pushcfunction(L, lua_BlockSet_fromRef);
+    lua_setfield(L, -2, "fromRef");
     lua_setfield(L, -2, "BlockSet");
 }
 
@@ -1087,7 +1109,7 @@ int luaopen_npge_cmodel(lua_State *L) {
     registerType(L, "BlockSet", "npge_BlockSet",
                  "npge_BlockSet_cache",
                  lua_BlockSet, BlockSet_methods);
-    registerBlockSet(L);
+    registerBlockSetFromRef(L);
     luaL_register(L, NULL, free_functions);
     return 1;
 }
