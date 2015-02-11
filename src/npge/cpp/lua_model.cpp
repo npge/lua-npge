@@ -990,7 +990,6 @@ int lua_BlockSet_fromRef(lua_State *L) {
 
 static const luaL_Reg BlockSet_methods[] = {
     {"__gc", lua_BlockSet_gc},
-    {"toRef", lua_BlockSet_toRef},
     {"type", lua_BlockSet_type},
     {"size", lua_BlockSet_size},
     {"same_sequences", lua_BlockSet_sameSequences},
@@ -1024,6 +1023,8 @@ void registerBlockSetFromRef(lua_State* L) {
     lua_getfield(L, -3, "BlockSet");
     lua_setfield(L, -2, "__call"); // mt.__call = BlockSet
     lua_setmetatable(L, -2);
+    lua_pushcfunction(L, lua_BlockSet_toRef);
+    lua_setfield(L, -2, "toRef");
     lua_pushcfunction(L, lua_BlockSet_fromRef);
     lua_setfield(L, -2, "fromRef");
     lua_setfield(L, -2, "BlockSet");

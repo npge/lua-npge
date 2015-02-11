@@ -386,16 +386,17 @@ describe("model.BlockSet", function()
     end)
 
     it("converts blockset to reference and back", function()
-        local s1 = model.Sequence("g1&c&c", "ATAT")
-        local s2 = model.Sequence("g2&c&c", "ATAT")
-        local f1 = model.Fragment(s1, 1, 2, 1)
-        local f2 = model.Fragment(s1, 3, 0, 1) -- parted
-        local b1 = model.Block({f1})
-        local b1 = model.Block({f2})
-        local blockset = model.BlockSet({s1}, {b1})
-        if blockset.toRef and model.BlockSet.fromRef then
-            local ref = blockset:toRef()
-            local blockset2 = model.BlockSet.fromRef(ref)
+        local BlockSet = require 'npge.model.BlockSet'
+        if BlockSet.toRef and BlockSet.fromRef then
+            local s1 = model.Sequence("g1&c&c", "ATAT")
+            local s2 = model.Sequence("g2&c&c", "ATAT")
+            local f1 = model.Fragment(s1, 1, 2, 1)
+            local f2 = model.Fragment(s1, 3, 0, 1) -- parted
+            local b1 = model.Block({f1})
+            local b1 = model.Block({f2})
+            local blockset = BlockSet({s1}, {b1})
+            local ref = BlockSet.toRef(blockset)
+            local blockset2 = BlockSet.fromRef(ref)
             assert.equal(blockset, blockset2)
             -- order of blocks and sequences is preserved
             assert.same(blockset:sequences(),
@@ -404,9 +405,9 @@ describe("model.BlockSet", function()
                         blockset2:blocks())
             -- change reference counter
             local increase_count = true
-            local ref = blockset:toRef(increase_count)
+            local ref = BlockSet.toRef(blockset, increase_count)
             local decrease_count = true
-            local blockset2 = model.BlockSet.fromRef(ref,
+            local blockset2 = BlockSet.fromRef(ref,
                 decrease_count)
             assert.equal(blockset, blockset2)
         end
