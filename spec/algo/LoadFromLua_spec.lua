@@ -34,4 +34,22 @@ describe("algo.LoadFromLua", function()
         local blockset1 = LoadFromLua(lua)(seqs_bs)
         assert.equal(blockset1, blockset)
     end)
+
+    it("loads from reference to blockset", function()
+        local model = require 'npge.model'
+        local s = model.Sequence("test_name", "ATAT")
+        local f1 = model.Fragment(s, 0, 1, 1)
+        local block1 = model.Block({f1})
+        local blockset = model.BlockSet({s}, {block1})
+        if blockset.toRef and model.BlockSet.fromRef then
+            local lua = [[do
+                local BlockSet = require 'npge.model.BlockSet'
+                return BlockSet.fromRef(%q)
+            end ]]
+            lua = lua:format(blockset:toRef())
+            local LoadFromLua = require 'npge.algo.LoadFromLua'
+            local blockset1 = LoadFromLua(lua)()
+            assert.equal(blockset1, blockset)
+        end
+    end)
 end)
