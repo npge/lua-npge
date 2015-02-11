@@ -645,37 +645,37 @@ static const luaL_Reg Block_methods[] = {
 
 //////////
 
-// BlockSet({sequences}, {blocks})
+// BlockSet(BlockSet, {sequences}, {blocks})
 int lua_BlockSet_impl(lua_State *L) {
-    luaL_argcheck(L, lua_gettop(L) >= 2, 1,
-                  "call BlockSet({sequences}, {blocks})");
-    luaL_argcheck(L, lua_type(L, 1) == LUA_TTABLE, 1,
+    luaL_argcheck(L, lua_gettop(L) >= 3, 2,
                   "call BlockSet({sequences}, {blocks})");
     luaL_argcheck(L, lua_type(L, 2) == LUA_TTABLE, 2,
                   "call BlockSet({sequences}, {blocks})");
-    int nseqs = lua_objlen(L, 1);
-    int nblocks = lua_objlen(L, 2);
+    luaL_argcheck(L, lua_type(L, 3) == LUA_TTABLE, 3,
+                  "call BlockSet({sequences}, {blocks})");
+    int nseqs = lua_objlen(L, 2);
+    int nblocks = lua_objlen(L, 3);
     // check all arguments are convertible to target types
     for (int i = 0; i < nseqs; i++) {
-        lua_rawgeti(L, 1, i + 1); // sequence
+        lua_rawgeti(L, 2, i + 1); // sequence
         lua_toseq(L, -1);
         lua_pop(L, 1);
     }
     for (int i = 0; i < nblocks; i++) {
-        lua_rawgeti(L, 2, i + 1); // block
+        lua_rawgeti(L, 3, i + 1); // block
         lua_toblock(L, -1);
         lua_pop(L, 1);
     }
     // now fill
     Sequences seqs(nseqs);
     for (int i = 0; i < nseqs; i++) {
-        lua_rawgeti(L, 1, i + 1); // sequence
+        lua_rawgeti(L, 2, i + 1); // sequence
         seqs[i] = lua_toseq(L, -1);
         lua_pop(L, 1);
     }
     Blocks blocks(nblocks);
     for (int i = 0; i < nblocks; i++) {
-        lua_rawgeti(L, 2, i + 1); // block
+        lua_rawgeti(L, 3, i + 1); // block
         blocks[i] = lua_toblock(L, -1);
         lua_pop(L, 1);
     }
@@ -985,6 +985,18 @@ static const luaL_Reg BlockSet_methods[] = {
     {NULL, NULL}
 };
 
+// table "model" is on stack index -1
+// model.BlockSet is function
+// replaces model.BlockSet with callable table
+void registerBlockSet(lua_State* L) {
+    lua_newtable(L); // callable table BlockSet
+    lua_newtable(L); // metatable of callable table
+    lua_getfield(L, -3, "BlockSet");
+    lua_setfield(L, -2, "__call"); // mt.__call = BlockSet
+    lua_setmetatable(L, -2);
+    lua_setfield(L, -2, "BlockSet");
+}
+
 /////////
 
 typedef boost::scoped_array<char> Buffer;
@@ -1075,6 +1087,7 @@ int luaopen_npge_cmodel(lua_State *L) {
     registerType(L, "BlockSet", "npge_BlockSet",
                  "npge_BlockSet_cache",
                  lua_BlockSet, BlockSet_methods);
+    registerBlockSet(L);
     luaL_register(L, NULL, free_functions);
     return 1;
 }
