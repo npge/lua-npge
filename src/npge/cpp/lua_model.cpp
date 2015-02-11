@@ -962,6 +962,11 @@ int lua_BlockSet_tostring(lua_State *L) {
 
 int lua_BlockSet_toRef(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
+    int increase_count = lua_toboolean(L, 2);
+    if (increase_count) {
+        using namespace boost;
+        intrusive_ptr_add_ref(bs.get());
+    }
     char buffer[100];
     sprintf(buffer, "BlockSet.fromRef(%p)", bs.get());
     lua_pushstring(L, buffer);
@@ -971,10 +976,15 @@ int lua_BlockSet_toRef(lua_State *L) {
 int lua_BlockSet_fromRef(lua_State *L) {
     size_t len;
     const char* ref = luaL_checklstring(L, 1, &len);
+    int decrease_count = lua_toboolean(L, 2);
     const BlockSet* raw_bs;
     sscanf(ref, "BlockSet.fromRef(%p)", &raw_bs);
     BlockSetPtr bs(raw_bs); // adds reference count
     lua_pushbs(L, bs);
+    if (decrease_count) {
+        using namespace boost;
+        intrusive_ptr_release(bs.get());
+    }
     return 1;
 }
 

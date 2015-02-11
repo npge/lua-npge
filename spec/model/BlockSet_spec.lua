@@ -402,6 +402,13 @@ describe("model.BlockSet", function()
                         blockset2:sequences())
             assert.same(blockset:blocks(),
                         blockset2:blocks())
+            -- change reference counter
+            local increase_count = true
+            local ref = blockset:toRef(increase_count)
+            local decrease_count = true
+            local blockset2 = model.BlockSet.fromRef(ref,
+                decrease_count)
+            assert.equal(blockset, blockset2)
         end
     end)
 end)
