@@ -83,6 +83,9 @@ end
 -- see https://github.com/Neopallium/lua-llthreads
 -- alg is algorithm name (example: "npge.algo.GoodSubblocks")
 -- algorithm must accept and return a blockset
+-- WARNING target executable must be linked against pthread
+-- Otherwise memory errors occur
+-- LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0 lua ...
 return function(blockset, alg)
     local algorithm = assert(require(alg))
     local config = require 'npge.config'
