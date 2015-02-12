@@ -172,15 +172,7 @@ return function(blockset, options)
     Blast.makeConsensus(bank_cons_fname, bank)
     local query_cons_fname
     if options.bank then
-        for seq in options.bank:iter_sequences() do
-            local test = {[seq] = true}
-            local seq2 = blockset:sequence_by_name(seq:name())
-            local message = [[Name %s
-                corresponds to different sequences
-                in query and bank]]
-            assert(not seq2 or test[seq2],
-                message:format(seq:name()))
-        end
+        Blast.checkNoCollisions(options.bank, blockset)
         query_cons_fname = os.tmpname()
         Blast.makeConsensus(query_cons_fname, blockset)
     else

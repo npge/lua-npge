@@ -20,4 +20,16 @@ function Blast.makeConsensus(consensus_fname, blockset)
         algo.WriteSequencesToFasta(blockset))
 end
 
+function Blast.checkNoCollisions(bs1, bs2)
+    for seq in bs1:iter_sequences() do
+        local test = {[seq] = true}
+        local seq2 = bs2:sequence_by_name(seq:name())
+        local message = [[Name %s
+            corresponds to different sequences
+            in query and bank]]
+        assert(not seq2 or test[seq2],
+            message:format(seq:name()))
+    end
+end
+
 return Blast
