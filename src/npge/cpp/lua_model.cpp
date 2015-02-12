@@ -722,8 +722,12 @@ int lua_BlockSet_cmp(lua_State *L) {
     const BlockSetPtr& b = lua_tobs(L, 2);
     std::pair<bool, std::string> p = a->cmp(*b);
     lua_pushboolean(L, p.first);
-    lua_pushlstring(L, p.second.c_str(), p.second.size());
-    return 2;
+    if (p.first) {
+        return 1;
+    } else {
+        lua_pushlstring(L, p.second.c_str(), p.second.size());
+        return 2;
+    }
 }
 
 int lua_BlockSet_eq(lua_State *L) {
