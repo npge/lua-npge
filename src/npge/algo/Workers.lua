@@ -45,7 +45,7 @@ end
 local spawnWorkers = function(blocksets, alg)
     local threads = {}
     for _, bs in ipairs(blocksets) do
-        local thread =spawnWorker(bs, alg)
+        local thread = spawnWorker(bs, alg)
         table.insert(threads, thread)
     end
     return threads
