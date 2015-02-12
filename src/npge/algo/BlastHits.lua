@@ -144,7 +144,6 @@ return function(blockset, options)
     --   (otherwise original blockset is both bank and query)
     local Blast = require 'npge.algo.Blast'
     options = options or {}
-    local util = require 'npge.util'
     local BlockSet = require 'npge.model.BlockSet'
     local bank = options.bank or blockset
     if #blockset:sequences() == 0 or #bank:sequences() == 0 then
@@ -162,7 +161,6 @@ return function(blockset, options)
     end
     local bank_fname = os.tmpname()
     Blast.makeBlastDb(bank_fname, bank_cons_fname)
-    assert(util.file_exists(bank_fname .. '.nhr'))
     local cmd = Blast.blastnCmd(bank_fname,
         query_cons_fname, options)
     local f = assert(io.popen(cmd, 'r'))
