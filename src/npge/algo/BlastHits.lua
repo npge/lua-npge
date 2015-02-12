@@ -1,21 +1,3 @@
-local blastn_cmd = function(bank_fname, input, options)
-    local config = require 'npge.config'
-    local evalue = options.evalue or config.blast.EVALUE
-    local workers = options.workers or config.util.WORKERS
-    local dust = options.dust or config.blast.DUST
-    local dust = dust and 'yes' or 'no'
-    local args = {
-        'blastn',
-        '-task blastn',
-        '-db', bank_fname,
-        '-query', input,
-        '-evalue', tostring(evalue),
-        '-num_threads', workers,
-        '-dust', dust,
-    }
-    return table.concat(args, ' ')
-end
-
 local ori = function(start, stop)
     if start < stop then
         return 1
@@ -181,7 +163,7 @@ return function(blockset, options)
     local bank_fname = os.tmpname()
     Blast.makeBlastDb(bank_fname, bank_cons_fname)
     assert(util.file_exists(bank_fname .. '.nhr'))
-    local cmd = blastn_cmd(bank_fname,
+    local cmd = Blast.blastnCmd(bank_fname,
         query_cons_fname, options)
     local f = assert(io.popen(cmd, 'r'))
     local hits = read_blast(f, blockset, options.hits_filter,

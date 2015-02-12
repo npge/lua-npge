@@ -32,4 +32,22 @@ function Blast.checkNoCollisions(bs1, bs2)
     end
 end
 
+function Blast.blastnCmd(bank_fname, query_fname, options)
+    local config = require 'npge.config'
+    local evalue = options.evalue or config.blast.EVALUE
+    local workers = options.workers or config.util.WORKERS
+    local dust = options.dust or config.blast.DUST
+    local dust = dust and 'yes' or 'no'
+    local args = {
+        'blastn',
+        '-task blastn',
+        '-db', bank_fname,
+        '-query', query_fname,
+        '-evalue', tostring(evalue),
+        '-num_threads', workers,
+        '-dust', dust,
+    }
+    return table.concat(args, ' ')
+end
+
 return Blast
