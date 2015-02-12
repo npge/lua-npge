@@ -178,12 +178,7 @@ return function(blockset, options)
     local util = require 'npge.util'
     local BlockSet = require 'npge.model.BlockSet'
     local bank = options.bank or blockset
-    if #blockset:sequences() == 0 then
-        assert(#blockset:blocks() == 0)
-        return BlockSet({}, {})
-    end
-    if #bank:sequences() == 0 then
-        assert(#bank:blocks() == 0)
+    if #blockset:sequences() == 0 or #bank:sequences() == 0 then
         return BlockSet({}, {})
     end
     local bank_cons_fname = os.tmpname()
