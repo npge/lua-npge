@@ -32,11 +32,8 @@ describe("algo.Workers", function()
             end
             local blockset = BlockSet({s1, s2}, blocks)
             --
-            local ParallelGoodSubblocks = function(bs)
-                local Workers = require 'npge.algo.Workers'
-                return Workers(bs, 'npge.algo.GoodSubblocks')
-            end
-            local good_blocks = ParallelGoodSubblocks(blockset)
+            local Workers = require 'npge.algo.Workers'
+            local good_blocks = Workers.GoodSubblocks(blockset)
             assert.truthy(#good_blocks:blocks() >= 1)
             local is_good = require 'npge.block.is_good'
             assert.truthy(is_good(good_blocks:blocks()[1]))

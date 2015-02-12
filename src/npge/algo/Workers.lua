@@ -86,7 +86,7 @@ end
 -- WARNING target executable must be linked against pthread
 -- Otherwise memory errors occur
 -- LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0 lua ...
-return function(blockset, alg)
+local Workers = function(blockset, alg)
     local algorithm = assert(require(alg))
     local config = require 'npge.config'
     local workers = config.util.WORKERS
@@ -97,3 +97,13 @@ return function(blockset, alg)
     local threads = spawnWorkers(blocksets, alg)
     return collectResults(threads)
 end
+
+return setmetatable({
+    GoodSubblocks = function(blockset)
+        return Workers(blockset, 'npge.algo.GoodSubblocks')
+    end,
+}, {
+    __call = function(self, ...)
+        return Workers(...)
+    end,
+})
