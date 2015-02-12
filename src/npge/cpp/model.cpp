@@ -711,9 +711,8 @@ BlockSet::cmp(const BlockSet& other) const {
             }
         }
     }
-    if (blocks1.size() != blocks2.size()) {
-        return std::make_pair(false, "blocks");
-    }
+    // numbers of blocks which has been checked to be equal
+    ASSERT_EQ(blocks1.size(), blocks2.size());
     int n = blocks1.size();
     for (int i = 0; i < n; i++) {
         const BlockPtr& a = blocks1[i];
