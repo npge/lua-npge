@@ -22,6 +22,7 @@ local members = {
     'PrimaryHits',
     'PangenomeMaker',
     'HasOverlap',
+    'Workers',
 }
 
 local algo = {}

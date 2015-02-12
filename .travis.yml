@@ -7,11 +7,13 @@ install:
   - sudo luarocks --from=http://luarocks.giga.puc-rio.br/ install busted
   - sudo luarocks --from=http://luarocks.giga.puc-rio.br/ install luacov
   - sudo luarocks --from=http://luarocks.giga.puc-rio.br/ install luacov-coveralls
+  - sudo luarocks --from=http://luarocks.giga.puc-rio.br/ install lua-llthreads
   - sudo pip install cpp-coveralls
 
 script:
   - busted -c
   - luarocks make --local
+  - export LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0
   - busted -c
   - luarocks make --local CFLAGS="-O0 -g -fPIC"
   - make exitless-busted
