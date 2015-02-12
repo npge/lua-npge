@@ -41,4 +41,22 @@ describe("algo.Workers", function()
             config.util.WORKERS = orig_WORKERS
         end
     end)
+
+    it("works if number of workers is 1",
+    function()
+        local BlockSet = require 'npge.model.BlockSet'
+        if BlockSet.toRef and BlockSet.fromRef then
+            -- AAAAAAAA
+            -- ACATTACA
+            local config = require 'npge.config'
+            config.util.WORKERS = 1
+            local blockset = BlockSet({}, {})
+            --
+            local Workers = require 'npge.algo.Workers'
+            local good_blocks = Workers.GoodSubblocks(blockset)
+            assert.equal(#good_blocks:blocks(), 0)
+            --
+            config.util.WORKERS = orig_WORKERS
+        end
+    end)
 end)
