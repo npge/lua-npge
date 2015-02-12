@@ -50,4 +50,11 @@ function Blast.blastnCmd(bank_fname, query_fname, options)
     return table.concat(args, ' ')
 end
 
+function Blast.bankCleanup(bank_fname)
+    os.remove(bank_fname)
+    os.remove(bank_fname .. '.nhr')
+    os.remove(bank_fname .. '.nin')
+    os.remove(bank_fname .. '.nsq')
+end
+
 return Blast

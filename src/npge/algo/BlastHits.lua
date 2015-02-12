@@ -173,9 +173,6 @@ return function(blockset, options)
     if options.bank then
         os.remove(query_cons_fname)
     end
-    os.remove(bank_fname)
-    os.remove(bank_fname .. '.nhr')
-    os.remove(bank_fname .. '.nin')
-    os.remove(bank_fname .. '.nsq')
+    Blast.bankCleanup(bank_fname)
     return hits
 end
