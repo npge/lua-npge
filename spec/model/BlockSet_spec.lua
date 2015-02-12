@@ -358,6 +358,10 @@ describe("model.BlockSet", function()
                 BS({s1, s2}, {B(f1), B(f1a), B(f2)}))
         assert.falsy(status)
         assert.truthy(reason)
+        local status, reason =
+            BS({s1, s2}, {B(f1), B(f1), B(f2)}):cmp(
+                BS({s1, s2}, {B(f1), B(f1), B(f2)}))
+        assert.truthy(status)
     end)
 
     it("compares blocksets (different objects)", function()
