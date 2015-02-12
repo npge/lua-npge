@@ -1,16 +1,3 @@
-local makeblastdb = function(bank_fname, consensus_fname)
-    local args = {
-        'makeblastdb',
-        '-dbtype nucl',
-        '-out', bank_fname,
-        '-in', consensus_fname,
-    }
-    -- not os.execute to suppress messages produced by blast
-    local f = assert(io.popen(table.concat(args, ' ')))
-    f:read('*a')
-    f:close()
-end
-
 local blastn_cmd = function(bank_fname, input, options)
     local config = require 'npge.config'
     local evalue = options.evalue or config.blast.EVALUE
@@ -173,8 +160,8 @@ return function(blockset, options)
     --   (filtering function, accepts hit, returns true/false)
     -- - bank -- another blockset, used as bank
     --   (otherwise original blockset is both bank and query)
+    local Blast = require 'npge.algo.Blast'
     options = options or {}
-    local algo = require 'npge.algo'
     local util = require 'npge.util'
     local BlockSet = require 'npge.model.BlockSet'
     local bank = options.bank or blockset
@@ -182,8 +169,7 @@ return function(blockset, options)
         return BlockSet({}, {})
     end
     local bank_cons_fname = os.tmpname()
-    util.write_it(bank_cons_fname,
-        algo.WriteSequencesToFasta(bank))
+    Blast.makeConsensus(bank_cons_fname, bank)
     local query_cons_fname
     if options.bank then
         for seq in options.bank:iter_sequences() do
@@ -196,13 +182,12 @@ return function(blockset, options)
                 message:format(seq:name()))
         end
         query_cons_fname = os.tmpname()
-        util.write_it(query_cons_fname,
-            algo.WriteSequencesToFasta(blockset))
+        Blast.makeConsensus(query_cons_fname, blockset)
     else
         query_cons_fname = bank_cons_fname
     end
     local bank_fname = os.tmpname()
-    makeblastdb(bank_fname, bank_cons_fname)
+    Blast.makeBlastDb(bank_fname, bank_cons_fname)
     assert(util.file_exists(bank_fname .. '.nhr'))
     local cmd = blastn_cmd(bank_fname,
         query_cons_fname, options)
