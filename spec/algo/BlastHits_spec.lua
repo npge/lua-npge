@@ -1620,4 +1620,47 @@ GTGATACGACTATACTAGTGC]])
     Sbjct  5189   TGCCCTACTCATTCAACGGAACCACGCCGCAATCACCGGCTTGCGACCCGAAGACCAGTC  5130
     ]]
     end)
+
+    it("works with pre-built bank (query = bank)",
+    function()
+        local Sequence = require 'npge.model.Sequence'
+        local s1 = Sequence('s1', string.rep('ATGC', 100))
+        local s2 = Sequence('s2', string.rep('ATGC', 100))
+        local BlockSet = require 'npge.model.BlockSet'
+        local bs = BlockSet({s1, s2}, {})
+        local Blast = require 'npge.algo.Blast'
+        local bank_cons_fname = os.tmpname()
+        Blast.makeConsensus(bank_cons_fname, bs)
+        local bank_fname = os.tmpname()
+        Blast.makeBlastDb(bank_fname, bank_cons_fname)
+        local BlastHits = require 'npge.algo.BlastHits'
+        local hits = BlastHits(bs, bs, {
+            bank_fname = bank_fname
+        })
+        assert.truthy(#hits:blocks() >= 1)
+        os.remove(bank_cons_fname)
+        Blast.bankCleanup(bank_fname)
+    end)
+
+    it("works with pre-built bank (query != bank)",
+    function()
+        local Sequence = require 'npge.model.Sequence'
+        local s1 = Sequence('s1', string.rep('ATGC', 100))
+        local s2 = Sequence('s2', string.rep('ATGC', 100))
+        local BlockSet = require 'npge.model.BlockSet'
+        local bank = BlockSet({s1}, {})
+        local query = BlockSet({s2}, {})
+        local Blast = require 'npge.algo.Blast'
+        local bank_cons_fname = os.tmpname()
+        Blast.makeConsensus(bank_cons_fname, bank)
+        local bank_fname = os.tmpname()
+        Blast.makeBlastDb(bank_fname, bank_cons_fname)
+        local BlastHits = require 'npge.algo.BlastHits'
+        local hits = BlastHits(query, bank, {
+            bank_fname = bank_fname
+        })
+        assert.truthy(#hits:blocks() >= 1)
+        os.remove(bank_cons_fname)
+        Blast.bankCleanup(bank_fname)
+    end)
 end)

@@ -142,6 +142,7 @@ return function(query, bank, options)
     -- - workers
     -- - hits_filter
     --   (filtering function, accepts hit, returns true/false)
+    -- - bank_fname - pre-built bank
     local Blast = require 'npge.algo.Blast'
     options = options or {}
     local BlockSet = require 'npge.model.BlockSet'
@@ -150,27 +151,37 @@ return function(query, bank, options)
     end
     Blast.checkNoCollisions(query, bank)
     local same = (query == bank)
-    local bank_cons_fname = os.tmpname()
-    Blast.makeConsensus(bank_cons_fname, bank)
+    local bank_cons_fname, bank_fname
+    if options.bank_fname then
+        bank_fname = options.bank_fname
+    else
+        bank_cons_fname = os.tmpname()
+        Blast.makeConsensus(bank_cons_fname, bank)
+        bank_fname = os.tmpname()
+        Blast.makeBlastDb(bank_fname, bank_cons_fname)
+    end
     local query_cons_fname
-    if same then
+    if same and bank_cons_fname then
         query_cons_fname = bank_cons_fname
     else
         query_cons_fname = os.tmpname()
         Blast.makeConsensus(query_cons_fname, query)
     end
-    local bank_fname = os.tmpname()
-    Blast.makeBlastDb(bank_fname, bank_cons_fname)
+    --
     local cmd = Blast.blastnCmd(bank_fname,
         query_cons_fname, options)
     local f = assert(io.popen(cmd, 'r'))
     local filter = options.hits_filter
     local hits = read_blast(f, query, bank, filter, same)
     f:close()
-    os.remove(bank_cons_fname)
-    if not same then
+    if bank_cons_fname then
+        os.remove(bank_cons_fname)
+    end
+    if query_cons_fname then
         os.remove(query_cons_fname)
     end
-    Blast.bankCleanup(bank_fname)
+    if not options.bank_fname then
+        Blast.bankCleanup(bank_fname)
+    end
     return hits
 end
