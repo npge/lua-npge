@@ -172,7 +172,8 @@ return function(query, bank, options)
         query_cons_fname, options)
     local f = assert(io.popen(cmd, 'r'))
     local filter = options.hits_filter
-    local hits = read_blast(f, query, bank, filter, same)
+    local hits = read_blast(f, query, bank, filter,
+        same or options.subset)
     f:close()
     if bank_cons_fname then
         os.remove(bank_cons_fname)
