@@ -25,7 +25,7 @@ local workerCode = [[
     local BlockSet = require 'npge.model.BlockSet'
     local decrease_count = true
     local bs = BlockSet.fromRef(ref, decrease_count)
-    local algorithm = require(alg)
+    local algorithm = loadstring(alg)
     bs = assert(algorithm(bs))
     local increase_count = true
     return BlockSet.toRef(bs, increase_count)
@@ -81,13 +81,12 @@ local collectResults = function(threads)
 end
 
 -- see https://github.com/Neopallium/lua-llthreads
--- alg is algorithm name (example: "npge.algo.GoodSubblocks")
--- algorithm must accept and return a blockset
+-- alg is code function of, which accepts and returns blockset
 -- WARNING target executable must be linked against pthread
 -- Otherwise memory errors occur
 -- LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0 lua ...
 local Workers = function(blockset, alg)
-    local algorithm = assert(require(alg))
+    local algorithm = assert(loadstring(alg))
     local config = require 'npge.config'
     local workers = config.util.WORKERS
     if workers == 1 then
@@ -100,7 +99,10 @@ end
 
 return setmetatable({
     GoodSubblocks = function(blockset)
-        return Workers(blockset, 'npge.algo.GoodSubblocks')
+        return Workers(blockset, [[local bs = ...
+            local GS = require 'npge.algo.GoodSubblocks'
+            return GS(bs)
+        ]])
     end,
 }, {
     __call = function(self, ...)
