@@ -26,7 +26,8 @@ describe("algo.Workers", function()
             local f2 = Fragment(s2, 0, s2:length() - 1, 1)
             local Block = require 'npge.model.Block'
             local blocks = {}
-            for i = 1, 1000 do
+            local N = 1000
+            for i = 1, N do
                 local block = Block({f1, f2})
                 table.insert(blocks, block)
             end
@@ -34,7 +35,7 @@ describe("algo.Workers", function()
             --
             local Workers = require 'npge.algo.Workers'
             local good_blocks = Workers.GoodSubblocks(blockset)
-            assert.truthy(#good_blocks:blocks() >= 1)
+            assert.truthy(#good_blocks:blocks() >= N)
             local is_good = require 'npge.block.is_good'
             assert.truthy(is_good(good_blocks:blocks()[1]))
             --
