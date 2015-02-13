@@ -50,6 +50,7 @@ describe("algo.Workers", function()
             -- AAAAAAAA
             -- ACATTACA
             local config = require 'npge.config'
+            local orig_WORKERS = config.util.WORKERS
             config.util.WORKERS = 1
             local blockset = BlockSet({}, {})
             --
