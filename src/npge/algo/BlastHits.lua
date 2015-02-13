@@ -123,10 +123,10 @@ local read_blast = function(file, query, bank, filter, same)
     end
     try_add()
     assert(not file_is_empty, "blastn returned empty file")
-    local seqs = query:sequences()
+    local seqs = bank:sequences()
     if not same then
-        for seq in bank:iter_sequences() do
-            if not query:sequence_by_name(seq:name()) then
+        for seq in query:iter_sequences() do
+            if not bank:sequence_by_name(seq:name()) then
                 table.insert(seqs, seq)
             end
         end
