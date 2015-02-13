@@ -6,21 +6,21 @@ local ori = function(start, stop)
     end
 end
 
-local read_blast = function(file, bs, hits_filter, bank)
+local read_blast = function(file, query, bank, filter, same)
     local new_blocks = {}
-    local query, subject
+    local query_name, subject_name
     local query_row, subject_row
     local query_start, subject_start
     local query_stop, subject_stop
     local good_hit = function()
-        return query and subject and query_row and subject_row
+        return query_name and subject_name
+            and query_row and subject_row
     end
-    if not bank then
+    if same then
         local good_hit0 = good_hit
         good_hit = function()
-            return good_hit0() and query < subject
+            return good_hit0() and query_name < subject_name
         end
-        bank = bs
     end
     local try_add = function()
         if good_hit() then
@@ -31,12 +31,14 @@ local read_blast = function(file, bs, hits_filter, bank)
             assert(subject_start)
             assert(subject_stop)
             local Fragment = require 'npge.model.Fragment'
-            local query_seq = bs:sequence_by_name(query)
+            local query_seq =
+                query:sequence_by_name(query_name)
             assert(query_seq)
             local query_ori = ori(query_start, query_stop)
             local query_f = Fragment(query_seq,
                 query_start - 1, query_stop - 1, query_ori)
-            local subject_seq = bank:sequence_by_name(subject)
+            local subject_seq =
+                bank:sequence_by_name(subject_name)
             assert(subject_seq)
             local subject_ori = ori(subject_start, subject_stop)
             local subject_f = Fragment(subject_seq,
@@ -49,7 +51,7 @@ local read_blast = function(file, bs, hits_filter, bank)
                 {query_f, query_row1},
                 {subject_f, subject_row1},
             })
-            if not hits_filter or hits_filter(block) then
+            if not filter or filter(block) then
                 table.insert(new_blocks, block)
             end
         end
@@ -70,14 +72,14 @@ local read_blast = function(file, bs, hits_filter, bank)
         if starts_with(line, 'Query=') then
             -- Example: Query= consensus000567
             try_add()
-            query = split(line, '=', 1)[2]
-            query = trim(query)
-            query = split(query)[1]
+            query_name = split(line, '=', 1)[2]
+            query_name = trim(query_name)
+            query_name = split(query_name)[1]
         elseif line:sub(1, 1) == '>' then
             -- Example: > consensus000567
             try_add()
-            subject = trim(line:sub(2))
-            subject = split(subject)[1]
+            subject_name = trim(line:sub(2))
+            subject_name = split(subject_name)[1]
         elseif starts_with(line, ' Score =') then
             -- Example:  Score = 82.4 bits (90),  ...
             try_add()
@@ -121,10 +123,10 @@ local read_blast = function(file, bs, hits_filter, bank)
     end
     try_add()
     assert(not file_is_empty, "blastn returned empty file")
-    local seqs = bs:sequences()
-    if bank ~= bs then
+    local seqs = query:sequences()
+    if not same then
         for seq in bank:iter_sequences() do
-            if not bs:sequence_by_name(seq:name()) then
+            if not query:sequence_by_name(seq:name()) then
                 table.insert(seqs, seq)
             end
         end
@@ -133,42 +135,40 @@ local read_blast = function(file, bs, hits_filter, bank)
     return BlockSet(seqs, new_blocks)
 end
 
-return function(blockset, options)
+return function(query, bank, options)
     -- possible options:
     -- - evalue
     -- - dust
     -- - workers
     -- - hits_filter
     --   (filtering function, accepts hit, returns true/false)
-    -- - bank -- another blockset, used as bank
-    --   (otherwise original blockset is both bank and query)
     local Blast = require 'npge.algo.Blast'
     options = options or {}
     local BlockSet = require 'npge.model.BlockSet'
-    local bank = options.bank or blockset
-    if #blockset:sequences() == 0 or #bank:sequences() == 0 then
+    if #query:sequences() == 0 or #bank:sequences() == 0 then
         return BlockSet({}, {})
     end
+    Blast.checkNoCollisions(query, bank)
+    local same = (query == bank)
     local bank_cons_fname = os.tmpname()
     Blast.makeConsensus(bank_cons_fname, bank)
     local query_cons_fname
-    if options.bank then
-        Blast.checkNoCollisions(options.bank, blockset)
-        query_cons_fname = os.tmpname()
-        Blast.makeConsensus(query_cons_fname, blockset)
-    else
+    if same then
         query_cons_fname = bank_cons_fname
+    else
+        query_cons_fname = os.tmpname()
+        Blast.makeConsensus(query_cons_fname, query)
     end
     local bank_fname = os.tmpname()
     Blast.makeBlastDb(bank_fname, bank_cons_fname)
     local cmd = Blast.blastnCmd(bank_fname,
         query_cons_fname, options)
     local f = assert(io.popen(cmd, 'r'))
-    local hits = read_blast(f, blockset, options.hits_filter,
-        options.bank)
+    local filter = options.hits_filter
+    local hits = read_blast(f, query, bank, filter, same)
     f:close()
     os.remove(bank_cons_fname)
-    if options.bank then
+    if not same then
         os.remove(query_cons_fname)
     end
     Blast.bankCleanup(bank_fname)

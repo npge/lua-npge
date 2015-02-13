@@ -6,7 +6,7 @@ describe("algo.BlastHits", function()
         local BlockSet = require 'npge.model.BlockSet'
         local bs_with_seqs = BlockSet({s1, s2}, {})
         local BlastHits = require 'npge.algo.BlastHits'
-        local hits = BlastHits(bs_with_seqs)
+        local hits = BlastHits(bs_with_seqs, bs_with_seqs)
         assert.truthy(#hits:blocks() > 0)
     end)
 
@@ -18,7 +18,7 @@ describe("algo.BlastHits", function()
         local BlockSet = require 'npge.model.BlockSet'
         local BlastHits = require 'npge.algo.BlastHits'
         local hits = BlastHits(BlockSet({s1}, {}),
-            {bank=BlockSet({s2}, {})})
+            BlockSet({s2}, {}))
         assert.truthy(#hits:blocks() > 0)
     end)
 
@@ -31,7 +31,7 @@ describe("algo.BlastHits", function()
         local BlockSet = require 'npge.model.BlockSet'
         local BlastHits = require 'npge.algo.BlastHits'
         local hits = BlastHits(BlockSet({s1, s2}, {}),
-            {bank=BlockSet({s2, s3}, {})})
+            BlockSet({s2, s3}, {}))
         assert.truthy(#hits:blocks() > 0)
     end)
 
@@ -44,7 +44,7 @@ describe("algo.BlastHits", function()
         local BlastHits = require 'npge.algo.BlastHits'
         assert.has_error(function()
             local hits = BlastHits(BlockSet({s1a}, {}),
-                {bank=BlockSet({s1b}, {})})
+                BlockSet({s1b}, {}))
         end)
     end)
 
@@ -56,7 +56,7 @@ describe("algo.BlastHits", function()
         local BlockSet = require 'npge.model.BlockSet'
         local BlastHits = require 'npge.algo.BlastHits'
         local hits = BlastHits(BlockSet({s1, s2}, {}),
-            {bank=BlockSet({}, {})})
+            BlockSet({}, {}))
         assert.equal(#hits:blocks(), 0)
     end)
 
@@ -64,7 +64,7 @@ describe("algo.BlastHits", function()
         local BlockSet = require 'npge.model.BlockSet'
         local bs = BlockSet({}, {})
         local BlastHits = require 'npge.algo.BlastHits'
-        local hits = BlastHits(bs)
+        local hits = BlastHits(bs, bs)
         assert.equal(hits, bs)
     end)
 
@@ -77,7 +77,7 @@ describe("algo.BlastHits", function()
         local BlockSet = require 'npge.model.BlockSet'
         local bs_with_seqs = BlockSet({s1, s2}, {})
         local BlastHits = require 'npge.algo.BlastHits'
-        local hits = BlastHits(bs_with_seqs)
+        local hits = BlastHits(bs_with_seqs, bs_with_seqs)
         assert.truthy(#hits:blocks() > 0)
     end)
 
@@ -88,7 +88,8 @@ describe("algo.BlastHits", function()
         local BlockSet = require 'npge.model.BlockSet'
         local bs_with_seqs = BlockSet({s1, s2}, {})
         local BlastHits = require 'npge.algo.BlastHits'
-        local hits = BlastHits(bs_with_seqs, {evalue=0.01})
+        local hits = BlastHits(bs_with_seqs, bs_with_seqs,
+            {evalue=0.01})
         assert.truthy(#hits:blocks() > 0)
     end)
 
@@ -99,7 +100,7 @@ describe("algo.BlastHits", function()
         local BlockSet = require 'npge.model.BlockSet'
         local bs_with_seqs = BlockSet({s1, s2}, {})
         local BlastHits = require 'npge.algo.BlastHits'
-        local hits = BlastHits(bs_with_seqs, {
+        local hits = BlastHits(bs_with_seqs, bs_with_seqs, {
             hits_filter = function(hit)
                 return true
             end,
@@ -115,7 +116,7 @@ describe("algo.BlastHits", function()
         local BlockSet = require 'npge.model.BlockSet'
         local bs_with_seqs = BlockSet({s1, s2}, {})
         local BlastHits = require 'npge.algo.BlastHits'
-        local hits = BlastHits(bs_with_seqs, {
+        local hits = BlastHits(bs_with_seqs, bs_with_seqs, {
             hits_filter = function(hit)
                 return false
             end,
@@ -1602,7 +1603,7 @@ GTGATACGACTATACTAGTGC]])
         local BlockSet = require 'npge.model.BlockSet'
         local bs_with_seqs = BlockSet({s1, s2}, {})
         local BlastHits = require 'npge.algo.BlastHits'
-        local hits = BlastHits(bs_with_seqs)
+        local hits = BlastHits(bs_with_seqs, bs_with_seqs)
         assert.truthy(#hits:blocks() > 0)
 -- example of output
 [[

@@ -13,7 +13,7 @@ return function(bs)
         end
         local bs_covered = algo.Cover(bs)
         -- blast
-        local hits = algo.AddGoodBlast(bs_covered)
+        local hits = algo.AddGoodBlast(bs_covered, bs_covered)
         bs1 = algo.BlocksWithoutOverlaps(bs, hits)
         -- join
         local joined = algo.Join(bs1)

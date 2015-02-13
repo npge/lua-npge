@@ -8,7 +8,8 @@ describe("algo.AddGoodBlast", function()
         local Cover = require 'npge.algo.Cover'
         local bs_with_blocks = Cover(bs_with_seqs)
         local AddGoodBlast = require 'npge.algo.AddGoodBlast'
-        local hits = AddGoodBlast(bs_with_blocks)
+        local hits = AddGoodBlast(bs_with_blocks,
+            bs_with_blocks)
         assert.truthy(#hits:blocks() > 0)
     end)
 
@@ -22,7 +23,7 @@ describe("algo.AddGoodBlast", function()
         local query = Cover(BlockSet({s1}, {}))
         local bank = Cover(BlockSet({s2}, {}))
         local AddGoodBlast = require 'npge.algo.AddGoodBlast'
-        local hits = AddGoodBlast(query, {bank=bank})
+        local hits = AddGoodBlast(query, bank)
         assert.truthy(#hits:blocks() > 0)
     end)
 
@@ -37,7 +38,7 @@ describe("algo.AddGoodBlast", function()
         local query = Cover(BlockSet({s1, s2}, {}))
         local bank = Cover(BlockSet({s2, s3}, {}))
         local AddGoodBlast = require 'npge.algo.AddGoodBlast'
-        local hits = AddGoodBlast(query, {bank=bank})
+        local hits = AddGoodBlast(query, bank)
         assert.truthy(#hits:blocks() > 0)
     end)
 
@@ -48,7 +49,7 @@ describe("algo.AddGoodBlast", function()
         local BlockSet = require 'npge.model.BlockSet'
         local bs_with_seqs = BlockSet({s1, s2}, {})
         local AddGoodBlast = require 'npge.algo.AddGoodBlast'
-        local hits = AddGoodBlast(bs_with_seqs)
+        local hits = AddGoodBlast(bs_with_seqs, bs_with_seqs)
         assert.equal(#hits:blocks(), 0)
     end)
 end)
