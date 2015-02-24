@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #define LUA_LIB
 #include <lua.h>
 #include <lauxlib.h>
@@ -14,7 +12,7 @@ static int lua_unwind_row(lua_State *L) {
     luaL_argcheck(L, row_size >= orig_size, 1,
             "Length of row on consensus must be >= "
             "length of row on original sequence");
-    char* result = malloc(row_size);
+    char* result = lua_newuserdata(L, row_size);
     int orig_i = 0;
     int i;
     for (i = 0; i < row_size; i++) {
@@ -31,7 +29,6 @@ static int lua_unwind_row(lua_State *L) {
     luaL_argcheck(L, orig_i == orig_size, 2,
         "Original row is too long");
     lua_pushlstring(L, result, row_size);
-    free(result);
     return 1;
 }
 
