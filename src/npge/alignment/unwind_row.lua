@@ -1,8 +1,7 @@
 -- use C version if available
-local has_c, cunwind_row = pcall(require,
-    'npge.alignment.cunwind_row')
+local has_c, cpp = pcall(require, 'npge.cpp')
 if has_c then
-    return cunwind_row
+    return cpp.unwindRow
 end
 
 return function(row, orig_row)

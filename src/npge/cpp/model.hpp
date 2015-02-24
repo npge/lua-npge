@@ -22,6 +22,9 @@ int toAtgcn(char* dst, const char* src, int length);
 
 int toAtgcnAndGap(char* dst, const char* src, int length);
 
+int unwindRow(char* result, const char* row, int row_size,
+              const char* orig, int orig_size);
+
 class Sequence;
 class Fragment;
 class Block;

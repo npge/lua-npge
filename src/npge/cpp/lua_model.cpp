@@ -1077,6 +1077,20 @@ int lua_complement(lua_State* L) {
     return 1;
 }
 
+int lua_unwindRow(lua_State *L) {
+    size_t row_size, orig_size;
+    const char* row = luaL_checklstring(L, 1, &row_size);
+    const char* orig = luaL_checklstring(L, 2, &orig_size);
+    luaL_argcheck(L, row_size >= orig_size, 1,
+            "Length of row on consensus must be >= "
+            "length of row on original sequence");
+    Buffer buffer(new char[row_size]);
+    int size = unwindRow(buffer.get(), row, row_size,
+                         orig, orig_size);
+    lua_pushlstring(L, buffer.get(), size);
+    return 1;
+}
+
 // -1 is module "model"
 static void registerType(lua_State *L,
                          const char* type_name,
@@ -1106,6 +1120,7 @@ static const luaL_Reg free_functions[] = {
     {"toAtgcn", lua_toAtgcn},
     {"toAtgcnAndGap", lua_toAtgcnAndGap},
     {"complement", lua_complement},
+    {"unwindRow", lua_unwindRow},
     {NULL, NULL}
 };
 

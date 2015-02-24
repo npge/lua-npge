@@ -101,4 +101,32 @@ int toAtgcnAndGap(char* dst, const char* src, int length) {
     return dst_i;
 }
 
+// arguments:
+// 1. row
+// 2. orig
+// returns length of result
+int unwindRow(char* result, const char* row, int row_size,
+              const char* orig, int orig_size) {
+    int orig_i = 0;
+    int i;
+    for (i = 0; i < row_size; i++) {
+        char c = row[i];
+        if (c == '-') {
+            result[i] = '-';
+        } else {
+            if (orig_i >= orig_size) {
+                // Length of original row is not sufficient
+                return 0;
+            }
+            result[i] = orig[orig_i];
+            orig_i += 1;
+        }
+    }
+    if (orig_i != orig_size) {
+        // Original row is too long
+        return 0;
+    }
+    return row_size;
+}
+
 }

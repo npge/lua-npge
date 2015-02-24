@@ -17,8 +17,6 @@ build = {
         -- TODO Lua modules
         ['npge.alignment.cidentity'] =
             "src/npge/alignment/identity.c",
-        ['npge.alignment.cunwind_row'] =
-            "src/npge/alignment/unwind_row.c",
         ['npge.alignment.cmove_identical'] =
             "src/npge/alignment/move_identical.c",
         ['npge.alignment.cleft'] =
