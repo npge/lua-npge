@@ -1110,7 +1110,7 @@ static const luaL_Reg free_functions[] = {
 };
 
 extern "C" {
-int luaopen_npge_cmodel(lua_State *L) {
+int luaopen_npge_cpp(lua_State *L) {
     lua_newtable(L);
     registerType(L, "Sequence", "npge_Sequence",
                  "npge_Sequence_cache",

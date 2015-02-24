@@ -1,8 +1,8 @@
 -- use C version if available
-local has_c, cmodel =
-    pcall(require, 'npge.cmodel')
+local has_c, cpp =
+    pcall(require, 'npge.cpp')
 if has_c then
-    return cmodel.BlockSet
+    return cpp.BlockSet
 end
 
 local BlockSet = {}

@@ -27,7 +27,7 @@ build = {
             "src/npge/alignment/anchor.c",
         ['npge.alignment.cfindIdentGroups'] =
             "src/npge/alignment/findIdentGroups.c",
-        ['npge.cmodel'] = {
+        ['npge.cpp'] = {
             sources = {
                 "src/npge/cpp/model.cpp",
                 "src/npge/cpp/throw_assert.cpp",
