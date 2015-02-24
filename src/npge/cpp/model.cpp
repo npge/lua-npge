@@ -18,7 +18,7 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
-#include "model.hpp"
+#include "npge.hpp"
 #include "throw_assert.hpp"
 #include "cast.hpp"
 

@@ -27,9 +27,9 @@ build = {
             "src/npge/alignment/findIdentGroups.c",
         ['npge.cpp'] = {
             sources = {
+                "src/npge/cpp/lua_npge.cpp",
                 "src/npge/cpp/model.cpp",
                 "src/npge/cpp/throw_assert.cpp",
-                "src/npge/cpp/lua_model.cpp",
                 "src/npge/cpp/strings.cpp",
             },
             libraries = {"stdc++"},

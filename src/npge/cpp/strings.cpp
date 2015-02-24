@@ -5,7 +5,7 @@
  * See the LICENSE file for terms of use.
  */
 
-#include "model.hpp"
+#include "npge.hpp"
 
 namespace lnpge {
 

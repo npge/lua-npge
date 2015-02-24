@@ -13,7 +13,7 @@
 #define LUA_LIB
 #include <lua.hpp>
 
-#include "model.hpp"
+#include "npge.hpp"
 #include "throw_assert.hpp"
 
 using namespace lnpge;
