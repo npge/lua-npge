@@ -1177,7 +1177,7 @@ static void registerType(lua_State *L,
     lua_setfield(L, -2, type_name);
 }
 
-static const luaL_Reg free_functions[] = {
+static const luaL_Reg string_functions[] = {
     {"toAtgcn", lua_toAtgcn},
     {"toAtgcnAndGap", lua_toAtgcnAndGap},
     {"complement", lua_complement},
@@ -1206,7 +1206,7 @@ int luaopen_npge_cpp(lua_State *L) {
     lua_setfield(L, -2, "model");
     //
     lua_newtable(L); // npge.cpp.func
-    luaL_register(L, NULL, free_functions);
+    luaL_register(L, NULL, string_functions);
     lua_setfield(L, -2, "func");
     return 1;
 }
