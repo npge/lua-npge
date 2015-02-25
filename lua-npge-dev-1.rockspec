@@ -17,8 +17,6 @@ build = {
         -- TODO Lua modules
         ['npge.alignment.cmove_identical'] =
             "src/npge/alignment/move_identical.c",
-        ['npge.alignment.cleft'] =
-            "src/npge/alignment/left.c",
         ['npge.alignment.canchor'] =
             "src/npge/alignment/anchor.c",
         ['npge.alignment.cfindIdentGroups'] =
@@ -29,6 +27,7 @@ build = {
                 "src/npge/cpp/model.cpp",
                 "src/npge/cpp/throw_assert.cpp",
                 "src/npge/cpp/strings.cpp",
+                "src/npge/cpp/alignment.cpp",
             },
             libraries = {"stdc++"},
         },

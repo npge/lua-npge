@@ -1152,6 +1152,76 @@ int lua_identity(lua_State *L) {
     return 3;
 }
 
+// arguments:
+// 1. Lua table with rows
+// results:
+// 1. Lua table with alignment
+// 2. Lua table with remaining parts of rows (tails)
+static int lua_left(lua_State *L) {
+    Aln aln;
+    luaL_checktype(L, 1, LUA_TTABLE);
+    aln.right_aligned = lua_toboolean(L, 2);
+    aln.nrows = lua_objlen(L, 1);
+    if (aln.nrows == 0) {
+        lua_newtable(L); // prefixes
+        lua_newtable(L); // tails
+        return 2;
+    }
+    aln.rows = reinterpret_cast<const char**>(
+        lua_newuserdata(L, aln.nrows * sizeof(const char*)));
+    aln.lens = reinterpret_cast<int*>(
+            lua_newuserdata(L, aln.nrows * sizeof(int)));
+    // populate rows
+    size_t min_len;
+    int irow;
+    for (irow = 0; irow < aln.nrows; irow++) {
+        lua_rawgeti(L, 1, irow + 1);
+        size_t len;
+        const char* row = luaL_checklstring(L, -1, &len);
+        aln.rows[irow] = row;
+        aln.lens[irow] = len;
+        if (irow == 0 || len < min_len) {
+            min_len = len;
+        }
+        lua_pop(L, 1);
+    }
+    // read config
+    lua_getglobal(L, "require");
+    lua_pushliteral(L, "npge.config");
+    lua_call(L, 1, 1);
+    lua_getfield(L, -1, "alignment");
+    lua_getfield(L, -1, "MISMATCH_CHECK");
+    aln.MISMATCH_CHECK = luaL_checkint(L, -1);
+    lua_getfield(L, -2, "GAP_CHECK");
+    aln.GAP_CHECK = luaL_checkint(L, -1);
+    // make alignment
+    aln.max_row_len = min_len * 2 + aln.GAP_CHECK * 2;
+    aln.aligned = reinterpret_cast<char*>(
+            lua_newuserdata(L, aln.max_row_len * aln.nrows));
+    aln.used_aln = reinterpret_cast<int*>(
+            lua_newuserdata(L, aln.nrows * sizeof(int)));
+    aln.used_row = reinterpret_cast<int*>(
+            lua_newuserdata(L, aln.nrows * sizeof(int)));
+    memset(aln.used_aln, 0, aln.nrows * sizeof(int));
+    memset(aln.used_row, 0, aln.nrows * sizeof(int));
+    // align
+    alignLeft(&aln);
+    // push results
+    lua_createtable(L, aln.nrows, 0); // aligned
+    lua_createtable(L, aln.nrows, 0); // tails
+    for (irow = 0; irow < aln.nrows; irow++) {
+        lua_pushlstring(L, alignedRow(&aln, irow),
+                aln.used_aln[irow]); // aligned
+        lua_rawseti(L, -3, irow + 1);
+        //
+        int used = aln.used_row[irow];
+        lua_pushlstring(L, aln.rows[irow] + used,
+                aln.lens[irow] - used); // tail
+        lua_rawseti(L, -2, irow + 1);
+    }
+    return 2;
+}
+
 // -1 is module "model"
 static void registerType(lua_State *L,
                          const char* type_name,
@@ -1186,6 +1256,11 @@ static const luaL_Reg string_functions[] = {
     {NULL, NULL}
 };
 
+static const luaL_Reg alignment_functions[] = {
+    {"left", lua_left},
+    {NULL, NULL}
+};
+
 extern "C" {
 int luaopen_npge_cpp(lua_State *L) {
     lua_newtable(L); // npge.cpp
@@ -1208,6 +1283,10 @@ int luaopen_npge_cpp(lua_State *L) {
     lua_newtable(L); // npge.cpp.func
     luaL_register(L, NULL, string_functions);
     lua_setfield(L, -2, "func");
+    //
+    lua_newtable(L); // npge.cpp.alignment
+    luaL_register(L, NULL, alignment_functions);
+    lua_setfield(L, -2, "alignment");
     return 1;
 }
 

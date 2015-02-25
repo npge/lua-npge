@@ -16,6 +16,8 @@
 
 namespace lnpge {
 
+// strings
+
 int complement(char* dst, const char* src, int length);
 
 int toAtgcn(char* dst, const char* src, int length);
@@ -29,6 +31,29 @@ int unwindRow(char* result, const char* row, int row_size,
 // identical column with gaps has weight 0.5
 double identity(const char** rows, int nrows,
                 int start, int stop);
+
+// alignment
+
+typedef struct {
+    // aligned points to of nrows times max_row_len cated
+    char* aligned;
+    const char** rows;
+    int* lens;
+    int* used_row;
+    int* used_aln;
+    int nrows;
+    int max_row_len;
+    int MISMATCH_CHECK;
+    int GAP_CHECK;
+    int right_aligned;
+    int identical_group;
+} Aln;
+
+char* alignedRow(Aln* aln, int irow);
+
+void alignLeft(Aln* aln);
+
+// model
 
 class Sequence;
 class Fragment;
