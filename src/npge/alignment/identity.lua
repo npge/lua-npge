@@ -1,8 +1,7 @@
 -- use C version if available
-local has_c, cidentity = pcall(require,
-    'npge.alignment.cidentity')
+local has_c, cpp = pcall(require, 'npge.cpp')
 if has_c then
-    return cidentity
+    return cpp.identity
 end
 
 return function(rows, start, stop)
