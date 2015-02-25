@@ -1,8 +1,7 @@
 -- use C version if available
-local has_c, cmove_identical = pcall(require,
-    'npge.alignment.cmove_identical')
+local has_c, cpp = pcall(require, 'npge.cpp')
 if has_c then
-    return cmove_identical
+    return cpp.alignment.moveIdentical
 end
 
 return function(rows)

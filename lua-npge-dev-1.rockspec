@@ -15,8 +15,6 @@ build = {
     type = "builtin",
     modules = {
         -- TODO Lua modules
-        ['npge.alignment.cmove_identical'] =
-            "src/npge/alignment/move_identical.c",
         ['npge.alignment.canchor'] =
             "src/npge/alignment/anchor.c",
         ['npge.alignment.cfindIdentGroups'] =

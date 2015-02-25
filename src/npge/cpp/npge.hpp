@@ -53,6 +53,8 @@ char* alignedRow(Aln* aln, int irow);
 
 void alignLeft(Aln* aln);
 
+int prefixLength(const char** rows, int nrows, int len);
+
 // model
 
 class Sequence;
