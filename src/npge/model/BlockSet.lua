@@ -2,7 +2,7 @@
 local has_c, cpp =
     pcall(require, 'npge.cpp')
 if has_c then
-    return cpp.BlockSet
+    return cpp.model.BlockSet
 end
 
 local BlockSet = {}

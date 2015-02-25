@@ -2,7 +2,7 @@
 local has_c, cpp = pcall(require,
     'npge.cpp')
 if has_c then
-    return cpp.toAtgcnAndGap
+    return cpp.func.toAtgcnAndGap
 end
 
 return function(text)

@@ -1188,7 +1188,8 @@ static const luaL_Reg free_functions[] = {
 
 extern "C" {
 int luaopen_npge_cpp(lua_State *L) {
-    lua_newtable(L);
+    lua_newtable(L); // npge.cpp
+    lua_newtable(L); // npge.cpp.model
     registerType(L, "Sequence", "npge_Sequence",
                  "npge_Sequence_cache",
                  lua_Sequence, Sequence_methods);
@@ -1202,7 +1203,11 @@ int luaopen_npge_cpp(lua_State *L) {
                  "npge_BlockSet_cache",
                  lua_BlockSet, BlockSet_methods);
     registerBlockSetFromRef(L);
+    lua_setfield(L, -2, "model");
+    //
+    lua_newtable(L); // npge.cpp.func
     luaL_register(L, NULL, free_functions);
+    lua_setfield(L, -2, "func");
     return 1;
 }
 

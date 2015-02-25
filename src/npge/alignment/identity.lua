@@ -1,7 +1,7 @@
 -- use C version if available
 local has_c, cpp = pcall(require, 'npge.cpp')
 if has_c then
-    return cpp.identity
+    return cpp.func.identity
 end
 
 return function(rows, start, stop)
