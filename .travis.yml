@@ -4,7 +4,7 @@ install:
   - sudo apt-get update
   - sudo apt-get install luarocks valgrind ncbi-blast+
   - sudo apt-get install libboost-dev
-  - echo 'rocks_servers = {"http://rocks.moonscript.org"}' >> /etc/luarocks/config.lua
+  - echo 'rocks_servers = {"http://rocks.moonscript.org"}' | sudo tee /etc/luarocks/config.lua
   - sudo luarocks install busted
   - sudo luarocks install luacov
   - sudo luarocks install luacov-coveralls
