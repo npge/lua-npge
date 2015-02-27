@@ -4,10 +4,11 @@ install:
   - sudo apt-get update
   - sudo apt-get install luarocks valgrind ncbi-blast+
   - sudo apt-get install libboost-dev
-  - sudo luarocks --from=http://luarocks.giga.puc-rio.br/ install busted
-  - sudo luarocks --from=http://luarocks.giga.puc-rio.br/ install luacov
-  - sudo luarocks --from=http://luarocks.giga.puc-rio.br/ install luacov-coveralls
-  - sudo luarocks --from=http://luarocks.giga.puc-rio.br/ install lua-llthreads
+  - echo 'rocks_servers = {"http://rocks.moonscript.org"}' >> /etc/luarocks/config.lua
+  - sudo luarocks install busted
+  - sudo luarocks install luacov
+  - sudo luarocks install luacov-coveralls
+  - sudo luarocks install lua-llthreads
   - sudo pip install cpp-coveralls
 
 script:
