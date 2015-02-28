@@ -12,24 +12,16 @@ env:
 before_install:
   - sudo apt-get update
   - bash .travis/setup_lua.sh
+  - bash .travis/install_rocks.sh
   - sudo apt-get install valgrind ncbi-blast+ libboost-dev
-  - sudo luarocks install busted
-  - sudo luarocks install luacov
-  - sudo luarocks install luacov-coveralls
-  - sudo luarocks install https://github.com/Neopallium/lua-llthreads/raw/master/rockspecs/lua-llthreads-scm-0.rockspec
   - sudo pip install cpp-coveralls
 
 script:
-  - busted -c
-  - luarocks make --local
-  - export LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0
   - . SETPATH
   - busted -c
-  - luarocks make --local CFLAGS="-O0 -g -fPIC"
-  - make exitless-busted
-  - valgrind --error-exitcode=1 --leak-check=full lua exitless-busted
-  - luarocks make --local CFLAGS="-O0 -fPIC -ftest-coverage -fprofile-arcs" LIBFLAG="-shared --coverage"
-  - busted
+  - bash .travis/test_compiled.sh
+  - bash .travis/test_with_valgrind.sh
+  - bash .travis/c_coverage.sh
 
 after_success:
   - coveralls -b . --dump c.report.json
