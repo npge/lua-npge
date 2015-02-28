@@ -16,7 +16,7 @@ before_install:
   - sudo luarocks install busted
   - sudo luarocks install luacov
   - sudo luarocks install luacov-coveralls
-  - sudo luarocks install lua-llthreads
+  - sudo luarocks install https://github.com/Neopallium/lua-llthreads/raw/master/rockspecs/lua-llthreads-scm-0.rockspec
   - sudo pip install cpp-coveralls
 
 script:
