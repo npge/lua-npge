@@ -27,6 +27,18 @@ using namespace lnpge;
         return results; \
     }
 
+#if LUA_VERSION_NUM == 501
+#define npge_rawlen lua_objlen
+#else
+#define npge_rawlen lua_rawlen
+#endif
+
+#if LUA_VERSION_NUM == 501
+#define npge_setfuncs(L, funcs) luaL_register(L, NULL, funcs)
+#else
+#define npge_setfuncs(L, funcs) luaL_setfuncs(L, funcs, 0)
+#endif
+
 template <typename T>
 T& fromLua(lua_State* L, int index, const char* mt_name) {
     void* v = luaL_checkudata(L, index, mt_name);
@@ -408,7 +420,7 @@ static const luaL_Reg Fragment_methods[] = {
 
 static bool hasRows(lua_State* L, int index) {
     return lua_type(L, -1) == LUA_TTABLE &&
-           lua_objlen(L, -1) == 2;
+           npge_rawlen(L, -1) == 2;
 }
 
 // Block({fragment1, fragment2, ...})
@@ -417,7 +429,7 @@ int lua_Block_impl(lua_State *L) {
                   "Provide list of fragments to Block()");
     luaL_argcheck(L, lua_type(L, 1) == LUA_TTABLE, 1,
                   "Provide list of fragments to Block()");
-    int nrows = lua_objlen(L, 1);
+    int nrows = npge_rawlen(L, 1);
     luaL_argcheck(L, nrows >= 1, 1,
                   "Empty block is not allowed");
     lua_rawgeti(L, 1, 1); // first fragment
@@ -654,8 +666,8 @@ int lua_BlockSet_impl(lua_State *L) {
                   "call BlockSet({sequences}, {blocks})");
     luaL_argcheck(L, lua_type(L, 3) == LUA_TTABLE, 3,
                   "call BlockSet({sequences}, {blocks})");
-    int nseqs = lua_objlen(L, 2);
-    int nblocks = lua_objlen(L, 3);
+    int nseqs = npge_rawlen(L, 2);
+    int nblocks = npge_rawlen(L, 3);
     // check all arguments are convertible to target types
     for (int i = 0; i < nseqs; i++) {
         lua_rawgeti(L, 2, i + 1); // sequence
@@ -1099,7 +1111,7 @@ int lua_unwindRow(lua_State *L) {
 int lua_identity(lua_State *L) {
     int args = lua_gettop(L);
     luaL_checktype(L, 1, LUA_TTABLE);
-    int nrows = lua_objlen(L, 1);
+    int nrows = npge_rawlen(L, 1);
     if (nrows == 0) {
         lua_pushnumber(L, 0);
         lua_pushnumber(L, 0);
@@ -1162,7 +1174,7 @@ static int lua_left(lua_State *L) {
     Aln aln;
     luaL_checktype(L, 1, LUA_TTABLE);
     aln.right_aligned = lua_toboolean(L, 2);
-    aln.nrows = lua_objlen(L, 1);
+    aln.nrows = npge_rawlen(L, 1);
     if (aln.nrows == 0) {
         lua_newtable(L); // prefixes
         lua_newtable(L); // tails
@@ -1230,7 +1242,7 @@ static int lua_left(lua_State *L) {
 // 2. Lua table with remaining parts of rows (tails)
 static int lua_moveIdentical(lua_State *L) {
     luaL_checktype(L, 1, LUA_TTABLE);
-    int nrows = lua_objlen(L, 1);
+    int nrows = npge_rawlen(L, 1);
     if (nrows == 0) {
         lua_newtable(L); // prefixes
         lua_newtable(L); // tails
@@ -1288,7 +1300,7 @@ static void registerType(lua_State *L,
     luaL_newmetatable(L, mt_name);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index"); // mt.__index = mt
-    luaL_register(L, NULL, methods);
+    npge_setfuncs(L, methods);
     lua_pop(L, 1); // metatable of instance
     // constructor
     lua_pushcfunction(L, constructor);
@@ -1330,11 +1342,11 @@ int luaopen_npge_cpp(lua_State *L) {
     lua_setfield(L, -2, "model");
     //
     lua_newtable(L); // npge.cpp.func
-    luaL_register(L, NULL, string_functions);
+    npge_setfuncs(L, string_functions);
     lua_setfield(L, -2, "func");
     //
     lua_newtable(L); // npge.cpp.alignment
-    luaL_register(L, NULL, alignment_functions);
+    npge_setfuncs(L, alignment_functions);
     lua_setfield(L, -2, "alignment");
     return 1;
 }
