@@ -32,7 +32,7 @@ A
 AT-
 >seq1_1_0 block=b3
 A-T
->seq2_5_4 block=b3
+>seq2_4_5 block=b3
 AT-
 ]]
         local lines = split(bs_text, '\n')
@@ -55,7 +55,7 @@ AT-
             Block({
                 {Fragment(s1, 1, 0, -1), 'AT-'},
                 {Fragment(s2, 1, 0, -1), 'A-T'},
-                {Fragment(s3, 5, 4, -1), 'AT-'},
+                {Fragment(s3, 4, 5, 1), 'AT-'},
             }),
         })
         assert.equal(bs2, bs3)
