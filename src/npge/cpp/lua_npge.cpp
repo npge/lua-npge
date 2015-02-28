@@ -7,6 +7,7 @@
 
 #include <cstdlib>
 #include <cassert>
+#include <cstring>
 #include <memory>
 #include <boost/scoped_array.hpp>
 
