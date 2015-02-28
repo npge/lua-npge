@@ -13,9 +13,8 @@ return function(env, code)
     end
     assert(_VERSION == 'Lua 5.2' or _VERSION == 'Lua 5.1',
         'Implemented in Lua 5.1 and 5.2 only')
-    if _VERSION == 'Lua 5.2' then
-        -- not tested in Lua 5.1 and LuaJIT
-        -- return load(code, 'sandbox', 't', env)
+    if _VERSION == 'Lua 5.2' or _VERSION == 'Lua 5.3' then
+        return load(code, 'sandbox', 't', env)
     elseif _VERSION == 'Lua 5.1' then
         local f, message = loadstring(code, 'sandbox')
         if not f then
