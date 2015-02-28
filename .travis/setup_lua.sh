@@ -86,6 +86,9 @@ fi
 
 make build && sudo make install
 
+echo 'rocks_servers = {"http://rocks.moonscript.org"}' | \
+    sudo tee /etc/luarocks/config.lua
+
 cd $TRAVIS_BUILD_DIR
 
 rm -rf $LUAROCKS_BASE
