@@ -87,6 +87,7 @@ end
 -- Otherwise memory errors occur
 -- LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0 lua ...
 local Workers = function(blockset, alg)
+    local loadstring = require 'npge.util.loadstring'
     local algorithm = assert(loadstring(alg))
     local config = require 'npge.config'
     local workers = config.util.WORKERS
