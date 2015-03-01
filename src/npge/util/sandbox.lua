@@ -11,8 +11,9 @@ return function(env, code)
     if code:byte(1) == 27 then
         return nil, 'Bytecode is not allowed'
     end
-    assert(_VERSION == 'Lua 5.2' or _VERSION == 'Lua 5.1',
-        'Implemented in Lua 5.1 and 5.2 only')
+    assert(_VERSION == 'Lua 5.1' or _VERSION == 'Lua 5.2' or
+        _VERSION == 'Lua 5.3',
+        'Implemented in Lua 5.1, 5.2 and 5.3 only')
     if _VERSION == 'Lua 5.2' or _VERSION == 'Lua 5.3' then
         return load(code, 'sandbox', 't', env)
     elseif _VERSION == 'Lua 5.1' then
