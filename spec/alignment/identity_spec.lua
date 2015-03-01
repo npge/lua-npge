@@ -27,6 +27,14 @@ describe("alignment.identity", function()
         end)
     end)
 
+    it("throws if length of rows is not constant",
+    function()
+        local identity = require 'npge.alignment.identity'
+        assert.has_error(function()
+            identity({'AT', 'TTA'})
+        end)
+    end)
+
     it("returns number of ident columns and total length",
     function()
         local identity = require 'npge.alignment.identity'
