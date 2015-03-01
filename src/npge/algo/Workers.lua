@@ -101,10 +101,12 @@ end
 
 return setmetatable({
     GoodSubblocks = function(blockset)
-        return Workers(blockset, [[local bs = ...
+        local code = [[
+            local bs = ...
             local GS = require 'npge.algo.GoodSubblocks'
             return GS(bs)
-        ]])
+        ]]
+        return Workers(blockset, code)
     end,
 }, {
     __call = function(self, ...)
