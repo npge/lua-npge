@@ -25,6 +25,7 @@ local workerCode = [[
     local BlockSet = require 'npge.model.BlockSet'
     local decrease_count = true
     local bs = BlockSet.fromRef(ref, decrease_count)
+    local loadstring = require 'npge.util.loadstring'
     local algorithm = loadstring(alg)
     bs = assert(algorithm(bs))
     local increase_count = true

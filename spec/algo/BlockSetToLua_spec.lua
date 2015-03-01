@@ -14,6 +14,7 @@ describe("algo.BlockSetToLua", function()
         local BlockSetToLua = require 'npge.algo.BlockSetToLua'
         local readIt = require 'npge.util.readIt'
         local lua = readIt(BlockSetToLua(bs1))
+        local loadstring = require 'npge.util.loadstring'
         local bs2 = loadstring(lua)()
         assert.equal(bs1, bs2)
     end)
@@ -30,6 +31,7 @@ describe("algo.BlockSetToLua", function()
         local BlockSetToLua = require 'npge.algo.BlockSetToLua'
         local readIt = require 'npge.util.readIt'
         local lua = readIt(BlockSetToLua(bs1))
+        local loadstring = require 'npge.util.loadstring'
         local bs2 = loadstring(lua)()
         assert.equal(bs1, bs2)
     end)
@@ -48,6 +50,7 @@ describe("algo.BlockSetToLua", function()
         local has_sequences = true
         local lua = readIt(BlockSetToLua(bs1, true))
         local seqs_bs = BS({s}, {})
+        local loadstring = require 'npge.util.loadstring'
         local bs2 = loadstring(lua)(seqs_bs)
         assert.equal(bs1, bs2)
     end)

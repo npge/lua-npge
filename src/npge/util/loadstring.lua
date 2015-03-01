@@ -1,0 +1,1 @@
+return loadstring or load
