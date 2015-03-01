@@ -1097,10 +1097,19 @@ int lua_unwindRow(lua_State *L) {
     luaL_argcheck(L, row_size >= orig_size, 1,
             "Length of row on consensus must be >= "
             "length of row on original sequence");
-    Buffer buffer(new char[row_size]);
-    int size = unwindRow(buffer.get(), row, row_size,
+    int size;
+    {
+        Buffer buffer(new char[row_size]);
+        size = unwindRow(buffer.get(), row, row_size,
                          orig, orig_size);
-    lua_pushlstring(L, buffer.get(), size);
+        if (size != -1) {
+            lua_pushlstring(L, buffer.get(), size);
+        }
+    }
+    if (size == -1) {
+        luaL_error(L, "Original and consensus rows "
+                "do not match");
+    }
     return 1;
 }
 

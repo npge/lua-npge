@@ -116,7 +116,7 @@ int unwindRow(char* result, const char* row, int row_size,
         } else {
             if (orig_i >= orig_size) {
                 // Length of original row is not sufficient
-                return 0;
+                return -1;
             }
             result[i] = orig[orig_i];
             orig_i += 1;
@@ -124,7 +124,7 @@ int unwindRow(char* result, const char* row, int row_size,
     }
     if (orig_i != orig_size) {
         // Original row is too long
-        return 0;
+        return -1;
     }
     return row_size;
 }
