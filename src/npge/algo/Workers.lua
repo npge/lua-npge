@@ -21,7 +21,8 @@ local makeBuckets = function(workers, blockset)
 end
 
 local workerCode = [[
-    local ref, alg = ...
+local ref, alg = ...
+return pcall(function()
     local BlockSet = require 'npge.model.BlockSet'
     local decrease_count = true
     local bs = BlockSet.fromRef(ref, decrease_count)
@@ -30,6 +31,7 @@ local workerCode = [[
     bs = assert(algorithm(bs))
     local increase_count = true
     return BlockSet.toRef(bs, increase_count)
+end)
 ]]
 
 local spawnWorker = function(bs, alg)
@@ -53,29 +55,29 @@ local spawnWorkers = function(blocksets, alg)
 end
 
 local collectResult = function(thread)
-    local status, result = thread:join()
+    local _, status, result = thread:join()
     if status then
         local BlockSet = require 'npge.model.BlockSet'
         local decrease_count = true
         return BlockSet.fromRef(result, decrease_count)
     else
-        print(result)
-        return nil
+        return nil, result
     end
 end
 
 local collectResults = function(threads)
     local blocksets = {}
-    local error_happened = false
+    local errors = {}
     for _, thread in ipairs(threads) do
-        local bs = collectResult(thread)
+        local bs, message = collectResult(thread)
         if bs then
             table.insert(blocksets, bs)
         else
-            error_happened = true
+            table.insert(errors, message)
         end
     end
-    assert(not error_happened, "One of workers failed")
+    assert(#errors == 0,
+        "Errors in threads: " .. table.concat(errors, "\n"))
     local Merge = require 'npge.algo.Merge'
     local unpack = require 'npge.util.unpack'
     return Merge(unpack(blocksets))
