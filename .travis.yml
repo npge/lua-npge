@@ -18,6 +18,7 @@ before_install:
 
 script:
   - . SETPATH
+  - export LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0
   - busted -c
   - bash .travis/test_compiled.sh
   - bash .travis/test_with_valgrind.sh
