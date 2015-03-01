@@ -89,4 +89,33 @@ describe("algo.Workers", function()
             config.util.WORKERS = orig_WORKERS
         end
     end)
+
+    it("catches errors thrown in threads",
+    function()
+        local model = require 'npge.model'
+        local BlockSet = model.BlockSet
+        if BlockSet.toRef and BlockSet.fromRef then
+            -- AAAAAAAA
+            -- ACATTACA
+            local config = require 'npge.config'
+            local orig_WORKERS = config.util.WORKERS
+            config.util.WORKERS = 4
+            local s1 = model.Sequence('s1', 'ACTG')
+            local s2 = model.Sequence('s2', 'CTG')
+            local b1 = model.Block({
+                model.Fragment(s1, 1, 1, 1),
+            })
+            local b2 = model.Block({
+                model.Fragment(s1, 2, 2, 1),
+            })
+            local blockset = BlockSet({s1, s2}, {b1, b2})
+            --
+            local Workers = require 'npge.algo.Workers'
+            assert.has_error(function()
+                Workers(blockset, "error('test')")
+            end)
+            --
+            config.util.WORKERS = orig_WORKERS
+        end
+    end)
 end)
