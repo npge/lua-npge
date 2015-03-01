@@ -1,4 +1,5 @@
+sudo luarocks install https://raw.githubusercontent.com/starius/dkjson/master/dkjson-2.5-1.rockspec
 sudo luarocks install busted
 sudo luarocks install luacov
 sudo luarocks install luacov-coveralls
-sudo luarocks install https://github.com/Neopallium/lua-llthreads/raw/master/rockspecs/lua-llthreads-scm-0.rockspec
+sudo luarocks install https://raw.githubusercontent.com/starius/lua-llthreads/master/rockspecs/lua-llthreads-scm-0.rockspec
