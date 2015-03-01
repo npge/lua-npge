@@ -214,8 +214,8 @@ int lua_Sequence_length(lua_State *L) {
 
 int lua_Sequence_sub_impl(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
-    int min = luaL_checkint(L, 2);
-    int max = luaL_checkint(L, 3);
+    int min = luaL_checkinteger(L, 2);
+    int max = luaL_checkinteger(L, 3);
     try {
         ASSERT_LTE(0, min);
         ASSERT_LTE(min, max);
@@ -268,9 +268,9 @@ static const luaL_Reg Sequence_methods[] = {
 
 int lua_Fragment_impl(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
-    int start = luaL_checkint(L, 2);
-    int stop = luaL_checkint(L, 3);
-    int ori = luaL_checkint(L, 4);
+    int start = luaL_checkinteger(L, 2);
+    int stop = luaL_checkinteger(L, 3);
+    int ori = luaL_checkinteger(L, 4);
     try {
         lua_pushfr(L, Fragment::make(seq, start, stop, ori));
         return 1;
@@ -575,7 +575,7 @@ int lua_Block_iterFragments(lua_State *L) {
 int lua_Block_block2fragment_impl(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
     const FragmentPtr& fragment = lua_tofr(L, 2);
-    int blockpos = luaL_checkint(L, 3);
+    int blockpos = luaL_checkinteger(L, 3);
     try {
         int fp = block->block2fragment(fragment, blockpos);
         lua_pushinteger(L, fp);
@@ -593,7 +593,7 @@ int lua_Block_block2fragment(lua_State *L) {
 int lua_Block_block2right_impl(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
     const FragmentPtr& fragment = lua_tofr(L, 2);
-    int blockpos = luaL_checkint(L, 3);
+    int blockpos = luaL_checkinteger(L, 3);
     try {
         int fp = block->block2right(fragment, blockpos);
         lua_pushinteger(L, fp);
@@ -611,7 +611,7 @@ int lua_Block_block2right(lua_State *L) {
 int lua_Block_block2left_impl(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
     const FragmentPtr& fragment = lua_tofr(L, 2);
-    int blockpos = luaL_checkint(L, 3);
+    int blockpos = luaL_checkinteger(L, 3);
     try {
         int fp = block->block2left(fragment, blockpos);
         lua_pushinteger(L, fp);
@@ -1204,9 +1204,9 @@ static int lua_left(lua_State *L) {
     lua_call(L, 1, 1);
     lua_getfield(L, -1, "alignment");
     lua_getfield(L, -1, "MISMATCH_CHECK");
-    aln.MISMATCH_CHECK = luaL_checkint(L, -1);
+    aln.MISMATCH_CHECK = luaL_checkinteger(L, -1);
     lua_getfield(L, -2, "GAP_CHECK");
-    aln.GAP_CHECK = luaL_checkint(L, -1);
+    aln.GAP_CHECK = luaL_checkinteger(L, -1);
     // make alignment
     aln.max_row_len = min_len * 2 + aln.GAP_CHECK * 2;
     aln.aligned = reinterpret_cast<char*>(
