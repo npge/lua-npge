@@ -39,6 +39,12 @@ using namespace lnpge;
 #define npge_setfuncs(L, funcs) luaL_setfuncs(L, funcs, 0)
 #endif
 
+template <typename A>
+A* newLuaArray(lua_State* L, int size) {
+    void* v = lua_newuserdata(L, size * sizeof(A));
+    return reinterpret_cast<A*>(v);
+}
+
 template <typename T>
 T& fromLua(lua_State* L, int index, const char* mt_name) {
     void* v = luaL_checkudata(L, index, mt_name);
@@ -1128,8 +1134,7 @@ int lua_identity(lua_State *L) {
         return 3;
     }
     // populate rows
-    const char** rows = reinterpret_cast<const char**>(
-            lua_newuserdata(L, nrows * sizeof(const char*)));
+    const char** rows = newLuaArray<const char*>(L, nrows);
     int length;
     int irow;
     for (irow = 0; irow < nrows; irow++) {
@@ -1189,10 +1194,8 @@ static int lua_left(lua_State *L) {
         lua_newtable(L); // tails
         return 2;
     }
-    aln.rows = reinterpret_cast<const char**>(
-        lua_newuserdata(L, aln.nrows * sizeof(const char*)));
-    aln.lens = reinterpret_cast<int*>(
-            lua_newuserdata(L, aln.nrows * sizeof(int)));
+    aln.rows = newLuaArray<const char*>(L, aln.nrows);
+    aln.lens = newLuaArray<int>(L, aln.nrows);
     // populate rows
     size_t min_len;
     int irow;
@@ -1218,12 +1221,10 @@ static int lua_left(lua_State *L) {
     aln.GAP_CHECK = luaL_checkinteger(L, -1);
     // make alignment
     aln.max_row_len = min_len * 2 + aln.GAP_CHECK * 2;
-    aln.aligned = reinterpret_cast<char*>(
-            lua_newuserdata(L, aln.max_row_len * aln.nrows));
-    aln.used_aln = reinterpret_cast<int*>(
-            lua_newuserdata(L, aln.nrows * sizeof(int)));
-    aln.used_row = reinterpret_cast<int*>(
-            lua_newuserdata(L, aln.nrows * sizeof(int)));
+    int aligned_size = aln.max_row_len * aln.nrows;
+    aln.aligned = newLuaArray<char>(L, aligned_size);
+    aln.used_aln = newLuaArray<int>(L, aln.nrows);
+    aln.used_row = newLuaArray<int>(L, aln.nrows);
     memset(aln.used_aln, 0, aln.nrows * sizeof(int));
     memset(aln.used_row, 0, aln.nrows * sizeof(int));
     // align
@@ -1257,10 +1258,8 @@ static int lua_moveIdentical(lua_State *L) {
         lua_newtable(L); // tails
         return 2;
     }
-    const char** rows = reinterpret_cast<const char**>(
-            lua_newuserdata(L, nrows * sizeof(const char*)));
-    size_t* lens = reinterpret_cast<size_t*>(
-            lua_newuserdata(L, nrows * sizeof(size_t)));
+    const char** rows = newLuaArray<const char*>(L, nrows);
+    size_t* lens = newLuaArray<size_t>(L, nrows);
     // populate rows
     int irow;
     size_t min_len;
