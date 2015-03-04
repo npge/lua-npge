@@ -26,10 +26,12 @@ local group_length = function(group)
     return group.stop - group.start + 1
 end
 
-local has_c, find_ident_groups = pcall(require,
-    'npge.alignment.cfindIdentGroups')
+local has_c, cpp = pcall(require, 'npge.cpp')
+local find_ident_groups
 
-if not has_c then
+if has_c then
+    find_ident_groups = cpp.alignment.findIdentGroups
+else
     find_ident_groups = function(rows, min_cols)
         local ident_groups = {}
         local ident_col = function(bp)

@@ -15,8 +15,6 @@ build = {
     type = "builtin",
     modules = {
         -- TODO Lua modules
-        ['npge.alignment.cfindIdentGroups'] =
-            "src/npge/alignment/findIdentGroups.c",
         ['npge.cpp'] = {
             sources = {
                 "src/npge/cpp/lua_npge.cpp",
