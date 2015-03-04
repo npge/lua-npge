@@ -1290,6 +1290,80 @@ static int lua_moveIdentical(lua_State *L) {
     return 2;
 }
 
+// return require("npge.config").alignment.ANCHOR
+static int getAnchor(lua_State* L) {
+    lua_getglobal(L, "require");
+    lua_pushliteral(L, "npge.config");
+    lua_call(L, 1, 1);
+    lua_getfield(L, -1, "alignment");
+    lua_getfield(L, -1, "ANCHOR");
+    int ANCHOR = luaL_checkint(L, -1);
+    return ANCHOR;
+}
+
+// return require("npge.config").general.MIN_LENGTH
+static int getMinLength(lua_State* L) {
+    lua_getglobal(L, "require");
+    lua_pushliteral(L, "npge.config");
+    lua_call(L, 1, 1);
+    lua_getfield(L, -1, "general");
+    lua_getfield(L, -1, "MIN_LENGTH");
+    int MIN_LENGTH = luaL_checkint(L, -1);
+    return MIN_LENGTH;
+}
+
+// arguments:
+// 1. Lua table with rows
+// results: nil or
+// 1. Lua table with prefixes
+// 2. Lua table with anchor
+// 3. Lua table with suffixes
+static int lua_anchor(lua_State *L) {
+    luaL_checktype(L, 1, LUA_TTABLE);
+    int nrows = lua_objlen(L, 1);
+    if (nrows == 0) {
+        lua_pushnil(L);
+        return 1;
+    }
+    const char** rows = newLuaArray<const char*>(L, nrows);
+    int* lens = newLuaArray<int>(L, nrows);
+    // populate rows
+    for (int irow = 0; irow < nrows; irow++) {
+        lua_rawgeti(L, 1, irow + 1);
+        size_t len;
+        const char* row = luaL_checklstring(L, -1, &len);
+        rows[irow] = row;
+        lens[irow] = len;
+        lua_pop(L, 1);
+    }
+    int ANCHOR = getAnchor(L);
+    int MIN_LENGTH = getMinLength(L);
+    // find anchor
+    int* anchor = newLuaArray<int>(L, nrows);
+    bool ok = findAnchor(anchor, nrows, rows, lens,
+                         ANCHOR, MIN_LENGTH);
+    // results
+    if (!ok) {
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_pushlstring(L, rows[0] + anchor[0], ANCHOR);
+    lua_createtable(L, nrows, 0); // prefixes
+    lua_createtable(L, nrows, 0); // anchor
+    lua_createtable(L, nrows, 0); // suffixes
+    for (int irow = 0; irow < nrows; irow++) {
+        lua_pushlstring(L, rows[irow], anchor[irow]); // prefix
+        lua_rawseti(L, -4, irow + 1); // prefix
+        lua_pushvalue(L, -4); // anchor
+        lua_rawseti(L, -3, irow + 1); // anchor
+        int suffix_len = anchor[irow] + ANCHOR;
+        lua_pushlstring(L, rows[irow] + suffix_len,
+                lens[irow] - suffix_len); // suffix
+        lua_rawseti(L, -2, irow + 1);
+    }
+    return 3;
+}
+
 // -1 is module "model"
 static void registerType(lua_State *L,
                          const char* type_name,
@@ -1327,6 +1401,7 @@ static const luaL_Reg string_functions[] = {
 static const luaL_Reg alignment_functions[] = {
     {"left", lua_left},
     {"moveIdentical", lua_moveIdentical},
+    {"anchor", lua_anchor},
     {NULL, NULL}
 };
 

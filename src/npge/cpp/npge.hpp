@@ -55,6 +55,9 @@ void alignLeft(Aln* aln);
 
 int prefixLength(const char** rows, int nrows, int len);
 
+bool findAnchor(int* result, int nrows, const char** rows,
+        const int* lens, int ANCHOR, int MIN_LENGTH);
+
 // model
 
 class Sequence;

@@ -1,7 +1,7 @@
 -- use C version if available
-local has_c, canchor = pcall(require, 'npge.alignment.canchor')
+local has_c, cpp = pcall(require, 'npge.cpp')
 if has_c then
-    return canchor
+    return cpp.alignment.anchor
 end
 
 local maxLength = function(rows)
