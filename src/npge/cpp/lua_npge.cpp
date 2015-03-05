@@ -1320,7 +1320,7 @@ static int getMinLength(lua_State* L) {
 // 3. Lua table with suffixes
 static int lua_anchor(lua_State *L) {
     luaL_checktype(L, 1, LUA_TTABLE);
-    int nrows = lua_objlen(L, 1);
+    int nrows = npge_rawlen(L, 1);
     if (nrows == 0) {
         lua_pushnil(L);
         return 1;
@@ -1395,7 +1395,7 @@ static void createGroup(lua_State* L, int start, int stop) {
 // 2. minimum number of columns in group
 static int lua_findIdentGroups(lua_State *L) {
     luaL_checktype(L, 1, LUA_TTABLE);
-    int nrows = lua_objlen(L, 1);
+    int nrows = npge_rawlen(L, 1);
     assert(nrows > 0);
     int min_cols = luaL_checknumber(L, 2);
     // populate rows
