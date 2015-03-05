@@ -1,1 +1,3 @@
-luarocks make --local && lua -lnpge.cpp && busted -c
+luarocks make --local &&
+    lua -lnpge.cpp -e'os.exit()' &&
+    busted -c
