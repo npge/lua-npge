@@ -1297,7 +1297,7 @@ static int getAnchor(lua_State* L) {
     lua_call(L, 1, 1);
     lua_getfield(L, -1, "alignment");
     lua_getfield(L, -1, "ANCHOR");
-    int ANCHOR = luaL_checkint(L, -1);
+    int ANCHOR = luaL_checkinteger(L, -1);
     return ANCHOR;
 }
 
@@ -1308,7 +1308,7 @@ static int getMinLength(lua_State* L) {
     lua_call(L, 1, 1);
     lua_getfield(L, -1, "general");
     lua_getfield(L, -1, "MIN_LENGTH");
-    int MIN_LENGTH = luaL_checkint(L, -1);
+    int MIN_LENGTH = luaL_checkinteger(L, -1);
     return MIN_LENGTH;
 }
 
