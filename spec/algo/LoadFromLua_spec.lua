@@ -49,7 +49,8 @@ describe("algo.LoadFromLua", function()
             end ]]
             lua = lua:format(BlockSet.toRef(blockset))
             local LoadFromLua = require 'npge.algo.LoadFromLua'
-            local blockset1 = LoadFromLua(lua)()
+            local enableRefs = true
+            local blockset1 = LoadFromLua(lua, enableRefs)()
             assert.equal(blockset1, blockset)
         end
     end)
