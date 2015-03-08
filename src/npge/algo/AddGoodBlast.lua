@@ -4,8 +4,8 @@
 return function(query, bank, options)
     options = options or {}
     local algo = require 'npge.algo'
-    local bank_cons, seq2block =
-        algo.ConsensusSequences(bank, 'bank')
+    local CS = algo.ConsensusSequences
+    local bank_cons, seq2block = CS(bank, 'bank')
     local s2b
     local query_cons, blockset
     if query == bank then
@@ -26,8 +26,7 @@ return function(query, bank, options)
         query_cons = BlockSet(query_seqs, {})
     else
         local query_s2b
-        query_cons, query_s2b =
-            algo.ConsensusSequences(query, 'query')
+        query_cons, query_s2b = CS(query, 'query')
         for seq, block in pairs(query_s2b) do
             seq2block[seq] = block
         end
