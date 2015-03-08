@@ -1409,8 +1409,8 @@ static int lua_findIdentGroups(lua_State *L) {
         if (irow == 0) {
             length = len;
         } else {
-            luaL_argcheck(L, len == length, 1,
-                    "All rows must be of equal length");
+            // All rows must be of equal length
+            assert(len == length);
         }
         lua_pop(L, 1);
     }
