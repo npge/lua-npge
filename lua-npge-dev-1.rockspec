@@ -11,6 +11,11 @@ description = {
 dependencies = {
     "lua >= 5.1"
 }
+ external_dependencies = {
+    BOOST = {
+        header = "boost/foreach.hpp"
+    }
+}
 build = {
     type = "builtin",
     modules = {
@@ -24,6 +29,7 @@ build = {
                 "src/npge/cpp/alignment.cpp",
             },
             libraries = {"stdc++"},
+            incdirs = {"$(BOOST_INCDIR)"},
         },
     },
 }
