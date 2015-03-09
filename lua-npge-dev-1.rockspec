@@ -1,11 +1,11 @@
 package = "lua-npge"
 version = "dev-1"
 source = {
-    url = "git://github.com/starius/lua-npge.git"
+    url = "git://github.com/npge/lua-npge.git"
 }
 description = {
     summary = "Nucleotide PanGenome explorer (Lua module)",
-    homepage = "https://github.com/starius/lua-npge",
+    homepage = "https://github.com/npge/lua-npge",
     license = "MIT",
 }
 dependencies = {
