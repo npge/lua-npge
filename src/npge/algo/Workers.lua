@@ -39,8 +39,8 @@ local spawnWorker = function(bs, alg)
     assert(BlockSet.toRef)
     local increase_count = true
     local ref = BlockSet.toRef(bs, increase_count)
-    local llthreads = require "llthreads"
-    local thread = llthreads.new(workerCode, ref, alg)
+    local llthreads2 = require "llthreads2"
+    local thread = llthreads2.new(workerCode, ref, alg)
     thread:start()
     return thread
 end
@@ -83,7 +83,7 @@ local collectResults = function(threads)
     return Merge(unpack(blocksets))
 end
 
--- see https://github.com/Neopallium/lua-llthreads
+-- see https://github.com/moteus/lua-llthreads2
 -- alg is code function of, which accepts and returns blockset
 -- WARNING target executable must be linked against pthread
 -- Otherwise memory errors occur
