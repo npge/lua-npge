@@ -12,6 +12,7 @@ env:
 before_install:
   - sudo apt-get update
   - bash .travis/setup_lua.sh
+  - bash .travis/install_rote.sh
   - bash .travis/install_rocks.sh
   - sudo apt-get install valgrind ncbi-blast+ libboost-dev
   - sudo pip install cpp-coveralls
@@ -20,7 +21,10 @@ script:
   - . SETPATH
   - export LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0
   - busted -c
-  - bash .travis/test_compiled.sh
+  - LOAD_LUACOV=-lluacov busted
+  - luarocks make --local && lua -lnpge.cpp -e'os.exit()'
+  - busted -c
+  - LOAD_LUACOV=-lluacov busted
   - bash .travis/test_with_valgrind.sh
   - bash .travis/c_coverage.sh
 
