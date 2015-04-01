@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 describe("block.identity", function()
     it("finds identity of block (100%)", function()
         local model = require 'npge.model'
@@ -41,4 +45,3 @@ describe("block.identity", function()
         assert.truthy(identity.eq(0.00099999, 0.001))
     end)
 end)
-

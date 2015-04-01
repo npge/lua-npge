@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 local binary_search = require 'npge.util.binary_search'
 
 describe("util.binary_search", function()
@@ -29,5 +33,3 @@ describe("util.binary_search", function()
         assert.equal(upper({1, 2, 2}, 3), 4)
     end)
 end)
-
-

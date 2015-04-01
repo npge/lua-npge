@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 describe("util.write_it", function()
     it("writes output of iterator to file", function()
         local write_it = require 'npge.util.write_it'

@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 local clone = require 'npge.util.clone'
 
 describe("util.clone", function()
@@ -35,4 +39,3 @@ describe("util.clone", function()
         assert.same(clone.dict_from_it(it), {k1 = 1, k2 = 2})
     end)
 end)
-

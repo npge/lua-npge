@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 local arrays_equal = require 'npge.util.arrays_equal'
 
 describe("util.arrays_equal", function()
@@ -7,4 +11,3 @@ describe("util.arrays_equal", function()
         assert.is_false(arrays_equal({1, 2}, {1, 0}))
     end)
 end)
-

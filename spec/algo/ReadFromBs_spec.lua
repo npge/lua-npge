@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 describe("algo.ReadFromBs", function()
     it("reads blockset from .bs format #old_bs", function()
         -- prepare sequences
@@ -61,4 +65,3 @@ AT-
         assert.equal(bs2, bs3)
     end)
 end)
-

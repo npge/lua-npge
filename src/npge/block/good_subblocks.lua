@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 local find_long_gap = function(rows, block_length, min_length)
     -- return min and max block positions of long gap OR nil
     for _, row in ipairs(rows) do

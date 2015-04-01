@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 return function(consensus_bs, original_bs, seqs2blocks)
     local blocks = {}
     for block in consensus_bs:iter_blocks() do

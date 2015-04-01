@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 describe("algo.PangenomeMaker", function()
     it("converts blockset to pangenome", function()
         local config = require 'npge.config'

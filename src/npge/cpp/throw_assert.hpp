@@ -1,7 +1,5 @@
-/*
- * NPG-explorer, Nucleotide PanGenome explorer
- * Copyright (C) 2012-2015 Boris Nagaev
- *
+/* lua-npge, Nucleotide PanGenome explorer (Lua module)
+ * Copyright (C) 2014-2015 Boris Nagaev
  * See the LICENSE file for terms of use.
  */
 
@@ -59,4 +57,3 @@ void assertion_failed_msg(char const* expr, char const* msg,
 #define ASSERT_GTE(exp_a, exp_b) \
     ASSERT_MSG((exp_a) >= (exp_b), \
         (TO_S(exp_a) + " >= " + TO_S(exp_b)).c_str())
-

@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 local model = require 'npge.model'
 
 describe("model.Block", function()
@@ -175,4 +179,3 @@ describe("model.Block", function()
         assert.truthy(tostring(block))
     end)
 end)
-

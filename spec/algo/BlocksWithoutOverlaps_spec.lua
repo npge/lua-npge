@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 describe("algo.BlocksWithoutOverlaps", function()
     it("merges blocksets without overlaps (prefers longest)",
     function()

@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 describe("util.starts_with", function()
     it("check if a string has a prefix", function()
         local starts_with = require 'npge.util.starts_with'

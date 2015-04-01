@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 describe("fragment.is_subfragment_of", function()
     it("#is_subfragment", function()
         local model = require 'npge.model'

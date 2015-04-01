@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 local seq_to_lua = function(seq)
     local as_lines = require 'npge.util.as_lines'
     local text = as_lines(seq:text())

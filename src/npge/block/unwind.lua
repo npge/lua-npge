@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 local get_min_max = function(fragment)
     if fragment:ori() == 1 then
         return fragment:start(), fragment:stop()

@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 local find_gap = function(rows, length, min_length)
     for _, row in ipairs(rows) do
         local gap_length = 0

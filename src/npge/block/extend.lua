@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 local fix_pos = function(seq, x)
     if seq:circular() then
         local fp = require 'npge.sequence.fix_position'

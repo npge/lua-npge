@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 describe("algo.WriteSequencesToFasta", function()
     it("writes sequences to fasta file", function()
         local Sequence = require 'npge.model.Sequence'

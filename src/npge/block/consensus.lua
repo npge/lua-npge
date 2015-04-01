@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 local ATGC = {'A', 'T', 'G', 'C'}
 
 local consensus_at_pos = function(rows, bp)

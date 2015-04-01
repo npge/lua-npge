@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 local arrays_less = require 'npge.util.arrays_less'
 
 describe("util.arrays_less", function()
@@ -11,5 +15,3 @@ describe("util.arrays_less", function()
         end)
     end)
 end)
-
-

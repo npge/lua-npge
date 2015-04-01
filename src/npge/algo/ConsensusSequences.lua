@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 return function(blockset, prefix)
     local HasOverlap = require 'npge.algo.HasOverlap'
     assert(not HasOverlap(blockset))

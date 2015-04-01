@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 local npge = require 'npge'
 local unpack = npge.util.unpack
 
@@ -7,4 +11,3 @@ describe("util.unpack", function()
         assert.are.same({a, b}, {1, 2})
     end)
 end)
-

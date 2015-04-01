@@ -1,3 +1,7 @@
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
 local slice_f = function(fragment, frag_min, frag_max)
     local seq = fragment:sequence()
     local to_sequence =
