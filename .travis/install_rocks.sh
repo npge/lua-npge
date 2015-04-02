@@ -4,3 +4,4 @@ sudo luarocks install luacov-coveralls
 sudo luarocks install lua-llthreads2
 sudo luarocks install luaposix
 sudo luarocks install lua-rote
+sudo luarocks install alnbox
