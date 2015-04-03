@@ -25,6 +25,7 @@ script:
   - luarocks make --local && lua -lnpge.cpp -e'os.exit()'
   - busted -c
   - LOAD_LUACOV=-lluacov busted
+  - sed 's@:.*/npge/@:.//src/npge/@' -i luacov.stats.out
   - bash .travis/test_with_valgrind.sh
   - bash .travis/c_coverage.sh
 
