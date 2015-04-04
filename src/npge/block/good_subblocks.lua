@@ -30,56 +30,8 @@ local group_length = function(group)
     return group.stop - group.start + 1
 end
 
-local has_c, cpp = pcall(require, 'npge.cpp')
-local find_ident_groups
-
-if has_c then
-    find_ident_groups = cpp.alignment.findIdentGroups
-else
-    find_ident_groups = function(rows, min_cols)
-        local ident_groups = {}
-        local ident_col = function(bp)
-            local first
-            for _, row in ipairs(rows) do
-                local letter = row:sub(bp + 1, bp + 1)
-                if letter == '-' then
-                    return false
-                elseif first and letter ~= first then
-                    return false
-                else
-                    first = letter
-                end
-            end
-            return true
-        end
-        local block_length = #(rows[1])
-        local group
-        for bp = 0, block_length - 1 do
-            local ident = ident_col(bp)
-            if ident then
-                if group then
-                    group.stop = bp
-                else
-                    group = {start=bp, stop=bp}
-                end
-            elseif group then
-                local length = group_length(group)
-                if length >= min_cols then
-                    table.insert(ident_groups, group)
-                end
-                group = nil
-            end
-        end
-        if group then
-            local length = group_length(group)
-            if length >= min_cols then
-                table.insert(ident_groups, group)
-            end
-            group = nil
-        end
-        return ident_groups
-    end
-end
+local cpp = require 'npge.cpp'
+local find_ident_groups = cpp.alignment.findIdentGroups
 
 local make_group = function(groups, i, i1)
     assert(i >= 1)
