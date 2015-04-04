@@ -28,8 +28,10 @@ script:
   - luarocks make --local && lua -lnpge.cpp -e'os.exit()'
   - busted -c
   - LOAD_LUACOV=-lluacov busted
+  - luarocks make --local CFLAGS="-O0 -g -fPIC"
+  - make exitless-busted
+  - valgrind --error-exitcode=1 --leak-check=full --gen-suppressions=all --suppressions=.travis/nsswitch_c_678.supp lua exitless-busted
   - sed 's@:.*/npge/@:.//src/npge/@' -i luacov.stats.out
-  - bash .travis/test_with_valgrind.sh
   - bash .travis/c_coverage.sh
 
 after_success:
