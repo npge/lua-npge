@@ -49,8 +49,6 @@ if [ "$LUAJIT" == "yes" ]; then
     sudo ln -s /usr/local/bin/luajit /usr/local/bin/lua;
   fi;
 
-  cp src/lj.supp ../.travis/
-
 else
   if [ "$LUA" == "lua5.1" ]; then
     curl http://www.lua.org/ftp/lua-5.1.5.tar.gz | tar xz
