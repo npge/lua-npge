@@ -16,6 +16,3 @@ clean:
 test:
 	busted -c
 	gcov src/npge/*/*.c
-
-exitless-busted:
-	sed '1 s/.*/os.exit = function() end/g' > $@ < $(BUSTED)
