@@ -24,7 +24,8 @@ install:
   - luarocks make --local CFLAGS="-O0 -fPIC -ftest-coverage -fprofile-arcs" LIBFLAG="-shared --coverage"
 
 script:
-  - mv src _src
+  - tar -cf /tmp/lua-src.tar.gz src/npge/*.lua src/npge/*/*.lua
+  - rm src/npge/*.lua src/npge/*/*.lua
   - export LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0
   - lua -lnpge.cpp -e'os.exit()'
   - busted -c
@@ -34,7 +35,7 @@ script:
   - if [ "$LUA" != "luajit" ]; then valgrind --error-exitcode=1 --leak-check=full --gen-suppressions=all --suppressions=.travis/nsswitch_c_678.supp lua exitless-busted; fi
   - sed 's@:.*/npge/@:.//src/npge/@' -i luacov.stats.out
   - luacov
-  - mv _src src
+  - tar -xf /tmp/lua-src.tar.gz
 
 after_success:
   - coveralls -b . --dump c.report.json
