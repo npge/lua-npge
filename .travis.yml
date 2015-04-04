@@ -12,8 +12,8 @@ env:
 before_install:
   - sudo apt-get update
   - bash .travis/setup_lua.sh
-  - bash .travis/install_rote.sh
-  - bash .travis/install_rocks.sh
+  - bash .travis/setup_rote.sh
+  - bash .travis/setup_rocks.sh
   - sudo apt-get install valgrind ncbi-blast+ libboost-dev
   - sudo pip install cpp-coveralls
   - luarocks path > paths
