@@ -410,29 +410,26 @@ describe("model.BlockSet", function()
 
     it("converts blockset to reference and back", function()
         local BlockSet = require 'npge.model.BlockSet'
-        if BlockSet.toRef and BlockSet.fromRef then
-            local s1 = model.Sequence("g1&c&c", "ATAT")
-            local s2 = model.Sequence("g2&c&c", "ATAT")
-            local f1 = model.Fragment(s1, 1, 2, 1)
-            local f2 = model.Fragment(s1, 3, 0, 1) -- parted
-            local b1 = model.Block({f1})
-            local b1 = model.Block({f2})
-            local blockset = BlockSet({s1}, {b1})
-            local ref = BlockSet.toRef(blockset)
-            local blockset2 = BlockSet.fromRef(ref)
-            assert.equal(blockset, blockset2)
-            -- order of blocks and sequences is preserved
-            assert.same(blockset:sequences(),
-                        blockset2:sequences())
-            assert.same(blockset:blocks(),
-                        blockset2:blocks())
-            -- change reference counter
-            local increase_count = true
-            local ref = BlockSet.toRef(blockset, increase_count)
-            local decrease_count = true
-            local blockset2 = BlockSet.fromRef(ref,
-                decrease_count)
-            assert.equal(blockset, blockset2)
-        end
+        local s1 = model.Sequence("g1&c&c", "ATAT")
+        local s2 = model.Sequence("g2&c&c", "ATAT")
+        local f1 = model.Fragment(s1, 1, 2, 1)
+        local f2 = model.Fragment(s1, 3, 0, 1) -- parted
+        local b1 = model.Block({f1})
+        local b1 = model.Block({f2})
+        local blockset = BlockSet({s1}, {b1})
+        local ref = BlockSet.toRef(blockset)
+        local blockset2 = BlockSet.fromRef(ref)
+        assert.equal(blockset, blockset2)
+        -- order of blocks and sequences is preserved
+        assert.same(blockset:sequences(),
+                    blockset2:sequences())
+        assert.same(blockset:blocks(),
+                    blockset2:blocks())
+        -- change reference counter
+        local increase_count = true
+        local ref = BlockSet.toRef(blockset, increase_count)
+        local decrease_count = true
+        local blockset2 = BlockSet.fromRef(ref, decrease_count)
+        assert.equal(blockset, blockset2)
     end)
 end)
