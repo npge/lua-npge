@@ -88,7 +88,7 @@ local collectResults = function(threads)
 end
 
 -- see https://github.com/moteus/lua-llthreads2
--- alg is code function of, which accepts and returns blockset
+-- alg is code of function, which accepts and returns blockset
 -- WARNING target executable must be linked against pthread
 -- Otherwise memory errors occur
 -- LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0 lua ...
