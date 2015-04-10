@@ -2,7 +2,9 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-local makeBuckets = function(workers, blockset)
+local Workers = {}
+
+Workers.makeBuckets = function(workers, blockset)
     local buckets = {}
     for i = 1, workers do
         table.insert(buckets, {})
@@ -92,7 +94,7 @@ end
 -- WARNING target executable must be linked against pthread
 -- Otherwise memory errors occur
 -- LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0 lua ...
-local Workers = function(blockset, alg)
+Workers.applyToBlockset = function(blockset, alg)
     local loadstring = require 'npge.util.loadstring'
     local algorithm = assert(loadstring(alg))
     local config = require 'npge.config'
@@ -100,22 +102,18 @@ local Workers = function(blockset, alg)
     if workers == 1 then
         return algorithm(blockset)
     end
-    local blocksets = makeBuckets(workers, blockset)
+    local blocksets = Workers.makeBuckets(workers, blockset)
     local threads = spawnWorkers(blocksets, alg)
     return collectResults(threads)
 end
 
-return setmetatable({
-    GoodSubblocks = function(blockset)
-        local code = [[
-            local bs = ...
-            local GS = require 'npge.algo.GoodSubblocks'
-            return GS(bs)
-        ]]
-        return Workers(blockset, code)
-    end,
-}, {
-    __call = function(self, ...)
-        return Workers(...)
-    end,
-})
+Workers.GoodSubblocks = function(blockset)
+    local code = [[
+        local bs = ...
+        local GS = require 'npge.algo.GoodSubblocks'
+        return GS(bs)
+    ]]
+    return Workers.applyToBlockset(blockset, code)
+end
+
+return Workers

@@ -82,7 +82,8 @@ describe("algo.Workers", function()
         local blockset = BlockSet({s1, s2}, {b1, b2})
         --
         local Workers = require 'npge.algo.Workers'
-        local bs = Workers(blockset, "return ...")
+        local bs = Workers.applyToBlockset(blockset,
+            "return ...")
         assert.equal(bs, blockset)
         --
         config.util.WORKERS = orig_WORKERS
@@ -109,7 +110,8 @@ describe("algo.Workers", function()
         --
         local Workers = require 'npge.algo.Workers'
         assert.has_error(function()
-            Workers(blockset, "error('test')")
+            Workers.applyToBlockset(blockset,
+                "error('test')")
         end)
         --
         config.util.WORKERS = orig_WORKERS
