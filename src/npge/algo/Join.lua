@@ -21,10 +21,10 @@ local findNeighbour = function(block, ori, bs)
         end
         table.insert(pairs_list, {f, n_f})
         if not n_b then
-            n_b = bs:block_by_fragment(n_f)
+            n_b = bs:blockByFragment(n_f)
             ori_product = n_f:ori() * f:ori()
         else
-            local n_b1 = bs:block_by_fragment(n_f)
+            local n_b1 = bs:blockByFragment(n_f)
             local ori_product1 = n_f:ori() * f:ori()
             if n_b1 ~= n_b or ori_product1 ~= ori_product then
                 return
