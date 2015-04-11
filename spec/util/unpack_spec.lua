@@ -5,7 +5,7 @@
 local npge = require 'npge'
 local unpack = npge.util.unpack
 
-describe("util.unpack", function()
+describe("npge.util.unpack", function()
     it("unpack works", function()
         local a, b = unpack({1, 2})
         assert.are.same({a, b}, {1, 2})

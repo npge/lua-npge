@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.NonCovered", function()
+describe("npge.algo.NonCovered", function()
     it("finds noncovered parts of sequence (none)", function()
         local model = require 'npge.model'
         local s = model.Sequence("s", "ATAT")

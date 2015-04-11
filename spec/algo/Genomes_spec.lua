@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.Genomes", function()
+describe("npge.algo.Genomes", function()
     local sorted = function(x)
         table.sort(x)
         return x

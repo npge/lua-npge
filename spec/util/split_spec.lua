@@ -4,7 +4,7 @@
 
 local split = require 'npge.util.split'
 
-describe("util.split", function()
+describe("npge.util.split", function()
     it("split by space", function()
         assert.are.same(split("a b c"), {"a", "b", "c"})
     end)

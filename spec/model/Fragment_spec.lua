@@ -4,7 +4,7 @@
 
 local model = require 'npge.model'
 
-describe("model.Fragment", function()
+describe("npge.model.Fragment", function()
     it("creates fragment", function()
         local s = model.Sequence("test_name", "ATGC")
         local f = model.Fragment(s, 0, 3, 1)

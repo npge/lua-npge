@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("util.extract_value", function()
+describe("npge.util.extract_value", function()
     it("extract values from key=value string", function()
         local ev = require 'npge.util.extract_value'
         assert.equal(ev("a=b c=d", "a"), "b")

@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("util.readIt", function()
+describe("npge.util.readIt", function()
     it("converts iterator to string", function()
         local readIt = require 'npge.util.readIt'
         local wrap, yield = coroutine.wrap, coroutine.yield

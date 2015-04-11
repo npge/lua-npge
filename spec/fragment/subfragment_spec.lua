@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("fragment.sub model.subfragment", function()
+describe("npge.fragment.sub model.subfragment", function()
     it("gets subfragment", function()
         local model = require 'npge.model'
         local s = model.Sequence("genome&chromosome&c", "ATGC")

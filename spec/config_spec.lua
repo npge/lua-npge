@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("config", function()
+describe("npge.config", function()
     it("has correct value in config file", function()
         local config = require 'npge.config'
         assert.truthy(config.general.MIN_IDENTITY >= 0)

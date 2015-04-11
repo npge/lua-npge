@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.ReadFromBs", function()
+describe("npge.algo.ReadFromBs", function()
     it("reads blockset from .bs format #old_bs", function()
         -- prepare sequences
         local Sequence = require 'npge.model.Sequence'

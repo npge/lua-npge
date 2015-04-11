@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("alignment.join", function()
+describe("npge.alignment.join", function()
     it("joins several alignments", function()
         local join = require 'npge.alignment.join'
         assert.same(join({

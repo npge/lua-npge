@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("alignment.unwind_row", function()
+describe("npge.alignment.unwind_row", function()
     it("unwinds row on consensus using a row on original",
     function()
         local unwind_row = require 'npge.alignment.unwind_row'

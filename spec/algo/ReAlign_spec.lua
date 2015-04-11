@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.ReAlign", function()
+describe("npge.algo.ReAlign", function()
     it("aligns blockset, keep block with better identity (1)",
     function()
         local config = require 'npge.config'

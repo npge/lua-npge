@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("alignment.align_rows", function()
+describe("npge.alignment.align_rows", function()
     it("align multiple rows (simple)", function()
         local f = require 'npge.alignment.align_rows'
         assert.same(f({"ATGC"}), {"ATGC"})

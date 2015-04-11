@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.PrimaryHits", function()
+describe("npge.algo.PrimaryHits", function()
     it("finds hits using blast+ combining groups of sequences",
     function()
         local Sequence = require 'npge.model.Sequence'

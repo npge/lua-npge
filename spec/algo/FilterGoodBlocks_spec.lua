@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.FilterGoodBlocks", function()
+describe("npge.algo.FilterGoodBlocks", function()
     it("returns blockset of good blocks", function()
         -- one block is good and the other one is bad
         -- insert non-identical columns in the middle of block

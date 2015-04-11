@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("block.unwind", function()
+describe("npge.block.unwind", function()
     it("unwinds block from consensus to original sequences",
     function()
         local model = require 'npge.model'

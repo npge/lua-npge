@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("alignment.to_atgcn_and_gap", function()
+describe("npge.alignment.to_atgcn_and_gap", function()
     it("cleans all except ATGCN and gaps", function()
         local f = require 'npge.alignment.to_atgcn_and_gap'
         assert.are.equal(f("a T g"), "ATG")

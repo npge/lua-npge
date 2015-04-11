@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.Orient", function()
+describe("npge.algo.Orient", function()
     it("orients blocks (1 fragment, ori = -1)",
     function()
         local model = require 'npge.model'

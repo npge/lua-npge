@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.Join", function()
+describe("npge.algo.Join", function()
     it("joins consequent blocks",
     function()
         local model = require 'npge.model'

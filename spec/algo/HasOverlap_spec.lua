@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.HasOverlap", function()
+describe("npge.algo.HasOverlap", function()
     it("tests that blockset contains overlaps",
     function()
         local model = require 'npge.model'

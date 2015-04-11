@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("block.is_good", function()
+describe("npge.block.is_good", function()
     it("checks if a block is good", function()
         local Sequence = require 'npge.model.Sequence'
         local s = Sequence('seq', string.rep('ATGC', 100))

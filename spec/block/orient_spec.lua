@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("block.orient", function()
+describe("npge.block.orient", function()
     it("orients block to maximize number of positive fragments",
     function()
         local model = require 'npge.model'

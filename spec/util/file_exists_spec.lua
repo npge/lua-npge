@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("util.file_exists", function()
+describe("npge.util.file_exists", function()
     it("checks if file exists", function()
         local file_exists = require 'npge.util.file_exists'
         local tmp_fname = os.tmpname()

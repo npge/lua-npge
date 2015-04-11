@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("util.sandbox", function()
+describe("npge.util.sandbox", function()
     it("makes sandboxed function", function()
         local sandbox = require 'npge.util.sandbox'
         local env = {}

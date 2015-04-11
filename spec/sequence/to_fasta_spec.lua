@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("sequence.to_fasta", function()
+describe("npge.sequence.to_fasta", function()
     it("converts sequence to fasta", function()
         local model = require 'npge.model'
         local s = model.Sequence("g&c&c",

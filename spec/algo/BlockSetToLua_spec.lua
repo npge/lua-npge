@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.BlockSetToLua", function()
+describe("npge.algo.BlockSetToLua", function()
     it("serializes blocksets", function()
         local model = require 'npge.model'
         local B = function(...)

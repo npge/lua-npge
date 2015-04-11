@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.GoodSubblocks", function()
+describe("npge.algo.GoodSubblocks", function()
     it("extracts good blocks of parts (already good)",
     function()
         local Sequence = require 'npge.model.Sequence'

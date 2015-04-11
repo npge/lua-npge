@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("block.extend", function()
+describe("npge.block.extend", function()
     it("extend fragment to left and to right",
     function()
         local model = require 'npge.model'

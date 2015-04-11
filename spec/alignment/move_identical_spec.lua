@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("alignment.move_identical", function()
+describe("npge.alignment.move_identical", function()
     it("move identical columns from left (100%)", function()
         local move_identical =
             require 'npge.alignment.move_identical'

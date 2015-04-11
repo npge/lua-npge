@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("alignment.identity", function()
+describe("npge.alignment.identity", function()
     it("finds identity of rows (50%)", function()
         local identity = require 'npge.alignment.identity'
         local eq = require 'npge.block.identity'.eq

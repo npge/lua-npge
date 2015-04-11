@@ -4,7 +4,7 @@
 
 local clone = require 'npge.util.clone'
 
-describe("util.clone", function()
+describe("npge.util.clone", function()
     it("makes a copy of an array", function()
         local x = {1, 2}
         assert.same(clone.array(x), x)

@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.BlastHits", function()
+describe("npge.algo.BlastHits", function()
     it("finds hits using blast+", function()
         local Sequence = require 'npge.model.Sequence'
         local s1 = Sequence('s1', string.rep('ATGC', 100))

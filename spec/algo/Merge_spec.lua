@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.Merge", function()
+describe("npge.algo.Merge", function()
     it("merges two blocksets", function()
         local model = require 'npge.model'
         local s = model.Sequence("s", "ATAT")

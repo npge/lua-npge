@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.ReadSequencesFromFasta", function()
+describe("npge.algo.ReadSequencesFromFasta", function()
     it("reads sequences from fasta file", function()
         local ReadSequencesFromFasta =
             require 'npge.algo.ReadSequencesFromFasta'

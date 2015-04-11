@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("fragment.sequence_to_fragment", function()
+describe("npge.fragment.sequence_to_fragment", function()
     it("converts position in sequence to fragment", function()
         local model = require 'npge.model'
         local s = model.Sequence("test_name", "AATA")

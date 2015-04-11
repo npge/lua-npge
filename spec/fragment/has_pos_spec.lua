@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("fragment.has_pos", function()
+describe("npge.fragment.has_pos", function()
     it("checks if fragment has sequence index", function()
         local model = require 'npge.model'
         local has_pos = require 'npge.fragment.has_pos'

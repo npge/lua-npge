@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("util.trim", function()
+describe("npge.util.trim", function()
     it("trims a string", function()
         local trim = require 'npge.util.trim'
         assert.equal(trim("asdfg"), "asdfg")

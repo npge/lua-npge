@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.LoadFromLua", function()
+describe("npge.algo.LoadFromLua", function()
     it("loads Lua files in #sandbox", function()
         local model = require 'npge.model'
         local s = model.Sequence("test_name", "ATAT")

@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("block.align", function()
+describe("npge.block.align", function()
     it("align block", function()
         local config = require 'npge.config'
         local clone = require 'npge.util.clone'.dict

@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("alignment.left", function()
+describe("npge.alignment.left", function()
     it("align sequences from left to right",
     function()
         local left = require 'npge.alignment.left'

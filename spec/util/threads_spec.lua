@@ -41,7 +41,7 @@ for i = 0, N do
     control_sum = control_sum + i ^ 2
 end
 
-describe("util.threads", function()
+describe("npge.util.threads", function()
     it("calculates sum of squares of numbers from 1 to 1000",
     function()
         local config = require 'npge.config'

@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("fragment.reverse", function()
+describe("npge.fragment.reverse", function()
     it("gets reversed fragment", function()
         local model = require 'npge.model'
         local s = model.Sequence("s", "ATAT")

@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("block.reverse", function()
+describe("npge.block.reverse", function()
     it("reverses block", function()
         local model = require 'npge.model'
         local s = model.Sequence("test_name", "AATAT")

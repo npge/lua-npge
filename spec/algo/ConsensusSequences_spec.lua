@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.ConsensusSequences", function()
+describe("npge.algo.ConsensusSequences", function()
     it("makes consensus sequences from blocks", function()
         local model = require 'npge.model'
         local s = model.Sequence("s", "ATAT")

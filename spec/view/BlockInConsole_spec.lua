@@ -21,7 +21,7 @@ local function startCode(rt, code)
     rt:forkPty(cmd)
 end
 
-describe("view.BlockInConsole", function()
+describe("npge.view.BlockInConsole", function()
     it("draws simple alignment", function()
         local rote = require 'rote'
         local rt = rote.RoteTerm(24, 80)

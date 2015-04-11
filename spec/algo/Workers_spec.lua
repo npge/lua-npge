@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("algo.Workers", function()
+describe("npge.algo.Workers", function()
     it("extracts good blocks in parallel",
     function()
         local BlockSet = require 'npge.model.BlockSet'

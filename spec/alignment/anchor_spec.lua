@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("alignment.anchor", function()
+describe("npge.alignment.anchor", function()
     it("finds anchor of identical words in sequences",
     function()
         local config = require 'npge.config'
