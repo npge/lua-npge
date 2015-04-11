@@ -7,7 +7,7 @@ return {
     anchor = require 'npge.alignment.anchor',
     toAtgcn = require 'npge.alignment.toAtgcn',
     toAtgcnAndGap = require 'npge.alignment.toAtgcnAndGap',
-    unwind_row = require 'npge.alignment.unwind_row',
+    unwindRow = require 'npge.alignment.unwindRow',
     complement = require 'npge.alignment.complement',
     complementRows = require 'npge.alignment.complementRows',
     moveIdentical = require 'npge.alignment.moveIdentical',

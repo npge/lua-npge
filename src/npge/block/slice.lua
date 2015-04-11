@@ -14,7 +14,7 @@ local slice_f = function(fragment, frag_min, frag_max)
 end
 
 return function(block, min, max, row)
-    local unwind_row = require 'npge.alignment.unwind_row'
+    local unwindRow = require 'npge.alignment.unwindRow'
     assert(min <= max)
     if not row then
         local length = max - min + 1
@@ -31,7 +31,7 @@ return function(block, min, max, row)
             local new_f = slice_f(fragment, frag_min, frag_max)
             local orig_row = block:text(fragment)
             orig_row = orig_row:sub(min + 1, max + 1)
-            local new_row = unwind_row(row, orig_row)
+            local new_row = unwindRow(row, orig_row)
             assert(#new_row == #row)
             table.insert(for_block, {new_f, new_row})
         end
