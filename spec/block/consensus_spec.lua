@@ -12,7 +12,7 @@ describe("npge.block.consensus", function()
         assert.equal(consensus(b), "ATAT")
     end)
 
-    local check_consensus = function(rows, expected_consensus)
+    local checkConsensus = function(rows, expected_consensus)
         it("gets consensus " .. expected_consensus, function()
             local model = require 'npge.model'
             local for_block = {}
@@ -28,52 +28,52 @@ describe("npge.block.consensus", function()
         end)
     end
 
-    check_consensus({
+    checkConsensus({
        "ATAT",
     }, "ATAT")
 
-    check_consensus({
+    checkConsensus({
        "ATAT",
        "AT-T",
        "AT-T",
     }, "ATAT")
 
-    check_consensus({
+    checkConsensus({
        "A",
        "T",
        "G",
     }, "A")
 
-    check_consensus({
+    checkConsensus({
        "A",
        "N",
        "N",
     }, "A")
 
-    check_consensus({
+    checkConsensus({
        "A",
        "T",
        "T",
     }, "T")
 
-    check_consensus({
+    checkConsensus({
        "T",
        "T",
        "A",
     }, "T")
 
-    check_consensus({
+    checkConsensus({
        "T",
        "A",
        "T",
     }, "T")
 
-    check_consensus({
+    checkConsensus({
        "T",
        "A",
     }, "A")
 
-    check_consensus({
+    checkConsensus({
 [[GCAATGGCGTCAGAGTTTCCATAGTACAATGAATCAGAAGGGAAACAATAAG
 TTTTTTAACCATTATACGGTCATGGTATGAACTGAGTTTTCATAAA-GCA]],
 [[GCAATGGCATCAGAGTTTCCATAGTACAATGAATTGGAAGTGAAACAATAAG
