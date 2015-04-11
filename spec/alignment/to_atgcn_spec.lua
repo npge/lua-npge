@@ -2,10 +2,10 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.alignment.to_atgcn", function()
+describe("npge.alignment.toAtgcn", function()
     it("converts to atgcn", function()
-        local to_atgcn = require 'npge.alignment.to_atgcn'
-        assert.are.equal(to_atgcn("a T g"), "ATG")
-        assert.are.equal(to_atgcn(""), "")
+        local toAtgcn = require 'npge.alignment.toAtgcn'
+        assert.are.equal(toAtgcn("a T g"), "ATG")
+        assert.are.equal(toAtgcn(""), "")
     end)
 end)
