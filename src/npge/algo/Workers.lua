@@ -9,7 +9,6 @@ Workers.makeBuckets = function(workers, blockset)
     for i = 1, workers do
         table.insert(buckets, {})
     end
-    local config = require 'npge.config'
     math.randomseed(os.time())
     for block in blockset:iter_blocks() do
         local ibucket = math.random(1, #buckets)
