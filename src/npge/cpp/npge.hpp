@@ -238,7 +238,7 @@ private:
     Fragments parts_;
     Fragments parent_of_parts_;
 
-    bool is_partition_;
+    bool isPartition_;
 
     BlockSet();
 };

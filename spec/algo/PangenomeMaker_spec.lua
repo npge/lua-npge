@@ -27,7 +27,7 @@ TCCCTACAGAGTGAGTTTGTTTGCGCAATCACCAGCCACCCCAGAGATTCACAATACGTA
         --
         local algo = require 'npge.algo'
         local npg = algo.PangenomeMaker(blockset)
-        assert.truthy(npg:is_partition())
+        assert.truthy(npg:isPartition())
         local good_blocks = algo.FilterGoodBlocks(npg):blocks()
         assert.equal(#good_blocks, 1)
         assert.equal(good_blocks[1]:size(), 4)

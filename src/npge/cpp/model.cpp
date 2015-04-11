@@ -650,7 +650,7 @@ BlockSetPtr BlockSet::make(const Sequences& sequences,
     sortFragments(bs->to_fragments_, bs->to_blocks_);
     sortParts(bs->parts_, bs->parent_of_parts_);
     //
-    bs->is_partition_ = testPartition(bs->to_fragments_,
+    bs->isPartition_ = testPartition(bs->to_fragments_,
             bs->sequences_);
     //
     return ptr;
@@ -732,7 +732,7 @@ int BlockSet::size() const {
 }
 
 bool BlockSet::isPartition() const {
-    return is_partition_;
+    return isPartition_;
 }
 
 const Blocks& BlockSet::blocks() const {
