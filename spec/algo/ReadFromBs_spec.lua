@@ -13,8 +13,8 @@ describe("npge.algo.ReadFromBs", function()
         local bs1 = BlockSet({s1, s2, s3}, {})
         -- parse .bs file
         local ReadFromBs = require 'npge.algo.ReadFromBs'
-        local it_from_array =
-            require 'npge.util.it_from_array'
+        local itFromArray =
+            require 'npge.util.itFromArray'
         local split = require 'npge.util.split'
         local bs_text =
 [[
@@ -40,7 +40,7 @@ A-T
 AT-
 ]]
         local lines = split(bs_text, '\n')
-        local it = it_from_array(lines)
+        local it = itFromArray(lines)
         local bs2 = ReadFromBs(it, bs1)
         --
         local Block = require 'npge.model.Block'

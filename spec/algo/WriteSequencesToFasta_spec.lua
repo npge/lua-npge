@@ -18,9 +18,9 @@ describe("npge.algo.WriteSequencesToFasta", function()
         fasta = table.concat(fasta)
         local split = require 'npge.util.split'
         local lines = split(fasta, '\n')
-        local it_from_array =
-            require 'npge.util.it_from_array'
-        local it = it_from_array(lines)
+        local itFromArray =
+            require 'npge.util.itFromArray'
+        local it = itFromArray(lines)
         local ReadSequencesFromFasta =
             require 'npge.algo.ReadSequencesFromFasta'
         local bs2 = ReadSequencesFromFasta(it)

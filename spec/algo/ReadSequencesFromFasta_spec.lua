@@ -6,8 +6,8 @@ describe("npge.algo.ReadSequencesFromFasta", function()
     it("reads sequences from fasta file", function()
         local ReadSequencesFromFasta =
             require 'npge.algo.ReadSequencesFromFasta'
-        local it_from_array =
-            require 'npge.util.it_from_array'
+        local itFromArray =
+            require 'npge.util.itFromArray'
         local split = require 'npge.util.split'
         local fasta =
 [[
@@ -22,7 +22,7 @@ ATGC
 ATGC
 ]]
         local lines = split(fasta, '\n')
-        local it = it_from_array(lines)
+        local it = itFromArray(lines)
         local bs1 = ReadSequencesFromFasta(it)
         --
         local Sequence = require 'npge.model.Sequence'

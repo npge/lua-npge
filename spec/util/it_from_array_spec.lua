@@ -2,11 +2,11 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.util.it_from_array", function()
+describe("npge.util.itFromArray", function()
     it("makes an iterator from an array", function()
-        local it_from_array = require 'npge.util.it_from_array'
+        local itFromArray = require 'npge.util.itFromArray'
         local x = {1, 2}
-        local it = it_from_array(x)
+        local it = itFromArray(x)
         local copy = {}
         for item in it do
             table.insert(copy, item)
