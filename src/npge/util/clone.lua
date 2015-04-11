@@ -27,7 +27,7 @@ return {
         return clone
     end,
 
-    dict_from_it = function(it)
+    dictFromIt = function(it)
         local clone = {}
         for key, value in it do
             clone[key] = value

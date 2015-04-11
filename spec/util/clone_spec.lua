@@ -36,6 +36,6 @@ describe("npge.util.clone", function()
                 return 'k' .. i, i
             end
         end
-        assert.same(clone.dict_from_it(it), {k1 = 1, k2 = 2})
+        assert.same(clone.dictFromIt(it), {k1 = 1, k2 = 2})
     end)
 end)
