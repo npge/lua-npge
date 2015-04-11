@@ -16,7 +16,7 @@ return {
     extract_value = require 'npge.util.extract_value',
     asLines = require 'npge.util.asLines',
     starts_with = require 'npge.util.starts_with',
-    ends_with = require 'npge.util.ends_with',
+    endsWith = require 'npge.util.endsWith',
     trim = require 'npge.util.trim',
     write_it = require 'npge.util.write_it',
     file_exists = require 'npge.util.file_exists',

@@ -2,15 +2,15 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.util.ends_with", function()
+describe("npge.util.endsWith", function()
     it("check if a string has a suffix", function()
-        local ends_with = require 'npge.util.ends_with'
-        assert.truthy(ends_with("asdfg", "dfg"))
-        assert.truthy(ends_with("asdfg", "g"))
-        assert.truthy(ends_with("asdfg", ""))
-        assert.truthy(ends_with("asdfg", "asdfg"))
-        assert.falsy(ends_with("asdfg", "asd"))
-        assert.falsy(ends_with("asdfg", "df"))
-        assert.falsy(ends_with("asdfg", "a"))
+        local endsWith = require 'npge.util.endsWith'
+        assert.truthy(endsWith("asdfg", "dfg"))
+        assert.truthy(endsWith("asdfg", "g"))
+        assert.truthy(endsWith("asdfg", ""))
+        assert.truthy(endsWith("asdfg", "asdfg"))
+        assert.falsy(endsWith("asdfg", "asd"))
+        assert.falsy(endsWith("asdfg", "df"))
+        assert.falsy(endsWith("asdfg", "a"))
     end)
 end)
