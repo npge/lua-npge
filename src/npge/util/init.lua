@@ -21,7 +21,7 @@ return {
     write_it = require 'npge.util.write_it',
     fileExists = require 'npge.util.fileExists',
     sandbox = require 'npge.util.sandbox',
-    read_file = require 'npge.util.read_file',
+    readFile = require 'npge.util.readFile',
     readIt = require 'npge.util.readIt',
     timer = require 'npge.util.timer',
     threads = require 'npge.util.threads',
