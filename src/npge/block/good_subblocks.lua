@@ -210,7 +210,7 @@ good_subblocks = function(block)
     local slice = require 'npge.block.slice'
     if gap_start and gap_stop then
         local subblocks = {}
-        local concat = require 'npge.util.concat_arrays'
+        local concat = require 'npge.util.concatArrays'
         if gap_start > 0 then
             local left_block = slice(block, 0, gap_start - 1)
             local left_subblocks = good_subblocks(left_block)

@@ -9,7 +9,7 @@ return {
     arraysEqual = require 'npge.util.arraysEqual',
     arraysLess = require 'npge.util.arraysLess',
     binary_search = require 'npge.util.binary_search',
-    concat_arrays = require 'npge.util.concat_arrays',
+    concatArrays = require 'npge.util.concatArrays',
     unique = require 'npge.util.unique',
     clone = require 'npge.util.clone',
     it_from_array = require 'npge.util.it_from_array',

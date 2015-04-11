@@ -6,7 +6,7 @@ return function(orig, added)
     if added then
         assert(orig:sameSequences(added))
     end
-    local concat = require 'npge.util.concat_arrays'
+    local concat = require 'npge.util.concatArrays'
     local BlockSet = require 'npge.model.BlockSet'
     local bs = BlockSet(orig:sequences(), {})
     local blocks = {}

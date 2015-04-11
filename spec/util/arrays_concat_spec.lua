@@ -2,9 +2,9 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-local cc = require 'npge.util.concat_arrays'
+local cc = require 'npge.util.concatArrays'
 
-describe("npge.util.concat_arrays", function()
+describe("npge.util.concatArrays", function()
     it("check if arrays are concatenated", function()
         assert.same(cc({1, 2}, {3, 4}), {1, 2, 3, 4})
     end)

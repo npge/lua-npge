@@ -22,9 +22,9 @@ return function(...)
     for name, seq in pairs(name2seq) do
         table.insert(seqs, seq)
     end
-    local concat_arrays = require 'npge.util.concat_arrays'
+    local concatArrays = require 'npge.util.concatArrays'
     local unpack = require 'npge.util.unpack'
-    local blocks = concat_arrays(unpack(lists_of_blocks))
+    local blocks = concatArrays(unpack(lists_of_blocks))
     local BlockSet = require 'npge.model.BlockSet'
     return BlockSet(seqs, blocks)
 end
