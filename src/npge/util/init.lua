@@ -24,4 +24,5 @@ return {
     read_file = require 'npge.util.read_file',
     readIt = require 'npge.util.readIt',
     timer = require 'npge.util.timer',
+    threads = require 'npge.util.threads',
 }

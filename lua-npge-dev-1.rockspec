@@ -60,6 +60,7 @@ build = {
         ['npge.util.unique'] = 'src/npge/util/unique.lua',
         ['npge.util.unpack'] = 'src/npge/util/unpack.lua',
         ['npge.util.write_it'] = 'src/npge/util/write_it.lua',
+        ['npge.util.threads'] = 'src/npge/util/threads.lua',
         ['npge.model'] = 'src/npge/model/init.lua',
         ['npge.model.Block'] = 'src/npge/model/Block.lua',
         ['npge.model.BlockSet'] = 'src/npge/model/BlockSet.lua',
