@@ -8,7 +8,7 @@ return function(block)
     end
     local fragments = {}
     local texts = {}
-    for f in block:iter_fragments() do
+    for f in block:iterFragments() do
         table.insert(fragments, f)
         table.insert(texts, f:text())
     end

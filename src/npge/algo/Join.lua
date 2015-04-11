@@ -14,7 +14,7 @@ local findNeighbour = function(block, ori, bs)
     -- return neightbour and list of pairs {f, f_n}
     local n_b, ori_product -- n for neightbour
     local pairs_list = {}
-    for f in block:iter_fragments() do
+    for f in block:iterFragments() do
         local n_f = logicalNeighbour(f, ori, bs)
         if not n_f then
             return

@@ -16,20 +16,20 @@ return function(orig, added)
         blocks = {}
     end
     local overlapping = function(block)
-        for f in block:iter_fragments() do
+        for f in block:iterFragments() do
             if #(bs:overlapping_fragments(f)) > 0 then
                 return true
             end
         end
         local seq2fragments = {}
-        for f in block:iter_fragments() do
+        for f in block:iterFragments() do
             if not seq2fragments[f:sequence()] then
                 seq2fragments[f:sequence()] = {}
             end
             table.insert(seq2fragments[f:sequence()], f)
         end
         for _, block1 in ipairs(blocks) do
-            for f in block1:iter_fragments() do
+            for f in block1:iterFragments() do
                 local ff = seq2fragments[f:sequence()]
                 if ff then
                     for _, f1 in ipairs(ff) do

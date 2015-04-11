@@ -24,7 +24,7 @@ end
 
 return function(block)
     local rows = {}
-    for fragment in block:iter_fragments() do
+    for fragment in block:iterFragments() do
         table.insert(rows, block:text(fragment))
     end
     local result = {}

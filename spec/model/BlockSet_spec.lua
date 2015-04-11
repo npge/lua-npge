@@ -293,11 +293,11 @@ describe("npge.model.BlockSet", function()
         local b1 = model.Block({f1})
         local b2 = model.Block({f2, f3})
         local blockset = model.BlockSet({s1, s2}, {b1, b2})
-        assert.same(arr(blockset:iter_fragments(s1)), {f1, f2})
-        assert.same(arr(blockset:iter_fragments(s2)), {f3})
+        assert.same(arr(blockset:iterFragments(s1)), {f1, f2})
+        assert.same(arr(blockset:iterFragments(s2)), {f3})
         assert.has_error(function()
             local s3 = model.Sequence("s3", "ATAT")
-            blockset:iter_fragments(s3)
+            blockset:iterFragments(s3)
         end)
     end)
 
@@ -307,7 +307,7 @@ describe("npge.model.BlockSet", function()
         local f2 = model.Fragment(s1, 3, 0, 1) -- parted
         local b1 = model.Block({f1, f2})
         local blockset = model.BlockSet({s1}, {b1})
-        local it = blockset:iter_fragments(s1)
+        local it = blockset:iterFragments(s1)
         local expected = {
             {f2, model.Fragment(s1, 0, 0, 1)},
             {f1, f1},

@@ -160,7 +160,7 @@ local remove_most_distant = function(block)
     local identity = require 'npge.alignment.identity'
     local c = consensus(block)
     local worst_ident, worst_fragment
-    for fragment in block:iter_fragments() do
+    for fragment in block:iterFragments() do
         local row = block:text(fragment)
         local ident = identity({c, row})
         if not worst_ident or ident < worst_ident then
@@ -170,7 +170,7 @@ local remove_most_distant = function(block)
     end
     assert(worst_fragment)
     local for_block = {}
-    for fragment in block:iter_fragments() do
+    for fragment in block:iterFragments() do
         if fragment ~= worst_fragment then
             local row = block:text(fragment)
             table.insert(for_block, {fragment, row})
@@ -201,7 +201,7 @@ good_subblocks = function(block)
     end
     -- make rows
     local rows = {}
-    for fragment in block:iter_fragments() do
+    for fragment in block:iterFragments() do
         table.insert(rows, block:text(fragment))
     end
     -- find long gap

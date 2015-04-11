@@ -11,7 +11,7 @@ mt.__index = mt
 
 mt.__call = function(self, block)
     local rows = {}
-    for fragment in block:iter_fragments() do
+    for fragment in block:iterFragments() do
         table.insert(rows, block:text(fragment))
     end
     local identity = require 'npge.alignment.identity'

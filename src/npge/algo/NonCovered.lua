@@ -19,7 +19,7 @@ return function(blockset)
         local fragments = {}
         local last_pos = seq:length() - 1
         local prev
-        for fragment, part in blockset:iter_fragments(seq) do
+        for fragment, part in blockset:iterFragments(seq) do
             local last = prev and max(prev) or -1
             local first = min(part)
             if first - last > 1 then

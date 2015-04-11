@@ -18,7 +18,7 @@ end
 local block_to_lua = function(block)
     local as_lines = require 'npge.util.as_lines'
     local ff = {}
-    for fragment in block:iter_fragments() do
+    for fragment in block:iterFragments() do
         local text = block:text(fragment)
         text = as_lines(text)
         local fragment_str = fragment_to_lua(fragment)

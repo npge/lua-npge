@@ -5,7 +5,7 @@
 return function(block)
     local reverse_fragment = require 'npge.fragment.reverse'
     local for_block = {}
-    for fragment in block:iter_fragments() do
+    for fragment in block:iterFragments() do
         local new_f = reverse_fragment(fragment)
         local row = block:text(fragment)
         local C = require 'npge.alignment.complement'

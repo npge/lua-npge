@@ -142,7 +142,7 @@ describe("npge.model.Block", function()
         local ff1 = {f1, f2}
         local block = model.Block(ff1)
         local ff2 = {}
-        for f in block:iter_fragments() do
+        for f in block:iterFragments() do
             table.insert(ff2, f)
         end
         table.sort(ff1)

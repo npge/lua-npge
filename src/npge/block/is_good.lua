@@ -40,7 +40,7 @@ return function(block)
     end
     -- make rows
     local rows = {}
-    for fragment in block:iter_fragments() do
+    for fragment in block:iterFragments() do
         table.insert(rows, block:text(fragment))
     end
     -- check identity

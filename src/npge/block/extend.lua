@@ -74,7 +74,7 @@ return function(block, left_length, right_length)
     local right_rows = {}
     local new_fragments = {}
     --
-    for f in block:iter_fragments() do
+    for f in block:iterFragments() do
         local new_start, new_stop = expandFragment(f,
             left_length, right_length)
         local left_row, right_row, newf = getRows(f,

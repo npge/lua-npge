@@ -12,7 +12,7 @@ end
 
 return function(block, seqs2blocks)
     local for_block = {}
-    for fragment in block:iter_fragments() do
+    for fragment in block:iterFragments() do
         local seq = fragment:sequence()
         local orig_block = assert(seqs2blocks[seq])
         if fragment:parted() then
@@ -37,7 +37,7 @@ return function(block, seqs2blocks)
                     local reverse = require 'npge.block.reverse'
                     new_block = reverse(new_block)
                 end
-                for new_f in new_block:iter_fragments() do
+                for new_f in new_block:iterFragments() do
                     local new_row = new_block:text(new_f)
                     table.insert(for_block, {new_f, new_row})
                 end

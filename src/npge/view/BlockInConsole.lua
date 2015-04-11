@@ -5,7 +5,7 @@
 return function(block)
     local names = {}
     local name2text = {}
-    for fragment in block:iter_fragments() do
+    for fragment in block:iterFragments() do
         local name = fragment:id()
         local text = block:text(fragment)
         name2text[name] = text
