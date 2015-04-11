@@ -115,7 +115,7 @@ local findJoined = function(blockset)
     -- add joined block, if all fragments have
     -- corresponding fragment in neighbour
     local joined = {}
-    for b in blockset:iter_blocks() do
+    for b in blockset:iterBlocks() do
         for ori = -1, 1, 2 do
             local n_b, pp = findNeighbour(b, ori, blockset)
             if n_b and n_b ~= b then
@@ -137,7 +137,7 @@ return function(blockset)
     -- fragments must be >= 2
     local size2blocks = {}
     local max_size = 0
-    for block in blockset:iter_blocks() do
+    for block in blockset:iterBlocks() do
         local size = block:size()
         max_size = math.max(max_size, size)
         if not size2blocks[size] then

@@ -4,7 +4,7 @@
 
 return function(blockset)
     local blocks = {}
-    for block in blockset:iter_blocks() do
+    for block in blockset:iterBlocks() do
         local align = require 'npge.block.align'
         local block1 = align(block)
         local identity = require 'npge.block.identity'

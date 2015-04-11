@@ -4,7 +4,7 @@
 
 return function(blockset)
     local blocks = {}
-    for block in blockset:iter_blocks() do
+    for block in blockset:iterBlocks() do
         local orient = require 'npge.block.orient'
         block = orient(block)
         table.insert(blocks, block)

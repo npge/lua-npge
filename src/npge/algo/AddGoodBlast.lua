@@ -22,7 +22,7 @@ return function(query, bank, options)
             b2s[block] = seq
         end
         local query_seqs = {}
-        for block in query:iter_blocks() do
+        for block in query:iterBlocks() do
             local seq = assert(b2s[block])
             table.insert(query_seqs, seq)
         end

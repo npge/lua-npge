@@ -4,7 +4,7 @@
 
 return function(consensus_bs, original_bs, seqs2blocks)
     local blocks = {}
-    for block in consensus_bs:iter_blocks() do
+    for block in consensus_bs:iterBlocks() do
         local unwind = require 'npge.block.unwind'
         local new_block = unwind(block, seqs2blocks)
         if new_block then

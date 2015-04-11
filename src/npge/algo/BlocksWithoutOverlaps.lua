@@ -43,7 +43,7 @@ return function(orig, added)
         return false
     end
     local from_orig = {}
-    for block in orig:iter_blocks() do
+    for block in orig:iterBlocks() do
         from_orig[block] = true
     end
     local bb = orig:blocks()

@@ -1017,7 +1017,7 @@ static const luaL_Reg BlockSet_methods[] = {
     {"cmp", lua_BlockSet_cmp},
     {"is_partition", lua_BlockSet_isPartition},
     {"blocks", lua_BlockSet_blocks},
-    {"iter_blocks", lua_BlockSet_iterBlocks},
+    {"iterBlocks", lua_BlockSet_iterBlocks},
     {"fragments", lua_BlockSet_fragments},
     {"iterFragments", lua_BlockSet_iterFragments},
     {"sequences", lua_BlockSet_sequences},

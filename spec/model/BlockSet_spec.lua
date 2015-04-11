@@ -23,7 +23,7 @@ describe("npge.model.BlockSet", function()
         assert.same(seqs, {s})
         --
         local blocks = {}
-        for block in blockset:iter_blocks() do
+        for block in blockset:iterBlocks() do
             table.insert(blocks, block)
         end
         assert.same(blocks, {block})

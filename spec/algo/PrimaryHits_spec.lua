@@ -16,7 +16,7 @@ describe("npge.algo.PrimaryHits", function()
         local hits = PrimaryHits(bs_with_seqs)
         assert.truthy(#hits:blocks() > 0)
         local max_size = 0
-        for block in hits:iter_blocks() do
+        for block in hits:iterBlocks() do
             max_size = math.max(max_size, block:size())
         end
         assert.truthy(max_size >= 4)
@@ -35,7 +35,7 @@ describe("npge.algo.PrimaryHits", function()
         local hits = PrimaryHits(bs_with_seqs)
         assert.truthy(#hits:blocks() > 0)
         local max_size = 0
-        for block in hits:iter_blocks() do
+        for block in hits:iterBlocks() do
             max_size = math.max(max_size, block:size())
         end
         assert.truthy(max_size >= 2)
