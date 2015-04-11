@@ -49,7 +49,8 @@ end
 return function(generator, collector)
     local config = require 'npge.config'
     local workers = config.util.WORKERS
-    if workers == 1 then
+    local has_llthreads2 = pcall(require, "llthreads2")
+    if workers == 1 or not has_llthreads2 then
         local loadstring = require 'npge.util.loadstring'
         local code = generator(1)[1]
         local result = assert(loadstring(code)())
