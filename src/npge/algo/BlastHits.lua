@@ -66,14 +66,14 @@ local read_blast = function(file, query, bank, filter, same)
         subject_start = nil
         subject_stop = nil
     end
-    local starts_with = require 'npge.util.starts_with'
+    local startsWith = require 'npge.util.startsWith'
     local split = require 'npge.util.split'
     local trim = require 'npge.util.trim'
     local unpack = require 'npge.util.unpack'
     local file_is_empty = true
     for line in file:lines() do
         file_is_empty = false
-        if starts_with(line, 'Query=') then
+        if startsWith(line, 'Query=') then
             -- Example: Query= consensus000567
             try_add()
             query_name = split(line, '=', 1)[2]
@@ -84,7 +84,7 @@ local read_blast = function(file, query, bank, filter, same)
             try_add()
             subject_name = trim(line:sub(2))
             subject_name = split(subject_name)[1]
-        elseif starts_with(line, ' Score =') then
+        elseif startsWith(line, ' Score =') then
             -- Example:  Score = 82.4 bits (90),  ...
             try_add()
             query_row = {}
@@ -102,7 +102,7 @@ local read_blast = function(file, query, bank, filter, same)
                     return nil, row, nil
                 end
             end
-            if starts_with(line, 'Query ') then
+            if startsWith(line, 'Query ') then
                 -- Example: Query  1  GCGCG  5
                 local start, row, stop = parse_alignment(line)
                 if start and stop then
@@ -112,7 +112,7 @@ local read_blast = function(file, query, bank, filter, same)
                     query_stop = assert(tonumber(stop))
                 end
                 table.insert(query_row, row)
-            elseif starts_with(line, 'Sbjct ') then
+            elseif startsWith(line, 'Sbjct ') then
                 -- Example: Sbjct  1  GCGCG  5
                 local start, row, stop = parse_alignment(line)
                 if start and stop then

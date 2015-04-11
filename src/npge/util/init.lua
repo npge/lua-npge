@@ -15,7 +15,7 @@ return {
     itFromArray = require 'npge.util.itFromArray',
     extractValue = require 'npge.util.extractValue',
     asLines = require 'npge.util.asLines',
-    starts_with = require 'npge.util.starts_with',
+    startsWith = require 'npge.util.startsWith',
     endsWith = require 'npge.util.endsWith',
     trim = require 'npge.util.trim',
     write_it = require 'npge.util.write_it',
