@@ -4,7 +4,7 @@
 
 return function(orig, added)
     if added then
-        assert(orig:same_sequences(added))
+        assert(orig:sameSequences(added))
     end
     local concat = require 'npge.util.concat_arrays'
     local BlockSet = require 'npge.model.BlockSet'

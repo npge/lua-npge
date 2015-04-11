@@ -1013,7 +1013,7 @@ static const luaL_Reg BlockSet_methods[] = {
     {"__gc", lua_BlockSet_gc},
     {"type", lua_BlockSet_type},
     {"size", lua_BlockSet_size},
-    {"same_sequences", lua_BlockSet_sameSequences},
+    {"sameSequences", lua_BlockSet_sameSequences},
     {"cmp", lua_BlockSet_cmp},
     {"is_partition", lua_BlockSet_isPartition},
     {"blocks", lua_BlockSet_blocks},

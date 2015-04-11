@@ -14,7 +14,7 @@ describe("npge.algo.Merge", function()
         local bs2 = model.BlockSet({s}, {b2})
         local Merge = require 'npge.algo.Merge'
         local sum = Merge(bs1, bs2)
-        assert.truthy(sum:same_sequences(bs1))
+        assert.truthy(sum:sameSequences(bs1))
         assert.same(sum:fragments(s), {f1, f2})
         assert.equal(sum:size(), 2)
     end)
