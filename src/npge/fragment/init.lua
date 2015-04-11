@@ -6,7 +6,7 @@ local iso = require 'npge.fragment.is_subfragment_of'
 
 return {
     reverse = require 'npge.fragment.reverse',
-    has_pos = require 'npge.fragment.has_pos',
+    hasPos = require 'npge.fragment.hasPos',
     is_subfragment_of = iso, -- FIXME
     subfragment = require 'npge.fragment.subfragment',
     sub = require 'npge.fragment.sub',

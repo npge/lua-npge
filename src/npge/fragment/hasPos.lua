@@ -2,9 +2,9 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-local has_pos
+local hasPos
 
-has_pos = function(fragment, index)
+hasPos = function(fragment, index)
     if not fragment:parted() then
         if fragment:ori() == 1 then
             return index >= fragment:start() and
@@ -15,8 +15,8 @@ has_pos = function(fragment, index)
         end
     else
         local a, b = fragment:parts()
-        return has_pos(a, index) or has_pos(b, index)
+        return hasPos(a, index) or hasPos(b, index)
     end
 end
 
-return has_pos
+return hasPos

@@ -4,9 +4,9 @@
 
 return function(self, source)
     assert(self:sequence() == source:sequence())
-    local has_pos = require 'npge.fragment.has_pos'
-    if not has_pos(source, self:start())
-            or not has_pos(source, self:stop()) then
+    local hasPos = require 'npge.fragment.hasPos'
+    if not hasPos(source, self:start())
+            or not hasPos(source, self:stop()) then
         return false
     end
     if not source:parted() and not self:parted() then
@@ -27,8 +27,8 @@ return function(self, source)
             local fixPosition =
                 require 'npge.sequence.fixPosition'
             point = fixPosition(self:sequence(), point)
-            if has_pos(self, point) and
-                    not has_pos(source, point) then
+            if hasPos(self, point) and
+                    not hasPos(source, point) then
                 return false
             end
         end
