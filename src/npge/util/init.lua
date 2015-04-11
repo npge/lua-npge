@@ -7,7 +7,7 @@ return {
     unpack = require 'npge.util.unpack',
     loadstring = require 'npge.util.loadstring',
     arraysEqual = require 'npge.util.arraysEqual',
-    arrays_less = require 'npge.util.arrays_less',
+    arraysLess = require 'npge.util.arraysLess',
     binary_search = require 'npge.util.binary_search',
     concat_arrays = require 'npge.util.concat_arrays',
     unique = require 'npge.util.unique',
