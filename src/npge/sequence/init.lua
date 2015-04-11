@@ -4,5 +4,5 @@
 
 return {
     fixPosition = require 'npge.sequence.fixPosition',
-    to_fasta = require 'npge.sequence.to_fasta',
+    toFasta = require 'npge.sequence.toFasta',
 }

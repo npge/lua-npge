@@ -2,13 +2,13 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.sequence.to_fasta", function()
+describe("npge.sequence.toFasta", function()
     it("converts sequence to fasta", function()
         local model = require 'npge.model'
         local s = model.Sequence("g&c&c",
             string.rep("ATAT", 100))
-        local to_fasta = require 'npge.sequence.to_fasta'
-        local fasta = to_fasta(s)
+        local toFasta = require 'npge.sequence.toFasta'
+        local fasta = toFasta(s)
         local split = require 'npge.util.split'
         local lines = split(fasta, '\n')
         local itFromArray = require 'npge.util.itFromArray'

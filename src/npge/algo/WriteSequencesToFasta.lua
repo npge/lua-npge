@@ -9,8 +9,8 @@ return function(blockset)
     return function()
         index, seq = it(t, index)
         if seq then
-            local to_fasta = require 'npge.sequence.to_fasta'
-            return to_fasta(seq)
+            local toFasta = require 'npge.sequence.toFasta'
+            return toFasta(seq)
         end
     end
 end
