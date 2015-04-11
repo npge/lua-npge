@@ -1364,7 +1364,7 @@ static int lua_anchor(lua_State *L) {
 
 /////
 
-// Lua version in file block/good_subblocks.lua
+// Lua version in file block/goodSubblocks.lua
 
 static int identCol(int nrows, const char** rows, int bp) {
     char first = rows[0][bp];

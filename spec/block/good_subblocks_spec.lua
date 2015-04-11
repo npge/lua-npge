@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.block.good_subblocks", function()
+describe("npge.block.goodSubblocks", function()
     it("extracts good parts from block (already good)",
     function()
         local Sequence = require 'npge.model.Sequence'
@@ -14,9 +14,9 @@ describe("npge.block.good_subblocks", function()
         local block = Block({f1, f2})
         local is_good = require 'npge.block.is_good'
         assert.truthy(is_good(block))
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.same(gs, {block})
     end)
 
@@ -30,9 +30,9 @@ describe("npge.block.good_subblocks", function()
         local f3 = Fragment(s, s:length() - 1, 0, -1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2, f3})
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.same(gs, {Block({f1, f2})})
     end)
 
@@ -53,9 +53,9 @@ describe("npge.block.good_subblocks", function()
         local f2 = Fragment(s2, 0, s1:length() - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.same(gs, {Block({
             {Fragment(s1, 1, s1:length() - 1 - 1, 1),
                 "AAAGCGCGCGCAAA"},
@@ -85,9 +85,9 @@ describe("npge.block.good_subblocks", function()
         local f2 = Fragment(s2, 0, s1:length() - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.same(gs, {Block({
             {Fragment(s1, 1, s1:length() - 1 - 1, 1),
                 "AAATTTTTTTTAAAACGCGCGCAAA"},
@@ -116,9 +116,9 @@ describe("npge.block.good_subblocks", function()
                 string.rep('-', min_len) ..
                 string.rep('A', min_len)},
         })
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.truthy(#gs >= 1)
         local is_good = require 'npge.block.is_good'
         assert.truthy(is_good(gs[1]))
@@ -142,9 +142,9 @@ describe("npge.block.good_subblocks", function()
             {f2, string.rep('A', s:length() - gap_len) ..
                 string.rep('-', gap_len)},
         })
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.truthy(#gs == 1)
         local is_good = require 'npge.block.is_good'
         assert.truthy(is_good(gs[1]))
@@ -160,9 +160,9 @@ describe("npge.block.good_subblocks", function()
         local f1 = Fragment(s, 0, s:length() - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1})
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.truthy(#gs == 0)
     end)
 
@@ -184,9 +184,9 @@ describe("npge.block.good_subblocks", function()
             {f2, string.rep('-', gap_len) ..
                 string.rep('A', s:length() - gap_len)},
         })
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.truthy(#gs == 1)
         local is_good = require 'npge.block.is_good'
         assert.truthy(is_good(gs[1]))
@@ -210,9 +210,9 @@ describe("npge.block.good_subblocks", function()
                 string.rep('A', s:length() - gap_len)},
             {f1, string.rep('A', min_len * 2)},
         })
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.truthy(#gs == 1)
         local is_good = require 'npge.block.is_good'
         assert.truthy(is_good(gs[1]))
@@ -236,9 +236,9 @@ describe("npge.block.good_subblocks", function()
             {f2, string.rep('A', s:length() - gap_len) ..
                 string.rep('-', gap_len)},
         })
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.truthy(#gs == 1)
         local is_good = require 'npge.block.is_good'
         assert.truthy(is_good(gs[1]))
@@ -269,9 +269,9 @@ describe("npge.block.good_subblocks", function()
         local block = Block({f1, f2})
         local is_good = require 'npge.block.is_good'
         assert.falsy(is_good(block))
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.truthy(#gs >= 1)
         assert.truthy(is_good(gs[1]))
     end)
@@ -304,9 +304,9 @@ describe("npge.block.good_subblocks", function()
         })
         local is_good = require 'npge.block.is_good'
         assert.falsy(is_good(block))
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.truthy(#gs >= 1)
         assert.truthy(is_good(gs[1]))
     end)
@@ -343,9 +343,9 @@ describe("npge.block.good_subblocks", function()
         })
         local is_good = require 'npge.block.is_good'
         assert.falsy(is_good(block))
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.truthy(#gs >= 1)
         assert.truthy(is_good(gs[1]))
     end)
@@ -375,9 +375,9 @@ describe("npge.block.good_subblocks", function()
         local block = Block({f1, f2})
         local is_good = require 'npge.block.is_good'
         assert.falsy(is_good(block))
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.truthy(#gs >= 1)
         assert.truthy(is_good(gs[1]))
     end)
@@ -398,9 +398,9 @@ describe("npge.block.good_subblocks", function()
         local block = Block({f1, f2})
         local is_good = require 'npge.block.is_good'
         assert.falsy(is_good(block))
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.same(gs, {})
     end)
 
@@ -428,9 +428,9 @@ GGCgAA
         local block = Block({f1, f2})
         local is_good = require 'npge.block.is_good'
         assert.falsy(is_good(block))
-        local good_subblocks =
-            require 'npge.block.good_subblocks'
-        local gs = good_subblocks(block)
+        local goodSubblocks =
+            require 'npge.block.goodSubblocks'
+        local gs = goodSubblocks(block)
         assert.equal(#gs, 1)
         assert.equal(gs[1], Block({
             Fragment(s1, 0, s1:length() - 3 - 1, 1),

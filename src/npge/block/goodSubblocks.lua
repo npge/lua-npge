@@ -182,8 +182,8 @@ local remove_most_distant = function(block)
     return Block(for_block)
 end
 
-local good_subblocks
-good_subblocks = function(block)
+local goodSubblocks
+goodSubblocks = function(block)
     local is_good = require 'npge.block.is_good'
     if is_good(block) then
         return {block}
@@ -213,13 +213,13 @@ good_subblocks = function(block)
         local concat = require 'npge.util.concatArrays'
         if gap_start > 0 then
             local left_block = slice(block, 0, gap_start - 1)
-            local left_subblocks = good_subblocks(left_block)
+            local left_subblocks = goodSubblocks(left_block)
             subblocks = concat(subblocks, left_subblocks)
         end
         if gap_stop < block:length() - 1 then
             local right_block = slice(block, gap_stop + 1,
                 block:length() - 1)
-            local right_subblocks = good_subblocks(right_block)
+            local right_subblocks = goodSubblocks(right_block)
             subblocks = concat(subblocks, right_subblocks)
         end
         if #subblocks > 0 then
@@ -243,7 +243,7 @@ good_subblocks = function(block)
     end
     -- try to remove the most distant fragment
     local block1 = remove_most_distant(block)
-    return good_subblocks(block1)
+    return goodSubblocks(block1)
 end
 
-return good_subblocks
+return goodSubblocks

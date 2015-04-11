@@ -4,9 +4,9 @@
 
 return function(blockset)
     local blocks = {}
-    local good_subblocks = require 'npge.block.good_subblocks'
+    local goodSubblocks = require 'npge.block.goodSubblocks'
     for block in blockset:iterBlocks() do
-        for _, subblock in ipairs(good_subblocks(block)) do
+        for _, subblock in ipairs(goodSubblocks(block)) do
             table.insert(blocks, subblock)
         end
     end
