@@ -26,84 +26,51 @@ Workers.makeBuckets = function(workers, blockset)
 end
 
 local workerCode = [[
-local ref, alg = ...
-return pcall(function()
-    local BlockSet = require 'npge.model.BlockSet'
-    local decrease_count = true
-    local bs = BlockSet.fromRef(ref, decrease_count)
-    local loadstring = require 'npge.util.loadstring'
-    local algorithm = loadstring(alg)
-    bs = assert(algorithm(bs))
-    local increase_count = true
-    return BlockSet.toRef(bs, increase_count)
-end)
+local ref = %q
+local alg = %q
+local BlockSet = require 'npge.model.BlockSet'
+local bs = BlockSet.fromRef(ref)
+local loadstring = require 'npge.util.loadstring'
+local algorithm = loadstring(alg)
+bs = assert(algorithm(bs))
+local increase_count = true
+return BlockSet.toRef(bs, increase_count)
 ]]
 
-local spawnWorker = function(bs, alg)
-    local BlockSet = require 'npge.model.BlockSet'
-    assert(BlockSet.toRef)
-    local increase_count = true
-    local ref = BlockSet.toRef(bs, increase_count)
-    local llthreads2 = require "llthreads2"
-    local thread = llthreads2.new(workerCode, ref, alg)
-    thread:start()
-    return thread
-end
-
-local spawnWorkers = function(blocksets, alg)
-    local threads = {}
-    for _, bs in ipairs(blocksets) do
-        local thread = spawnWorker(bs, alg)
-        table.insert(threads, thread)
-    end
-    return threads
-end
-
-local collectResult = function(thread)
-    local _, status, result = thread:join()
-    if status then
-        local BlockSet = require 'npge.model.BlockSet'
-        local decrease_count = true
-        return BlockSet.fromRef(result, decrease_count)
-    else
-        return nil, result
-    end
-end
-
-local collectResults = function(threads)
-    local blocksets = {}
-    local errors = {}
-    for _, thread in ipairs(threads) do
-        local bs, message = collectResult(thread)
-        if bs then
-            table.insert(blocksets, bs)
-        else
-            table.insert(errors, message)
-        end
-    end
-    assert(#errors == 0,
-        "Errors in threads: " .. table.concat(errors, "\n"))
-    local Merge = require 'npge.algo.Merge'
-    local unpack = require 'npge.util.unpack'
-    return Merge(unpack(blocksets))
-end
-
--- see https://github.com/moteus/lua-llthreads2
--- alg is code of function, which accepts and returns blockset
--- WARNING target executable must be linked against pthread
--- Otherwise memory errors occur
--- LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0 lua ...
+-- Map-reduce for algorithms on blocks.
+-- 1. Splits the blockset into buckets using function
+--    Workers.makeBuckets
+-- 2. apply alg to each bucket in parallel. alg must be a
+--    string of Lua code, which gets a bockset and returns
+--    a blockset.
 Workers.applyToBlockset = function(blockset, alg)
-    local loadstring = require 'npge.util.loadstring'
-    local algorithm = assert(loadstring(alg))
-    local config = require 'npge.config'
-    local workers = config.util.WORKERS
-    if workers == 1 then
-        return algorithm(blockset)
-    end
-    local blocksets = Workers.makeBuckets(workers, blockset)
-    local threads = spawnWorkers(blocksets, alg)
-    return collectResults(threads)
+    local threads = require 'npge.util.threads'
+    return threads(
+    -- generator
+    function(workers)
+        local codes = {}
+        local blocksets =
+            Workers.makeBuckets(workers, blockset)
+        local BlockSet = require 'npge.model.BlockSet'
+        for _, bs in ipairs(blocksets) do
+            local ref = BlockSet.toRef(bs)
+            table.insert(codes, workerCode:format(ref, alg))
+        end
+        return codes
+    end,
+    -- collector
+    function(results)
+        local blocksets = {}
+        local BlockSet = require 'npge.model.BlockSet'
+        for _, ref in ipairs(results) do
+            local decrease_count = true
+            local bs = BlockSet.fromRef(ref, decrease_count)
+            table.insert(blocksets, bs)
+        end
+        local Merge = require 'npge.algo.Merge'
+        local unpack = require 'npge.util.unpack'
+        return Merge(unpack(blocksets))
+    end)
 end
 
 Workers.GoodSubblocks = function(blockset)
