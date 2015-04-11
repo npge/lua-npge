@@ -12,8 +12,8 @@ describe("npge.algo.GoodSubblocks", function()
         local f2 = Fragment(s, 0, s:length() - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
-        local is_good = require 'npge.block.is_good'
-        assert.truthy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.truthy(isGood(block))
         local BlockSet = require 'npge.model.BlockSet'
         local blockset = BlockSet({s}, {block})
         local GoodSubblocks = require 'npge.algo.GoodSubblocks'
@@ -43,13 +43,13 @@ describe("npge.algo.GoodSubblocks", function()
         local f2 = Fragment(s2, 0, s2:length() - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
-        local is_good = require 'npge.block.is_good'
-        assert.falsy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.falsy(isGood(block))
         local BlockSet = require 'npge.model.BlockSet'
         local blockset = BlockSet({s1, s2}, {block})
         local GoodSubblocks = require 'npge.algo.GoodSubblocks'
         local good_blocks = GoodSubblocks(blockset)
         assert.truthy(#good_blocks:blocks() >= 1)
-        assert.truthy(is_good(good_blocks:blocks()[1]))
+        assert.truthy(isGood(good_blocks:blocks()[1]))
     end)
 end)

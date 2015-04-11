@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.block.is_good", function()
+describe("npge.block.isGood", function()
     it("checks if a block is good", function()
         local Sequence = require 'npge.model.Sequence'
         local s = Sequence('seq', string.rep('ATGC', 100))
@@ -11,8 +11,8 @@ describe("npge.block.is_good", function()
         local f2 = Fragment(s, 0, s:length() - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
-        local is_good = require 'npge.block.is_good'
-        assert.truthy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.truthy(isGood(block))
     end)
 
     it("checks if a block is bad (1 fragment)", function()
@@ -22,8 +22,8 @@ describe("npge.block.is_good", function()
         local f1 = Fragment(s, 0, s:length() - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1})
-        local is_good = require 'npge.block.is_good'
-        assert.falsy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.falsy(isGood(block))
     end)
 
     it("does not throw if beginning of block is full of gaps",
@@ -41,8 +41,8 @@ describe("npge.block.is_good", function()
             {f1, string.rep('-', gaps) .. s:text()},
             {f2, string.rep('-', gaps) .. s:text()},
         })
-        local is_good = require 'npge.block.is_good'
-        assert.falsy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.falsy(isGood(block))
     end)
 
     it("does not throw if ending of block is full of gaps",
@@ -60,8 +60,8 @@ describe("npge.block.is_good", function()
             {f1, s:text() .. string.rep('-', gaps)},
             {f2, s:text() .. string.rep('-', gaps)},
         })
-        local is_good = require 'npge.block.is_good'
-        assert.falsy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.falsy(isGood(block))
     end)
 
     it("checks if a block is bad (short)", function()
@@ -74,8 +74,8 @@ describe("npge.block.is_good", function()
         local f2 = Fragment(s, 0, s:length() - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
-        local is_good = require 'npge.block.is_good'
-        assert.falsy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.falsy(isGood(block))
     end)
 
     it("checks if a block is good (short)", function()
@@ -88,8 +88,8 @@ describe("npge.block.is_good", function()
         local f2 = Fragment(s, 0, s:length() - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
-        local is_good = require 'npge.block.is_good'
-        assert.truthy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.truthy(isGood(block))
     end)
 
     it("checks if a block is bad (low identity)", function()
@@ -112,8 +112,8 @@ describe("npge.block.is_good", function()
         local f2 = Fragment(s2, 0, length - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
-        local is_good = require 'npge.block.is_good'
-        assert.falsy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.falsy(isGood(block))
     end)
 
     it("checks if a block is good (low identity)", function()
@@ -136,8 +136,8 @@ describe("npge.block.is_good", function()
         local f2 = Fragment(s2, 0, length - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
-        local is_good = require 'npge.block.is_good'
-        assert.truthy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.truthy(isGood(block))
     end)
 
     it("checks if a block is bad (bad left end)", function()
@@ -163,8 +163,8 @@ describe("npge.block.is_good", function()
         local min_ident = config.general.MIN_IDENTITY
         local identity = require 'npge.block.identity'
         if not identity.less(identity(block), min_ident) then
-            local is_good = require 'npge.block.is_good'
-            assert.falsy(is_good(block))
+            local isGood = require 'npge.block.isGood'
+            assert.falsy(isGood(block))
         end
     end)
 
@@ -190,8 +190,8 @@ describe("npge.block.is_good", function()
         local min_ident = config.general.MIN_IDENTITY
         local identity = require 'npge.block.identity'
         if not identity.less(identity(block), min_ident) then
-            local is_good = require 'npge.block.is_good'
-            assert.truthy(is_good(block))
+            local isGood = require 'npge.block.isGood'
+            assert.truthy(isGood(block))
         end
     end)
 
@@ -218,8 +218,8 @@ describe("npge.block.is_good", function()
         local min_ident = config.general.MIN_IDENTITY
         local identity = require 'npge.block.identity'
         if not identity.less(identity(block), min_ident) then
-            local is_good = require 'npge.block.is_good'
-            assert.falsy(is_good(block))
+            local isGood = require 'npge.block.isGood'
+            assert.falsy(isGood(block))
         end
     end)
 
@@ -245,8 +245,8 @@ describe("npge.block.is_good", function()
         local min_ident = config.general.MIN_IDENTITY
         local identity = require 'npge.block.identity'
         if not identity.less(identity(block), min_ident) then
-            local is_good = require 'npge.block.is_good'
-            assert.truthy(is_good(block))
+            local isGood = require 'npge.block.isGood'
+            assert.truthy(isGood(block))
         end
     end)
 
@@ -272,13 +272,13 @@ describe("npge.block.is_good", function()
             {f1, row1},
             {f2, row2},
         })
-        local is_good = require 'npge.block.is_good'
+        local isGood = require 'npge.block.isGood'
         -- check that identity of the block is enough
         local min_ident = config.general.MIN_IDENTITY
         local identity = require 'npge.block.identity'
         if not identity.less(identity(block), min_ident) then
-            local is_good = require 'npge.block.is_good'
-            assert.falsy(is_good(block))
+            local isGood = require 'npge.block.isGood'
+            assert.falsy(isGood(block))
         end
     end)
 
@@ -304,13 +304,13 @@ describe("npge.block.is_good", function()
             {f1, row1},
             {f2, row2},
         })
-        local is_good = require 'npge.block.is_good'
+        local isGood = require 'npge.block.isGood'
         -- check that identity of the block is enough
         local min_ident = config.general.MIN_IDENTITY
         local identity = require 'npge.block.identity'
         if not identity.less(identity(block), min_ident) then
-            local is_good = require 'npge.block.is_good'
-            assert.truthy(is_good(block))
+            local isGood = require 'npge.block.isGood'
+            assert.truthy(isGood(block))
         end
     end)
 end)

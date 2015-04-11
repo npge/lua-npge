@@ -184,8 +184,8 @@ end
 
 local goodSubblocks
 goodSubblocks = function(block)
-    local is_good = require 'npge.block.is_good'
-    if is_good(block) then
+    local isGood = require 'npge.block.isGood'
+    if isGood(block) then
         return {block}
     end
     -- try to find subblocks of same size as original block
@@ -234,7 +234,7 @@ goodSubblocks = function(block)
     if good_slice then
         local subblock = slice(block, good_slice.start,
             good_slice.stop)
-        assert(is_good(subblock))
+        assert(isGood(subblock))
         return {subblock}
     end
     -- block of 2 fragments: nothing to do

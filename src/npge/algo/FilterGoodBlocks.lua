@@ -3,10 +3,10 @@
 -- See the LICENSE file for terms of use.
 
 return function(blockset)
-    local is_good = require 'npge.block.is_good'
+    local isGood = require 'npge.block.isGood'
     local blocks = {}
     for block in blockset:iterBlocks() do
-        if is_good(block) then
+        if isGood(block) then
             table.insert(blocks, block)
         end
     end

@@ -9,7 +9,7 @@ return {
     orient = require 'npge.block.orient',
     slice = require 'npge.block.slice',
     unwind = require 'npge.block.unwind',
-    is_good = require 'npge.block.is_good',
+    isGood = require 'npge.block.isGood',
     goodSubblocks = require 'npge.block.goodSubblocks',
     align = require 'npge.block.align',
     extend = require 'npge.block.extend',

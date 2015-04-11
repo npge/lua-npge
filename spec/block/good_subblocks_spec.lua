@@ -12,8 +12,8 @@ describe("npge.block.goodSubblocks", function()
         local f2 = Fragment(s, 0, s:length() - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
-        local is_good = require 'npge.block.is_good'
-        assert.truthy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.truthy(isGood(block))
         local goodSubblocks =
             require 'npge.block.goodSubblocks'
         local gs = goodSubblocks(block)
@@ -120,8 +120,8 @@ describe("npge.block.goodSubblocks", function()
             require 'npge.block.goodSubblocks'
         local gs = goodSubblocks(block)
         assert.truthy(#gs >= 1)
-        local is_good = require 'npge.block.is_good'
-        assert.truthy(is_good(gs[1]))
+        local isGood = require 'npge.block.isGood'
+        assert.truthy(isGood(gs[1]))
     end)
 
     it("extracts good parts from block (terminal gap)",
@@ -146,8 +146,8 @@ describe("npge.block.goodSubblocks", function()
             require 'npge.block.goodSubblocks'
         local gs = goodSubblocks(block)
         assert.truthy(#gs == 1)
-        local is_good = require 'npge.block.is_good'
-        assert.truthy(is_good(gs[1]))
+        local isGood = require 'npge.block.isGood'
+        assert.truthy(isGood(gs[1]))
     end)
 
     it("finds nothing in block of 1 fragment",
@@ -188,8 +188,8 @@ describe("npge.block.goodSubblocks", function()
             require 'npge.block.goodSubblocks'
         local gs = goodSubblocks(block)
         assert.truthy(#gs == 1)
-        local is_good = require 'npge.block.is_good'
-        assert.truthy(is_good(gs[1]))
+        local isGood = require 'npge.block.isGood'
+        assert.truthy(isGood(gs[1]))
     end)
 
     it("extracts good parts from block (opening gap in 1st fr)",
@@ -214,8 +214,8 @@ describe("npge.block.goodSubblocks", function()
             require 'npge.block.goodSubblocks'
         local gs = goodSubblocks(block)
         assert.truthy(#gs == 1)
-        local is_good = require 'npge.block.is_good'
-        assert.truthy(is_good(gs[1]))
+        local isGood = require 'npge.block.isGood'
+        assert.truthy(isGood(gs[1]))
     end)
 
     it("extracts good parts from block (terminal long gap)",
@@ -240,8 +240,8 @@ describe("npge.block.goodSubblocks", function()
             require 'npge.block.goodSubblocks'
         local gs = goodSubblocks(block)
         assert.truthy(#gs == 1)
-        local is_good = require 'npge.block.is_good'
-        assert.truthy(is_good(gs[1]))
+        local isGood = require 'npge.block.isGood'
+        assert.truthy(isGood(gs[1]))
     end)
 
     it("extracts good parts from block (mismatches in middle)",
@@ -267,13 +267,13 @@ describe("npge.block.goodSubblocks", function()
         local f2 = Fragment(s2, 0, s2:length() - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
-        local is_good = require 'npge.block.is_good'
-        assert.falsy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.falsy(isGood(block))
         local goodSubblocks =
             require 'npge.block.goodSubblocks'
         local gs = goodSubblocks(block)
         assert.truthy(#gs >= 1)
-        assert.truthy(is_good(gs[1]))
+        assert.truthy(isGood(gs[1]))
     end)
 
     it("extracts good parts from block (gaps in middle)",
@@ -302,13 +302,13 @@ describe("npge.block.goodSubblocks", function()
                 string.rep('-', middle_len) ..
                 string.rep('A', min_len)},
         })
-        local is_good = require 'npge.block.is_good'
-        assert.falsy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.falsy(isGood(block))
         local goodSubblocks =
             require 'npge.block.goodSubblocks'
         local gs = goodSubblocks(block)
         assert.truthy(#gs >= 1)
-        assert.truthy(is_good(gs[1]))
+        assert.truthy(isGood(gs[1]))
     end)
 
     it("extracts good parts from block (gaps in groups)",
@@ -341,13 +341,13 @@ describe("npge.block.goodSubblocks", function()
             {f1, s1:text()},
             {f2, A_A .. string.rep('T', middle_len) .. A_A},
         })
-        local is_good = require 'npge.block.is_good'
-        assert.falsy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.falsy(isGood(block))
         local goodSubblocks =
             require 'npge.block.goodSubblocks'
         local gs = goodSubblocks(block)
         assert.truthy(#gs >= 1)
-        assert.truthy(is_good(gs[1]))
+        assert.truthy(isGood(gs[1]))
     end)
 
     it("extracts good parts from block (mismatches in groups)",
@@ -373,13 +373,13 @@ describe("npge.block.goodSubblocks", function()
         local f2 = Fragment(s2, 0, s2:length() - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
-        local is_good = require 'npge.block.is_good'
-        assert.falsy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.falsy(isGood(block))
         local goodSubblocks =
             require 'npge.block.goodSubblocks'
         local gs = goodSubblocks(block)
         assert.truthy(#gs >= 1)
-        assert.truthy(is_good(gs[1]))
+        assert.truthy(isGood(gs[1]))
     end)
 
     it("extracts good parts from block (whole block is bad)",
@@ -396,8 +396,8 @@ describe("npge.block.goodSubblocks", function()
         local f2 = Fragment(s2, 0, s2:length() - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
-        local is_good = require 'npge.block.is_good'
-        assert.falsy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.falsy(isGood(block))
         local goodSubblocks =
             require 'npge.block.goodSubblocks'
         local gs = goodSubblocks(block)
@@ -426,8 +426,8 @@ GGCgAA
         local f2 = Fragment(s2, 0, s2:length() - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
-        local is_good = require 'npge.block.is_good'
-        assert.falsy(is_good(block))
+        local isGood = require 'npge.block.isGood'
+        assert.falsy(isGood(block))
         local goodSubblocks =
             require 'npge.block.goodSubblocks'
         local gs = goodSubblocks(block)
