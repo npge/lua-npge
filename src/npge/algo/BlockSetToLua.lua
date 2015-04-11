@@ -3,8 +3,8 @@
 -- See the LICENSE file for terms of use.
 
 local seq_to_lua = function(seq)
-    local as_lines = require 'npge.util.as_lines'
-    local text = as_lines(seq:text())
+    local asLines = require 'npge.util.asLines'
+    local text = asLines(seq:text())
     local lua = "Sequence(%q,\n%q,\n%q)"
     return lua:format(seq:name(), text, seq:description())
 end
@@ -16,11 +16,11 @@ local fragment_to_lua = function(fragment)
 end
 
 local block_to_lua = function(block)
-    local as_lines = require 'npge.util.as_lines'
+    local asLines = require 'npge.util.asLines'
     local ff = {}
     for fragment in block:iterFragments() do
         local text = block:text(fragment)
-        text = as_lines(text)
+        text = asLines(text)
         local fragment_str = fragment_to_lua(fragment)
         local lua = "{%s,\n%q}"
         table.insert(ff, lua:format(fragment_str, text))

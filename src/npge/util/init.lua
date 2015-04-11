@@ -14,7 +14,7 @@ return {
     clone = require 'npge.util.clone',
     it_from_array = require 'npge.util.it_from_array',
     extract_value = require 'npge.util.extract_value',
-    as_lines = require 'npge.util.as_lines',
+    asLines = require 'npge.util.asLines',
     starts_with = require 'npge.util.starts_with',
     ends_with = require 'npge.util.ends_with',
     trim = require 'npge.util.trim',

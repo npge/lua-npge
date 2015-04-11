@@ -3,7 +3,7 @@
 -- See the LICENSE file for terms of use.
 
 return function(sequence)
-    local as_lines = require 'npge.util.as_lines'
+    local asLines = require 'npge.util.asLines'
     return (">%s %s\n%s\n"):format(sequence:name(),
-        sequence:description(), as_lines(sequence:text()))
+        sequence:description(), asLines(sequence:text()))
 end
