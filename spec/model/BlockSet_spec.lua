@@ -90,9 +90,9 @@ describe("npge.model.BlockSet", function()
         local block1 = model.Block({f1, f2})
         local block2 = model.Block({f1})
         local blockset = model.BlockSet({s}, {block1, block2})
-        assert.same(blockset:overlapping_fragments(
+        assert.same(blockset:overlappingFragments(
             model.Fragment(s, 2, 2, 1)), {})
-        assert.same(blockset:overlapping_fragments(
+        assert.same(blockset:overlappingFragments(
             model.Fragment(s, 0, 0, -1)), {f1})
         local toset = function(x)
             local set = {}
@@ -101,9 +101,9 @@ describe("npge.model.BlockSet", function()
             end
             return set
         end
-        assert.same(toset(blockset:overlapping_fragments(
+        assert.same(toset(blockset:overlappingFragments(
             model.Fragment(s, 0, 1, -1))), toset({f1, f2}))
-        assert.same(toset(blockset:overlapping_fragments(
+        assert.same(toset(blockset:overlappingFragments(
             model.Fragment(s, 0, 1, 1))), toset({f1, f2}))
     end)
 
@@ -115,7 +115,7 @@ describe("npge.model.BlockSet", function()
         local f1 = model.Fragment(s1, 0, 0, 1)
         local block = model.Block({f})
         local blockset = model.BlockSet({s}, {block})
-        assert.same(blockset:overlapping_fragments(f1), {})
+        assert.same(blockset:overlappingFragments(f1), {})
     end)
 
     it("finds overlapping fragments (pattern is last fragment)",
@@ -132,9 +132,9 @@ describe("npge.model.BlockSet", function()
             end
             return set
         end
-        assert.same(toset(blockset:overlapping_fragments(f1)),
+        assert.same(toset(blockset:overlappingFragments(f1)),
             toset({f1, f2}))
-        assert.same(toset(blockset:overlapping_fragments(f2)),
+        assert.same(toset(blockset:overlappingFragments(f2)),
             toset({f1, f2}))
     end)
 

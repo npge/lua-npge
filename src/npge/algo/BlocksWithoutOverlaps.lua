@@ -17,7 +17,7 @@ return function(orig, added)
     end
     local overlapping = function(block)
         for f in block:iterFragments() do
-            if #(bs:overlapping_fragments(f)) > 0 then
+            if #(bs:overlappingFragments(f)) > 0 then
                 return true
             end
         end
