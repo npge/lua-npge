@@ -24,9 +24,9 @@ return function(self, source)
             table.insert(points1, point + 1)
         end
         for _, point in ipairs(points1) do
-            local fix_position =
-                require 'npge.sequence.fix_position'
-            point = fix_position(self:sequence(), point)
+            local fixPosition =
+                require 'npge.sequence.fixPosition'
+            point = fixPosition(self:sequence(), point)
             if has_pos(self, point) and
                     not has_pos(source, point) then
                 return false

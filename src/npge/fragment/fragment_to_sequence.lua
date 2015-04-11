@@ -12,8 +12,8 @@ return function(fragment, fragment_pos)
         assert(sp < sequence:length())
         return sp
     else
-        local fix_position =
-            require 'npge.sequence.fix_position'
-        return fix_position(sequence, sp)
+        local fixPosition =
+            require 'npge.sequence.fixPosition'
+        return fixPosition(sequence, sp)
     end
 end

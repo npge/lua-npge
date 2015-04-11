@@ -4,7 +4,7 @@
 
 local fix_pos = function(seq, x)
     if seq:circular() then
-        local fp = require 'npge.sequence.fix_position'
+        local fp = require 'npge.sequence.fixPosition'
         return fp(seq, x)
     elseif x < 0 then
         return 0
@@ -33,7 +33,7 @@ local expandFragment = function(f, left, right)
 end
 
 local getText = function(seq, start, stop, ori)
-    local fp = require 'npge.sequence.fix_position'
+    local fp = require 'npge.sequence.fixPosition'
     start = fp(seq, start)
     stop = fp(seq, stop)
     local Fragment = require 'npge.model.Fragment'
