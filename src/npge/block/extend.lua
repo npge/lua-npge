@@ -86,13 +86,13 @@ return function(block, left_length, right_length)
     end
     --
     local cr = require 'npge.alignment.complement_rows'
-    local align_rows = require 'npge.alignment.align_rows'
+    local alignRows = require 'npge.alignment.alignRows'
     local join = require 'npge.alignment.join'
     local only_left = true
     left_rows = cr(left_rows)
-    left_rows = align_rows(left_rows, only_left)
+    left_rows = alignRows(left_rows, only_left)
     left_rows = cr(left_rows)
-    right_rows = align_rows(right_rows, only_left)
+    right_rows = alignRows(right_rows, only_left)
     local rows = join(left_rows, middle_rows, right_rows)
     --
     assert(#rows == #new_fragments)

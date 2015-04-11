@@ -2,14 +2,14 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.alignment.align_rows", function()
+describe("npge.alignment.alignRows", function()
     it("align multiple rows (simple)", function()
-        local f = require 'npge.alignment.align_rows'
+        local f = require 'npge.alignment.alignRows'
         assert.same(f({"ATGC"}), {"ATGC"})
     end)
 
     it("align multiple rows (2 equal sequences)", function()
-        local f = require 'npge.alignment.align_rows'
+        local f = require 'npge.alignment.alignRows'
         assert.same(f({
             "ATGC",
             "ATGC",
@@ -27,7 +27,7 @@ describe("npge.alignment.align_rows", function()
         config.alignment.GAP_CHECK = 1
         config.alignment.ANCHOR = 4
         --
-        local f = require 'npge.alignment.align_rows'
+        local f = require 'npge.alignment.alignRows'
         assert.same(f({
             "ATGCTTTTTTTTTATGC",
             "ATGCATGC",
@@ -47,7 +47,7 @@ describe("npge.alignment.align_rows", function()
         config.alignment.GAP_CHECK = 1
         config.alignment.ANCHOR = 4
         --
-        local f = require 'npge.alignment.align_rows'
+        local f = require 'npge.alignment.alignRows'
         assert.same(f({
             "ATGCTTATTATTTAATGC",
             "ATGCTTTTTATTTAATGC",
@@ -72,7 +72,7 @@ describe("npge.alignment.align_rows", function()
         config.alignment.GAP_CHECK = 1
         config.alignment.ANCHOR = 4
         --
-        local f = require 'npge.alignment.align_rows'
+        local f = require 'npge.alignment.alignRows'
         assert.same(f({
             "ATGCTTATTATTTAATGC",
             "ATGCTTTTTATTTAATGC",
@@ -99,7 +99,7 @@ describe("npge.alignment.align_rows", function()
         config.alignment.GAP_CHECK = 2
         config.alignment.ANCHOR = 4
         --
-        local f = require 'npge.alignment.align_rows'
+        local f = require 'npge.alignment.alignRows'
         assert.same(f({
             "ATGCTCCTTATTTAATGCATTTATTCCTATGC",
             "ATGCTCCTTATTTAATGCATTTATTCCTATGC",
@@ -122,7 +122,7 @@ describe("npge.alignment.align_rows", function()
         config.alignment.MISMATCH_CHECK = 1
         config.alignment.GAP_CHECK = 1
         --
-        local f = require 'npge.alignment.align_rows'
+        local f = require 'npge.alignment.alignRows'
         assert.same(f({
             "ATGCTTGCTATTTAATGC",
             "ATGCATGC",
@@ -141,7 +141,7 @@ describe("npge.alignment.align_rows", function()
         config.alignment.MISMATCH_CHECK = 1
         config.alignment.GAP_CHECK = 1
         --
-        local f = require 'npge.alignment.align_rows'
+        local f = require 'npge.alignment.alignRows'
         assert.same(f({
             "ATGCTTGCTATTTAATGC",
             "ATGCATGC",
@@ -161,7 +161,7 @@ describe("npge.alignment.align_rows", function()
         config.alignment.MISMATCH_CHECK = 1
         config.alignment.GAP_CHECK = 2
         --
-        local f = require 'npge.alignment.align_rows'
+        local f = require 'npge.alignment.alignRows'
         assert.same(f({
             "GTAGTACCTGTTTTAGCCTTTGCTTCGAGAACCATGTGAA",
             "GTAGTACCTGCTCTGGCCTTTGCTTCGAGAACCATGTAAA",
@@ -185,7 +185,7 @@ describe("npge.alignment.align_rows", function()
         config.alignment.MISMATCH_CHECK = 2
         config.alignment.GAP_CHECK = 2
         --
-        local f = require 'npge.alignment.align_rows'
+        local f = require 'npge.alignment.alignRows'
         assert.same(f({
             "ATGCGAT",
             "TACTAG",
@@ -205,7 +205,7 @@ describe("npge.alignment.align_rows", function()
         config.alignment.MISMATCH_CHECK = 2
         config.alignment.GAP_CHECK = 2
         --
-        local f = require 'npge.alignment.align_rows'
+        local f = require 'npge.alignment.alignRows'
         assert.same(f({
             "ATGCGAT",
             "ATACTA",

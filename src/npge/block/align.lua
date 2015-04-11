@@ -12,8 +12,8 @@ return function(block)
         table.insert(fragments, f)
         table.insert(texts, f:text())
     end
-    local align_rows = require 'npge.alignment.align_rows'
-    local rows = align_rows(texts)
+    local alignRows = require 'npge.alignment.alignRows'
+    local rows = alignRows(texts)
     assert(#rows == #fragments)
     local for_block = {}
     for i = 1, #fragments do

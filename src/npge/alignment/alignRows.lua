@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-local align_rows
+local alignRows
 
 local compress = function(rows)
     -- filter out empty rows
@@ -67,7 +67,7 @@ local alignRemaining = function(rows)
     if #rows1 == #rows or #rows1 == 0 then
         return addGapsForBetterIdentity(rows)
     else
-        local rows2 = align_rows(rows1)
+        local rows2 = alignRows(rows1)
         return decompress(rows2, decompression_info)
     end
 end
@@ -95,7 +95,7 @@ local strip = function(rows, func, only_left)
     return left, middle, right
 end
 
-align_rows = function(rows, only_left)
+alignRows = function(rows, only_left)
     -- if only_left then left side is considered main
     -- (alignment grows from left to right)
     -- if not only_left, then both left and right
@@ -106,7 +106,7 @@ align_rows = function(rows, only_left)
     local l3, anchor, r3 = A.anchor(m2)
     if anchor then
         l3 = alignRemaining(l3)
-        r3 = align_rows(r3, false)
+        r3 = alignRows(r3, false)
         return A.join(l1, l2, l3, anchor, r3, r2, r1)
     else
         m2 = alignRemaining(m2)
@@ -114,4 +114,4 @@ align_rows = function(rows, only_left)
     end
 end
 
-return align_rows
+return alignRows
