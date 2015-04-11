@@ -12,7 +12,7 @@ return {
     unwind_row = require 'npge.alignment.unwind_row',
     complement = require 'npge.alignment.complement',
     complementRows = require 'npge.alignment.complementRows',
-    move_identical = require 'npge.alignment.move_identical',
+    moveIdentical = require 'npge.alignment.moveIdentical',
     join = require 'npge.alignment.join',
     alignRows = require 'npge.alignment.alignRows',
     identity = require 'npge.alignment.identity',

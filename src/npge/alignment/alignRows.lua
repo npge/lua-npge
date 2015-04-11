@@ -101,7 +101,7 @@ alignRows = function(rows, only_left)
     -- if not only_left, then both left and right
     -- sides are equal (the default)
     local A = require 'npge.alignment'
-    local l1, m1, r1 = strip(rows, A.move_identical, only_left)
+    local l1, m1, r1 = strip(rows, A.moveIdentical, only_left)
     local l2, m2, r2 = strip(m1, A.left, only_left)
     local l3, anchor, r3 = A.anchor(m2)
     if anchor then
