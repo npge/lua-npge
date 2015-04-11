@@ -3,7 +3,7 @@
 -- See the LICENSE file for terms of use.
 
 return function(blockset)
-    for seq in blockset:iter_sequences() do
+    for seq in blockset:iterSequences() do
         local prev, prev_parent
         for parent, part in blockset:iterFragments(seq) do
             if prev and prev:common(part) > 0 then

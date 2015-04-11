@@ -14,7 +14,7 @@ return function(blockset)
             table.insert(level2bss[1], BlockSet(seqs, {}))
         end
     else
-        for seq in blockset:iter_sequences() do
+        for seq in blockset:iterSequences() do
             table.insert(level2bss[1], BlockSet({seq}, {}))
         end
     end

@@ -14,7 +14,7 @@ end
 
 return function(blockset)
     local blocks = {}
-    for seq in blockset:iter_sequences() do
+    for seq in blockset:iterSequences() do
         local F = require 'npge.model.Fragment'
         local fragments = {}
         local last_pos = seq:length() - 1

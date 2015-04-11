@@ -53,7 +53,7 @@ return function(blockset, has_sequences)
         yield(preamble)
         if has_sequences then
             yield("local names = {\n")
-            for seq in blockset:iter_sequences() do
+            for seq in blockset:iterSequences() do
                 local text = " %q,\n"
                 yield(text:format(seq:name()))
             end
@@ -67,7 +67,7 @@ return function(blockset, has_sequences)
             ]]
             yield(text)
         else
-            for seq in blockset:iter_sequences() do
+            for seq in blockset:iterSequences() do
                 local text = "name2seq[%q] = %s\n"
                 yield(text:format(seq:name(), seq_to_lua(seq)))
             end

@@ -4,7 +4,7 @@
 
 return function(blockset)
     local genome2seqs = {}
-    for sequence in blockset:iter_sequences() do
+    for sequence in blockset:iterSequences() do
         local genome = assert(sequence:genome(),
             ("No genome: %s"):format(sequence:name()))
         if not genome2seqs[genome] then

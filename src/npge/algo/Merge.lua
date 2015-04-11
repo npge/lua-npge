@@ -14,7 +14,7 @@ return function(...)
     for _, bs in ipairs(blocksets) do
         assert(bs:type() == 'BlockSet')
         table.insert(lists_of_blocks, bs:blocks())
-        for seq in bs:iter_sequences() do
+        for seq in bs:iterSequences() do
             name2seq[seq:name()] = seq
         end
     end

@@ -27,7 +27,7 @@ function Blast.makeConsensus(consensus_fname, blockset)
 end
 
 function Blast.checkNoCollisions(bs1, bs2)
-    for seq in bs1:iter_sequences() do
+    for seq in bs1:iterSequences() do
         local test = {[seq] = true}
         local seq2 = bs2:sequence_by_name(seq:name())
         local message = [[Name %s
