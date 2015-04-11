@@ -36,13 +36,13 @@ local read_blast = function(file, query, bank, filter, same)
             assert(subject_stop)
             local Fragment = require 'npge.model.Fragment'
             local query_seq =
-                query:sequence_by_name(query_name)
+                query:sequenceByName(query_name)
             assert(query_seq)
             local query_ori = ori(query_start, query_stop)
             local query_f = Fragment(query_seq,
                 query_start - 1, query_stop - 1, query_ori)
             local subject_seq =
-                bank:sequence_by_name(subject_name)
+                bank:sequenceByName(subject_name)
             assert(subject_seq)
             local subject_ori = ori(subject_start, subject_stop)
             local subject_f = Fragment(subject_seq,
@@ -130,7 +130,7 @@ local read_blast = function(file, query, bank, filter, same)
     local seqs = bank:sequences()
     if not same then
         for seq in query:iterSequences() do
-            if not bank:sequence_by_name(seq:name()) then
+            if not bank:sequenceByName(seq:name()) then
                 table.insert(seqs, seq)
             end
         end

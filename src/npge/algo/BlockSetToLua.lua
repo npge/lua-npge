@@ -61,7 +61,7 @@ return function(blockset, has_sequences)
             local text = [[
             local seqs_bs = ...
             for _, name in ipairs(names) do
-                local s = seqs_bs:sequence_by_name(name)
+                local s = seqs_bs:sequenceByName(name)
                 name2seq[name] = assert(s)
             end
             ]]

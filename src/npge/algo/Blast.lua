@@ -29,7 +29,7 @@ end
 function Blast.checkNoCollisions(bs1, bs2)
     for seq in bs1:iterSequences() do
         local test = {[seq] = true}
-        local seq2 = bs2:sequence_by_name(seq:name())
+        local seq2 = bs2:sequenceByName(seq:name())
         local message = [[Name %s
             corresponds to different sequences
             in query and bank]]

@@ -24,7 +24,7 @@ return function(lines, blockset_with_sequences)
             elseif stop < start then
                 ori = -1
             end
-            local seq = assert(bs1:sequence_by_name(seqname))
+            local seq = assert(bs1:sequenceByName(seqname))
             local Fragment = require 'npge.model.Fragment'
             local fragment = Fragment(seq, start, stop, ori)
             local text = table.concat(text_lines)

@@ -1023,7 +1023,7 @@ static const luaL_Reg BlockSet_methods[] = {
     {"sequences", lua_BlockSet_sequences},
     {"iterSequences", lua_BlockSet_iterSequences},
     {"hasSequence", lua_BlockSet_hasSequence},
-    {"sequence_by_name", lua_BlockSet_sequenceByName},
+    {"sequenceByName", lua_BlockSet_sequenceByName},
     {"block_by_fragment", lua_BlockSet_blockByFragment},
     {"overlapping_fragments",
         lua_BlockSet_overlappingFragments},
