@@ -11,7 +11,7 @@ return {
         return clone
     end,
 
-    array_from_it = function(it)
+    arrayFromIt = function(it)
         local clone = {}
         for item in it do
             table.insert(clone, item)

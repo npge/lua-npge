@@ -14,7 +14,7 @@ describe("npge.algo.WriteSequencesToFasta", function()
             require 'npge.algo.WriteSequencesToFasta'
         local it = WriteSequencesToFasta(bs1)
         local clone = require 'npge.util.clone'
-        local fasta = clone.array_from_it(it)
+        local fasta = clone.arrayFromIt(it)
         fasta = table.concat(fasta)
         local split = require 'npge.util.split'
         local lines = split(fasta, '\n')

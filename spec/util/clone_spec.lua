@@ -19,7 +19,7 @@ describe("npge.util.clone", function()
                 return i
             end
         end
-        assert.same(clone.array_from_it(it), {1, 2, 3, 4})
+        assert.same(clone.arrayFromIt(it), {1, 2, 3, 4})
     end)
 
     it("makes a copy of a dict", function()

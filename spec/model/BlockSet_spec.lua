@@ -284,7 +284,7 @@ describe("npge.model.BlockSet", function()
     end)
 
     it("gets fragments located on sequence (iter)", function()
-        local arr = require('npge.util.clone').array_from_it
+        local arr = require('npge.util.clone').arrayFromIt
         local s1 = model.Sequence("s1", "ATAT")
         local s2 = model.Sequence("s2", "ATAT")
         local f1 = model.Fragment(s1, 0, 0, 1)
