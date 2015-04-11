@@ -2,12 +2,12 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.fragment.sequence_to_fragment", function()
+describe("npge.fragment.sequenceToFragment", function()
     it("converts position in sequence to fragment", function()
         local model = require 'npge.model'
         local s = model.Sequence("test_name", "AATA")
         local f = model.Fragment(s, 0, 3, 1)
-        local sf = require 'npge.fragment.sequence_to_fragment'
+        local sf = require 'npge.fragment.sequenceToFragment'
         assert.equal(sf(f, 0), 0)
         assert.equal(sf(f, 1), 1)
         assert.equal(sf(f, 2), 2)
@@ -25,7 +25,7 @@ describe("npge.fragment.sequence_to_fragment", function()
         local model = require 'npge.model'
         local s = model.Sequence("test_name", "AATA")
         local f = model.Fragment(s, 3, 0, -1)
-        local sf = require 'npge.fragment.sequence_to_fragment'
+        local sf = require 'npge.fragment.sequenceToFragment'
         assert.equal(sf(f, 0), 3)
         assert.equal(sf(f, 1), 2)
         assert.equal(sf(f, 2), 1)
@@ -43,7 +43,7 @@ describe("npge.fragment.sequence_to_fragment", function()
         local model = require 'npge.model'
         local s = model.Sequence("test_name", "AATA")
         local f = model.Fragment(s, 1, 2, 1)
-        local sf = require 'npge.fragment.sequence_to_fragment'
+        local sf = require 'npge.fragment.sequenceToFragment'
         assert.equal(sf(f, 1), 0)
         assert.equal(sf(f, 2), 1)
         assert.has_error(function()
@@ -65,7 +65,7 @@ describe("npge.fragment.sequence_to_fragment", function()
         local model = require 'npge.model'
         local s = model.Sequence("g&c&c", "AATA")
         local f = model.Fragment(s, 2, 1, 1)
-        local sf = require 'npge.fragment.sequence_to_fragment'
+        local sf = require 'npge.fragment.sequenceToFragment'
         assert.equal(sf(f, 0), 2)
         assert.equal(sf(f, 1), 3)
         assert.equal(sf(f, 2), 0)
@@ -83,7 +83,7 @@ describe("npge.fragment.sequence_to_fragment", function()
         local model = require 'npge.model'
         local s = model.Sequence("g&c&c", "AATA")
         local f = model.Fragment(s, 1, 2, -1)
-        local sf = require 'npge.fragment.sequence_to_fragment'
+        local sf = require 'npge.fragment.sequenceToFragment'
         assert.equal(sf(f, 0), 1)
         assert.equal(sf(f, 1), 0)
         assert.equal(sf(f, 2), 3)

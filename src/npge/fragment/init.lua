@@ -10,6 +10,6 @@ return {
     isSubfragmentOf = iso, -- FIXME
     subfragment = require 'npge.fragment.subfragment',
     sub = require 'npge.fragment.sub',
-    sequence_to_fragment = require 'npge.fragment.sequence_to_fragment',
+    sequenceToFragment = require 'npge.fragment.sequenceToFragment',
     fragmentToSequence = require 'npge.fragment.fragmentToSequence',
 }
