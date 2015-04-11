@@ -10,7 +10,7 @@ return function(lines, blockset_with_sequences)
     local try_add_seq = function()
         if name then
             -- add sequence
-            local ev = require 'npge.util.extract_value'
+            local ev = require 'npge.util.extractValue'
             local blockname = assert(ev(description, "block"))
             local seqname, start, stop =
                 assert(name:match("([^_]+)_(%d+)_(-?%d+)"))
