@@ -85,7 +85,7 @@ return function(block, left_length, right_length)
         table.insert(new_fragments, newf)
     end
     --
-    local cr = require 'npge.alignment.complement_rows'
+    local cr = require 'npge.alignment.complementRows'
     local alignRows = require 'npge.alignment.alignRows'
     local join = require 'npge.alignment.join'
     local only_left = true

@@ -52,7 +52,7 @@ end
 local addGapsForBetterIdentity = function(rows)
     local alignment = require 'npge.alignment'
     local var1 = addGaps(rows)
-    local cr = alignment.complement_rows
+    local cr = alignment.complementRows
     local var2 = cr(addGaps(cr(rows)))
     local identity = alignment.identity
     if identity(var1) >= identity(var2) then
@@ -85,10 +85,10 @@ local strip = function(rows, func, only_left)
     local left, middle = func(rows)
     local right
     if not only_left then
-        middle = alignment.complement_rows(middle)
+        middle = alignment.complementRows(middle)
         right, middle = func(middle)
-        right = alignment.complement_rows(right)
-        middle = alignment.complement_rows(middle)
+        right = alignment.complementRows(right)
+        middle = alignment.complementRows(middle)
     else
         right = emptyRows(#rows)
     end

@@ -11,7 +11,7 @@ return {
     to_atgcn_and_gap = to_atgcn2,
     unwind_row = require 'npge.alignment.unwind_row',
     complement = require 'npge.alignment.complement',
-    complement_rows = require 'npge.alignment.complement_rows',
+    complementRows = require 'npge.alignment.complementRows',
     move_identical = require 'npge.alignment.move_identical',
     join = require 'npge.alignment.join',
     alignRows = require 'npge.alignment.alignRows',
