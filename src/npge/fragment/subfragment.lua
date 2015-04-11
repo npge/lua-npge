@@ -12,7 +12,7 @@ return function(self, start, stop, ori)
     stop2 = fixPosition(self:sequence(), stop2)
     local Fragment = require 'npge.model.Fragment'
     local f = Fragment(self:sequence(), start2, stop2, ori2)
-    local iso = require 'npge.fragment.is_subfragment_of'
+    local iso = require 'npge.fragment.isSubfragmentOf'
     assert(iso(f, self))
     return f
 end

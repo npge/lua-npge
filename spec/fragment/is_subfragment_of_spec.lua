@@ -2,12 +2,12 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.fragment.is_subfragment_of", function()
+describe("npge.fragment.isSubfragmentOf", function()
     it("#is_subfragment", function()
         local model = require 'npge.model'
         local s = model.Sequence("genome&chromosome&c", "ATGC")
         local f = model.Fragment(s, 3, 1, 1)
-        local iso = require 'npge.fragment.is_subfragment_of'
+        local iso = require 'npge.fragment.isSubfragmentOf'
         assert.is.truthy(iso(model.Fragment(s, 3, 1, 1), f))
         assert.is.truthy(iso(model.Fragment(s, 3, 0, 1), f))
         assert.is.falsy(iso(model.Fragment(s, 2, 2, 1), f))
@@ -18,7 +18,7 @@ describe("npge.fragment.is_subfragment_of", function()
         local model = require 'npge.model'
         local s = model.Sequence("genome&chromosome&c", "ATGC")
         local f = model.Fragment(s, 3, 2, 1)
-        local iso = require 'npge.fragment.is_subfragment_of'
+        local iso = require 'npge.fragment.isSubfragmentOf'
         assert.is.truthy(iso(model.Fragment(s, 0, 3, 1), f))
         assert.is.truthy(iso(model.Fragment(s, 2, 1, 1), f))
         assert.is.truthy(iso(model.Fragment(s, 2, 0, 1), f))
@@ -29,7 +29,7 @@ describe("npge.fragment.is_subfragment_of", function()
         local model = require 'npge.model'
         local s = model.Sequence("genome&chromosome&c", "ATGC")
         local f = model.Fragment(s, 3, 0, 1)
-        local iso = require 'npge.fragment.is_subfragment_of'
+        local iso = require 'npge.fragment.isSubfragmentOf'
         assert.is.falsy(iso(model.Fragment(s, 0, 3, 1), f))
         assert.is.truthy(iso(model.Fragment(s, 0, 3, -1), f))
     end)
@@ -38,7 +38,7 @@ describe("npge.fragment.is_subfragment_of", function()
         local model = require 'npge.model'
         local s = model.Sequence("genome&chromosome&c", "ATGC")
         local f = model.Fragment(s, 1, 3, 1)
-        local iso = require 'npge.fragment.is_subfragment_of'
+        local iso = require 'npge.fragment.isSubfragmentOf'
         assert.is.falsy(iso(model.Fragment(s, 1, 3, -1), f))
     end)
 end)
