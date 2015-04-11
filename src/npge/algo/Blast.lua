@@ -16,7 +16,7 @@ function Blast.makeBlastDb(bank_fname, consensus_fname)
     f:read('*a')
     f:close()
     local util = require 'npge.util'
-    assert(util.file_exists(bank_fname .. '.nhr'))
+    assert(util.fileExists(bank_fname .. '.nhr'))
 end
 
 function Blast.makeConsensus(consensus_fname, blockset)

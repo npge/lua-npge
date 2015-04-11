@@ -22,8 +22,8 @@ describe("npge.config", function()
         -- unload 'npge.config'
         package.loaded['npge.config'] = nil
         -- rename npge.conf, if exists
-        local file_exists = require 'npge.util.file_exists'
-        if file_exists('npge.conf') then
+        local fileExists = require 'npge.util.fileExists'
+        if fileExists('npge.conf') then
             os.rename('npge.conf', 'npge.conf-bak-by-busted')
         end
         local f = io.open('npge.conf', 'w')
@@ -37,8 +37,8 @@ describe("npge.config", function()
         -- remove testing npge.conf
         os.remove('npge.conf')
         -- recover previous npge.conf if it exsted
-        local file_exists = require 'npge.util.file_exists'
-        if file_exists('npge.conf-bak-by-busted') then
+        local fileExists = require 'npge.util.fileExists'
+        if fileExists('npge.conf-bak-by-busted') then
             os.rename('npge.conf-bak-by-busted', 'npge.conf')
         end
     end

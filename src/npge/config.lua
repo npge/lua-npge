@@ -58,8 +58,8 @@ local update_keys = function(env)
     end
 end
 
-local file_exists = require 'npge.util.file_exists'
-if file_exists('npge.conf') then
+local fileExists = require 'npge.util.fileExists'
+if fileExists('npge.conf') then
     local conf_file = io.open('npge.conf')
     local conf = conf_file:read('*a')
     conf_file:close()
