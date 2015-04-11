@@ -39,7 +39,7 @@ build = {
         },
         ['npge.config'] = 'src/npge/config.lua',
         ['npge.util'] = 'src/npge/util/init.lua',
-        ['npge.util.arrays_equal'] = 'src/npge/util/arrays_equal.lua',
+        ['npge.util.arraysEqual'] = 'src/npge/util/arraysEqual.lua',
         ['npge.util.arrays_less'] = 'src/npge/util/arrays_less.lua',
         ['npge.util.as_lines'] = 'src/npge/util/as_lines.lua',
         ['npge.util.binary_search'] = 'src/npge/util/binary_search.lua',
