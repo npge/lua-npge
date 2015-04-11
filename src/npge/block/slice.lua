@@ -5,7 +5,7 @@
 local slice_f = function(fragment, frag_min, frag_max)
     local seq = fragment:sequence()
     local to_sequence =
-        require 'npge.fragment.fragment_to_sequence'
+        require 'npge.fragment.fragmentToSequence'
     local seq_min = to_sequence(fragment, frag_min)
     local seq_max = to_sequence(fragment, frag_max)
     local ori = fragment:ori()

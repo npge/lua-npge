@@ -11,5 +11,5 @@ return {
     subfragment = require 'npge.fragment.subfragment',
     sub = require 'npge.fragment.sub',
     sequence_to_fragment = require 'npge.fragment.sequence_to_fragment',
-    fragment_to_sequence = require 'npge.fragment.fragment_to_sequence',
+    fragmentToSequence = require 'npge.fragment.fragmentToSequence',
 }

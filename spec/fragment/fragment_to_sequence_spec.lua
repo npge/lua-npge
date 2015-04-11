@@ -2,12 +2,12 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.fragment.fragment_to_sequence", function()
+describe("npge.fragment.fragmentToSequence", function()
     it("converts position in fragment to sequence", function()
         local model = require 'npge.model'
         local s = model.Sequence("test_name", "AATA")
         local f = model.Fragment(s, 0, 3, 1)
-        local fs = require 'npge.fragment.fragment_to_sequence'
+        local fs = require 'npge.fragment.fragmentToSequence'
         assert.equal(fs(f, 0), 0)
         assert.equal(fs(f, 1), 1)
         assert.equal(fs(f, 2), 2)
@@ -25,7 +25,7 @@ describe("npge.fragment.fragment_to_sequence", function()
         local model = require 'npge.model'
         local s = model.Sequence("g&c&c", "AATA")
         local f = model.Fragment(s, 1, 2, -1)
-        local fs = require 'npge.fragment.fragment_to_sequence'
+        local fs = require 'npge.fragment.fragmentToSequence'
         assert.equal(fs(f, 0), 1)
         assert.equal(fs(f, 1), 0)
         assert.equal(fs(f, 2), 3)
