@@ -20,9 +20,9 @@ function Blast.makeBlastDb(bank_fname, consensus_fname)
 end
 
 function Blast.makeConsensus(consensus_fname, blockset)
-    local write_it = require 'npge.util.write_it'
+    local writeIt = require 'npge.util.writeIt'
     local algo = require 'npge.algo'
-    write_it(consensus_fname,
+    writeIt(consensus_fname,
         algo.WriteSequencesToFasta(blockset))
 end
 
