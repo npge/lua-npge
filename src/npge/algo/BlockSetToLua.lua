@@ -9,7 +9,7 @@ local seq_to_lua = function(seq)
     return lua:format(seq:name(), text, seq:description())
 end
 
-local fragment_to_lua = function(fragment)
+local function fragmentToLua(fragment)
     local lua = "Fragment(name2seq[%q], %i, %i, %i)"
     return lua:format(fragment:sequence():name(),
         fragment:start(), fragment:stop(), fragment:ori())
@@ -21,7 +21,7 @@ local block_to_lua = function(block)
     for fragment in block:iterFragments() do
         local text = block:text(fragment)
         text = asLines(text)
-        local fragment_str = fragment_to_lua(fragment)
+        local fragment_str = fragmentToLua(fragment)
         local lua = "{%s,\n%q}"
         table.insert(ff, lua:format(fragment_str, text))
     end
