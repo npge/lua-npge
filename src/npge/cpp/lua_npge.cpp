@@ -1362,10 +1362,6 @@ static int lua_anchor(lua_State *L) {
     return 3;
 }
 
-/////
-
-// Lua version in file block/goodSubblocks.lua
-
 static int identCol(int nrows, const char** rows, int bp) {
     char first = rows[0][bp];
     if (first == '-') {
