@@ -15,7 +15,7 @@ local function fragmentToLua(fragment)
         fragment:start(), fragment:stop(), fragment:ori())
 end
 
-local block_to_lua = function(block)
+local function blockToLua(block)
     local asLines = require 'npge.util.asLines'
     local ff = {}
     for fragment in block:iterFragments() do
@@ -74,7 +74,7 @@ return function(blockset, has_sequences)
         end
         for block in blockset:iterBlocks() do
             local text = "table.insert(blocks, %s)\n"
-            yield(text:format(block_to_lua(block)))
+            yield(text:format(blockToLua(block)))
         end
         yield(closing)
     end)
