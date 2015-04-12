@@ -71,9 +71,9 @@ local joinFragments = function(f1, f2, b1, b2, ori)
     assert(ml >= 0)
     local middle_row = ''
     if ml >= 1 then
-        local fix_pos = require 'npge.sequence.fixPosition'
-        middle_start = fix_pos(new_seq, middle_start)
-        middle_stop = fix_pos(new_seq, middle_stop)
+        local fixPos = require 'npge.sequence.fixPosition'
+        middle_start = fixPos(new_seq, middle_start)
+        middle_stop = fixPos(new_seq, middle_stop)
         local middle_f = Fragment(new_seq, middle_start,
             middle_stop, new_ori)
         assert(middle_f:length() == ml)
