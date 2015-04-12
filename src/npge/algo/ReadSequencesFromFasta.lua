@@ -6,7 +6,7 @@ return function(lines)
     -- lines is iterator (like file:lines())
     local sequences = {}
     local name, description, text_lines
-    local try_add_seq = function()
+    local function tryAddSeq()
         if name then
             -- add sequence
             local text = table.concat(text_lines)
@@ -20,7 +20,7 @@ return function(lines)
     end
     for line in lines do
         if line:sub(1, 1) == '>' then
-            try_add_seq()
+            tryAddSeq()
             local header = line:sub(2, -1)
             local split = require 'npge.util.split'
             header = split(header, '%s+', 1)
@@ -33,7 +33,7 @@ return function(lines)
         end
     end
     -- add last sequence
-    try_add_seq()
+    tryAddSeq()
     local BlockSet = require 'npge.model.BlockSet'
     return BlockSet(sequences, {})
 end
