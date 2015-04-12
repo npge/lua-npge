@@ -62,9 +62,9 @@ describe("npge.alignment.left", function()
     it("align sequences from left to right (#mismatches)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 1
+        local revert = config:updateKeys({
+            alignment = {MISMATCH_CHECK = 1},
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -80,15 +80,15 @@ describe("npge.alignment.left", function()
             '',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences from left to right (#mismatches_2)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 2
+        local revert = config:updateKeys({
+            alignment = {MISMATCH_CHECK = 2},
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -104,16 +104,18 @@ describe("npge.alignment.left", function()
             '',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences from left to right (#mismatches_fail)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 2
-        config.alignment.GAP_CHECK = 2
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 2,
+                GAP_CHECK = 2,
+            },
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -129,16 +131,18 @@ describe("npge.alignment.left", function()
             'TTTACC',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences from left to right (#gaps over mm)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 2
-        config.alignment.GAP_CHECK = 1
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 2,
+                GAP_CHECK = 1,
+            },
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -154,15 +158,17 @@ describe("npge.alignment.left", function()
             'TACC',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences from left to right (#gaps)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.GAP_CHECK = 1
+        local revert = config:updateKeys({
+            alignment = {
+                GAP_CHECK = 1,
+            },
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -178,16 +184,18 @@ describe("npge.alignment.left", function()
             '',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences from left to right (#gaps 2)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 10
-        config.alignment.GAP_CHECK = 2
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 10,
+                GAP_CHECK = 2,
+            },
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -203,16 +211,18 @@ describe("npge.alignment.left", function()
             '',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences from left to right (#gaps 2)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.GAP_CHECK = 1
-        config.alignment.MISMATCH_CHECK = 2
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 2,
+                GAP_CHECK = 1,
+            },
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -228,16 +238,18 @@ describe("npge.alignment.left", function()
             '',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences from left (first col gap)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.GAP_CHECK = 1
-        config.alignment.MISMATCH_CHECK = 10
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 10,
+                GAP_CHECK = 1,
+            },
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -253,15 +265,17 @@ describe("npge.alignment.left", function()
             '',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences from left (first col mismatch)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 1
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 1,
+            },
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -277,15 +291,17 @@ describe("npge.alignment.left", function()
             '',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences from left (right aligned, mism.)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 1
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 1,
+            },
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -301,15 +317,17 @@ describe("npge.alignment.left", function()
             '',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences (right aligned, mism., control)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 1
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 1,
+            },
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -325,15 +343,17 @@ describe("npge.alignment.left", function()
             'G',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences from left (#right_gap aligned)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.GAP_CHECK = 1
+        local revert = config:updateKeys({
+            alignment = {
+                GAP_CHECK = 1,
+            },
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -349,15 +369,17 @@ describe("npge.alignment.left", function()
             '',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences (right aligned, gap., control)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.GAP_CHECK = 1
+        local revert = config:updateKeys({
+            alignment = {
+                GAP_CHECK = 1,
+            },
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -373,7 +395,7 @@ describe("npge.alignment.left", function()
             '',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences from left to right (#right_tail)",
@@ -416,10 +438,12 @@ describe("npge.alignment.left", function()
     it("align sequences (#alternative gaps)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.GAP_CHECK = 1
-        config.alignment.MISMATCH_CHECK = 1
+        local revert = config:updateKeys({
+            alignment = {
+                GAP_CHECK = 1,
+                MISMATCH_CHECK = 1,
+            },
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -435,16 +459,18 @@ describe("npge.alignment.left", function()
             '',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences (#alternative gaps same lengths)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.GAP_CHECK = 1
-        config.alignment.MISMATCH_CHECK = 1
+        local revert = config:updateKeys({
+            alignment = {
+                GAP_CHECK = 1,
+                MISMATCH_CHECK = 1,
+            },
+        })
         --
         local left = require 'npge.alignment.left'
         local aligned, right = left({
@@ -452,16 +478,18 @@ describe("npge.alignment.left", function()
             'ATTTATATC',
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align sequences (#alternative gaps long)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.GAP_CHECK = 1
-        config.alignment.MISMATCH_CHECK = 1
+        local revert = config:updateKeys({
+            alignment = {
+                GAP_CHECK = 1,
+                MISMATCH_CHECK = 1,
+            },
+        })
         --
         local TA = string.rep('TA', 1000)
         local left = require 'npge.alignment.left'
@@ -470,6 +498,6 @@ describe("npge.alignment.left", function()
             'ATT' .. TA,
         })
         --
-        config.alignment = orig
+        revert()
     end)
 end)

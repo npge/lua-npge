@@ -21,11 +21,13 @@ describe("npge.alignment.alignRows", function()
 
     it("align multiple rows (long gap)", function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 1
-        config.alignment.GAP_CHECK = 1
-        config.alignment.ANCHOR = 4
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 1,
+                GAP_CHECK = 1,
+                ANCHOR = 4,
+            },
+        })
         --
         local f = require 'npge.alignment.alignRows'
         assert.same(f({
@@ -36,16 +38,18 @@ describe("npge.alignment.alignRows", function()
             "ATGC---------ATGC",
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align multiple rows (long gap, 4 rows)", function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 1
-        config.alignment.GAP_CHECK = 1
-        config.alignment.ANCHOR = 4
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 1,
+                GAP_CHECK = 1,
+                ANCHOR = 4,
+            },
+        })
         --
         local f = require 'npge.alignment.alignRows'
         assert.same(f({
@@ -60,17 +64,19 @@ describe("npge.alignment.alignRows", function()
             "ATGC----------ATGC",
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align multiple rows (long gap, 4 rows, empty row)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 1
-        config.alignment.GAP_CHECK = 1
-        config.alignment.ANCHOR = 4
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 1,
+                GAP_CHECK = 1,
+                ANCHOR = 4,
+            },
+        })
         --
         local f = require 'npge.alignment.alignRows'
         assert.same(f({
@@ -87,17 +93,19 @@ describe("npge.alignment.alignRows", function()
             "------------------",
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align multiple rows (long gap, #4_rows, double)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 1
-        config.alignment.GAP_CHECK = 2
-        config.alignment.ANCHOR = 4
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 1,
+                GAP_CHECK = 2,
+                ANCHOR = 4,
+            },
+        })
         --
         local f = require 'npge.alignment.alignRows'
         assert.same(f({
@@ -112,15 +120,17 @@ describe("npge.alignment.alignRows", function()
             "ATGC----------ATGC----------ATGC",
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align multiple rows (#only_left)", function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 1
-        config.alignment.GAP_CHECK = 1
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 1,
+                GAP_CHECK = 1,
+            },
+        })
         --
         local f = require 'npge.alignment.alignRows'
         assert.same(f({
@@ -131,15 +141,17 @@ describe("npge.alignment.alignRows", function()
             "ATGCATGC----------",
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align multiple rows (#only_left control)", function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 1
-        config.alignment.GAP_CHECK = 1
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 1,
+                GAP_CHECK = 1,
+            },
+        })
         --
         local f = require 'npge.alignment.alignRows'
         assert.same(f({
@@ -150,16 +162,18 @@ describe("npge.alignment.alignRows", function()
             "ATGC----------ATGC",
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align multiple rows (#addGapsForBetterIdentity)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 1
-        config.alignment.GAP_CHECK = 2
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 1,
+                GAP_CHECK = 2,
+            },
+        })
         --
         local f = require 'npge.alignment.alignRows'
         assert.same(f({
@@ -174,16 +188,18 @@ describe("npge.alignment.alignRows", function()
             "GTAGTACCTGTTTTAGCCTTTGCTTCGAGAACCATGTGAA",
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align multiple rows (#addGapsForBetterIdentity_2)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 2
-        config.alignment.GAP_CHECK = 2
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 2,
+                GAP_CHECK = 2,
+            },
+        })
         --
         local f = require 'npge.alignment.alignRows'
         assert.same(f({
@@ -194,16 +210,18 @@ describe("npge.alignment.alignRows", function()
             "-TACTAG",
         })
         --
-        config.alignment = orig
+        revert()
     end)
 
     it("align multiple rows (#addGapsForBetterIdentity_3)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 2
-        config.alignment.GAP_CHECK = 2
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 2,
+                GAP_CHECK = 2,
+            },
+        })
         --
         local f = require 'npge.alignment.alignRows'
         assert.same(f({
@@ -214,6 +232,6 @@ describe("npge.alignment.alignRows", function()
             "ATACTA-",
         })
         --
-        config.alignment = orig
+        revert()
     end)
 end)

@@ -5,15 +5,13 @@
 describe("npge.algo.Workers", function()
     it("extracts good blocks in parallel",
     function()
-        local BlockSet = require 'npge.model.BlockSet'
-        -- AAAAAAAA
-        -- ACATTACA
         local config = require 'npge.config'
+        local revert = config:updateKeys({
+            util = {WORKERS = 4},
+        })
         local min_len = config.general.MIN_LENGTH
         local good_len = 2 * min_len
         local min_ident = config.general.MIN_IDENTITY
-        local orig_WORKERS = config.util.WORKERS
-        config.util.WORKERS = 4
         -- ident = good_len / (good_len + middle_len)
         local middle_len = good_len / min_ident - good_len
         middle_len = math.floor(middle_len) + 2
@@ -34,6 +32,7 @@ describe("npge.algo.Workers", function()
             local block = Block({f1, f2})
             table.insert(blocks, block)
         end
+        local BlockSet = require 'npge.model.BlockSet'
         local blockset = BlockSet({s1, s2}, blocks)
         --
         local Workers = require 'npge.algo.Workers'
@@ -42,35 +41,35 @@ describe("npge.algo.Workers", function()
         local isGood = require 'npge.block.isGood'
         assert.truthy(isGood(good_blocks:blocks()[1]))
         --
-        config.util.WORKERS = orig_WORKERS
+        revert()
     end)
 
     it("works if number of workers is 1",
     function()
-        local BlockSet = require 'npge.model.BlockSet'
-        -- AAAAAAAA
-        -- ACATTACA
         local config = require 'npge.config'
-        local orig_WORKERS = config.util.WORKERS
-        config.util.WORKERS = 1
+        local revert = config:updateKeys({
+            util = {WORKERS = 1},
+        })
+        --
+        local BlockSet = require 'npge.model.BlockSet'
         local blockset = BlockSet({}, {})
         --
         local Workers = require 'npge.algo.Workers'
         local good_blocks = Workers.GoodSubblocks(blockset)
         assert.equal(#good_blocks:blocks(), 0)
         --
-        config.util.WORKERS = orig_WORKERS
+        revert()
     end)
 
     it("returns the same blocks",
     function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            util = {WORKERS = 4},
+        })
+        --
         local model = require 'npge.model'
         local BlockSet = model.BlockSet
-        -- AAAAAAAA
-        -- ACATTACA
-        local config = require 'npge.config'
-        local orig_WORKERS = config.util.WORKERS
-        config.util.WORKERS = 4
         local s1 = model.Sequence('s1', 'ACTG')
         local s2 = model.Sequence('s2', 'CTG')
         local b1 = model.Block({
@@ -86,18 +85,18 @@ describe("npge.algo.Workers", function()
             "return ...")
         assert.equal(bs, blockset)
         --
-        config.util.WORKERS = orig_WORKERS
+        revert()
     end)
 
     it("catches errors thrown in threads",
     function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            util = {WORKERS = 4},
+        })
+        --
         local model = require 'npge.model'
         local BlockSet = model.BlockSet
-        -- AAAAAAAA
-        -- ACATTACA
-        local config = require 'npge.config'
-        local orig_WORKERS = config.util.WORKERS
-        config.util.WORKERS = 4
         local s1 = model.Sequence('s1', 'ACTG')
         local s2 = model.Sequence('s2', 'CTG')
         local b1 = model.Block({
@@ -114,6 +113,6 @@ describe("npge.algo.Workers", function()
                 "error('test')")
         end)
         --
-        config.util.WORKERS = orig_WORKERS
+        revert()
     end)
 end)

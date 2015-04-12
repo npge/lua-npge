@@ -45,26 +45,28 @@ describe("npge.util.threads", function()
     it("calculates sum of squares of numbers from 1 to 1000",
     function()
         local config = require 'npge.config'
-        local orig_WORKERS = config.util.WORKERS
-        config.util.WORKERS = 4
+        local revert = config:updateKeys({
+            util = {WORKERS = 4},
+        })
         --
         local threads = require 'npge.util.threads'
         local sum_of_squares = threads(generator, collector)
         assert.equal(control_sum, sum_of_squares)
         --
-        config.util.WORKERS = orig_WORKERS
+        revert()
     end)
 
     it("works if number of workers is #1",
     function()
         local config = require 'npge.config'
-        local orig_WORKERS = config.util.WORKERS
-        config.util.WORKERS = 1
+        local revert = config:updateKeys({
+            util = {WORKERS = 1},
+        })
         --
         local threads = require 'npge.util.threads'
         local sum_of_squares = threads(generator, collector)
         assert.equal(control_sum, sum_of_squares)
         --
-        config.util.WORKERS = orig_WORKERS
+        revert()
     end)
 end)

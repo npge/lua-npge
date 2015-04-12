@@ -6,8 +6,10 @@ describe("npge.alignment.anchor", function()
     it("finds anchor of identical words in sequences",
     function()
         local config = require 'npge.config'
-        local orig_ANCHOR = config.alignment.ANCHOR
-        config.alignment.ANCHOR = 7
+        local revert = config:updateKeys({
+            alignment = {ANCHOR = 7},
+        })
+        --
         local anchor = require 'npge.alignment.anchor'
         local left, middle, right = anchor({
             'ATTATTC',
@@ -25,7 +27,8 @@ describe("npge.alignment.anchor", function()
             '',
             '',
         })
-        config.alignment.ANCHOR = orig_ANCHOR
+        --
+        revert()
     end)
 
     it("returns nil if list of rows is empty",
@@ -38,8 +41,10 @@ describe("npge.alignment.anchor", function()
     it("finds anchor (shift in #one fragment)",
     function()
         local config = require 'npge.config'
-        local orig_ANCHOR = config.alignment.ANCHOR
-        config.alignment.ANCHOR = 7
+        local revert = config:updateKeys({
+            alignment = {ANCHOR = 7},
+        })
+        --
         local anchor = require 'npge.alignment.anchor'
         local left, middle, right = anchor({
             'ATTATTC',
@@ -57,14 +62,17 @@ describe("npge.alignment.anchor", function()
             '',
             '',
         })
-        config.alignment.ANCHOR = orig_ANCHOR
+        --
+        revert()
     end)
 
     it("finds anchor (shift in #one fragment, long anchor)",
     function()
         local config = require 'npge.config'
-        local orig_ANCHOR = config.alignment.ANCHOR
-        config.alignment.ANCHOR = 20
+        local revert = config:updateKeys({
+            alignment = {ANCHOR = 20},
+        })
+        --
         local anchor = require 'npge.alignment.anchor'
         local left, middle, right = anchor({
             'ATTATTCGGAGTTCAGCTTTG',
@@ -82,14 +90,16 @@ describe("npge.alignment.anchor", function()
             'G',
             'G',
         })
-        config.alignment.ANCHOR = orig_ANCHOR
+        revert()
     end)
 
     it("finds anchor (shift in all fragments)",
     function()
         local config = require 'npge.config'
-        local orig_ANCHOR = config.alignment.ANCHOR
-        config.alignment.ANCHOR = 7
+        local revert = config:updateKeys({
+            alignment = {ANCHOR = 7},
+        })
+        --
         local anchor = require 'npge.alignment.anchor'
         local left, middle, right = anchor({
             'TTTTTTTATTATTC',
@@ -107,14 +117,17 @@ describe("npge.alignment.anchor", function()
             '',
             '',
         })
-        config.alignment.ANCHOR = orig_ANCHOR
+        --
+        revert()
     end)
 
     it("finds anchor (shift in all fragments, long anchor)",
     function()
         local config = require 'npge.config'
-        local orig_ANCHOR = config.alignment.ANCHOR
-        config.alignment.ANCHOR = 20
+        local revert = config:updateKeys({
+            alignment = {ANCHOR = 20},
+        })
+        --
         local anchor = require 'npge.alignment.anchor'
         local left, middle, right = anchor({
             'TTTTTTTATTATTCGGAGTTCAGCTTTG',
@@ -132,14 +145,17 @@ describe("npge.alignment.anchor", function()
             'G',
             'G',
         })
-        config.alignment.ANCHOR = orig_ANCHOR
+        --
+        revert()
     end)
 
     it("finds anchor (prefer same shift)",
     function()
         local config = require 'npge.config'
-        local orig_ANCHOR = config.alignment.ANCHOR
-        config.alignment.ANCHOR = 7
+        local revert = config:updateKeys({
+            alignment = {ANCHOR = 7},
+        })
+        --
         local anchor = require 'npge.alignment.anchor'
         local left, middle, right = anchor({
             'ATTATTCATTATTC',
@@ -157,14 +173,17 @@ describe("npge.alignment.anchor", function()
             '',
             '',
         })
-        config.alignment.ANCHOR = orig_ANCHOR
+        --
+        revert()
     end)
 
     it("finds anchor of identical words in sequences (none)",
     function()
         local config = require 'npge.config'
-        local orig_ANCHOR = config.alignment.ANCHOR
-        config.alignment.ANCHOR = 7
+        local revert = config:updateKeys({
+            alignment = {ANCHOR = 7},
+        })
+        --
         local anchor = require 'npge.alignment.anchor'
         local left, middle, right = anchor({
             'ATTATTCATTATTC',
@@ -173,14 +192,17 @@ describe("npge.alignment.anchor", function()
         assert.falsy(left)
         assert.falsy(middle)
         assert.falsy(right)
-        config.alignment.ANCHOR = orig_ANCHOR
+        --
+        revert()
     end)
 
     it("works if no anchor and rows are long",
     function()
         local config = require 'npge.config'
-        local orig_ANCHOR = config.alignment.ANCHOR
-        config.alignment.ANCHOR = 7
+        local revert = config:updateKeys({
+            alignment = {ANCHOR = 7},
+        })
+        --
         local anchor = require 'npge.alignment.anchor'
         local left, middle, right = anchor({
             string.rep('A', 10000),
@@ -189,14 +211,17 @@ describe("npge.alignment.anchor", function()
         assert.falsy(left)
         assert.falsy(middle)
         assert.falsy(right)
-        config.alignment.ANCHOR = orig_ANCHOR
+        --
+        revert()
     end)
 
     it("finds anchor (3 fragments)",
     function()
         local config = require 'npge.config'
-        local orig_ANCHOR = config.alignment.ANCHOR
-        config.alignment.ANCHOR = 7
+        local revert = config:updateKeys({
+            alignment = {ANCHOR = 7},
+        })
+        --
         local anchor = require 'npge.alignment.anchor'
         local left, middle, right = anchor({
             'TTTTTTTATTATTC',
@@ -218,14 +243,17 @@ describe("npge.alignment.anchor", function()
             '',
             '',
         })
-        config.alignment.ANCHOR = orig_ANCHOR
+        --
+        revert()
     end)
 
     it("finds anchor (right)",
     function()
         local config = require 'npge.config'
-        local orig_ANCHOR = config.alignment.ANCHOR
-        config.alignment.ANCHOR = 7
+        local revert = config:updateKeys({
+            alignment = {ANCHOR = 7},
+        })
+        --
         local anchor = require 'npge.alignment.anchor'
         local left, middle, right = anchor({
             'ATTATTCCCC',
@@ -243,6 +271,7 @@ describe("npge.alignment.anchor", function()
             'CCC',
             '',
         })
-        config.alignment.ANCHOR = orig_ANCHOR
+        --
+        revert()
     end)
 end)

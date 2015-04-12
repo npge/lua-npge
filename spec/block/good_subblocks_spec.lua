@@ -39,11 +39,13 @@ describe("npge.block.goodSubblocks", function()
     it("finds identical parts of #MIN_END_IDENTICAL_COLUMNS",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.general)
-        config.general.MIN_LENGTH = 10
-        config.general.MIN_IDENTITY = 0.5
-        config.general.MIN_END_IDENTICAL_COLUMNS = 3
+        local revert = config:updateKeys({
+            general = {
+                MIN_LENGTH = 10,
+                MIN_IDENTITY = 0.5,
+                MIN_END_IDENTICAL_COLUMNS = 3,
+            },
+        })
         --
         local Sequence = require 'npge.model.Sequence'
         local s1 = Sequence('s1', "CAAAGCGCGCGCAAAC")
@@ -63,17 +65,19 @@ describe("npge.block.goodSubblocks", function()
                 "AAAGGGGGGGGAAA"},
         })})
         --
-        config.general = orig
+        revert()
     end)
 
     it("finds identical parts of #MIN_END_IDENTICAL_COLUMNS2",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.general)
-        config.general.MIN_LENGTH = 4
-        config.general.MIN_IDENTITY = 0.5
-        config.general.MIN_END_IDENTICAL_COLUMNS = 3
+        local revert = config:updateKeys({
+            general = {
+                MIN_LENGTH = 4,
+                MIN_IDENTITY = 0.5,
+                MIN_END_IDENTICAL_COLUMNS = 3,
+            },
+        })
         --
         local Sequence = require 'npge.model.Sequence'
         local s1 = Sequence('s1',
@@ -95,7 +99,7 @@ describe("npge.block.goodSubblocks", function()
                 "AAAGGGGGGGGAAAAGGGGGGGAAA"},
         })})
         --
-        config.general = orig
+        revert()
     end)
 
     it("extracts good parts from block (long gap)",
@@ -407,10 +411,12 @@ describe("npge.block.goodSubblocks", function()
     it("extracts good parts from block (#one_gap near the end)",
     function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.general)
-        config.general.MIN_LENGTH = 60
-        config.general.MIN_END_IDENTICAL_COLUMNS = 3
+        local revert = config:updateKeys({
+            general = {
+                MIN_LENGTH = 60,
+                MIN_END_IDENTICAL_COLUMNS = 3,
+            },
+        })
         --
         local Sequence = require 'npge.model.Sequence'
         local s1 = Sequence('s1', [[
@@ -437,6 +443,6 @@ GGCgAA
             Fragment(s2, 0, s2:length() - 3 - 1, 1),
         }))
         --
-        config.general = orig
+        revert()
     end)
 end)

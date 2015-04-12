@@ -5,10 +5,12 @@
 describe("npge.algo.Align", function()
     it("align blocks of blockset", function()
         local config = require 'npge.config'
-        local clone = require 'npge.util.clone'.dict
-        local orig = clone(config.alignment)
-        config.alignment.MISMATCH_CHECK = 1
-        config.alignment.GAP_CHECK = 1
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 1,
+                GAP_CHECK = 1,
+            },
+        })
         --
         local model = require 'npge.model'
         local s1 = model.Sequence('s1', "ATGCTTGCTATTTAATGC")
@@ -28,6 +30,6 @@ describe("npge.algo.Align", function()
                 }),
             }))
         --
-        config.alignment = orig
+        revert()
     end)
 end)
