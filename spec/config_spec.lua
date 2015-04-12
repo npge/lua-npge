@@ -18,7 +18,7 @@ describe("npge.config", function()
         assert.truthy(config.alignment.ANCHOR >= 1)
     end)
 
-    local prepare_config = function(conf)
+    local function prepareConfig(conf)
         -- unload 'npge.config'
         package.loaded['npge.config'] = nil
         -- rename npge.conf, if exists
@@ -31,7 +31,7 @@ describe("npge.config", function()
         f:close()
     end
 
-    local restore_config = function()
+    local function restoreConfig()
         -- unload config
         package.loaded['npge.config'] = nil
         -- remove testing npge.conf
@@ -44,33 +44,33 @@ describe("npge.config", function()
     end
 
     it("reads npge.conf", function()
-        prepare_config 'general.MIN_LENGTH = 250\n'
+        prepareConfig 'general.MIN_LENGTH = 250\n'
         -- load config
         local config = require 'npge.config'
         assert.equal(config.general.MIN_LENGTH, 250)
         -- unload config
-        restore_config()
+        restoreConfig()
     end)
 
-    local check_error = function(conf)
+    local function checkError(conf)
         return function()
-            prepare_config(conf)
+            prepareConfig(conf)
             -- load config
             assert.has_error(function()
                 local config = require 'npge.config'
             end)
             -- unload config
-            restore_config()
+            restoreConfig()
             print = orig_print
         end
     end
 
     it("prints error messages if errors in config (syntax)",
-        check_error('a = 1; a++\n'))
+        checkError('a = 1; a++\n'))
 
     it("prints error messages if errors in config (runtime)",
-        check_error('a = 1; a()\n'))
+        checkError('a = 1; a()\n'))
 
     it("prints error messages if errors in config (type)",
-        check_error('general.MIN_LENGTH = true\n'))
+        checkError('general.MIN_LENGTH = true\n'))
 end)
