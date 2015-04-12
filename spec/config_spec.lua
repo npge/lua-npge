@@ -61,7 +61,6 @@ describe("npge.config", function()
             end)
             -- unload config
             restoreConfig()
-            print = orig_print
         end
     end
 
