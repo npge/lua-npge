@@ -182,8 +182,7 @@ local function removeMostDistant(block)
     return Block(for_block)
 end
 
-local goodSubblocks
-goodSubblocks = function(block)
+local function goodSubblocks(block)
     local isGood = require 'npge.block.isGood'
     if isGood(block) then
         return {block}
