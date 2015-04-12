@@ -26,7 +26,7 @@ local read_blast = function(file, query, bank, filter, same)
             return goodHit0() and query_name < subject_name
         end
     end
-    local try_add = function()
+    local function tryAdd()
         if goodHit() then
             assert(query_row)
             assert(subject_row)
@@ -75,18 +75,18 @@ local read_blast = function(file, query, bank, filter, same)
         file_is_empty = false
         if startsWith(line, 'Query=') then
             -- Example: Query= consensus000567
-            try_add()
+            tryAdd()
             query_name = split(line, '=', 1)[2]
             query_name = trim(query_name)
             query_name = split(query_name)[1]
         elseif line:sub(1, 1) == '>' then
             -- Example: > consensus000567
-            try_add()
+            tryAdd()
             subject_name = trim(line:sub(2))
             subject_name = split(subject_name)[1]
         elseif startsWith(line, ' Score =') then
             -- Example:  Score = 82.4 bits (90),  ...
-            try_add()
+            tryAdd()
             query_row = {}
             subject_row = {}
         elseif goodHit() then
@@ -125,7 +125,7 @@ local read_blast = function(file, query, bank, filter, same)
             end
         end
     end
-    try_add()
+    tryAdd()
     assert(not file_is_empty, "blastn returned empty file")
     local seqs = bank:sequences()
     if not same then
