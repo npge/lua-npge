@@ -73,4 +73,27 @@ describe("npge.config", function()
 
     it("prints error messages if errors in config (type)",
         checkError('general.MIN_LENGTH = true\n'))
+
+    it("apply and revert change", function()
+        local config = require 'npge.config'
+        local orig = config.general.MIN_LENGTH
+        local revert = config:updateKeys({
+            general = {MIN_LENGTH = orig + 1}
+        })
+        assert.equal(config.general.MIN_LENGTH, orig + 1)
+        revert()
+        assert.equal(config.general.MIN_LENGTH, orig)
+    end)
+
+    it("can't change updateKeys", function()
+        prepareConfig 'updateKeys = 42\n'
+        -- load config
+        local config = require 'npge.config'
+        assert.not_equal(config.updateKeys, 42)
+        -- unload config
+        restoreConfig()
+    end)
+
+    it("can't call updateKeys",
+        checkError('updateKeys()\n'))
 end)

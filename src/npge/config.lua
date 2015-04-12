@@ -42,12 +42,16 @@ local config = {
     },
 }
 
-local function updateKeys(env)
+local function updateKeys(_, env)
+    local revert = {}
     for section_name, section in pairs(config) do
         if env[section_name] then
+            local revert_section = {}
+            revert[section_name] = revert_section
             local env_section = env[section_name]
             for name, value in pairs(env_section) do
                 if type(value) == type(section[name]) then
+                    revert_section[name] = section[name]
                     section[name] = value
                 else
                     local msg = 'Ignore %s.%s from npge.conf'
@@ -56,7 +60,16 @@ local function updateKeys(env)
             end
         end
     end
+    return function()
+        updateKeys(nil, revert)
+    end
 end
+
+setmetatable(config, {
+    __index = {
+        updateKeys = updateKeys,
+    }
+})
 
 local fileExists = require 'npge.util.fileExists'
 if fileExists('npge.conf') then
@@ -72,7 +85,7 @@ if fileExists('npge.conf') then
     if conf_sandboxed then
         local status = pcall(conf_sandboxed)
         if status then
-            updateKeys(env)
+            updateKeys(nil, env)
         else
             error('Failed to run commands found in config')
         end
