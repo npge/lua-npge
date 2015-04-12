@@ -42,7 +42,7 @@ local config = {
     },
 }
 
-local update_keys = function(env)
+local function updateKeys(env)
     for section_name, section in pairs(config) do
         if env[section_name] then
             local env_section = env[section_name]
@@ -72,7 +72,7 @@ if fileExists('npge.conf') then
     if conf_sandboxed then
         local status = pcall(conf_sandboxed)
         if status then
-            update_keys(env)
+            updateKeys(env)
         else
             error('Failed to run commands found in config')
         end
