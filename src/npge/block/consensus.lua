@@ -4,7 +4,7 @@
 
 local ATGC = {'A', 'T', 'G', 'C'}
 
-local consensus_at_pos = function(rows, bp)
+local function consensusAtPos(rows, bp)
     local counts = {}
     for _, row in ipairs(rows) do
         local letter = row:sub(bp + 1, bp + 1)
@@ -29,7 +29,7 @@ return function(block)
     end
     local result = {}
     for bp = 0, block:length() - 1 do
-        local letter = consensus_at_pos(rows, bp)
+        local letter = consensusAtPos(rows, bp)
         table.insert(result, letter)
     end
     return table.concat(result)
