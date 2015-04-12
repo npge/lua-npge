@@ -3,10 +3,10 @@
 -- See the LICENSE file for terms of use.
 
 return function(block)
-    local reverse_fragment = require 'npge.fragment.reverse'
+    local reverseFragment = require 'npge.fragment.reverse'
     local for_block = {}
     for fragment in block:iterFragments() do
-        local new_f = reverse_fragment(fragment)
+        local new_f = reverseFragment(fragment)
         local row = block:text(fragment)
         local C = require 'npge.alignment.complement'
         local new_row = C(row)
