@@ -16,18 +16,18 @@ local read_blast = function(file, query, bank, filter, same)
     local query_row, subject_row
     local query_start, subject_start
     local query_stop, subject_stop
-    local good_hit = function()
+    local goodHit = function()
         return query_name and subject_name
             and query_row and subject_row
     end
     if same then
-        local good_hit0 = good_hit
-        good_hit = function()
-            return good_hit0() and query_name < subject_name
+        local goodHit0 = goodHit
+        goodHit = function()
+            return goodHit0() and query_name < subject_name
         end
     end
     local try_add = function()
-        if good_hit() then
+        if goodHit() then
             assert(query_row)
             assert(subject_row)
             assert(query_start)
@@ -89,7 +89,7 @@ local read_blast = function(file, query, bank, filter, same)
             try_add()
             query_row = {}
             subject_row = {}
-        elseif good_hit() then
+        elseif goodHit() then
             local parse_alignment = function(line)
                 local parts = split(line)
                 assert(#parts == 4 or #parts == 3)
