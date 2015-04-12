@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-local get_min_max = function(fragment)
+local function getMinMax(fragment)
     if fragment:ori() == 1 then
         return fragment:start(), fragment:stop()
     else
@@ -29,7 +29,7 @@ return function(block, seqs2blocks)
                 local C = require 'npge.alignment.complement'
                 row = C(row)
             end
-            local min, max = get_min_max(fragment)
+            local min, max = getMinMax(fragment)
             local slice = require 'npge.block.slice'
             local new_block = slice(orig_block, min, max, row)
             if new_block then
