@@ -10,7 +10,7 @@ return function(orig, added)
     local BlockSet = require 'npge.model.BlockSet'
     local bs = BlockSet(orig:sequences(), {})
     local blocks = {}
-    local update_bs = function()
+    local function updateBs()
         bs = BlockSet(orig:sequences(),
             concat(bs:blocks(), blocks))
         blocks = {}
@@ -62,10 +62,10 @@ return function(orig, added)
         if not overlapping(block) then
             table.insert(blocks, block)
             if #blocks > 10 then
-                update_bs()
+                updateBs()
             end
         end
     end
-    update_bs()
+    updateBs()
     return bs
 end
