@@ -7,7 +7,7 @@ return function(lines, blockset_with_sequences)
     local bs1 = blockset_with_sequences
     local blockname2fragments = {}
     local name, description, text_lines
-    local try_add_seq = function()
+    local function tryAddSeq()
         if name then
             -- add sequence
             local ev = require 'npge.util.extractValue'
@@ -40,7 +40,7 @@ return function(lines, blockset_with_sequences)
     end
     for line in lines do
         if line:sub(1, 1) == '>' then
-            try_add_seq()
+            tryAddSeq()
             local header = line:sub(2, -1)
             local split = require 'npge.util.split'
             header = split(header, '%s+', 1)
@@ -53,7 +53,7 @@ return function(lines, blockset_with_sequences)
         end
     end
     -- add last sequence
-    try_add_seq()
+    tryAddSeq()
     --
     local blocks = {}
     for blockname, fragments in pairs(blockname2fragments) do
