@@ -388,7 +388,7 @@ describe("npge.model.BlockSet", function()
             return model.Block({...})
         end
         local BS = model.BlockSet
-        local make_bs = function()
+        local function makeBs()
             local s1 = model.Sequence("g1&c&c", "ATAT")
             local s2 = model.Sequence("g2&c&c", "ATAT")
             local f1 = model.Fragment(s1, 0, 0, 1)
@@ -396,7 +396,7 @@ describe("npge.model.BlockSet", function()
             local f2 = model.Fragment(s2, 0, 0, 1)
             return BS({s1, s2}, {B(f1, f2), B(f1a)})
         end
-        assert.equal(make_bs(), make_bs())
+        assert.equal(makeBs(), makeBs())
     end)
 
     it("makes string representation of blockset", function()
