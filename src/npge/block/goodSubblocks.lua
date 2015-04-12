@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-local find_long_gap = function(rows, block_length, min_length)
+local function findLongGap(rows, block_length, min_length)
     -- return min and max block positions of long gap OR nil
     for _, row in ipairs(rows) do
         local gap_length = 0
@@ -26,46 +26,46 @@ local find_long_gap = function(rows, block_length, min_length)
     end
 end
 
-local group_length = function(group)
+local function groupLength(group)
     return group.stop - group.start + 1
 end
 
 local cpp = require 'npge.cpp'
-local find_ident_groups = cpp.alignment.findIdentGroups
+local findIdentGroups = cpp.alignment.findIdentGroups
 
-local make_group = function(groups, i, i1)
+local function makeGroup(groups, i, i1)
     assert(i >= 1)
     assert(i <= i1)
     assert(i1 <= #groups)
     return {start=groups[i].start, stop=groups[i1].stop}
 end
 
-local group_of_min_length = function(groups, i, min_length)
+local function groupOfMinLength(groups, i, min_length)
     -- returns index of first group index of last group or nil
     for i1 = i, #groups do
-        local group = make_group(groups, i, i1)
-        if group_length(group) >= min_length then
+        local group = makeGroup(groups, i, i1)
+        if groupLength(group) >= min_length then
             return i1
         end
     end
 end
 
 
-local group_identity = function(rows, group)
+local function groupIdentity(rows, group)
     local identity = require 'npge.alignment.identity'
     return identity(rows, group.start, group.stop)
 end
 
-local find_min_good_group = function(rows, groups)
+local function findMinGoodGroup(rows, groups)
     local config = require 'npge.config'
     local min_length = config.general.MIN_LENGTH
     local min_ident = config.general.MIN_IDENTITY
     local identity = require 'npge.block.identity'
     for i = 1, #groups do
-        local i1 = group_of_min_length(groups, i, min_length)
+        local i1 = groupOfMinLength(groups, i, min_length)
         if i1 then
-            local g = make_group(groups, i, i1)
-            local ident = group_identity(rows, g)
+            local g = makeGroup(groups, i, i1)
+            local ident = groupIdentity(rows, g)
             if g and not identity.less(ident, min_ident) then
                 return i, i1
             end
@@ -73,13 +73,13 @@ local find_min_good_group = function(rows, groups)
     end
 end
 
-local extend_good_group = function(rows, groups, i, i1)
+local function extendGoodGroup(rows, groups, i, i1)
     local config = require 'npge.config'
     local min_ident = config.general.MIN_IDENTITY
     local less = require 'npge.block.identity'.less
     local identity = require 'npge.alignment.identity'
-    local group = make_group(groups, i, i1)
-    local _, ident, all = group_identity(rows, group)
+    local group = makeGroup(groups, i, i1)
+    local _, ident, all = groupIdentity(rows, group)
     while i1 < #groups do
         local start = groups[i1].stop + 1
         local stop = groups[i1 + 1].stop
@@ -109,16 +109,16 @@ local extend_good_group = function(rows, groups, i, i1)
     return i, i1
 end
 
-local find_good_group = function(rows, groups)
-    local i, i1 = find_min_good_group(rows, groups)
+local function findGoodGroup(rows, groups)
+    local i, i1 = findMinGoodGroup(rows, groups)
     if not i or not i1 then
         return nil
     end
-    local i, i1 = extend_good_group(rows, groups, i, i1)
-    return make_group(groups, i, i1)
+    local i, i1 = extendGoodGroup(rows, groups, i, i1)
+    return makeGroup(groups, i, i1)
 end
 
-local remove_pure_gap_cols = function(for_block)
+local function removePureGapCols(for_block)
     assert(#for_block >= 2)
     local frag2row = {}
     for _, pair in ipairs(for_block) do
@@ -155,7 +155,7 @@ local remove_pure_gap_cols = function(for_block)
     return for_block1
 end
 
-local remove_most_distant = function(block)
+local function removeMostDistant(block)
     local consensus = require 'npge.block.consensus'
     local identity = require 'npge.alignment.identity'
     local c = consensus(block)
@@ -177,7 +177,7 @@ local remove_most_distant = function(block)
         end
     end
     assert(#for_block == block:size() - 1)
-    for_block = remove_pure_gap_cols(for_block)
+    for_block = removePureGapCols(for_block)
     local Block = require 'npge.model.Block'
     return Block(for_block)
 end
@@ -205,7 +205,7 @@ goodSubblocks = function(block)
         table.insert(rows, block:text(fragment))
     end
     -- find long gap
-    local gap_start, gap_stop = find_long_gap(rows,
+    local gap_start, gap_stop = findLongGap(rows,
         block:length(), min_length)
     local slice = require 'npge.block.slice'
     if gap_start and gap_stop then
@@ -229,8 +229,8 @@ goodSubblocks = function(block)
     -- no long gaps here
     -- find continous groups of identical columns
     local min_cols = config.general.MIN_END_IDENTICAL_COLUMNS
-    local ident_groups = find_ident_groups(rows, min_cols)
-    local good_slice = find_good_group(rows, ident_groups)
+    local ident_groups = findIdentGroups(rows, min_cols)
+    local good_slice = findGoodGroup(rows, ident_groups)
     if good_slice then
         local subblock = slice(block, good_slice.start,
             good_slice.stop)
@@ -242,7 +242,7 @@ goodSubblocks = function(block)
         return {}
     end
     -- try to remove the most distant fragment
-    local block1 = remove_most_distant(block)
+    local block1 = removeMostDistant(block)
     return goodSubblocks(block1)
 end
 
