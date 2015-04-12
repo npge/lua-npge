@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-local fix_pos = function(seq, x)
+local fixPos = function(seq, x)
     if seq:circular() then
         local fp = require 'npge.sequence.fixPosition'
         return fp(seq, x)
@@ -27,8 +27,8 @@ local expandFragment = function(f, left, right)
         new_start = f:start() - left * f:ori()
         new_stop = f:stop() + right * f:ori()
     end
-    new_start = fix_pos(f:sequence(), new_start)
-    new_stop = fix_pos(f:sequence(), new_stop)
+    new_start = fixPos(f:sequence(), new_start)
+    new_stop = fixPos(f:sequence(), new_stop)
     return new_start, new_stop
 end
 
