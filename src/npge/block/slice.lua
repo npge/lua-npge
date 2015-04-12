@@ -2,12 +2,12 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-local slice_f = function(fragment, frag_min, frag_max)
+local function sliceF(fragment, frag_min, frag_max)
     local seq = fragment:sequence()
-    local to_sequence =
+    local toSequence =
         require 'npge.fragment.fragmentToSequence'
-    local seq_min = to_sequence(fragment, frag_min)
-    local seq_max = to_sequence(fragment, frag_max)
+    local seq_min = toSequence(fragment, frag_min)
+    local seq_max = toSequence(fragment, frag_max)
     local ori = fragment:ori()
     local Fragment = require 'npge.model.Fragment'
     return Fragment(seq, seq_min, seq_max, ori)
@@ -28,7 +28,7 @@ return function(block, min, max, row)
         local frag_max = block:block2left(fragment, max)
         if frag_min ~= -1 and frag_max ~= -1 and
                 frag_min <= frag_max then
-            local new_f = slice_f(fragment, frag_min, frag_max)
+            local new_f = sliceF(fragment, frag_min, frag_max)
             local orig_row = block:text(fragment)
             orig_row = orig_row:sub(min + 1, max + 1)
             local new_row = unwindRow(row, orig_row)
