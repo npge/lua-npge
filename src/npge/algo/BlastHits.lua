@@ -90,7 +90,7 @@ local read_blast = function(file, query, bank, filter, same)
             query_row = {}
             subject_row = {}
         elseif goodHit() then
-            local parse_alignment = function(line)
+            local function parseAlignment(line)
                 local parts = split(line)
                 assert(#parts == 4 or #parts == 3)
                 if #parts == 4 then
@@ -104,7 +104,7 @@ local read_blast = function(file, query, bank, filter, same)
             end
             if startsWith(line, 'Query ') then
                 -- Example: Query  1  GCGCG  5
-                local start, row, stop = parse_alignment(line)
+                local start, row, stop = parseAlignment(line)
                 if start and stop then
                     if not query_start then
                         query_start = assert(tonumber(start))
@@ -114,7 +114,7 @@ local read_blast = function(file, query, bank, filter, same)
                 table.insert(query_row, row)
             elseif startsWith(line, 'Sbjct ') then
                 -- Example: Sbjct  1  GCGCG  5
-                local start, row, stop = parse_alignment(line)
+                local start, row, stop = parseAlignment(line)
                 if start and stop then
                     if not subject_start then
                         subject_start = assert(tonumber(start))
