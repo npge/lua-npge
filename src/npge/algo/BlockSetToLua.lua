@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-local seq_to_lua = function(seq)
+local function seqToLua(seq)
     local asLines = require 'npge.util.asLines'
     local text = asLines(seq:text())
     local lua = "Sequence(%q,\n%q,\n%q)"
@@ -69,7 +69,7 @@ return function(blockset, has_sequences)
         else
             for seq in blockset:iterSequences() do
                 local text = "name2seq[%q] = %s\n"
-                yield(text:format(seq:name(), seq_to_lua(seq)))
+                yield(text:format(seq:name(), seqToLua(seq)))
             end
         end
         for block in blockset:iterBlocks() do
