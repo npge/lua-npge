@@ -13,4 +13,5 @@ return {
     goodSubblocks = require 'npge.block.goodSubblocks',
     align = require 'npge.block.align',
     extend = require 'npge.block.extend',
+    hasSelfOverlap = require 'npge.block.hasSelfOverlap',
 }
