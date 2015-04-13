@@ -283,6 +283,9 @@ std::string Fragment::text() const {
 }
 
 int Fragment::common(const Fragment& other) const {
+    if (sequence()->name() != other.sequence()->name()) {
+        return 0;
+    }
     if (parted()) {
         TwoFragments two = parts();
         return two.first->common(other) +
