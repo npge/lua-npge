@@ -114,6 +114,7 @@ build = {
         ['npge.algo.Genomes'] = 'src/npge/algo/Genomes.lua',
         ['npge.algo.GoodSubblocks'] = 'src/npge/algo/GoodSubblocks.lua',
         ['npge.algo.HasOverlap'] = 'src/npge/algo/HasOverlap.lua',
+        ['npge.algo.HasSelfOverlap'] = 'src/npge/algo/HasSelfOverlap.lua',
         ['npge.algo.Join'] = 'src/npge/algo/Join.lua',
         ['npge.algo.LoadFromLua'] = 'src/npge/algo/LoadFromLua.lua',
         ['npge.algo.Merge'] = 'src/npge/algo/Merge.lua',
