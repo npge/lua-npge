@@ -71,6 +71,33 @@ describe("npge.model.Fragment", function()
         assert(Fragment(s2, 0, 0, -1) > Fragment(s1, 0, 0, 1))
     end)
 
+    it("sorts fragments", function()
+        local s1 = model.Sequence("ABC&chromosome&c", "ATGC")
+        local s2 = model.Sequence("CDF&chromosome&c", "ATGC")
+        local fragments_shuf = {
+            Fragment(s2, 0, 0, 1),
+            Fragment(s2, 0, 1, 1),
+            Fragment(s1, 0, 0, 1),
+            Fragment(s1, 0, 1, 1),
+            Fragment(s1, 1, 0, -1),
+            Fragment(s2, 1, 0, -1),
+            Fragment(s2, 1, 1, -1),
+            Fragment(s1, 1, 1, -1),
+        }
+        local fragments_sorted = {
+            Fragment(s1, 0, 0, 1),
+            Fragment(s1, 1, 0, -1),
+            Fragment(s1, 0, 1, 1),
+            Fragment(s1, 1, 1, -1),
+            Fragment(s2, 0, 0, 1),
+            Fragment(s2, 1, 0, -1),
+            Fragment(s2, 0, 1, 1),
+            Fragment(s2, 1, 1, -1),
+        }
+        table.sort(fragments_shuf)
+        assert.same(fragments_shuf, fragments_sorted)
+    end)
+
     it("throws in 'a < b' if a or b is parted", function()
         local s1 = model.Sequence("ABC&chromosome&c", "ATGC")
         local b
