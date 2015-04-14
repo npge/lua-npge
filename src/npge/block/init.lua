@@ -14,4 +14,5 @@ return {
     align = require 'npge.block.align',
     extend = require 'npge.block.extend',
     hasSelfOverlap = require 'npge.block.hasSelfOverlap',
+    excludeSelfOverlap = require 'npge.block.excludeSelfOverlap',
 }
