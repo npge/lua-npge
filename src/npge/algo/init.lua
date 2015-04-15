@@ -28,6 +28,7 @@ local members = {
     'PangenomeMaker',
     'HasOverlap',
     'HasSelfOverlap',
+    'ExcludeSelfOverlap',
     'Workers',
 }
 
