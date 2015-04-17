@@ -2,8 +2,10 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
+local binary_search = {}
+
 -- http://www.cplusplus.com/reference/algorithm/lower_bound/
-local lower = function(list, value)
+function binary_search.lower(list, value)
     local first = 1
     local count = #list
     while count > 0 do
@@ -20,7 +22,7 @@ local lower = function(list, value)
 end
 
 -- http://www.cplusplus.com/reference/algorithm/upper_bound/
-local upper = function(list, value)
+function binary_search.upper(list, value)
     local first = 1
     local count = #list
     while count > 0 do
@@ -36,7 +38,4 @@ local upper = function(list, value)
     return first
 end
 
-return {
-    lower = lower,
-    upper = upper,
-}
+return binary_search
