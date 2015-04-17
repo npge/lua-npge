@@ -32,4 +32,12 @@ describe("npge.util.binary_search", function()
         assert.equal(upper({1, 2, 2}, 1.5), 2)
         assert.equal(upper({1, 2, 2}, 3), 4)
     end)
+
+    it("finds first value for which function returns true",
+    function()
+        local firstTrue = binary_search.firstTrue
+        assert.equal(firstTrue(function(x)
+            return x >= 100
+        end, 1, 1000), 100)
+    end)
 end)

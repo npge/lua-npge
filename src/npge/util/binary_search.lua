@@ -38,4 +38,20 @@ function binary_search.upper(list, value)
     return first
 end
 
+function binary_search.firstTrue(f, min, max)
+    local first = min
+    local count = max - min + 1
+    while count > 0 do
+        local step = math.floor(count / 2)
+        local it = first + step
+        if not f(it) then
+            first = it + 1
+            count = count - step - 1
+        else
+            count = step
+        end
+    end
+    return first
+end
+
 return binary_search
