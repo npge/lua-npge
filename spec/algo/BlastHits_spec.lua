@@ -1667,4 +1667,24 @@ GTGATACGACTATACTAGTGC]])
         os.remove(bank_cons_fname)
         Blast.bankCleanup(bank_fname)
     end)
+
+    it("finds #self-overlap", function()
+        local m = require 'npge.model'
+        local s1 = m.Sequence('s1', [[
+AGCGCTCCACGTCGATAGGGTGGGAGAGGGAGAAAA
+ACACTGTAATGTTCCCGGATAGTATATAGTGGAGTTTGTTCAGACGCTACGAGCACATAG
+GTGGTAGGCACAGCTTCAATGCCTCTCACAATTGCGCGTGGAGAACTCATTGTACATCAA
+AGCGCTCCACGTCGATAGGGTGGGAGAGGGAGAAAA
+ACACTGTAATGTTCCCGGATAGTATATAGTGGAGTTTGTTCAGACGCTACGAGCACATAG
+GTGGTAGGCACAGCTTCAATGCCTCTCACAATTGCGCGTGGAGAACTCATTGTACATCAA
+AGCGCTCCACGTCGATAGGGTGGGAGAGGGAGAAAA
+        ]])
+        local bs = m.BlockSet({s1}, {})
+        local BlastHits = require 'npge.algo.BlastHits'
+        local hits = BlastHits(bs, bs)
+        assert.truthy(hits:size() > 0)
+        local HasSelfOverlap =
+            require 'npge.algo.HasSelfOverlap'
+        assert.truthy(HasSelfOverlap(hits))
+    end)
 end)

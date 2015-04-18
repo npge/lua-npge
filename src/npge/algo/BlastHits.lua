@@ -23,7 +23,7 @@ local function readBlast(file, query, bank, filter, same)
     if same then
         local goodHit0 = goodHit
         goodHit = function()
-            return goodHit0() and query_name < subject_name
+            return goodHit0() and query_name <= subject_name
         end
     end
     local function tryAdd()
