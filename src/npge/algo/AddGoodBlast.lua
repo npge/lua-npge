@@ -38,6 +38,7 @@ return function(query, bank, options)
     end
     local hits_cons = algo.BlastHits(query_cons, bank_cons,
         options)
+    hits_cons = algo.ExcludeSelfOverlap(hits_cons)
     hits_cons = algo.Cover(hits_cons)
     local hits = algo.UnwindBlocks(hits_cons,
         blockset, seq2block)

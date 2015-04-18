@@ -82,4 +82,27 @@ describe("npge.algo.AddGoodBlast", function()
             local hits = AddGoodBlast(query, bank, {subset=1})
         end)
     end)
+
+    it("resolves #self-overlaps", function()
+        local m = require 'npge.model'
+        local s1 = m.Sequence('s1', [[
+AGCGCTCCACGTCGATAGGGTGGGAGAGGGAGAAAA
+ACACTGTAATGTTCCCGGATAGTATATAGTGGAGTTTGTTCAGACGCTACGAGCACATAG
+GTGGTAGGCACAGCTTCAATGCCTCTCACAATTGCGCGTGGAGAACTCATTGTACATCAA
+AGCGCTCCACGTCGATAGGGTGGGAGAGGGAGAAAA
+ACACTGTAATGTTCCCGGATAGTATATAGTGGAGTTTGTTCAGACGCTACGAGCACATAG
+GTGGTAGGCACAGCTTCAATGCCTCTCACAATTGCGCGTGGAGAACTCATTGTACATCAA
+AGCGCTCCACGTCGATAGGGTGGGAGAGGGAGAAAA
+        ]])
+        local b1 = m.Block({
+            m.Fragment(s1, 0, s1:length() - 1, 1),
+        })
+        local bs = m.BlockSet({s1}, {b1})
+        local AddGoodBlast = require 'npge.algo.AddGoodBlast'
+        local hits = AddGoodBlast(bs, bs)
+        assert.truthy(hits:size() > 0)
+        local HasSelfOverlap =
+            require 'npge.algo.HasSelfOverlap'
+        assert.falsy(HasSelfOverlap(hits))
+    end)
 end)
