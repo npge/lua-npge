@@ -8,26 +8,23 @@ return function(block)
     if not hasSelfOverlap(block) then
         return {block}
     end
-    local function isGood(length)
-        return hasSelfOverlap(slice(block, 1, length))
+    local function makeSlice(length)
+        return slice(block, 0, length - 1)
     end
-    if not isGood(1) then
+    local function hasOverlap(length)
+        return hasSelfOverlap(makeSlice(length))
+    end
+    if hasOverlap(1) then
         -- even first column of the block has self-overlap
         return {}
     end
-    local min = 1
-    local max = block:length()
-    -- binary search
-    while min < max do
-        local middle = math.floor((min + 1 + max) / 2)
-        if isGood(middle) then
-            min = middle
-        else
-            max = middle
-        end
-    end
-    assert(min == max)
-    assert(1 < min)
-    assert(max < block:length())
-    return {slice(block, 1, min)}
+    assert(hasOverlap(block:length()))
+    local binary_search = require 'npge.util.binary_search'
+    local first_overlap = binary_search.firstTrue(hasOverlap,
+        1, block:length())
+    assert(first_overlap > 1)
+    assert(first_overlap < block:length())
+    local new_block = makeSlice(first_overlap - 1)
+    assert(not hasSelfOverlap(new_block))
+    return {new_block}
 end
