@@ -18,6 +18,19 @@ Workers.mapBlocks = function(workers, blockset)
     return blocksets
 end
 
+Workers.mapSequences = function(workers, blockset)
+    local mapItems = require 'npge.util.mapItems'
+    local buckets = mapItems(workers, blockset:sequences())
+    local BlockSet = require 'npge.model.BlockSet'
+    local blocksets = {}
+    for i = 1, workers do
+        local sequences = buckets[i]
+        local bs = BlockSet(sequences, {})
+        table.insert(blocksets, bs)
+    end
+    return blocksets
+end
+
 local workerCode = [[
 local ref = %q
 local alg = %q
@@ -32,18 +45,17 @@ return BlockSet.toRef(bs, increase_count)
 
 -- Map-reduce for algorithms on blocks.
 -- 1. Splits the blockset into buckets using function
---    Workers.mapBlocks
+--    Workers.mapBlocks or Workers.mapSequences (argument map)
 -- 2. apply alg to each bucket in parallel. alg must be a
 --    string of Lua code, which gets a bockset and returns
 --    a blockset.
-Workers.applyToBlockset = function(blockset, alg)
+Workers.applyToBlockset = function(blockset, alg, map)
     local threads = require 'npge.util.threads'
     return threads(
     -- generator
     function(workers)
         local codes = {}
-        local blocksets =
-            Workers.mapBlocks(workers, blockset)
+        local blocksets = map(workers, blockset)
         local BlockSet = require 'npge.model.BlockSet'
         for _, bs in ipairs(blocksets) do
             local ref = BlockSet.toRef(bs)
@@ -72,7 +84,8 @@ Workers.GoodSubblocks = function(blockset)
         local GS = require 'npge.algo.GoodSubblocks'
         return GS(bs)
     ]]
-    return Workers.applyToBlockset(blockset, code)
+    return Workers.applyToBlockset(blockset, code,
+        Workers.mapBlocks)
 end
 
 return Workers

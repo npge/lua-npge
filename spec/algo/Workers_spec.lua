@@ -82,8 +82,55 @@ describe("npge.algo.Workers", function()
         --
         local Workers = require 'npge.algo.Workers'
         local bs = Workers.applyToBlockset(blockset,
-            "return ...")
+            "return ...", Workers.mapBlocks)
         assert.equal(bs, blockset)
+        --
+        revert()
+    end)
+
+    it("returns the same sequences", function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            util = {WORKERS = 4},
+        })
+        --
+        local model = require 'npge.model'
+        local BlockSet = model.BlockSet
+        local s1 = model.Sequence('s1', 'ACTG')
+        local s2 = model.Sequence('s2', 'CTG')
+        local s3 = model.Sequence('s3', 'CTG')
+        local s4 = model.Sequence('s4', 'CTG')
+        local blockset = BlockSet({s1, s2, s3, s4}, {})
+        --
+        local Workers = require 'npge.algo.Workers'
+        local bs = Workers.applyToBlockset(blockset,
+            "return ...", Workers.mapSequences)
+        assert.equal(bs, blockset)
+        --
+        revert()
+    end)
+
+    it("covers sequences", function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            util = {WORKERS = 4},
+        })
+        --
+        local model = require 'npge.model'
+        local BlockSet = model.BlockSet
+        local s1 = model.Sequence('s1', 'ACTG')
+        local s2 = model.Sequence('s2', 'CTG')
+        local s3 = model.Sequence('s3', 'CTG')
+        local s4 = model.Sequence('s4', 'CTG')
+        local blockset = BlockSet({s1, s2, s3, s4}, {})
+        --
+        local Workers = require 'npge.algo.Workers'
+        local bs = Workers.applyToBlockset(blockset, [[
+            local Cover = require 'npge.algo.Cover'
+            return Cover(...)
+            ]], Workers.mapSequences)
+        local Cover = require 'npge.algo.Cover'
+        assert.equal(bs, Cover(blockset))
         --
         revert()
     end)
@@ -110,7 +157,7 @@ describe("npge.algo.Workers", function()
         local Workers = require 'npge.algo.Workers'
         assert.has_error(function()
             Workers.applyToBlockset(blockset,
-                "error('test')")
+                "error('test')", Workers.mapBlocks)
         end)
         --
         revert()
