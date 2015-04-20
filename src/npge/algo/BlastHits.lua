@@ -10,7 +10,7 @@ local ori = function(start, stop)
     end
 end
 
-local function readBlast(file, query, bank, filter, same)
+local function readBlast(file, query, bank, same)
     local new_blocks = {}
     local query_name, subject_name
     local query_row, subject_row
@@ -55,9 +55,7 @@ local function readBlast(file, query, bank, filter, same)
                 {query_f, query_row1},
                 {subject_f, subject_row1},
             })
-            if not filter or filter(block) then
-                table.insert(new_blocks, block)
-            end
+            table.insert(new_blocks, block)
         end
         query_row = nil
         subject_row = nil
@@ -144,8 +142,6 @@ return function(query, bank, options)
     -- - evalue
     -- - dust
     -- - workers
-    -- - hits_filter
-    --   (filtering function, accepts hit, returns true/false)
     -- - bank_fname - pre-built bank
     local Blast = require 'npge.algo.Blast'
     options = options or {}
@@ -175,8 +171,7 @@ return function(query, bank, options)
     local cmd = Blast.blastnCmd(bank_fname,
         query_cons_fname, options)
     local f = assert(io.popen(cmd, 'r'))
-    local filter = options.hits_filter
-    local hits = readBlast(f, query, bank, filter,
+    local hits = readBlast(f, query, bank,
         same or options.subset)
     f:close()
     if bank_cons_fname then
