@@ -398,7 +398,7 @@ BlockPtr Block::make(const Fragments& fragments,
 }
 
 bool Block::operator==(const Block& other) const {
-    if (size() != other.size()) {
+    if (size() != other.size() || length() != other.length()) {
         return false;
     }
     typedef std::map<std::string, const std::string*> Id2Text;
