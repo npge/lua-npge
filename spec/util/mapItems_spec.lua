@@ -10,6 +10,8 @@ describe("npge.util.mapItems", function()
         local groups = mapItems(2, array)
         assert.equal(#groups, 2)
         assert.equal(#groups[1] + #groups[2], #array)
+        assert.truthy(#groups[1] == #array / 2 or
+                      #groups[1] == #array / 2 + 1)
         local array2 = {}
         for _, group in ipairs(groups) do
             for _, item in ipairs(group) do
