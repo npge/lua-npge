@@ -4,7 +4,7 @@
 
 local Workers = {}
 
-Workers.makeBuckets = function(workers, blockset)
+Workers.mapBlocks = function(workers, blockset)
     local buckets = {}
     for i = 1, workers do
         table.insert(buckets, {})
@@ -39,7 +39,7 @@ return BlockSet.toRef(bs, increase_count)
 
 -- Map-reduce for algorithms on blocks.
 -- 1. Splits the blockset into buckets using function
---    Workers.makeBuckets
+--    Workers.mapBlocks
 -- 2. apply alg to each bucket in parallel. alg must be a
 --    string of Lua code, which gets a bockset and returns
 --    a blockset.
@@ -50,7 +50,7 @@ Workers.applyToBlockset = function(blockset, alg)
     function(workers)
         local codes = {}
         local blocksets =
-            Workers.makeBuckets(workers, blockset)
+            Workers.mapBlocks(workers, blockset)
         local BlockSet = require 'npge.model.BlockSet'
         for _, bs in ipairs(blocksets) do
             local ref = BlockSet.toRef(bs)
