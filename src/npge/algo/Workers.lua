@@ -5,15 +5,8 @@
 local Workers = {}
 
 Workers.mapBlocks = function(workers, blockset)
-    local buckets = {}
-    for i = 1, workers do
-        table.insert(buckets, {})
-    end
-    math.randomseed(os.time())
-    for block in blockset:iterBlocks() do
-        local ibucket = math.random(1, #buckets)
-        table.insert(buckets[ibucket], block)
-    end
+    local mapItems = require 'npge.util.mapItems'
+    local buckets = mapItems(workers, blockset:blocks())
     local BlockSet = require 'npge.model.BlockSet'
     local sequences = blockset:sequences()
     local blocksets = {}

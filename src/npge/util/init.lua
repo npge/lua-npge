@@ -25,4 +25,5 @@ return {
     readIt = require 'npge.util.readIt',
     timer = require 'npge.util.timer',
     threads = require 'npge.util.threads',
+    mapItems = require 'npge.util.mapItems',
 }
