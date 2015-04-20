@@ -139,9 +139,6 @@ end
 
 return function(query, bank, options)
     -- possible options:
-    -- - evalue
-    -- - dust
-    -- - workers
     -- - bank_fname - pre-built bank
     local Blast = require 'npge.algo.Blast'
     options = options or {}
