@@ -88,4 +88,30 @@ Workers.GoodSubblocks = function(blockset)
         Workers.mapBlocks)
 end
 
+Workers.BlastHits = function(query, bank)
+    local BlockSet = require 'npge.model.BlockSet'
+    if #query:sequences() == 0 or #bank:sequences() == 0 then
+        return BlockSet({}, {})
+    end
+    local Blast = require 'npge.algo.Blast'
+    Blast.checkNoCollisions(query, bank)
+    local bank_cons_fname = os.tmpname()
+    Blast.makeConsensus(bank_cons_fname, bank)
+    local bank_fname = os.tmpname()
+    Blast.makeBlastDb(bank_fname, bank_cons_fname)
+    local code = [[
+        local BlockSet = require 'npge.model.BlockSet'
+        local query = ...
+        local bank = BlockSet.fromRef(%q)
+        local BlastHits = require 'npge.algo.BlastHits'
+        return BlastHits(query, bank, {bank_fname=%q})
+    ]]
+    local hits = Workers.applyToBlockset(query,
+        code:format(BlockSet.toRef(bank), bank_fname),
+        Workers.mapSequences)
+    os.remove(bank_cons_fname)
+    Blast.bankCleanup(bank_fname)
+    return hits
+end
+
 return Workers
