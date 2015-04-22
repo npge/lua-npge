@@ -80,16 +80,23 @@ struct IndexedFragmentPtrLess {
     const Fragments& fragments_;
 };
 
-struct IndexedFragmentLess {
-    IndexedFragmentLess(const Fragments& fragments):
-        fragments_(fragments) {
+struct IndexedFragmentBlockLess {
+    IndexedFragmentBlockLess(const Fragments& fragments,
+                             const Blocks& blocks):
+        fragments_(fragments), blocks_(blocks) {
     }
 
     bool operator()(int a, int b) const {
-        return *(fragments_[a]) < *(fragments_[b]);
+        typedef const Fragment& A;
+        typedef const Block& B;
+        typedef boost::tuple<A, B> T;
+        T ta(*(fragments_[a]), *(blocks_[a]));
+        T tb(*(fragments_[b]), *(blocks_[b]));
+        return ta < tb;
     }
 
     const Fragments& fragments_;
+    const Blocks& blocks_;
 };
 
 struct IndexedFragmentTextLess {
@@ -628,7 +635,7 @@ static void sortFragments(FMap& fmap, BMap& bmap) {
         Ints indexes;
         range(indexes, n);
         std::sort(indexes.begin(), indexes.end(),
-                  IndexedFragmentLess(fragments));
+                  IndexedFragmentBlockLess(fragments, blocks));
         Fragments new_fragments(n);
         Blocks new_blocks(n);
         for (int j = 0; j < n; j++) {

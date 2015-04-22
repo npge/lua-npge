@@ -399,6 +399,34 @@ describe("npge.model.BlockSet", function()
         assert.equal(makeBs(), makeBs())
     end)
 
+    it("compares blocks with many equal fragments", function()
+        local s1 = model.Sequence("g1&c&c", "ATAT")
+        local f1 = model.Fragment(s1, 0, 0, 1)
+        local blocks1 = {}
+        for i = 1, 10 do
+            local fragments = {}
+            for j = 1, i do
+                table.insert(fragments, f1)
+            end
+            table.insert(blocks1, model.Block(fragments))
+        end
+        local bs1 = model.BlockSet({s1}, blocks1)
+        local blocks2 = {
+            blocks1[2],
+            blocks1[3],
+            blocks1[4],
+            blocks1[1],
+            blocks1[8],
+            blocks1[9],
+            blocks1[6],
+            blocks1[5],
+            blocks1[10],
+            blocks1[7],
+        }
+        local bs2 = model.BlockSet({s1}, blocks2)
+        assert.equal(bs1, bs2)
+    end)
+
     it("makes string representation of blockset", function()
         local s1 = model.Sequence("g&c&c", "ATAT")
         local f1 = model.Fragment(s1, 1, 2, 1)
