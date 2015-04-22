@@ -390,13 +390,8 @@ int lua_Fragment_eq(lua_State *L) {
 int lua_Fragment_lt_impl(lua_State *L) {
     const FragmentPtr& a = lua_tofr(L, 1);
     const FragmentPtr& b = lua_tofr(L, 2);
-    try {
-        lua_pushboolean(L, (*a) < (*b));
-        return 1;
-    } catch (std::exception& e) {
-        lua_pushstring(L, e.what());
-        return -1;
-    }
+    lua_pushboolean(L, (*a) < (*b));
+    return 1;
 }
 
 int lua_Fragment_lt(lua_State *L) {
