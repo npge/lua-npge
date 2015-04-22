@@ -317,8 +317,6 @@ bool Fragment::operator==(const Fragment& other) const {
 }
 
 bool Fragment::operator<(const Fragment& other) const {
-    ASSERT_TRUE(!parted());
-    ASSERT_TRUE(!other.parted());
     typedef boost::tuple<const std::string&, int, int, int> T;
     int self_min = std::min(start(), stop());
     int self_max = std::max(start(), stop());

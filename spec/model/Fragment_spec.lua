@@ -98,17 +98,12 @@ describe("npge.model.Fragment", function()
         assert.same(fragments_shuf, fragments_sorted)
     end)
 
-    it("throws in 'a < b' if a or b is parted", function()
+    it("doesn't throw in 'a < b' if a or b is parted",
+    function()
         local s1 = model.Sequence("ABC&chromosome&c", "ATGC")
         local b
-        assert.has_error(function()
+        assert.has_not_error(function()
             b = Fragment(s1, 0, 1, -1) < Fragment(s1, 0, 2, 1)
-        end)
-        assert.has_error(function()
-            b = Fragment(s1, 0, 1, 1) < Fragment(s1, 2, 1, 1)
-        end)
-        assert.has_error(function()
-            b = Fragment(s1, 0, 1, -1) < Fragment(s1, 2, 1, 1)
         end)
     end)
 
