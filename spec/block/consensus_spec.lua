@@ -16,8 +16,8 @@ describe("npge.block.consensus", function()
         it("gets consensus " .. expected_consensus, function()
             local model = require 'npge.model'
             local for_block = {}
-            for _, row in ipairs(rows) do
-                local s = model.Sequence('name', row)
+            for i, row in ipairs(rows) do
+                local s = model.Sequence('name' .. i, row)
                 local f = model.Fragment(s, 0,
                     s:length() - 1, 1)
                 table.insert(for_block, {f, row})

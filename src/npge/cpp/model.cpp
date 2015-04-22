@@ -337,7 +337,7 @@ BlockPtr Block::make(const Fragments& fragments) {
     BlockPtr b(block);
     block->fragments_ = fragments;
     Fragments& ff = block->fragments_;
-    std::sort(ff.begin(), ff.end());
+    std::sort(ff.begin(), ff.end(), FragmentLess());
     int n = ff.size();
     block->rows_.resize(n);
     size_t max_len = 0;
@@ -362,7 +362,7 @@ BlockPtr Block::make(const Fragments& fragments,
     Ints indexes;
     range(indexes, n);
     std::sort(indexes.begin(), indexes.end(),
-              IndexedFragmentPtrLess(fragments));
+              IndexedFragmentLess(fragments));
     //
     Block* block = new Block;
     BlockPtr b(block);
@@ -438,7 +438,7 @@ const std::string& Block::text(
         const FragmentPtr& fragment) const {
     Fragments::const_iterator it = binarySearch(
             fragments_.begin(), fragments_.end(),
-            fragment);
+            fragment, FragmentLess());
     ASSERT_MSG(it != fragments_.end(),
                "Fragment not in block");
     int index = std::distance(fragments_.begin(), it);
