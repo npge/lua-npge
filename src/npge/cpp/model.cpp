@@ -92,6 +92,25 @@ struct IndexedFragmentLess {
     const Fragments& fragments_;
 };
 
+struct IndexedFragmentTextLess {
+    IndexedFragmentTextLess(const Fragments& fragments,
+                            const Strings& texts):
+        fragments_(fragments), texts_(texts) {
+    }
+
+    bool operator()(int a, int b) const {
+        typedef const Fragment& A;
+        typedef const std::string& B;
+        typedef boost::tuple<A, B> T;
+        T ta(*(fragments_[a]), texts_[a]);
+        T tb(*(fragments_[b]), texts_[b]);
+        return ta < tb;
+    }
+
+    const Fragments& fragments_;
+    const Strings& texts_;
+};
+
 struct FragmentLess {
     bool operator()(const FragmentPtr& a,
                     const FragmentPtr& b) const {
@@ -355,15 +374,34 @@ BlockPtr Block::make(const Fragments& fragments) {
 }
 
 BlockPtr Block::make(const Fragments& fragments,
-                     const CStrings& rows) {
-    ASSERT_EQ(fragments.size(), rows.size());
+                     const CStrings& rows0) {
+    ASSERT_EQ(fragments.size(), rows0.size());
     ASSERT_MSG(fragments.size(), "Empty block is not allowed");
     int n = fragments.size();
+    // make rows
+    Strings rows(n);
+    for (int i = 0; i < n; i++) {
+        const CString& row0 = rows0[i];
+        const char* row_text = row0.first;
+        int row_size = row0.second;
+        Buffer b(new char[row0.second]);
+        int len = toAtgcnAndGap(b.get(), row_text, row_size);
+        rows[i].assign(b.get(), len);
+#ifndef NPGE_NO_ASSERTS
+        // compare with fragment text
+        const FragmentPtr& fragment = fragments[i];
+        int len2 = toAtgcn(b.get(), row_text, row_size);
+        std::string fr_str = fragment->text();
+        ASSERT_EQ(len2, fr_str.size());
+        ASSERT_EQ(memcmp(b.get(), fr_str.c_str(), len2), 0);
+#endif
+    }
+    // sort
     Ints indexes;
     range(indexes, n);
     std::sort(indexes.begin(), indexes.end(),
-              IndexedFragmentLess(fragments));
-    //
+              IndexedFragmentTextLess(fragments, rows));
+    // assign
     Block* block = new Block;
     BlockPtr b(block);
     block->fragments_.resize(n);
@@ -372,19 +410,7 @@ BlockPtr Block::make(const Fragments& fragments,
         int index = indexes[i];
         const FragmentPtr& fragment = fragments[index];
         block->fragments_[i] = fragment;
-        const CString& row0 = rows[index];
-        const char* row_text = row0.first;
-        int row_size = row0.second;
-        Buffer b(new char[row0.second]);
-        int len = toAtgcnAndGap(b.get(), row_text, row_size);
-        block->rows_[i].assign(b.get(), len);
-#ifndef NPGE_NO_ASSERTS
-        // compare with fragment text
-        int len2 = toAtgcn(b.get(), row_text, row_size);
-        std::string fr_str = fragment->text();
-        ASSERT_EQ(len2, fr_str.size());
-        ASSERT_EQ(memcmp(b.get(), fr_str.c_str(), len2), 0);
-#endif
+        block->rows_[i].swap(rows[index]);
     }
     //
     block->length_ = block->rows_[0].length();

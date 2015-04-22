@@ -169,6 +169,9 @@ describe("npge.model.Block", function()
         assert.equal(
             model.Block({{f1, 'A-T'}, {f2, 'AT-'}}),
             model.Block({{f1, 'A-T'}, {f2, 'AT-'}}))
+        assert.equal(
+            model.Block({{f1, 'A-T'}, {f1, 'AT-'}}),
+            model.Block({{f1, 'AT-'}, {f1, 'A-T'}}))
     end)
 
     it("makes string representation of block", function()
