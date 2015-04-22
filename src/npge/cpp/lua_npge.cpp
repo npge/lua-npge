@@ -639,6 +639,13 @@ int lua_Block_eq(lua_State *L) {
     return 1;
 }
 
+int lua_Block_lt(lua_State *L) {
+    const BlockPtr& a = lua_toblock(L, 1);
+    const BlockPtr& b = lua_toblock(L, 2);
+    lua_pushboolean(L, (*a) < (*b));
+    return 1;
+}
+
 static const luaL_Reg Block_methods[] = {
     {"__gc", lua_Block_gc},
     {"type", lua_Block_type},
@@ -652,6 +659,7 @@ static const luaL_Reg Block_methods[] = {
     {"block2right", lua_Block_block2right},
     {"__tostring", lua_Block_tostring},
     {"__eq", lua_Block_eq},
+    {"__lt", lua_Block_lt},
     {NULL, NULL}
 };
 

@@ -150,7 +150,7 @@ describe("npge.model.Block", function()
         assert.are.same(ff1, ff2)
     end)
 
-    it("compares blocks", function()
+    it("compares blocks (==)", function()
         local s = model.Sequence("test_name", "ATAT")
         local f1 = model.Fragment(s, 0, 1, 1)
         local f2 = model.Fragment(s, 2, 3, 1)
@@ -172,6 +172,25 @@ describe("npge.model.Block", function()
         assert.equal(
             model.Block({{f1, 'A-T'}, {f1, 'AT-'}}),
             model.Block({{f1, 'AT-'}, {f1, 'A-T'}}))
+    end)
+
+    it("compares blocks (<)", function()
+        local s = model.Sequence("test_name", "ATAT")
+        local f1 = model.Fragment(s, 0, 1, 1)
+        local f2 = model.Fragment(s, 2, 3, 1)
+        local b1 = model.Block({f1, f2})
+        local b1_1 = model.Block({f1, f2})
+        assert.falsy(b1 < b1_1)
+        assert.falsy(b1_1 < b1)
+        local b2 = model.Block({f1, f1})
+        assert.truthy(b1 < b2 or b2 < b1)
+        local b3 = model.Block({
+            {f1, "AT-"},
+            {f2, "A-T"},
+        })
+        assert.truthy(b1 < b3 or b3 < b1)
+        local b4 = model.Block({f1, f1, f2})
+        assert.truthy(b1 < b4 or b4 < b1)
     end)
 
     it("makes string representation of block", function()

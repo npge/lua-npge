@@ -161,6 +161,8 @@ public:
 
     bool operator==(const Block& other) const;
 
+    bool operator<(const Block& other) const;
+
     int length() const;
 
     int size() const;

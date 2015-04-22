@@ -438,6 +438,37 @@ bool Block::operator==(const Block& other) const {
     return true;
 }
 
+bool Block::operator<(const Block& other) const {
+    typedef boost::tuple<int, int> T;
+    T b1(size(), length());
+    T b2(other.size(), other.length());
+    if (b1 < b2) {
+        return true;
+    }
+    if (b1 > b2) {
+        return false;
+    }
+    int n = size();
+    for (int i = 0; i < n; i++) {
+        const FragmentPtr& f1 = fragments_[i];
+        const FragmentPtr& f2 = other.fragments_[i];
+        const std::string& r1 = rows_[i];
+        const std::string& r2 = other.rows_[i];
+        typedef const Fragment& A;
+        typedef const std::string& B;
+        typedef boost::tuple<A, B> T;
+        T t1(*f1, r1);
+        T t2(*f2, r2);
+        if (t1 < t2) {
+            return true;
+        }
+        if (t2 < t1) {
+            return false;
+        }
+    }
+    return false; // equal
+}
+
 int Block::length() const {
     return length_;
 }
