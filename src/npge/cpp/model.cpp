@@ -399,23 +399,13 @@ bool Block::operator==(const Block& other) const {
     if (size() != other.size() || length() != other.length()) {
         return false;
     }
-    typedef std::map<std::string, const std::string*> Id2Text;
-    Id2Text id2text;
     int n = size();
     for (int i = 0; i < n; i++) {
-        const FragmentPtr& f = fragments_[i];
-        const std::string& text = rows_[i];
-        id2text[f->id()] = &text;
-    }
-    for (int i = 0; i < n; i++) {
-        const FragmentPtr& f = other.fragments_[i];
-        Id2Text::const_iterator it = id2text.find(f->id());
-        if (it == id2text.end()) {
-            return false;
-        }
-        const std::string& t1 = *(it->second);
+        const FragmentPtr& f1 = fragments_[i];
+        const FragmentPtr& f2 = other.fragments_[i];
+        const std::string& t1 = rows_[i];
         const std::string& t2 = other.rows_[i];
-        if (t1 != t2) {
+        if (!(*f1 == *f2) || t1 != t2) {
             return false;
         }
     }
