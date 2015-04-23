@@ -16,14 +16,20 @@ local function readBlast(file, query, bank, same)
     local query_row, subject_row
     local query_start, subject_start
     local query_stop, subject_stop
-    local goodHit = function()
+    local function goodHit()
         return query_name and subject_name
             and query_row and subject_row
+    end
+    local function goodFragments(query_f, subject_f)
+        return true
     end
     if same then
         local goodHit0 = goodHit
         goodHit = function()
             return goodHit0() and query_name <= subject_name
+        end
+        goodFragments = function(query_f, subject_f)
+            return query_f < subject_f
         end
     end
     local function tryAdd()
@@ -48,14 +54,16 @@ local function readBlast(file, query, bank, same)
             local subject_f = Fragment(subject_seq,
                 subject_start - 1, subject_stop - 1,
                 subject_ori)
-            local Block = require 'npge.model.Block'
-            local query_row1 = table.concat(query_row)
-            local subject_row1 = table.concat(subject_row)
-            local block = Block({
-                {query_f, query_row1},
-                {subject_f, subject_row1},
-            })
-            table.insert(new_blocks, block)
+            if goodFragments(query_f, subject_f) then
+                local Block = require 'npge.model.Block'
+                local query_row1 = table.concat(query_row)
+                local subject_row1 = table.concat(subject_row)
+                local block = Block({
+                    {query_f, query_row1},
+                    {subject_f, subject_row1},
+                })
+                table.insert(new_blocks, block)
+            end
         end
         query_row = nil
         subject_row = nil
