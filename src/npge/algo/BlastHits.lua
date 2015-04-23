@@ -148,6 +148,10 @@ end
 return function(query, bank, options)
     -- possible options:
     -- - bank_fname - pre-built bank
+    -- - subset - if truthy, then query is interpreted as
+    --   a subset of subject. All hits where query > subject
+    --   are discarded (optimisation). They are compared
+    --   as instances of Fragment.
     local Blast = require 'npge.algo.Blast'
     options = options or {}
     local BlockSet = require 'npge.model.BlockSet'

@@ -3,8 +3,6 @@
 -- See the LICENSE file for terms of use.
 
 -- Options are same as options of BlastHits
--- Additional options:
---  - subset (query is a subset of subject)
 return function(query, bank, options)
     options = options or {}
     local algo = require 'npge.algo'
