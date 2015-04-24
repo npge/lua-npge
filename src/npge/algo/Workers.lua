@@ -35,7 +35,8 @@ local workerCode = [[
 local ref = %q
 local alg = %q
 local BlockSet = require 'npge.model.BlockSet'
-local bs = BlockSet.fromRef(ref)
+local decrease_count = true
+local bs = BlockSet.fromRef(ref, decrease_count)
 local loadstring = require 'npge.util.loadstring'
 local algorithm = loadstring(alg)
 bs = assert(algorithm(bs))
@@ -58,7 +59,8 @@ Workers.applyToBlockset = function(blockset, alg, map)
         local blocksets = map(workers, blockset)
         local BlockSet = require 'npge.model.BlockSet'
         for _, bs in ipairs(blocksets) do
-            local ref = BlockSet.toRef(bs)
+            local increase_count = true
+            local ref = BlockSet.toRef(bs, increase_count)
             table.insert(codes, workerCode:format(ref, alg))
         end
         return codes
