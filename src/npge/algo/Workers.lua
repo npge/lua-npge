@@ -104,13 +104,15 @@ Workers.BlastHits = function(query, bank)
     local code = [[
         local BlockSet = require 'npge.model.BlockSet'
         local query = ...
-        local bank = BlockSet.fromRef(%q)
+        local decrease_count = true
+        local bank = BlockSet.fromRef(%q, decrease_count)
         local BlastHits = require 'npge.algo.BlastHits'
         return BlastHits(query, bank, {bank_fname=%q})
     ]]
+    local increase_count = true
     local hits = Workers.applyToBlockset(query,
-        code:format(BlockSet.toRef(bank), bank_fname),
-        Workers.mapSequences)
+        code:format(BlockSet.toRef(bank, increase_count),
+            bank_fname), Workers.mapSequences)
     os.remove(bank_cons_fname)
     Blast.bankCleanup(bank_fname)
     return hits
