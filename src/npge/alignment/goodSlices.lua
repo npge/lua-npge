@@ -5,16 +5,25 @@
 -- Arguments:
 -- 1. list of column statuses (true is good column)
 -- 2. min_length (integer)
--- 3. min_identity (from 0.0 to 1.0)
+-- 3. min_end (integer) -- number of begin and end good columns
+-- 4. min_identity (from 0.0 to 1.0)
 
 -- Results:
 -- 1. List of good slices
 --    Each slice is a table { start = ... , stop() = ... }
 -- Indices start and stop start from 0
 
-return function(good_col, min_length, min_identity)
+return function(good_col, min_length, min_end, min_identity)
+
+    assert(min_length >= min_end)
 
     local block_length = #good_col
+
+    -- convert values in good_col to 0 or 1
+    local good_col1 = {}
+    for i = 1, #good_col do
+        good_col1[i] = good_col[i] and 1 or 0
+    end
 
     -- class Slice
 
@@ -67,16 +76,34 @@ return function(good_col, min_length, min_identity)
         end,
 
         strip = function(self)
+            if not self:valid() then
+                return self
+            end
             local start1 = self.start
             local stop1 = self:stop()
-            while not good_col[start1 + 1] and
-                    start1 < stop1 do
+            -- begin
+            local good_count = 0
+            for i = start1, start1 + min_end - 1 do
+                good_count = good_count + good_col1[i + 1]
+            end
+            while good_count < min_end and start1 < stop1 do
+                good_count = good_count - good_col1[start1 + 1]
                 start1 = start1 + 1
+                local new_pos = start1 + min_end - 1
+                good_count = good_count + good_col1[new_pos + 1]
             end
-            while not good_col[stop1 + 1] and
-                    start1 < stop1 do
+            -- end
+            local good_count = 0
+            for i = stop1, stop1 - min_end + 1, -1 do
+                good_count = good_count + good_col1[i + 1]
+            end
+            while good_count < min_end and start1 < stop1 do
+                good_count = good_count - good_col1[stop1 + 1]
                 stop1 = stop1 - 1
+                local new_pos = stop1 - min_end + 1
+                good_count = good_count + good_col1[new_pos + 1]
             end
+            -- result
             local length1 = stop1 - start1 + 1
             return Slice(start1, length1)
         end,
@@ -87,12 +114,6 @@ return function(good_col, min_length, min_identity)
         end,
     }
     slice_mt.__index = slice_mt
-
-    -- convert values in good_col to 0 or 1
-    local good_col1 = {}
-    for i = 1, #good_col do
-        good_col1[i] = good_col[i] and 1 or 0
-    end
 
     -- Return if identity (good_count / min_length) is good
     local identity = require 'npge.alignment.identity'
