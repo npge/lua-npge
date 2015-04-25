@@ -103,6 +103,7 @@ build = {
         ['npge.alignment.toAtgcnAndGap'] = 'src/npge/alignment/toAtgcnAndGap.lua',
         ['npge.alignment.toAtgcn'] = 'src/npge/alignment/toAtgcn.lua',
         ['npge.alignment.unwindRow'] = 'src/npge/alignment/unwindRow.lua',
+        ['npge.alignment.goodSlices'] = 'src/npge/alignment/goodSlices.lua',
         ['npge.algo'] = 'src/npge/algo/init.lua',
         ['npge.algo.AddGoodBlast'] = 'src/npge/algo/AddGoodBlast.lua',
         ['npge.algo.Align'] = 'src/npge/algo/Align.lua',
