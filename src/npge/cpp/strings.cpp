@@ -138,6 +138,7 @@ double identity(const char** rows, int nrows,
             char letter = rows[irow][bp];
             if (letter == '-') {
                 gap = 1;
+                break;
             } else if (first && letter != first) {
                 bad = 1;
                 break;
@@ -147,8 +148,6 @@ double identity(const char** rows, int nrows,
         }
         if (!bad && !gap) {
             ident += 1;
-        } else if (!bad && gap) {
-            ident += 0.5;
         }
     }
     return ident;

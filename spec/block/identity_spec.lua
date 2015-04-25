@@ -32,7 +32,7 @@ describe("npge.block.identity", function()
         local b = model.Block({{f1, 'AT'}, {f2, '-T'}})
         local identity = require 'npge.block.identity'
         local b_identity = identity(b)
-        assert.truthy(identity.eq(b_identity, 0.75))
+        assert.truthy(identity.eq(b_identity, 0.50))
     end)
 
     it("compares identuty", function()

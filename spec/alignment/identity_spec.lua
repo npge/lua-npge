@@ -44,7 +44,7 @@ describe("npge.alignment.identity", function()
         local identity = require 'npge.alignment.identity'
         local eq = require 'npge.block.identity'.eq
         local _, nident, ncols = identity({'A-T', 'TTT'})
-        assert.truthy(eq(nident, 1.5))
+        assert.truthy(eq(nident, 1))
         assert.truthy(eq(ncols, 3))
     end)
 
