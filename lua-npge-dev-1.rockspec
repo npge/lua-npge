@@ -17,7 +17,7 @@ dependencies = {
     "alnbox",
     "luaposix",
 }
- external_dependencies = {
+external_dependencies = {
     BOOST = {
         header = "boost/foreach.hpp"
     }
