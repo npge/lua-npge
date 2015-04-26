@@ -482,4 +482,35 @@ TCTTGC]]
         --
         revert()
     end)
+
+    pending("extracts good parts from block (real example 2)",
+    function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            general = {
+                MIN_LENGTH = 100,
+                MIN_END_IDENTICAL_COLUMNS = 3,
+                MIN_IDENTITY = 0.9,
+            },
+        })
+        --
+        local t1 = [[
+TTTTTTTTGTACCGAAAATAGAAAAAATGGCTAAGTAACATAAAGGTAAT
+GTATTGGATTGCAAATCCTAGAAAGATGGTTCAAATCCGTCCTTAGCCTA
+CTTGA-AATTCTACTGTTTCTCTACAAGTACTGCAC]]
+        local t2 = [[
+TTTCTCCTGCACTAAAAGTCTAAAAAATGGCTAAGTAACATAAAGGTAAT
+GTATTGGATTGCAAATCCTAGAAAGATGGTTCAAATCCGTCCTTAGCCTA
+CTTTACAATTATACCGTTTTCGTATAAGTGCTGCAC]]
+        local model = require 'npge.model'
+        local s1 = model.Sequence('s1', t1)
+        local s2 = model.Sequence('s2', t2)
+        local f1 = model.Fragment(s1, 0, s1:length() - 1, 1)
+        local f2 = model.Fragment(s2, 0, s2:length() - 1, 1)
+        local block = model.Block({{f1, t1}, {f2, t2}})
+        local goodSubblocks = require 'npge.block.goodSubblocks'
+        local subblocks = goodSubblocks(block)
+        --
+        revert()
+    end)
 end)
