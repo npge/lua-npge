@@ -2,32 +2,15 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-local function findGap(rows, length, min_length)
-    for _, row in ipairs(rows) do
-        local gap_length = 0
-        for i = 1, length do
-            if row:sub(i, i) == '-' then
-                gap_length = gap_length + 1
-                if gap_length >= min_length then
-                    return true, gap_length
-                end
-            else
-                gap_length = 0
-            end
-        end
-    end
-    return false
-end
-
 return function(block)
+    -- good column = identical and gapless
     -- AND(
     -- size >= 2 fragments
-    -- length >= config.general.MIN_LENGTH
-    -- identity >= config.general.MIN_IDENTITY
-    -- no gaps longer or equal to config.general.MIN_LENGTH
-    -- both ends are identical and gapsless for at least
-    --     config.general.MIN_END_IDENTICAL_COLUMNS
+    -- length >= MIN_LENGTH
+    -- identity >= MIN_IDENTITY on each slice of MIN_LENGTH
+    -- both ends are good for >= MIN_END_IDENTICAL_COLUMNS
     -- )
+    -- Values of these constants are in config.general
     local config = require 'npge.config'
     local min_length = config.general.MIN_LENGTH
     -- check size
@@ -62,11 +45,30 @@ return function(block)
     if identityLess(ident, 1.0) then
         return false, 'ending identity', ident
     end
-    -- check gap length
-    local has_long_gap, long_gap = findGap(rows,
-        block:length(), min_length)
-    if has_long_gap then
-        return false, 'long gaps', long_gap
+    -- check identity of slices of length MIN_LENGTH
+    local min_gc = min_length * min_ident
+    local function goodIdentity(good_count)
+        return not identityLess(good_count, min_gc)
+    end
+    local goodColumns = require 'npge.cpp'.func.goodColumns
+    local col = goodColumns(rows)
+    local good_count = 0
+    for i = 1, min_length do
+        good_count = good_count + (col[i] and 1 or 0)
+    end
+    if not goodIdentity(good_count) then
+        return false, 'identity of slice',
+               good_count / min_length
+    end
+    for new_pos = min_length + 1, block:length() do
+        local old_pos = new_pos - min_length
+        good_count = good_count + (col[new_pos] and 1 or 0)
+        good_count = good_count - (col[old_pos] and 1 or 0)
+        local start = old_pos + 1
+        if not goodIdentity(good_count) then
+            return false, 'identity of slice',
+                   good_count / min_length
+        end
     end
     return true
 end

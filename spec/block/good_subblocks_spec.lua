@@ -93,10 +93,8 @@ describe("npge.block.goodSubblocks", function()
             require 'npge.block.goodSubblocks'
         local gs = goodSubblocks(block)
         assert.same(gs, {Block({
-            {Fragment(s1, 1, s1:length() - 1 - 1, 1),
-                "AAATTTTTTTTAAAACGCGCGCAAA"},
-            {Fragment(s2, 1, s2:length() - 1 - 1, 1),
-                "AAAGGGGGGGGAAAAGGGGGGGAAA"},
+            {Fragment(s1, 12, 25, 1), "AAAACGCGCGCAAA"},
+            {Fragment(s2, 12, 25, 1), "AAAAGGGGGGGAAA"},
         })})
         --
         revert()

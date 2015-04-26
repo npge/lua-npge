@@ -120,24 +120,22 @@ describe("npge.block.isGood", function()
         -- insert non-identical columns in the middle of block
         local Sequence = require 'npge.model.Sequence'
         local config = require 'npge.config'
-        local min_ident = config.general.MIN_IDENTITY
-        local length = 1000
-        local good_cols = math.floor(length * min_ident) + 1
-        local bad_cols = length - good_cols
-        local first_good_part = math.floor(good_cols / 2)
-        local second_good_part = good_cols - first_good_part
+        local min_length = config.general.MIN_LENGTH
+        local bad_cols = min_length
+        local good_cols = bad_cols * 100
+        local length = 2 * good_cols + bad_cols
         local s1 = Sequence('s1', string.rep('A', length))
         local s2 = Sequence('s2',
-            string.rep('A', first_good_part) ..
+            string.rep('A', good_cols) ..
             string.rep('C', bad_cols) ..
-            string.rep('A', second_good_part))
+            string.rep('A', good_cols))
         local Fragment = require 'npge.model.Fragment'
         local f1 = Fragment(s1, 0, length - 1, 1)
         local f2 = Fragment(s2, 0, length - 1, 1)
         local Block = require 'npge.model.Block'
         local block = Block({f1, f2})
         local isGood = require 'npge.block.isGood'
-        assert.truthy(isGood(block))
+        assert.falsy(isGood(block))
     end)
 
     it("checks if a block is bad (bad left end)", function()
@@ -310,7 +308,7 @@ describe("npge.block.isGood", function()
         local identity = require 'npge.block.identity'
         if not identity.less(identity(block), min_ident) then
             local isGood = require 'npge.block.isGood'
-            assert.truthy(isGood(block))
+            assert.falsy(isGood(block))
         end
     end)
 end)

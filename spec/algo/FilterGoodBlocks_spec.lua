@@ -26,7 +26,7 @@ describe("npge.algo.FilterGoodBlocks", function()
         local Block = require 'npge.model.Block'
         local bad_block = Block({f1, f2})
         -- bad block
-        local good_cols = math.floor(length * min_ident) + 1
+        local good_cols = length - 1
         local bad_cols = length - good_cols
         local first_good_part = math.floor(good_cols / 2)
         local second_good_part = good_cols - first_good_part
