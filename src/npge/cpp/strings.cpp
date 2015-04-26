@@ -127,26 +127,28 @@ int unwindRow(char* result, const char* row, int row_size,
     return row_size;
 }
 
+bool isColumnGood(const char** rows, int nrows, int i) {
+    if (nrows == 0) {
+        return false;
+    }
+    char first = rows[0][i];
+    if (first == '-') {
+        return false;
+    }
+    for (int irow = 0; irow < nrows; irow++) {
+        char letter = rows[irow][i];
+        if (letter != first) {
+            return false;
+        }
+    }
+    return true;
+}
+
 double identity(const char** rows, int nrows,
                 int start, int stop) {
     double ident = 0;
-    for (int bp = start; bp <= stop; bp++) {
-        int gap = 0;
-        char first = 0;
-        int bad = 0;
-        for (int irow = 0; irow < nrows; irow++) {
-            char letter = rows[irow][bp];
-            if (letter == '-') {
-                gap = 1;
-                break;
-            } else if (first && letter != first) {
-                bad = 1;
-                break;
-            } else {
-                first = letter;
-            }
-        }
-        if (!bad && !gap) {
+    for (int i = start; i <= stop; i++) {
+        if (isColumnGood(rows, nrows, i)) {
             ident += 1;
         }
     }

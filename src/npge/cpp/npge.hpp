@@ -25,8 +25,10 @@ int toAtgcnAndGap(char* dst, const char* src, int length);
 int unwindRow(char* result, const char* row, int row_size,
               const char* orig, int orig_size);
 
-// returns number of identical columns
-// identical column with gaps has weight 0.5
+// returns if i-th column is good
+bool isColumnGood(const char** rows, int nrows, int i);
+
+// returns percentage and number of good columns
 double identity(const char** rows, int nrows,
                 int start, int stop);
 
