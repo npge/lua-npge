@@ -99,7 +99,7 @@ local function goodSubblocks(block)
     if #good_slices > 0 then
         local result = {}
         for _, s in ipairs(good_slices) do
-            local subblock = slice(block, s.start, s:stop())
+            local subblock = slice(block, s[1], s[2])
             assert(isGood(subblock))
             table.insert(result, subblock)
         end

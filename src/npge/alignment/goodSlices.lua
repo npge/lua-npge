@@ -10,7 +10,7 @@
 
 -- Results:
 -- 1. List of good slices
---    Each slice is a table { start = ... , stop() = ... }
+--    Each slice is a table {start, stop}
 -- Indices start and stop start from 0
 
 return function(good_col, min_length, min_end, min_identity)
@@ -202,7 +202,8 @@ return function(good_col, min_length, min_end, min_identity)
     while #slices > 0 do
         local selected = maxSlice(slices)
         if selected.length >= min_length then
-            table.insert(result, selected)
+            local r = {selected.start, selected:stop()}
+            table.insert(result, r)
             slices = excludeSlice(slices, selected)
         end
     end

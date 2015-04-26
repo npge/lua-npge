@@ -8,14 +8,14 @@ describe("npge.alignment.goodSlices", function()
         assert.same(goodSlices({true, false, true, true, true,
             false, false, false, false, true, true, true},
             3, 1, 0.6), {
-                {start = 0, length = 5},
-                {start = 9, length = 3},
+                {0, 4},
+                {9, 11},
             })
         assert.same(goodSlices({true, false, true, true, true,
             false, false, false, false, true, true, true, true},
             3, 2, 0.6), {
-                {start = 9, length = 4},
-                {start = 2, length = 3},
+                {9, 12},
+                {2, 4},
             })
     end)
 
@@ -32,13 +32,13 @@ describe("npge.alignment.goodSlices", function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices(bools("+-+++----++++"),
             3, 1, 0.6), {
-                {start = 0, length = 5},
-                {start = 9, length = 4},
+                {0, 4},
+                {9, 12},
             })
         assert.same(goodSlices(bools("+-+++----++++"),
             3, 2, 0.6), {
-                {start = 9, length = 4},
-                {start = 2, length = 3},
+                {9, 12},
+                {2, 4},
             })
     end)
 
@@ -47,8 +47,8 @@ describe("npge.alignment.goodSlices", function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices(bools("++-+++++++++-+"),
             10, 1, 0.9), {
-                {start = 0, length = 12},
-                -- not {start = 0, length = 14}
+                {0, 11},
+                -- not {0, 13}
             })
     end)
 
@@ -73,10 +73,10 @@ describe("npge.alignment.goodSlices", function()
 +++++++++++++++++++++++++-+++++-+++++++++++++++++++-++++++++
 ++++++++++++-++++++-++++++++++++++++++++]]
         assert.same(goodSlices(bools(row), 100, 3, 0.9), {
-            {start = 396, length = 317},
-            {start = 157, length = 237},
-            {start = 801, length = 199},
-            {start = 0, length = 152},
+            {396, 712},
+            {157, 393},
+            {801, 999},
+            {0, 151},
         })
     end)
 end)
