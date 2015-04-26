@@ -86,7 +86,8 @@ return function(good_col, min_length, min_end, min_identity)
             for i = start1, start1 + min_end - 1 do
                 good_count = good_count + good_col1[i + 1]
             end
-            while good_count < min_end and start1 < stop1 do
+            while good_count < min_end and
+                    start1 + min_end - 1 < stop1 do
                 good_count = good_count - good_col1[start1 + 1]
                 start1 = start1 + 1
                 local new_pos = start1 + min_end - 1
@@ -97,7 +98,8 @@ return function(good_col, min_length, min_end, min_identity)
             for i = stop1, stop1 - min_end + 1, -1 do
                 good_count = good_count + good_col1[i + 1]
             end
-            while good_count < min_end and start1 < stop1 do
+            while good_count < min_end and
+                    start1 + min_end - 1 < stop1 do
                 good_count = good_count - good_col1[stop1 + 1]
                 stop1 = stop1 - 1
                 local new_pos = stop1 - min_end + 1
