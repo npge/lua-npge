@@ -3,7 +3,11 @@
 -- See the LICENSE file for terms of use.
 
 return function(lines, blockset_with_sequences)
-    -- lines is iterator (like file:lines())
+    -- lines is iterator (like file:lines()) or string
+    if type(lines) == 'string' then
+        local util = require 'npge.util'
+        lines = util.textToIt(lines)
+    end
     local bs1 = blockset_with_sequences
     local blockname2fragments = {}
     local name, description, text_lines

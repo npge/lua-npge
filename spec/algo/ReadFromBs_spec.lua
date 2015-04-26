@@ -39,9 +39,7 @@ A-T
 >seq2_4_5 block=b3
 AT-
 ]]
-        local lines = split(bs_text, '\n')
-        local it = itFromArray(lines)
-        local bs2 = ReadFromBs(it, bs1)
+        local bs2 = ReadFromBs(bs_text, bs1)
         --
         local Block = require 'npge.model.Block'
         local Fragment = require 'npge.model.Fragment'
