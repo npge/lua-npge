@@ -443,4 +443,43 @@ GGCgAA
         --
         revert()
     end)
+
+    it("extracts good parts from block (real example)",
+    function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            general = {
+                MIN_LENGTH = 100,
+                MIN_END_IDENTICAL_COLUMNS = 3,
+                MIN_IDENTITY = 0.9,
+            },
+        })
+        --
+        local t1 = [[
+ATTTTGTTAAGAGCTGTGGTTCGACGTGACGCTAAAGAAGTTATATGATAAGTAGAGGGA
+CTCATAATTGAAAGTGCGTTTTTTTTTATCACTTGTGAGACACTAATTTCTCCTAAGGAA
+CATACATAAGATTTATTCAGTCGTTTTAATTGATTAGCATTTAAGCTTTTTACCATTTCG
+TTACAC]]
+        local t2 = [[
+ATTTTGTTGAGAACGATGCTTTGACGTAAAGCTAGAAAAGTGTGATGATAAGTAGAGGGA
+CTCATGGTTGAGAGTGCGTTTTTTTTGATTATTTGTGAGACACTAATTTCTCCCAAGAAA
+CATACATAAGATTTATTCATTTTTTTCAATTGATTAGCATTTAAGCTTTTAATGGCTATA
+TCTTGC]]
+        local model = require 'npge.model'
+        local s1 = model.Sequence('s1', t1)
+        local s2 = model.Sequence('s2', t2)
+        local f1 = model.Fragment(s1, 0, s1:length() - 1, 1)
+        local f2 = model.Fragment(s2, 0, s2:length() - 1, 1)
+        local block = model.Block({{f1, t1}, {f2, t2}})
+        local goodSubblocks = require 'npge.block.goodSubblocks'
+        local subblocks = goodSubblocks(block)
+        local consensus = require 'npge.block.consensus'
+        assert.equal(#subblocks, 1)
+        assert.equal(consensus(subblocks[1]), (([[
+        TTGAAAGTGCGTTTTTTTTTATTATTTGTGAGACACTAATTTCTCCTAAGAA
+        ACATACATAAGATTTATTCATTTTTTTTAATTGATTAGCA
+        TTTAAGCTTTT]]):gsub('%s', '')))
+        --
+        revert()
+    end)
 end)
