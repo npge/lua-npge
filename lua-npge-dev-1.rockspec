@@ -62,6 +62,7 @@ build = {
         ['npge.util.writeIt'] = 'src/npge/util/writeIt.lua',
         ['npge.util.threads'] = 'src/npge/util/threads.lua',
         ['npge.util.mapItems'] = 'src/npge/util/mapItems.lua',
+        ['npge.util.textToIt'] = 'src/npge/util/textToIt.lua',
         ['npge.model'] = 'src/npge/model/init.lua',
         ['npge.model.Block'] = 'src/npge/model/Block.lua',
         ['npge.model.BlockSet'] = 'src/npge/model/BlockSet.lua',
