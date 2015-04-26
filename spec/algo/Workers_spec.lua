@@ -163,6 +163,70 @@ describe("npge.algo.Workers", function()
         revert()
     end)
 
+    it("catches errors thrown in threads (in #iterators)",
+    function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            util = {WORKERS = 4},
+        })
+        --
+        local N = 100
+        local model = require 'npge.model'
+        local BlockSet = model.BlockSet
+        local seqs = {}
+        for i = 1, N do
+            table.insert(seqs, model.Sequence('s' .. i, 'CTG'))
+        end
+        local fragments = {}
+        for i = 1, N do
+            local s = seqs[math.random(1, N)]
+            table.insert(fragments, model.Fragment(s, 1, 1, 1))
+        end
+        local blocks = {}
+        for i = 1, N do
+            local for_block = {}
+            for j = 1, 10 do
+                local f = fragments[math.random(1, N)]
+                table.insert(for_block, f)
+            end
+            table.insert(blocks, model.Block(for_block))
+        end
+        local blockset = model.BlockSet(seqs, blocks)
+        --
+        local Workers = require 'npge.algo.Workers'
+        assert.has_error(function()
+            Workers.applyToBlockset(blockset, [[
+            local blockset = ...
+            for block in blockset:iterBlocks() do
+                error('test')
+            end
+            return blockset
+            ]], Workers.mapBlocks)
+        end)
+        assert.has_error(function()
+            Workers.applyToBlockset(blockset, [[
+            local blockset = ...
+            for block in blockset:iterBlocks() do
+                for fragment in block:iterFragments() do
+                    error('test')
+                end
+            end
+            return blockset
+            ]], Workers.mapBlocks)
+        end)
+        assert.has_error(function()
+            Workers.applyToBlockset(blockset, [[
+            local blockset = ...
+            for sequence in blockset:iterSequences() do
+                error('test')
+            end
+            return blockset
+            ]], Workers.mapBlocks)
+        end)
+        --
+        revert()
+    end)
+
     it("finds hits using blast+ with multiple workers",
     function()
         local Sequence = require 'npge.model.Sequence'
