@@ -128,9 +128,7 @@ int unwindRow(char* result, const char* row, int row_size,
 }
 
 bool isColumnGood(const char** rows, int nrows, int i) {
-    if (nrows == 0) {
-        return false;
-    }
+    assert(nrows > 0);
     char first = rows[0][i];
     if (first == '-') {
         return false;
