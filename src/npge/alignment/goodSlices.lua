@@ -19,10 +19,21 @@ return function(good_col, min_length, min_end, min_identity)
 
     local block_length = #good_col
 
-    -- convert values in good_col to 0 or 1
-    local good_col1 = {}
-    for i = 1, #good_col do
-        good_col1[i] = good_col[i] and 1 or 0
+    -- count number of good columns at pos <= index
+    local good_sum = {}
+    good_sum[0] = 0
+    for i = 1, block_length do
+        good_sum[i] = good_sum[i-1] + (good_col[i] and 1 or 0)
+    end
+
+    -- start and stop are 0-based
+    local function countGood(start, stop)
+        return good_sum[stop + 1] - good_sum[start - 1 + 1]
+    end
+
+    local function allGood(start, stop)
+        local length = stop - start + 1
+        return countGood(start, stop) == length
     end
 
     -- class Slice
@@ -81,29 +92,13 @@ return function(good_col, min_length, min_end, min_identity)
             end
             local start1 = self.start
             local stop1 = self:stop()
-            -- begin
-            local good_count = 0
-            for i = start1, start1 + min_end - 1 do
-                good_count = good_count + good_col1[i + 1]
-            end
-            while good_count < min_end and
+            while not allGood(start1, start1 + min_end - 1) and
                     start1 + min_end - 1 < stop1 do
-                good_count = good_count - good_col1[start1 + 1]
                 start1 = start1 + 1
-                local new_pos = start1 + min_end - 1
-                good_count = good_count + good_col1[new_pos + 1]
             end
-            -- end
-            local good_count = 0
-            for i = stop1, stop1 - min_end + 1, -1 do
-                good_count = good_count + good_col1[i + 1]
-            end
-            while good_count < min_end and
+            while not allGood(stop1 - min_end + 1, stop1) and
                     start1 + min_end - 1 < stop1 do
-                good_count = good_count - good_col1[stop1 + 1]
                 stop1 = stop1 - 1
-                local new_pos = stop1 - min_end + 1
-                good_count = good_count + good_col1[new_pos + 1]
             end
             -- result
             local length1 = stop1 - start1 + 1
@@ -125,40 +120,31 @@ return function(good_col, min_length, min_end, min_identity)
         return not less(good_count, min_good)
     end
 
-    -- Return list of statuses of slices of length min_length
-    local function findGoodSlices()
-        local good_slice = {}
-        local good_count = 0
-        for i = 1, min_length do
-            good_count = good_count + good_col1[i]
-        end
-        good_slice[1] = goodIdentity(good_count)
-        for new_pos = min_length + 1, block_length do
-            local old_pos = new_pos - min_length
-            good_count = good_count + good_col1[new_pos]
-            good_count = good_count - good_col1[old_pos]
-            local start = old_pos + 1
-            good_slice[start] = goodIdentity(good_count)
-        end
-        return good_slice
+    -- Return if slice {start, start + min_length - 1} is good
+    local function goodSlice(start)
+        local stop = start + min_length - 1
+        return goodIdentity(countGood(start, stop))
     end
 
     -- Return list of joined slices
-    local function joinSlices(good_slice)
+    local function joinedSlices()
         local slices0 = {}
         local last_slice
-        for i = 1, block_length - min_length + 1 do
-            if good_slice[i] then
-                if i > 1 and good_slice[i - 1] then
+        local prev_good
+        for i = 0, block_length - min_length do
+            local curr_good = goodSlice(i)
+            if curr_good then
+                if i > 0 and prev_good then
                     -- increase previous slice
                     assert(#slices0 > 0)
                     last_slice.length = last_slice.length + 1
                 else
                     -- add new slice
-                    last_slice = Slice(i - 1, min_length)
+                    last_slice = Slice(i, min_length)
                     table.insert(slices0, last_slice)
                 end
             end
+            prev_good = curr_good
         end
         local slices = {}
         for _, slice in ipairs(slices0) do
@@ -196,8 +182,7 @@ return function(good_col, min_length, min_end, min_identity)
         return slices1
     end
 
-    local good_slice = findGoodSlices()
-    local slices = joinSlices(good_slice)
+    local slices = joinedSlices()
     local result = {}
     while #slices > 0 do
         local selected = maxSlice(slices)
