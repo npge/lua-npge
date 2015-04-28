@@ -36,14 +36,14 @@ describe("npge.block.goodSubblocks", function()
         assert.same(gs, {Block({f1, f2})})
     end)
 
-    it("finds identical parts of #MIN_END_IDENTICAL_COLUMNS",
+    it("finds identical parts of #MIN_END",
     function()
         local config = require 'npge.config'
         local revert = config:updateKeys({
             general = {
                 MIN_LENGTH = 10,
                 MIN_IDENTITY = 0.5,
-                MIN_END_IDENTICAL_COLUMNS = 3,
+                MIN_END = 3,
             },
         })
         --
@@ -68,14 +68,14 @@ describe("npge.block.goodSubblocks", function()
         revert()
     end)
 
-    it("finds identical parts of #MIN_END_IDENTICAL_COLUMNS2",
+    it("finds identical parts of #MIN_END2",
     function()
         local config = require 'npge.config'
         local revert = config:updateKeys({
             general = {
                 MIN_LENGTH = 4,
                 MIN_IDENTITY = 0.5,
-                MIN_END_IDENTICAL_COLUMNS = 3,
+                MIN_END = 3,
             },
         })
         --
@@ -412,7 +412,7 @@ describe("npge.block.goodSubblocks", function()
         local revert = config:updateKeys({
             general = {
                 MIN_LENGTH = 60,
-                MIN_END_IDENTICAL_COLUMNS = 3,
+                MIN_END = 3,
             },
         })
         --
@@ -450,7 +450,7 @@ GGCgAA
         local revert = config:updateKeys({
             general = {
                 MIN_LENGTH = 100,
-                MIN_END_IDENTICAL_COLUMNS = 3,
+                MIN_END = 3,
                 MIN_IDENTITY = 0.9,
             },
         })
@@ -489,7 +489,7 @@ TCTTGC]]
         local revert = config:updateKeys({
             general = {
                 MIN_LENGTH = 100,
-                MIN_END_IDENTICAL_COLUMNS = 3,
+                MIN_END = 3,
                 MIN_IDENTITY = 0.9,
             },
         })

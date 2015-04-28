@@ -75,7 +75,7 @@ local function goodSubblocks(block)
     local config = require 'npge.config'
     local min_length = config.general.MIN_LENGTH
     local min_identity = config.general.MIN_IDENTITY
-    local min_end = config.general.MIN_END_IDENTICAL_COLUMNS
+    local min_end = config.general.MIN_END
     if block:length() < min_length then
         -- block is too short
         return {}

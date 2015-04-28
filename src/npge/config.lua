@@ -11,7 +11,7 @@ local config = {
         MIN_LENGTH = 100,
 
         -- Minimum number of end identical and gapless  cols
-        MIN_END_IDENTICAL_COLUMNS = 3,
+        MIN_END = 3,
     },
 
     blast = {

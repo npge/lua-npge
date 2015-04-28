@@ -8,7 +8,7 @@ return function(block)
     -- size >= 2 fragments
     -- length >= MIN_LENGTH
     -- identity >= MIN_IDENTITY on each slice of MIN_LENGTH
-    -- both ends are good for >= MIN_END_IDENTICAL_COLUMNS
+    -- both ends are good for >= MIN_END
     -- )
     -- Values of these constants are in config.general
     local config = require 'npge.config'
@@ -30,7 +30,7 @@ return function(block)
     local min_ident = config.general.MIN_IDENTITY
     local identityLess = (require 'npge.block.identity').less
     local identity = require 'npge.alignment.identity'
-    local min_cols = config.general.MIN_END_IDENTICAL_COLUMNS
+    local min_cols = config.general.MIN_END
     local ident = identity(rows, 0, min_cols - 1)
     if identityLess(ident, 1.0) then
         return false, 'beginning identity', ident

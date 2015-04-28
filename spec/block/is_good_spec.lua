@@ -31,7 +31,7 @@ describe("npge.block.isGood", function()
         local revert = config:updateKeys({general = {
             MIN_LENGTH = 3,
             MIN_IDENTITY = 0.6,
-            MIN_END_IDENTICAL_COLUMNS = 1,
+            MIN_END = 1,
         }})
         --
         local t1 = "TAATTTTTTTTTTTTTT"
@@ -55,7 +55,7 @@ describe("npge.block.isGood", function()
         local Sequence = require 'npge.model.Sequence'
         local config = require 'npge.config'
         local length = config.general.MIN_LENGTH
-        local gaps = config.general.MIN_END_IDENTICAL_COLUMNS
+        local gaps = config.general.MIN_END
         local s = Sequence('seq', string.rep('A', length))
         local Fragment = require 'npge.model.Fragment'
         local f1 = Fragment(s, 0, s:length() - 1, 1)
@@ -74,7 +74,7 @@ describe("npge.block.isGood", function()
         local Sequence = require 'npge.model.Sequence'
         local config = require 'npge.config'
         local length = config.general.MIN_LENGTH
-        local gaps = config.general.MIN_END_IDENTICAL_COLUMNS
+        local gaps = config.general.MIN_END
         local s = Sequence('seq', string.rep('A', length))
         local Fragment = require 'npge.model.Fragment'
         local f1 = Fragment(s, 0, s:length() - 1, 1)
@@ -167,7 +167,7 @@ describe("npge.block.isGood", function()
         -- is the nearest to the middle of block
         local Sequence = require 'npge.model.Sequence'
         local config = require 'npge.config'
-        local min_end = config.general.MIN_END_IDENTICAL_COLUMNS
+        local min_end = config.general.MIN_END
         local length = 10000
         local s = Sequence('s', string.rep('A', length))
         local row1 = string.rep('A', length)
@@ -194,7 +194,7 @@ describe("npge.block.isGood", function()
         -- insert a gap in the column right after the end
         local Sequence = require 'npge.model.Sequence'
         local config = require 'npge.config'
-        local min_end = config.general.MIN_END_IDENTICAL_COLUMNS
+        local min_end = config.general.MIN_END
         local length = 10000
         local s = Sequence('s', string.rep('A', length))
         local row1 = string.rep('A', length)
@@ -222,7 +222,7 @@ describe("npge.block.isGood", function()
         -- is the nearest to the middle of block
         local Sequence = require 'npge.model.Sequence'
         local config = require 'npge.config'
-        local min_end = config.general.MIN_END_IDENTICAL_COLUMNS
+        local min_end = config.general.MIN_END
         local length = 10000
         local s = Sequence('s', string.rep('A', length))
         local row1 = string.rep('A', length)
@@ -249,7 +249,7 @@ describe("npge.block.isGood", function()
         -- insert a gap in the column right after the end
         local Sequence = require 'npge.model.Sequence'
         local config = require 'npge.config'
-        local min_end = config.general.MIN_END_IDENTICAL_COLUMNS
+        local min_end = config.general.MIN_END
         local length = 10000
         local s = Sequence('s', string.rep('A', length))
         local row1 = string.rep('A', length)
