@@ -51,6 +51,15 @@ describe("npge.alignment.goodSlices", function()
             })
     end)
 
+    it("finds good slices (min_length=length)",
+    function()
+        local goodSlices = require 'npge.alignment.goodSlices'
+        assert.same(goodSlices(bools("+++"),
+            3, 1, 0.9), {
+                {0, 2}
+            })
+    end)
+
     it("finds good slices (long rows)", function()
         local goodSlices = require 'npge.alignment.goodSlices'
         local row = [[
