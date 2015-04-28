@@ -483,7 +483,7 @@ TCTTGC]]
         revert()
     end)
 
-    pending("extracts good parts from block (real example 2)",
+    it("extracts good parts from block (real example 2)",
     function()
         local config = require 'npge.config'
         local revert = config:updateKeys({
@@ -510,6 +510,10 @@ CTTTACAATTATACCGTTTTCGTATAAGTGCTGCAC]]
         local block = model.Block({{f1, t1}, {f2, t2}})
         local goodSubblocks = require 'npge.block.goodSubblocks'
         local subblocks = goodSubblocks(block)
+        --
+        assert.equal(#subblocks, 1)
+        assert.equal(subblocks[1]:length(),
+            #(t1:gsub('%s', '')))
         --
         revert()
     end)

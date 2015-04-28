@@ -26,15 +26,10 @@ return function(block)
     for fragment in block:iterFragments() do
         table.insert(rows, block:text(fragment))
     end
-    -- check identity
+    -- check identity of end subblocks
     local min_ident = config.general.MIN_IDENTITY
     local identityLess = (require 'npge.block.identity').less
     local identity = require 'npge.alignment.identity'
-    local ident = identity(rows)
-    if identityLess(ident, min_ident) then
-        return false, 'identity', ident
-    end
-    -- check identity of end subblocks
     local min_cols = config.general.MIN_END_IDENTICAL_COLUMNS
     local ident = identity(rows, 0, min_cols - 1)
     if identityLess(ident, 1.0) then

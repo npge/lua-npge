@@ -42,13 +42,12 @@ describe("npge.alignment.goodSlices", function()
             })
     end)
 
-    pending("finds good slices (local is good, #global is bad)",
+    it("finds good slices (local is good, #global is bad)",
     function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices(bools("++-+++++++++-+"),
             10, 1, 0.9), {
-                {0, 11},
-                -- not {0, 13}
+                {0, 13}
             })
     end)
 
