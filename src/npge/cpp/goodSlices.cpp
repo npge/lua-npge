@@ -62,8 +62,8 @@ public:
                 self.first <= other.second) {
             return true;
         }
-        if (other.first <= self.second &&
-                self.second <= other.second) {
+        if (self.first <= other.first &&
+                other.first <= self.second) {
             return true;
         }
         return false;
