@@ -91,7 +91,7 @@ describe("npge.model.BlockSet", function()
         return set
     end
 
-    it("finds overlapping fragments", function()
+    it("finds #overlapping fragments", function()
         local s = model.Sequence("genome&chr&c", "ATAT")
         local f1 = model.Fragment(s, 0, 3, -1)
         local f2 = model.Fragment(s, 1, 1, 1)
