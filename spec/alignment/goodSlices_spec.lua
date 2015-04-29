@@ -78,6 +78,22 @@ describe("npge.alignment.goodSlices", function()
             })
     end)
 
+    it("finds good slices (min_end > min_length)",
+    function()
+        local goodSlices = require 'npge.alignment.goodSlices'
+        assert.same(goodSlices(bools("+++"),
+            2, 3, 0.9), {
+            })
+    end)
+
+    it("finds good slices (min_identity > 100%)",
+    function()
+        local goodSlices = require 'npge.alignment.goodSlices'
+        assert.same(goodSlices(bools("+++"),
+            2, 1, 1.46), {
+            })
+    end)
+
     it("finds good slices (min_identity = 100%)",
     function()
         local goodSlices = require 'npge.alignment.goodSlices'
