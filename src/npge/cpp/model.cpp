@@ -45,7 +45,7 @@ It binarySearch(It begin, It end, const V& v, const Cmp& less) {
 template<typename It, typename V>
 It binarySearch(It begin, It end, const V& v) {
     It it = std::lower_bound(begin, end, v);
-    if (it != end && !(*it == v)) {
+    if (it != end && v < *it) {
         it = end;
     }
     return it;
