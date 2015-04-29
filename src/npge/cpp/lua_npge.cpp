@@ -801,11 +801,10 @@ int lua_BlockSet_iterBlocks(lua_State *L) {
 
 int lua_BlockSet_sequences(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
-    const Sequences& seqs = bs->sequences();
-    int n = seqs.size();
+    int n = bs->sequencesNumber();
     lua_createtable(L, n, 0);
     for (int i = 0; i < n; i++) {
-        const SequencePtr& seq = seqs[i];
+        const SequencePtr& seq = bs->sequenceAt(i);
         lua_pushseq(L, seq);
         lua_rawseti(L, -2, i + 1);
     }
@@ -817,9 +816,8 @@ int lua_BlockSet_sequences(lua_State *L) {
 static int BlockSet_seqsIterator(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, lua_upvalueindex(1));
     int index = lua_tointeger(L, lua_upvalueindex(2));
-    const Sequences& seqs = bs->sequences();
-    if (index < seqs.size()) {
-        lua_pushseq(L, seqs[index]);
+    if (index < bs->sequencesNumber()) {
+        lua_pushseq(L, bs->sequenceAt(index));
         lua_pushinteger(L, index + 1);
         lua_replace(L, lua_upvalueindex(2));
         return 1;

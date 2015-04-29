@@ -199,6 +199,14 @@ private:
     Block();
 };
 
+struct SeqRecord {
+    SequencePtr sequence_;
+    Fragments fragments_;
+    Blocks blocks_;
+};
+
+typedef std::vector<SeqRecord> SeqRecords;
+
 class BlockSet :
     public boost::intrusive_ref_counter<BlockSet> {
 public:
@@ -223,7 +231,9 @@ public:
     const FragmentPtr& parentOrFragment(
             const FragmentPtr& f) const;
 
-    const Sequences& sequences() const;
+    int sequencesNumber () const;
+
+    const SequencePtr& sequenceAt(int index) const;
 
     bool hasSequence(const SequencePtr& sequence) const;
 
@@ -240,9 +250,8 @@ public:
     std::string tostring() const;
 
 private:
-    Sequences sequences_;
-    std::vector<Fragments> to_fragments_;
-    std::vector<Blocks> to_blocks_;
+    // sorted by sequence name
+    SeqRecords seq_records_;
 
     Blocks blocks_;
 
