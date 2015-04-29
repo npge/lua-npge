@@ -34,6 +34,7 @@ build = {
                 "src/npge/cpp/strings.cpp",
                 "src/npge/cpp/alignment.cpp",
                 "src/npge/cpp/goodSlices.cpp",
+                "src/npge/cpp/segmentTree.cpp",
             },
             libraries = {"stdc++"},
             incdirs = {"$(BOOST_INCDIR)"},

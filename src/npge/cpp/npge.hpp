@@ -207,9 +207,19 @@ struct SeqRecord {
     SequencePtr sequence_;
     Fragments fragments_;
     Blocks blocks_;
+    Coordinates segment_tree_; // only if internal_overlaps_
+    bool internal_overlaps_; // order by start != order by stop
 };
 
 typedef std::vector<SeqRecord> SeqRecords;
+
+void makeSegmentTree(Coordinates& tree,
+                     const Fragments& fragments);
+
+void findOverlapping(Fragments& result,
+                     const Coordinates& tree,
+                     const Fragments& fragments,
+                     const FragmentPtr& fragment);
 
 class BlockSet :
     public boost::intrusive_ref_counter<BlockSet> {

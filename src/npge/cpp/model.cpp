@@ -665,6 +665,35 @@ static void sortFragments(SeqRecords& seq_records) {
     }
 }
 
+static void findInternalOverlaps(SeqRecords& seq_records) {
+    BOOST_FOREACH (SeqRecord& seq_record, seq_records) {
+        seq_record.internal_overlaps_ = false;
+        Fragments& fragments = seq_record.fragments_;
+        int n = fragments.size();
+        for (int j = 1; j < n; j++) {
+            const FragmentPtr& prev = fragments[j - 1];
+            const FragmentPtr& curr = fragments[j];
+            int prev_max = fragmentMax(*prev);
+            int curr_max = fragmentMax(*curr);
+            if (prev_max >= curr_max) {
+                seq_record.internal_overlaps_ = true;
+                break;
+            }
+        }
+    }
+}
+
+static void makeSegmentTrees(SeqRecords& seq_records) {
+    BOOST_FOREACH (SeqRecord& seq_record, seq_records) {
+        if (!seq_record.internal_overlaps_) {
+            continue;
+        }
+        const Fragments& fragments = seq_record.fragments_;
+        Coordinates& segment_tree = seq_record.segment_tree_;
+        makeSegmentTree(segment_tree, fragments);
+    }
+}
+
 static void sortParts(Fragments& parts, Fragments& parents) {
     int n = parts.size();
     Ints indexes;
@@ -717,6 +746,8 @@ BlockSetPtr BlockSet::make(const Sequences& sequences,
     collectFragments(bs->seq_records_, bs->blocks_,
                      bs->parts_, bs->parent_of_parts_);
     sortFragments(bs->seq_records_);
+    findInternalOverlaps(bs->seq_records_);
+    makeSegmentTrees(bs->seq_records_);
     sortParts(bs->parts_, bs->parent_of_parts_);
     //
     bs->isPartition_ = testPartition(bs->seq_records_);
@@ -915,6 +946,18 @@ Fragments BlockSet::overlapping(
         return Fragments();
     }
     const Fragments& fragments = sit->fragments_;
+    if (fragments.empty()) {
+        return Fragments();
+    }
+    if (sit->internal_overlaps_) {
+        // use segment tree
+        Fragments result;
+        const Coordinates& segment_tree = sit->segment_tree_;
+        findOverlapping(result, segment_tree,
+                        fragments, fragment);
+        sortAndUnique(this, result);
+        return result;
+    }
     const Fragments::const_iterator it = std::upper_bound(
             fragments.begin(), fragments.end(),
             fragment, FragmentLess());

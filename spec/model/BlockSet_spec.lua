@@ -118,7 +118,7 @@ describe("npge.model.BlockSet", function()
         end)
     end)
 
-    pending("finds overlapping fragments (internal fragment)",
+    it("finds overlapping fragments (#internal fragment)",
     function()
         -- f1      ###########
         -- f2       #####
@@ -134,6 +134,46 @@ describe("npge.model.BlockSet", function()
         local blockset = model.BlockSet({s}, {block1})
         assert.same(toset(blockset:overlappingFragments(
             pattern)), toset({f1, f3}))
+    end)
+
+    it("finds overlapping fragments (test for many overlaps)",
+    function()
+        local center_radius = {
+            {61, 3}, {38, 5}, {85, 7}, {95, 5}, {64, 3},
+            {93, 1}, {90, 7}, {94, 5}, {94, 1}, {75, 5},
+            {36, 7}, {30, 9}, {43, 7}, {77, 3}, {80, 3},
+            {29, 5}, {67, 7}, {41, 1}, {90, 5}, {68, 5},
+            {26, 1}, {61, 7}, {80, 9}, {48, 7}, {52, 3},
+            {79, 1}, {77, 7}, {56, 7}, {88, 5}, {90, 1},
+            {86, 5}, {31, 3}, {23, 9}, {91, 7}, {48, 1},
+            {68, 9}, {26, 5}, {24, 3}, {63, 9}, {77, 1},
+            {90, 3}, {100, 5}, {96, 5}, {41, 3}, {58, 7},
+            {41, 9}, {78, 1}, {37, 9}, {30, 5}, {81, 3},
+        }
+        local seq = model.Sequence("g&chr&c", ("A"):rep(200))
+        local fragments = {}
+        for _, s in ipairs(center_radius) do
+            local center = s[1]
+            local radius = s[2]
+            local f = model.Fragment(seq, center - radius,
+                center + radius, 1)
+            table.insert(fragments, f)
+        end
+        local function overlapping(pattern)
+            local result = {}
+            for _, fragment in ipairs(fragments) do
+                if fragment:common(pattern) > 0 then
+                    table.insert(result, fragment)
+                end
+            end
+            return result
+        end
+        local block = model.Block(fragments)
+        local blockset = model.BlockSet({seq}, {block})
+        for _, pattern in ipairs(fragments) do
+            assert.same(toset(blockset:overlappingFragments(
+                pattern)), toset(overlapping(pattern)))
+        end
     end)
 
     it("finds overlapping fragments (wrong sequence)",
