@@ -32,6 +32,13 @@ bool isColumnGood(const char** rows, int nrows, int i);
 double identity(const char** rows, int nrows,
                 int start, int stop);
 
+typedef std::pair<int, int> StartStop; // start, stop
+typedef std::vector<StartStop> Coordinates;
+typedef std::vector<bool> Columns;
+
+Coordinates goodSlices(const Columns& columns, int min_length,
+                       int min_end, int min_ident);
+
 // alignment
 
 typedef struct {

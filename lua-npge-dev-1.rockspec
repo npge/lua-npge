@@ -33,6 +33,7 @@ build = {
                 "src/npge/cpp/throw_assert.cpp",
                 "src/npge/cpp/strings.cpp",
                 "src/npge/cpp/alignment.cpp",
+                "src/npge/cpp/goodSlices.cpp",
             },
             libraries = {"stdc++"},
             incdirs = {"$(BOOST_INCDIR)"},

@@ -1239,6 +1239,45 @@ int lua_good_columns(lua_State *L) {
 }
 
 // arguments:
+// 1. good_col, Lua table of booleans
+// 2. min_length (integer)
+// 3. min_end (integer)
+// 4. min_identity (double)
+// returns array of slice. Each slice is {start, stop}.
+int lua_goodSlices(lua_State *L) {
+    int args = lua_gettop(L);
+    luaL_checktype(L, 1, LUA_TTABLE);
+    int block_length = npge_rawlen(L, 1);
+    if (block_length == 0) {
+        lua_newtable(L);
+        return 1;
+    }
+    Columns columns(block_length);
+    for (int i = 0; i < block_length; i++) {
+        lua_rawgeti(L, 1, i + 1);
+        columns[i] = lua_toboolean(L, -1);
+        lua_pop(L, 1);
+    }
+    int min_length = lua_tointeger(L, 2);
+    int min_end = lua_tointeger(L, 3);
+    double min_identity = lua_tonumber(L, 4);
+    int min_ident = min_identity * double(min_length) + 0.99;
+    Coordinates slices = goodSlices(columns, min_length,
+            min_end, min_ident);
+    lua_createtable(L, slices.size(), 0); // slices
+    for (int i = 0; i < slices.size(); i++) {
+        const StartStop& slice = slices[i];
+        lua_createtable(L, 2, 0); // {start, stop}
+        lua_pushinteger(L, slice.first);
+        lua_rawseti(L, -2, 1); // start
+        lua_pushinteger(L, slice.second);
+        lua_rawseti(L, -2, 2); // stop
+        lua_rawseti(L, -2, i + 1); // result[i] = {start,stop}
+    }
+    return 1;
+}
+
+// arguments:
 // 1. Lua table with rows
 // results:
 // 1. Lua table with alignment
@@ -1457,6 +1496,7 @@ static const luaL_Reg string_functions[] = {
     {"unwindRow", lua_unwindRow},
     {"identity", lua_identity},
     {"goodColumns", lua_good_columns},
+    {"goodSlices", lua_goodSlices},
     {NULL, NULL}
 };
 
