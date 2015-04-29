@@ -108,6 +108,16 @@ describe("npge.model.BlockSet", function()
             model.Fragment(s, 0, 1, 1))), toset({f1, f2}))
     end)
 
+    it("finds overlapping fragments (empty sequence)",
+    function()
+        local s = model.Sequence("genome&chr&c", "ATAT")
+        local blockset = model.BlockSet({s}, {})
+        assert.has_no_error(function()
+            blockset:overlappingFragments(
+                model.Fragment(s, 2, 2, 1))
+        end)
+    end)
+
     pending("finds overlapping fragments (internal fragment)",
     function()
         -- f1      ###########
