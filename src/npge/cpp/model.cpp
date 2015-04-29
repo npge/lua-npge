@@ -291,8 +291,8 @@ TwoFragments Fragment::parts() const {
 
 std::string Fragment::text() const {
     if (!parted()) {
-        int min = std::min(start(), stop());
-        int max = std::max(start(), stop());
+        int min = fragmentMin(*this);
+        int max = fragmentMax(*this);
         std::string text = sequence()->sub(min, max);
         if (ori() == 1) {
             return text;
@@ -321,10 +321,10 @@ int Fragment::common(const Fragment& other) const {
         TwoFragments two = other.parts();
         return common(*two.first) + common(*two.second);
     }
-    int self_min = std::min(start(), stop());
-    int self_max = std::max(start(), stop());
-    int other_min = std::min(other.start(), other.stop());
-    int other_max = std::max(other.start(), other.stop());
+    int self_min = fragmentMin(*this);
+    int self_max = fragmentMax(*this);
+    int other_min = fragmentMin(other);
+    int other_max = fragmentMax(other);
     int common_min = std::max(self_min, other_min);
     int common_max = std::min(self_max, other_max);
     int common = common_max - common_min + 1;
@@ -344,14 +344,22 @@ bool Fragment::operator==(const Fragment& other) const {
 
 bool Fragment::operator<(const Fragment& other) const {
     typedef boost::tuple<const std::string&, int, int, int> T;
-    int self_min = std::min(start(), stop());
-    int self_max = std::max(start(), stop());
-    int other_min = std::min(other.start(), other.stop());
-    int other_max = std::max(other.start(), other.stop());
+    int self_min = fragmentMin(*this);
+    int self_max = fragmentMax(*this);
+    int other_min = fragmentMin(other);
+    int other_max = fragmentMax(other);
     T t1(sequence()->name(), self_min, self_max, ori());
     T t2(other.sequence()->name(),
             other_min, other_max, other.ori());
     return t1 < t2;
+}
+
+int fragmentMin(const Fragment& fragment) {
+    return std::min(fragment.start(), fragment.stop());
+}
+
+int fragmentMax(const Fragment& fragment) {
+    return std::max(fragment.start(), fragment.stop());
 }
 
 Block::Block() {

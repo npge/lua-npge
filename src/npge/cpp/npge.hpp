@@ -160,6 +160,10 @@ private:
     Fragment();
 };
 
+int fragmentMin(const Fragment& fragment);
+
+int fragmentMax(const Fragment& fragment);
+
 class Block :
     public boost::intrusive_ref_counter<Block> {
 public:
