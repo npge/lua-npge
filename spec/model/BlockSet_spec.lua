@@ -83,6 +83,14 @@ describe("npge.model.BlockSet", function()
         assert.equal(blockset:isPartition(), false)
     end)
 
+    local function toset(x)
+        local set = {}
+        for _, item in ipairs(x) do
+            set[item] = true
+        end
+        return set
+    end
+
     it("finds overlapping fragments", function()
         local s = model.Sequence("genome&chr&c", "ATAT")
         local f1 = model.Fragment(s, 0, 3, -1)
@@ -94,17 +102,28 @@ describe("npge.model.BlockSet", function()
             model.Fragment(s, 2, 2, 1)), {})
         assert.same(blockset:overlappingFragments(
             model.Fragment(s, 0, 0, -1)), {f1})
-        local toset = function(x)
-            local set = {}
-            for _, item in ipairs(x) do
-                set[item] = true
-            end
-            return set
-        end
         assert.same(toset(blockset:overlappingFragments(
             model.Fragment(s, 0, 1, -1))), toset({f1, f2}))
         assert.same(toset(blockset:overlappingFragments(
             model.Fragment(s, 0, 1, 1))), toset({f1, f2}))
+    end)
+
+    pending("finds overlapping fragments (internal fragment)",
+    function()
+        -- f1      ###########
+        -- f2       #####
+        -- f3        ###########
+        -- pattern        ????
+        --         012  3 4  5 6
+        local s = model.Sequence("genome&chr&c", "ATATATAT")
+        local f1 = model.Fragment(s, 0, 5, 1)
+        local f2 = model.Fragment(s, 1, 3, 1)
+        local f3 = model.Fragment(s, 2, 6, 1)
+        local pattern = model.Fragment(s, 4, 5, 1)
+        local block1 = model.Block({f1, f2, f3})
+        local blockset = model.BlockSet({s}, {block1})
+        assert.same(toset(blockset:overlappingFragments(
+            pattern)), toset({f1, f3}))
     end)
 
     it("finds overlapping fragments (wrong sequence)",
