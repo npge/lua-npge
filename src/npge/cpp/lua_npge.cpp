@@ -826,14 +826,17 @@ int lua_BlockSet_nameByBlock(lua_State *L) {
 
 // first upvalue: blockset
 // second upvalue: index of block
+// yields (block, name)
 static int BlockSet_blocksIterator(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, lua_upvalueindex(1));
     int index = lua_tointeger(L, lua_upvalueindex(2));
     if (index < bs->size()) {
         lua_pushblock(L, bs->blockAt(index));
+        const std::string& name = bs->nameAt(index);
+        lua_pushlstring(L, name.c_str(), name.size());
         lua_pushinteger(L, index + 1);
         lua_replace(L, lua_upvalueindex(2));
-        return 1;
+        return 2;
     } else {
         return 0;
     }

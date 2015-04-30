@@ -889,6 +889,10 @@ const BlockPtr& BlockSet::blockAt(int i) const {
     return block2name_[i].block_;
 }
 
+const std::string& BlockSet::nameAt(int i) const {
+    return block2name_[i].name_;
+}
+
 BlockPtr BlockSet::blockByName(const std::string& n) const {
     typedef BlockRecords::const_iterator It;
     It it = binarySearch(name2block_.begin(),

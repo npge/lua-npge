@@ -248,6 +248,8 @@ public:
 
     const BlockPtr& blockAt(int i) const;
 
+    const std::string& nameAt(int i) const;
+
     BlockPtr blockByName(const std::string& name) const;
 
     // searches by block value, not by pointer

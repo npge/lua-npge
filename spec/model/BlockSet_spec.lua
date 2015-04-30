@@ -130,6 +130,25 @@ describe("npge.model.BlockSet", function()
         assert.falsy(dest:blockByName("b2"))
     end)
 
+    it("iterates blocks and blocks' names", function()
+        local s = model.Sequence("s", "ATAT")
+        local b1 = model.Block({
+            model.Fragment(s, 1, 1, 1),
+        })
+        local b2 = model.Block({
+            model.Fragment(s, 2, 2, 1),
+        })
+        local bs = model.BlockSet({s}, {b1=b1, b2=b2})
+        local block2name = {}
+        local name2block = {}
+        for block, name in bs:iterBlocks() do
+            block2name[block] = name
+            name2block[name] = block
+        end
+        assert.same(name2block, {b1=b1, b2=b2})
+        assert.same(block2name, {[b1]="b1", [b2]="b2"})
+    end)
+
     it("creates a blockset with 2 blocks", function()
         local s = model.Sequence("test_name", "ATAT")
         local f1 = model.Fragment(s, 0, 1, 1)
