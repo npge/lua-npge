@@ -94,6 +94,7 @@ build = {
         ['npge.block.unwind'] = 'src/npge/block/unwind.lua',
         ['npge.block.hasSelfOverlap'] = 'src/npge/block/hasSelfOverlap.lua',
         ['npge.block.excludeSelfOverlap'] = 'src/npge/block/excludeSelfOverlap.lua',
+        ['npge.block.hasRepeats'] = 'src/npge/block/hasRepeats.lua',
         ['npge.alignment'] = 'src/npge/alignment/init.lua',
         ['npge.alignment.alignRows'] = 'src/npge/alignment/alignRows.lua',
         ['npge.alignment.anchor'] = 'src/npge/alignment/anchor.lua',

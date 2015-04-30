@@ -15,4 +15,5 @@ return {
     extend = require 'npge.block.extend',
     hasSelfOverlap = require 'npge.block.hasSelfOverlap',
     excludeSelfOverlap = require 'npge.block.excludeSelfOverlap',
+    hasRepeats = require 'npge.block.hasRepeats',
 }
