@@ -765,11 +765,10 @@ int lua_BlockSet_isPartition(lua_State *L) {
 
 int lua_BlockSet_blocks(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
-    const Blocks& blocks = bs->blocks();
-    int n = blocks.size();
+    int n = bs->size();
     lua_createtable(L, n, 0);
     for (int i = 0; i < n; i++) {
-        const BlockPtr& block = blocks[i];
+        const BlockPtr& block = bs->blockAt(i);
         lua_pushblock(L, block);
         lua_rawseti(L, -2, i + 1);
     }
@@ -782,7 +781,7 @@ static int BlockSet_blocksIterator(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, lua_upvalueindex(1));
     int index = lua_tointeger(L, lua_upvalueindex(2));
     if (index < bs->size()) {
-        lua_pushblock(L, bs->blocks()[index]);
+        lua_pushblock(L, bs->blockAt(index));
         lua_pushinteger(L, index + 1);
         lua_replace(L, lua_upvalueindex(2));
         return 1;

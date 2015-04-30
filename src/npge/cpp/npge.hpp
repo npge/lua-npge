@@ -238,7 +238,7 @@ public:
 
     bool isPartition() const;
 
-    const Blocks& blocks() const;
+    const BlockPtr& blockAt(int i) const;
 
     const Fragments& parts(const SequencePtr& sequence) const;
 

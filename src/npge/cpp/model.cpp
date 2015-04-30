@@ -837,8 +837,8 @@ bool BlockSet::isPartition() const {
     return isPartition_;
 }
 
-const Blocks& BlockSet::blocks() const {
-    return blocks_;
+const BlockPtr& BlockSet::blockAt(int i) const {
+    return blocks_[i];
 }
 
 const Fragments& BlockSet::parts(
