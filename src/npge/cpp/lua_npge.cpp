@@ -806,6 +806,18 @@ int lua_BlockSet_blocks(lua_State *L) {
     return 1;
 }
 
+int lua_BlockSet_blocksNames(lua_State *L) {
+    const BlockSetPtr& bs = lua_tobs(L, 1);
+    int n = bs->size();
+    lua_createtable(L, n, 0);
+    for (int i = 0; i < n; i++) {
+        const std::string& name = bs->nameAt(i);
+        lua_pushlstring(L, name.c_str(), name.size());
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
 int lua_BlockSet_blockByName(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     size_t len;
@@ -1069,6 +1081,7 @@ static const luaL_Reg BlockSet_methods[] = {
     {"cmp", lua_BlockSet_cmp},
     {"isPartition", lua_BlockSet_isPartition},
     {"blocks", lua_BlockSet_blocks},
+    {"blocksNames", lua_BlockSet_blocksNames},
     {"blockByName", lua_BlockSet_blockByName},
     {"nameByBlock", lua_BlockSet_nameByBlock},
     {"iterBlocks", lua_BlockSet_iterBlocks},
