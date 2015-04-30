@@ -742,6 +742,7 @@ BlockSetPtr BlockSet::make(const Sequences& sequences,
     prepareSequences(bs->seq_records_, sequences);
     //
     bs->blocks_ = blocks;
+    std::sort(bs->blocks_.begin(), bs->blocks_.end());
     //
     collectFragments(bs->seq_records_, bs->blocks_,
                      bs->parts_, bs->parent_of_parts_);
