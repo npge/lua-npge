@@ -665,7 +665,7 @@ static const luaL_Reg Block_methods[] = {
 
 //////////
 
-// BlockSet(BlockSet, {sequences}, {blocks})
+// BlockSet(BlockSet, {sequences}, {blocks}, [names generator])
 int lua_BlockSet_impl(lua_State *L) {
     luaL_argcheck(L, lua_gettop(L) >= 3, 2,
                   "call BlockSet({sequences}, {blocks})");
@@ -674,17 +674,21 @@ int lua_BlockSet_impl(lua_State *L) {
     luaL_argcheck(L, lua_type(L, 3) == LUA_TTABLE, 3,
                   "call BlockSet({sequences}, {blocks})");
     int nseqs = npge_rawlen(L, 2);
-    int nblocks = npge_rawlen(L, 3);
     // check all arguments are convertible to target types
     for (int i = 0; i < nseqs; i++) {
         lua_rawgeti(L, 2, i + 1); // sequence
         lua_toseq(L, -1);
         lua_pop(L, 1);
     }
-    for (int i = 0; i < nblocks; i++) {
-        lua_rawgeti(L, 3, i + 1); // block
+    int nblocks = 0;
+    // iterate blocks as hash
+    lua_pushnil(L);  // first key
+    while (lua_next(L, 3) != 0) {
+        // 'key' at index -2 and 'value' at index -1
         lua_toblock(L, -1);
+        // removes 'value'; keeps 'key' for next iteration
         lua_pop(L, 1);
+        nblocks += 1;
     }
     // now fill
     Sequences seqs(nseqs);
@@ -693,14 +697,41 @@ int lua_BlockSet_impl(lua_State *L) {
         seqs[i] = lua_toseq(L, -1);
         lua_pop(L, 1);
     }
+    // check last argument - name generator blockset
+    BlockSetPtr source;
+    if (lua_gettop(L) >= 4) {
+        source = lua_tobs(L, 4);
+    }
     Blocks blocks(nblocks);
-    for (int i = 0; i < nblocks; i++) {
-        lua_rawgeti(L, 3, i + 1); // block
+    Strings names(nblocks);
+    // iterate blocks as hash
+    lua_pushnil(L);  // first key
+    int i = 0;
+    while (lua_next(L, 3) != 0) {
+        // 'key' at index -2 and 'value' at index -1
         blocks[i] = lua_toblock(L, -1);
+        if (source) {
+            names[i] = source->nameByBlock(blocks[i]);
+        } else {
+            luaL_argcheck(L, lua_type(L, -2) == LUA_TSTRING ||
+                          lua_type(L, -2) == LUA_TNUMBER, 3,
+                          "key in blocks table must be "
+                          "a string or an integer");
+            if (lua_type(L, -2) == LUA_TSTRING) {
+                size_t len;
+                const char* name = lua_tolstring(L, -2, &len);
+                names[i] = std::string(name, len);
+            } else if (lua_type(L, -2) == LUA_TNUMBER) {
+                int name = lua_tointeger(L, -2);
+                names[i] = TO_S(name);
+            }
+        }
+        // removes 'value'; keeps 'key' for next iteration
         lua_pop(L, 1);
+        i += 1;
     }
     try {
-        BlockSetPtr bs = BlockSet::make(seqs, blocks);
+        BlockSetPtr bs = BlockSet::make(seqs, blocks, names);
         lua_pushbs(L, bs);
         return 1;
     } catch (std::exception& e) {
@@ -772,6 +803,24 @@ int lua_BlockSet_blocks(lua_State *L) {
         lua_pushblock(L, block);
         lua_rawseti(L, -2, i + 1);
     }
+    return 1;
+}
+
+int lua_BlockSet_blockByName(lua_State *L) {
+    const BlockSetPtr& bs = lua_tobs(L, 1);
+    size_t len;
+    const char* name_c = luaL_checklstring(L, 2, &len);
+    std::string name(name_c, len);
+    BlockPtr block = bs->blockByName(name);
+    lua_pushblock(L, block); // pushes nil on null ptr
+    return 1;
+}
+
+int lua_BlockSet_nameByBlock(lua_State *L) {
+    const BlockSetPtr& bs = lua_tobs(L, 1);
+    const BlockPtr& block = lua_toblock(L, 2);
+    std::string name = bs->nameByBlock(block);
+    lua_pushlstring(L, name.c_str(), name.size());
     return 1;
 }
 
@@ -1017,6 +1066,8 @@ static const luaL_Reg BlockSet_methods[] = {
     {"cmp", lua_BlockSet_cmp},
     {"isPartition", lua_BlockSet_isPartition},
     {"blocks", lua_BlockSet_blocks},
+    {"blockByName", lua_BlockSet_blockByName},
+    {"nameByBlock", lua_BlockSet_nameByBlock},
     {"iterBlocks", lua_BlockSet_iterBlocks},
     {"fragments", lua_BlockSet_fragments},
     {"iterFragments", lua_BlockSet_iterFragments},

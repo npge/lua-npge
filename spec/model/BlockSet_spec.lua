@@ -70,6 +70,66 @@ describe("npge.model.BlockSet", function()
         end)
     end)
 
+    it("throws if two blocks have same name", function()
+        assert.has_error(function()
+            local s = model.Sequence("s", "ATAT")
+            local b1 = model.Block({
+                model.Fragment(s, 1, 1, 1),
+            })
+            local b2 = model.Block({
+                model.Fragment(s, 2, 2, 1),
+            })
+            local blockset = model.BlockSet({s}, {
+                [1] = b1,
+                ["1"] = b2,
+            })
+        end)
+    end)
+
+    it("assigns names to blocks automatically", function()
+        local s = model.Sequence("s", "ATAT")
+        local b1 = model.Block({
+            model.Fragment(s, 1, 1, 1),
+        })
+        local b2 = model.Block({
+            model.Fragment(s, 2, 2, 1),
+        })
+        local blockset = model.BlockSet({s}, {b1, b2})
+        assert.not_equal(blockset:nameByBlock(b1),
+                         blockset:nameByBlock(b2))
+    end)
+
+    it("stores names assigned to blocks", function()
+        local s = model.Sequence("s", "ATAT")
+        local b1 = model.Block({
+            model.Fragment(s, 1, 1, 1),
+        })
+        local b2 = model.Block({
+            model.Fragment(s, 2, 2, 1),
+        })
+        local blockset = model.BlockSet({s}, {b1=b1, b2=b2})
+        assert.equal(blockset:nameByBlock(b1), "b1")
+        assert.equal(blockset:nameByBlock(b2), "b2")
+        assert.equal(blockset:blockByName("b1"), b1)
+        assert.equal(blockset:blockByName("b2"), b2)
+    end)
+
+    it("gets blocks' names from other blockset", function()
+        local s = model.Sequence("s", "ATAT")
+        local b1 = model.Block({
+            model.Fragment(s, 1, 1, 1),
+        })
+        local b2 = model.Block({
+            model.Fragment(s, 2, 2, 1),
+        })
+        local source = model.BlockSet({s}, {b1=b1, b2=b2})
+        local dest = model.BlockSet({s}, {b1}, source)
+        assert.equal(dest:nameByBlock(b1), "b1")
+        assert.equal(dest:nameByBlock(b2), "")
+        assert.equal(dest:blockByName("b1"), b1)
+        assert.falsy(dest:blockByName("b2"))
+    end)
+
     it("creates a blockset with 2 blocks", function()
         local s = model.Sequence("test_name", "ATAT")
         local f1 = model.Fragment(s, 0, 1, 1)

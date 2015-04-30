@@ -68,6 +68,40 @@ struct SeqRecordLess {
     }
 };
 
+struct BlockRecordBlockLess {
+    bool operator()(const BlockRecord& a,
+                    const BlockRecord& b) const {
+        return *(a.block_) < *(b.block_);
+    }
+
+    bool operator()(const BlockRecord& a,
+                    const BlockPtr& b) const {
+        return *(a.block_) < *b;
+    }
+
+    bool operator()(const BlockPtr& a,
+                    const BlockRecord& b) const {
+        return *a < *(b.block_);
+    }
+};
+
+struct BlockRecordNameLess {
+    bool operator()(const BlockRecord& a,
+                    const BlockRecord& b) const {
+        return a.name_ < b.name_;
+    }
+
+    bool operator()(const BlockRecord& a,
+                    const std::string& b) const {
+        return a.name_ < b;
+    }
+
+    bool operator()(const std::string& a,
+                    const BlockRecord& b) const {
+        return a < b.name_;
+    }
+};
+
 struct IndexedFragmentPtrLess {
     IndexedFragmentPtrLess(const Fragments& fragments):
         fragments_(fragments) {
@@ -616,10 +650,11 @@ static void prepareSequences(SeqRecords& dst,
 }
 
 static void collectFragments(SeqRecords& seq_records,
-                             const Blocks& blocks,
+                             const BlockRecords& records,
                              Fragments& parts,
                              Fragments& parent_of_parts) {
-    BOOST_FOREACH (const BlockPtr& b, blocks) {
+    BOOST_FOREACH (const BlockRecord& br, records) {
+        const BlockPtr& b = br.block_;
         BOOST_FOREACH (const FragmentPtr& f, b->fragments()) {
             const SequencePtr& seq = f->sequence();
             Sit it = findSeq(seq->name(), seq_records);
@@ -736,15 +771,28 @@ BlockSet::BlockSet() {
 }
 
 BlockSetPtr BlockSet::make(const Sequences& sequences,
-                           const Blocks& blocks) {
+                           const Blocks& blocks,
+                           const Strings& names) {
     BlockSet* bs = new BlockSet;
     BlockSetPtr ptr(bs);
     prepareSequences(bs->seq_records_, sequences);
     //
-    bs->blocks_ = blocks;
-    std::sort(bs->blocks_.begin(), bs->blocks_.end());
+    bs->block2name_.resize(blocks.size());
+    for (int i = 0; i < blocks.size(); i++) {
+        bs->block2name_[i].block_ = blocks[i];
+        bs->block2name_[i].name_ = names[i];
+    }
+    bs->name2block_ = bs->block2name_;
+    std::sort(bs->block2name_.begin(), bs->block2name_.end(),
+              BlockRecordBlockLess());
+    std::sort(bs->name2block_.begin(), bs->name2block_.end(),
+              BlockRecordNameLess());
+    for (int i = 1; i < bs->name2block_.size(); i++) {
+        ASSERT_LT(bs->name2block_[i - 1].name_,
+                  bs->name2block_[i].name_);
+    }
     //
-    collectFragments(bs->seq_records_, bs->blocks_,
+    collectFragments(bs->seq_records_, bs->block2name_,
                      bs->parts_, bs->parent_of_parts_);
     sortFragments(bs->seq_records_);
     findInternalOverlaps(bs->seq_records_);
@@ -830,7 +878,7 @@ bool BlockSet::operator==(const BlockSet& other) const {
 }
 
 int BlockSet::size() const {
-    return blocks_.size();
+    return block2name_.size();
 }
 
 bool BlockSet::isPartition() const {
@@ -838,7 +886,31 @@ bool BlockSet::isPartition() const {
 }
 
 const BlockPtr& BlockSet::blockAt(int i) const {
-    return blocks_[i];
+    return block2name_[i].block_;
+}
+
+BlockPtr BlockSet::blockByName(const std::string& n) const {
+    typedef BlockRecords::const_iterator It;
+    It it = binarySearch(name2block_.begin(),
+                         name2block_.end(),
+                         n, BlockRecordNameLess());
+    if (it != name2block_.end()) {
+        return it->block_;
+    } else {
+        return BlockPtr();
+    }
+}
+
+std::string BlockSet::nameByBlock(const BlockPtr& b) const {
+    typedef BlockRecords::const_iterator It;
+    It it = binarySearch(block2name_.begin(),
+                         block2name_.end(),
+                         b, BlockRecordBlockLess());
+    if (it != block2name_.end()) {
+        return it->name_;
+    } else {
+        return "";
+    }
 }
 
 const Fragments& BlockSet::parts(

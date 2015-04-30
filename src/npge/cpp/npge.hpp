@@ -213,6 +213,13 @@ struct SeqRecord {
 
 typedef std::vector<SeqRecord> SeqRecords;
 
+struct BlockRecord {
+    BlockPtr block_;
+    std::string name_;
+};
+
+typedef std::vector<BlockRecord> BlockRecords;
+
 void makeSegmentTree(Coordinates& tree,
                      const Fragments& fragments);
 
@@ -225,7 +232,8 @@ class BlockSet :
     public boost::intrusive_ref_counter<BlockSet> {
 public:
     static BlockSetPtr make(const Sequences& sequences,
-                            const Blocks& blocks);
+                            const Blocks& blocks,
+                            const Strings& names);
 
     bool sameSequences(const BlockSet& other) const;
 
@@ -239,6 +247,11 @@ public:
     bool isPartition() const;
 
     const BlockPtr& blockAt(int i) const;
+
+    BlockPtr blockByName(const std::string& name) const;
+
+    // searches by block value, not by pointer
+    std::string nameByBlock(const BlockPtr& block) const;
 
     const Fragments& parts(const SequencePtr& sequence) const;
 
@@ -267,7 +280,8 @@ private:
     // sorted by sequence name
     SeqRecords seq_records_;
 
-    Blocks blocks_;
+    BlockRecords block2name_;
+    BlockRecords name2block_;
 
     Fragments parts_;
     Fragments parent_of_parts_;
