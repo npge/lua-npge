@@ -79,7 +79,11 @@ describe("npge.model.BlockSet", function()
         local blockset = model.BlockSet({s}, {block1, block2})
         assert.equal(blockset:size(), 2)
         assert.same(blockset:sequences(), {s})
-        assert.same(blockset:blocks(), {block1, block2})
+        local blocks = blockset:blocks()
+        local blocks_e = {block1, block2}
+        table.sort(blocks)
+        table.sort(blocks_e)
+        assert.same(blocks, blocks_e)
         assert.equal(blockset:isPartition(), false)
     end)
 
