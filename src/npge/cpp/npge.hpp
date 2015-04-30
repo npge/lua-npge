@@ -245,7 +245,7 @@ public:
     const FragmentPtr& parentOrFragment(
             const FragmentPtr& f) const;
 
-    int sequencesNumber () const;
+    int sequencesNumber() const;
 
     const SequencePtr& sequenceAt(int index) const;
 
