@@ -71,17 +71,17 @@ struct SeqRecordLess {
 struct BlockRecordBlockLess {
     bool operator()(const BlockRecord& a,
                     const BlockRecord& b) const {
-        return *(a.block_) < *(b.block_);
+        return *(b.block_) < *(a.block_);
     }
 
     bool operator()(const BlockRecord& a,
                     const BlockPtr& b) const {
-        return *(a.block_) < *b;
+        return *b < *(a.block_);
     }
 
     bool operator()(const BlockPtr& a,
                     const BlockRecord& b) const {
-        return *a < *(b.block_);
+        return *(b.block_) < *a;
     }
 };
 
