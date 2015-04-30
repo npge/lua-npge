@@ -16,4 +16,5 @@ return {
     hasSelfOverlap = require 'npge.block.hasSelfOverlap',
     excludeSelfOverlap = require 'npge.block.excludeSelfOverlap',
     hasRepeats = require 'npge.block.hasRepeats',
+    genomes = require 'npge.block.genomes',
 }
