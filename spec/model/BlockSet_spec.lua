@@ -97,6 +97,9 @@ describe("npge.model.BlockSet", function()
         local blockset = model.BlockSet({s}, {b1, b2})
         assert.not_equal(blockset:nameByBlock(b1),
                          blockset:nameByBlock(b2))
+        local names_in_keys = true
+        assert.same(blockset:blocks(names_in_keys),
+            {["1"] = b1, ["2"] = b2})
     end)
 
     it("stores names assigned to blocks", function()
@@ -112,6 +115,9 @@ describe("npge.model.BlockSet", function()
         assert.equal(blockset:nameByBlock(b2), "b2")
         assert.equal(blockset:blockByName("b1"), b1)
         assert.equal(blockset:blockByName("b2"), b2)
+        local names_in_keys = true
+        assert.same(blockset:blocks(names_in_keys),
+            {b1=b1, b2=b2})
     end)
 
     it("gets blocks' names from other blockset", function()

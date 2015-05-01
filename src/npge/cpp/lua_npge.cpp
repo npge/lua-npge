@@ -794,14 +794,27 @@ int lua_BlockSet_isPartition(lua_State *L) {
     return 1;
 }
 
+// bs:blocks(names = false)
 int lua_BlockSet_blocks(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
+    bool names = lua_toboolean(L, 2);
     int n = bs->size();
-    lua_createtable(L, n, 0);
+    if (names) {
+        lua_createtable(L, 0, n);
+    } else {
+        lua_createtable(L, n, 0);
+    }
     for (int i = 0; i < n; i++) {
         const BlockPtr& block = bs->blockAt(i);
-        lua_pushblock(L, block);
-        lua_rawseti(L, -2, i + 1);
+        if (names) {
+            const std::string& name = bs->nameAt(i);
+            lua_pushlstring(L, name.c_str(), name.size());
+            lua_pushblock(L, block);
+            lua_rawset(L, -3);
+        } else {
+            lua_pushblock(L, block);
+            lua_rawseti(L, -2, i + 1);
+        }
     }
     return 1;
 }
