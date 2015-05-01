@@ -4,7 +4,8 @@
 
 return function(blockset, prefix)
     local HasOverlap = require 'npge.algo.HasOverlap'
-    assert(not HasOverlap(blockset))
+    assert(not HasOverlap(blockset),
+        "Consensus sequences must not overlap")
     prefix = prefix or ''
     local sequences = {}
     for name, block in pairs(blockset:blocks('with names')) do
