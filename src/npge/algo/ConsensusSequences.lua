@@ -8,7 +8,7 @@ return function(blockset, prefix)
     prefix = prefix or ''
     local seq2block = {}
     local sequences = {}
-    for i, block in ipairs(blockset:blocks()) do
+    for name, block in pairs(blockset:blocks('with names')) do
         local text
         if block:size() == 1 then
             local Fragment = require 'npge.model.Fragment'
@@ -25,9 +25,8 @@ return function(blockset, prefix)
             local consensus = require 'npge.block.consensus'
             text = consensus(block)
         end
-        local name = ('%sconsensus%06d'):format(prefix, i)
         local Sequence = require 'npge.model.Sequence'
-        local seq = Sequence(name, text)
+        local seq = Sequence(prefix .. name, text)
         seq2block[seq] = block
         table.insert(sequences, seq)
     end
