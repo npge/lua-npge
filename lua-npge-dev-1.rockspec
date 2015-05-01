@@ -139,6 +139,7 @@ build = {
         ['npge.algo.UnwindBlocks'] = 'src/npge/algo/UnwindBlocks.lua',
         ['npge.algo.Workers'] = 'src/npge/algo/Workers.lua',
         ['npge.algo.WriteSequencesToFasta'] = 'src/npge/algo/WriteSequencesToFasta.lua',
+        ['npge.algo.GiveNames'] = 'src/npge/algo/GiveNames.lua',
         ['npge.view'] = 'src/npge/view/init.lua',
         ['npge.view.BlockInConsole'] = 'src/npge/view/BlockInConsole.lua',
     },

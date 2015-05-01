@@ -30,6 +30,7 @@ local members = {
     'HasSelfOverlap',
     'ExcludeSelfOverlap',
     'Workers',
+    'GiveNames',
 }
 
 local algo = {}
