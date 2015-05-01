@@ -41,11 +41,12 @@ local collectResults = function(collector, threads)
 end
 
 -- run an action with threads.
--- generator is a function, which gets number of threads and
--- returns an array of codes to be run in threads.
--- collector is a function, which gets an array of results
--- threads one after another, and returns final result,
--- which is returned from this function.
+-- Arguments:
+-- - generator is a function, which gets number of threads and
+--   returns an array of codes to be run in threads.
+-- - collector is a function, which gets an array of results
+--   threads one after another, and returns final result,
+--   which is returned from this function.
 return function(generator, collector)
     local config = require 'npge.config'
     local workers = config.util.WORKERS
