@@ -9,7 +9,7 @@ return function(blockset, prefix)
     local seq2block = {}
     local sequences = {}
     for i, block in ipairs(blockset:blocks()) do
-        local seq
+        local text
         if block:size() == 1 then
             local Fragment = require 'npge.model.Fragment'
             local fragment = block:fragments()[1]
@@ -18,16 +18,16 @@ return function(blockset, prefix)
             if f == fragment then
                 -- the only fragment of this block
                 -- covers whole sequence
-                seq = seq0
+                text = seq0:text()
             end
         end
-        if not seq then
+        if not text then
             local consensus = require 'npge.block.consensus'
-            local text = consensus(block)
-            local name = ('%sconsensus%06d'):format(prefix, i)
-            local Sequence = require 'npge.model.Sequence'
-            seq = Sequence(name, text)
+            text = consensus(block)
         end
+        local name = ('%sconsensus%06d'):format(prefix, i)
+        local Sequence = require 'npge.model.Sequence'
+        local seq = Sequence(name, text)
         seq2block[seq] = block
         table.insert(sequences, seq)
     end

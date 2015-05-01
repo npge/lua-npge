@@ -33,7 +33,7 @@ describe("npge.algo.ConsensusSequences", function()
         local sequences = cs:sequences()
         assert.equal(#sequences, 1)
         local sequence = sequences[1]
-        assert.truthy(sequence:name():sub(1, 10), 'nameprefix')
+        assert.equal(sequence:name():sub(1, 10), 'nameprefix')
     end)
 
     it("throws if original blocks overlap",
