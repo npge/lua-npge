@@ -72,9 +72,9 @@ return function(blockset, has_sequences)
                 yield(text:format(seq:name(), seqToLua(seq)))
             end
         end
-        for block in blockset:iterBlocks() do
-            local text = "table.insert(blocks, %s)\n"
-            yield(text:format(blockToLua(block)))
+        for block, name in blockset:iterBlocks() do
+            local text = "blocks[%q] = %s\n"
+            yield(text:format(name, blockToLua(block)))
         end
         yield(closing)
     end)
