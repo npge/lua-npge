@@ -11,13 +11,12 @@ describe("npge.algo.ConsensusSequences", function()
         local blockset = model.BlockSet({s}, {b})
         local ConsensusSequences =
             require 'npge.algo.ConsensusSequences'
-        local cs, seq2block = ConsensusSequences(blockset)
+        local cs = ConsensusSequences(blockset)
         assert.same(cs:blocks(), {})
         local sequences = cs:sequences()
         assert.equal(#sequences, 1)
         local sequence = sequences[1]
         assert.equal(sequence:text(), "ATAT")
-        assert.equal(seq2block[sequence], b)
     end)
 
     it("produces sequences' names with specified prefix",
@@ -65,7 +64,7 @@ describe("npge.algo.ConsensusSequences", function()
         local ConsensusSequences =
             require 'npge.algo.ConsensusSequences'
         assert.has_error(function()
-            local cs, seq2block = ConsensusSequences(blockset)
+            local cs = ConsensusSequences(blockset)
         end)
     end)
 end)

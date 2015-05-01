@@ -10,11 +10,22 @@ local function getMinMax(fragment)
     end
 end
 
-return function(block, seqs2blocks)
+local function getBlock(seq_name, prefix2blockset)
+    local startsWith = require 'npge.util.startsWith'
+    for prefix, blockset in pairs(prefix2blockset) do
+        if startsWith(seq_name, prefix) then
+            local name = seq_name:sub(#prefix + 1)
+            return blockset:blockByName(name)
+        end
+    end
+end
+
+return function(block, prefix2blockset)
     local for_block = {}
     for fragment in block:iterFragments() do
         local seq = fragment:sequence()
-        local orig_block = assert(seqs2blocks[seq])
+        local orig_block = assert(getBlock(seq:name(),
+            prefix2blockset), "No block for " .. seq:name())
         if fragment:parted() then
             -- unique seq on consensus built on unique seq
             assert(block:size() == 1)

@@ -6,7 +6,6 @@ return function(blockset, prefix)
     local HasOverlap = require 'npge.algo.HasOverlap'
     assert(not HasOverlap(blockset))
     prefix = prefix or ''
-    local seq2block = {}
     local sequences = {}
     for name, block in pairs(blockset:blocks('with names')) do
         local text
@@ -27,9 +26,8 @@ return function(blockset, prefix)
         end
         local Sequence = require 'npge.model.Sequence'
         local seq = Sequence(prefix .. name, text)
-        seq2block[seq] = block
         table.insert(sequences, seq)
     end
     local BlockSet = require 'npge.model.BlockSet'
-    return BlockSet(sequences, {}), seq2block
+    return BlockSet(sequences, {})
 end

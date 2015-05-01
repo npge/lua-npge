@@ -16,7 +16,7 @@ describe("npge.algo.UnwindBlocks", function()
         local bs = model.BlockSet({s}, {block})
         --
         local CS = require 'npge.algo.ConsensusSequences'
-        local cs, seq2block = CS(bs)
+        local cs = CS(bs)
         assert(#cs:sequences() == 1)
         local cons_seq = cs:sequences()[1]
         local cons_f1 = model.Fragment(cons_seq, 0, 0, 1)
@@ -25,7 +25,7 @@ describe("npge.algo.UnwindBlocks", function()
         local cons_bs = model.BlockSet({cons_seq}, {cons_b})
         --
         local UnwindBlocks = require 'npge.algo.UnwindBlocks'
-        local unwound = UnwindBlocks(cons_bs, bs, seq2block)
+        local unwound = UnwindBlocks(cons_bs, {['']=bs})
         local unwound_exp = model.BlockSet({s}, {model.Block({
             {model.Fragment(s, 0, 0, 1), 'A'},
             {model.Fragment(s, 4, 4, -1), 'A'},
@@ -48,7 +48,7 @@ describe("npge.algo.UnwindBlocks", function()
         local bs = model.BlockSet({s}, {block})
         --
         local CS = require 'npge.algo.ConsensusSequences'
-        local cs, seq2block = CS(bs)
+        local cs = CS(bs)
         assert(#cs:sequences() == 1)
         local cons_seq = cs:sequences()[1]
         local cons_f1 = model.Fragment(cons_seq, 1, 1, 1)
@@ -56,7 +56,7 @@ describe("npge.algo.UnwindBlocks", function()
         local cons_bs = model.BlockSet({cons_seq}, {cons_b})
         --
         local UnwindBlocks = require 'npge.algo.UnwindBlocks'
-        local unwound = UnwindBlocks(cons_bs, bs, seq2block)
+        local unwound = UnwindBlocks(cons_bs, {['']=bs})
         local unwound_exp = model.BlockSet({s}, {model.Block({
             {model.Fragment(s, 1, 1, 1), 'A'},
         })})
@@ -75,7 +75,7 @@ describe("npge.algo.UnwindBlocks", function()
         local bs = model.BlockSet({s}, {block})
         --
         local CS = require 'npge.algo.ConsensusSequences'
-        local cs, seq2block = CS(bs)
+        local cs = CS(bs)
         assert(#cs:sequences() == 1)
         local cons_seq = cs:sequences()[1]
         local cons_f1 = model.Fragment(cons_seq, 1, 1, 1)
@@ -83,7 +83,7 @@ describe("npge.algo.UnwindBlocks", function()
         local cons_bs = model.BlockSet({cons_seq}, {cons_b})
         --
         local UnwindBlocks = require 'npge.algo.UnwindBlocks'
-        local unwound = UnwindBlocks(cons_bs, bs, seq2block)
+        local unwound = UnwindBlocks(cons_bs, {['']=bs})
         local unwound_exp = model.BlockSet({s}, {})
         assert.are.equal(unwound, unwound_exp)
     end)
@@ -100,7 +100,7 @@ describe("npge.algo.UnwindBlocks", function()
         local bs = model.BlockSet({s1, s2}, {block})
         --
         local CS = require 'npge.algo.ConsensusSequences'
-        local cs, seq2block = CS(bs)
+        local cs = CS(bs)
         assert(#cs:sequences() == 1)
         local cons_seq = cs:sequences()[1]
         local cons_b = model.Block({
@@ -110,12 +110,52 @@ describe("npge.algo.UnwindBlocks", function()
         local cons_bs = model.BlockSet({cons_seq}, {cons_b})
         --
         local UnwindBlocks = require 'npge.algo.UnwindBlocks'
-        local unwound = UnwindBlocks(cons_bs, bs, seq2block)
+        local unwound = UnwindBlocks(cons_bs, {['']=bs})
         local unwound_exp = model.BlockSet({s1, s2},
             {model.Block({
                 {model.Fragment(s1, 2, 4, 1), 'TAT'},
                 {model.Fragment(s2, 0, 3, -1), 'TAT'},
                 {model.Fragment(s1, 3, 2, -1), 'TA-'},
+                {model.Fragment(s2, 4, 0, 1), 'TA-'},
+        })})
+        assert.are.equal(unwound, unwound_exp)
+    end)
+
+    it("unwinds blockset (multiple original blocksets)",
+    function()
+        local model = require 'npge.model'
+        local s1 = model.Sequence("g1&c&c", "AATAT")
+        local s2 = model.Sequence("g2&c&c", "AATAT")
+        local b1 = model.Block({
+            {model.Fragment(s1, 2, 4, 1), 'TAT'},
+        })
+        local b2 = model.Block({
+            {model.Fragment(s2, 0, 3, -1), 'TAT'},
+        })
+        local bs1 = model.BlockSet({s1}, {b=b1})
+        local bs2 = model.BlockSet({s2}, {b=b2})
+        --
+        local CS = require 'npge.algo.ConsensusSequences'
+        local Merge = require 'npge.algo.Merge'
+        local cs = Merge(CS(bs1, "bs1-"), CS(bs2, "bs2-"))
+        assert.equal(#cs:sequences(), 2)
+        local cons_seq1 = cs:sequenceByName("bs1-b")
+        local cons_seq2 = cs:sequenceByName("bs2-b")
+        assert.truthy(cons_seq1)
+        assert.truthy(cons_seq2)
+        local cons_b = model.Block({
+            {model.Fragment(cons_seq1, 0, 2, 1), 'TAT'},
+            {model.Fragment(cons_seq2, 1, 0, -1), 'TA-'},
+        })
+        local cons_bs = model.BlockSet({cons_seq1, cons_seq2},
+            {cons_b})
+        --
+        local UnwindBlocks = require 'npge.algo.UnwindBlocks'
+        local unwound = UnwindBlocks(cons_bs,
+            {['bs1-']=bs1, ['bs2-']=bs2})
+        local unwound_exp = model.BlockSet({s1, s2},
+            {model.Block({
+                {model.Fragment(s1, 2, 4, 1), 'TAT'},
                 {model.Fragment(s2, 4, 0, 1), 'TA-'},
         })})
         assert.are.equal(unwound, unwound_exp)
@@ -132,7 +172,7 @@ describe("npge.algo.UnwindBlocks", function()
         local bs = model.BlockSet({s}, {block})
         --
         local CS = require 'npge.algo.ConsensusSequences'
-        local cs, seq2block = CS(bs)
+        local cs = CS(bs)
         assert(#cs:sequences() == 1)
         local cons_seq = cs:sequences()[1]
         local cons_b = model.Block({
@@ -142,7 +182,7 @@ describe("npge.algo.UnwindBlocks", function()
         local cons_bs = model.BlockSet({cons_seq}, {cons_b})
         --
         local UnwindBlocks = require 'npge.algo.UnwindBlocks'
-        local unwound = UnwindBlocks(cons_bs, bs, seq2block)
+        local unwound = UnwindBlocks(cons_bs, {['']=bs})
         local unwound_exp = model.BlockSet({s}, {model.Block({
             {model.Fragment(s, 2, 4, 1), 'TAT'},
             {model.Fragment(s, 1, 0, -1), 'T-T'},

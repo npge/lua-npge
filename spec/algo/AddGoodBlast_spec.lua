@@ -83,6 +83,20 @@ describe("npge.algo.AddGoodBlast", function()
         end)
     end)
 
+    it("throws if query isn't bank subset, but declared to",
+    function()
+        local m = require 'npge.model'
+        local s1 = m.Sequence('s1', string.rep('ATGC', 100))
+        local b1 = m.Block({m.Fragment(s1, 0, 100, 1)})
+        local b2 = m.Block({m.Fragment(s1, 200, 101, -1)})
+        local query = m.BlockSet({s1}, {b1=b1})
+        local bank = m.BlockSet({s1}, {b2=b2})
+        local AddGoodBlast = require 'npge.algo.AddGoodBlast'
+        assert.has_error(function()
+            local hits = AddGoodBlast(query, bank, {subset=1})
+        end)
+    end)
+
     it("resolves #self-overlaps", function()
         local m = require 'npge.model'
         local s1 = m.Sequence('s1', [[
