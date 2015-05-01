@@ -5,9 +5,9 @@
 return function(blockset)
     local isGood = require 'npge.block.isGood'
     local blocks = {}
-    for block in blockset:iterBlocks() do
+    for block, name in blockset:iterBlocks() do
         if isGood(block) then
-            table.insert(blocks, block)
+            blocks[name] = block
         end
     end
     local BlockSet = require 'npge.model.BlockSet'

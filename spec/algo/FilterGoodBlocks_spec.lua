@@ -43,12 +43,13 @@ describe("npge.algo.FilterGoodBlocks", function()
         --
         local BlockSet = require 'npge.model.BlockSet'
         local blockset = BlockSet({s1, s2, s3, s4},
-            {good_block, bad_block})
+            {good_block = good_block, bad_block = bad_block})
         --
         local FilterGoodBlocks =
             require 'npge.algo.FilterGoodBlocks'
         local bs1 = FilterGoodBlocks(blockset)
         assert.equal(bs1, BlockSet({s1, s2, s3, s4},
             {good_block}))
+        assert.equal(bs1:nameByBlock(good_block), "good_block")
     end)
 end)
