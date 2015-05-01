@@ -118,4 +118,25 @@ Workers.BlastHits = function(query, bank)
     return hits
 end
 
+Workers.UnwindBlocks = function(consensus_bs, prefix2blockset)
+    local BlockSet = require 'npge.model.BlockSet'
+    local prefix_pairs = {}
+    for prefix, bs in pairs(prefix2blockset) do
+        local code = "[%q] = BlockSet.fromRef(%q, false),"
+        local increase_count = false
+        local ref = BlockSet.toRef(bs, increase_count)
+        table.insert(prefix_pairs, code:format(prefix, ref))
+    end
+    local prefix_pairs_code = table.concat(prefix_pairs)
+    local code = [[
+        local BlockSet = require 'npge.model.BlockSet'
+        local consensus_bs = ...
+        local prefix2blockset = {%s}
+        local UnwindBlocks = require 'npge.algo.UnwindBlocks'
+        return UnwindBlocks(consensus_bs, prefix2blockset)
+    ]]
+    return Workers.applyToBlockset(consensus_bs,
+        code:format(prefix_pairs_code), Workers.mapBlocks)
+end
+
 return Workers

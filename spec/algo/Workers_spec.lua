@@ -240,4 +240,51 @@ describe("npge.algo.Workers", function()
         local hits2 = W.BlastHits(bs_with_seqs, bs_with_seqs)
         assert.equal(hits1, hits2)
     end)
+
+    it("unwinds from consensus with multiple workers",
+    function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            util = {WORKERS = 4},
+        })
+        --
+        local model = require 'npge.model'
+        local algo = require 'npge.algo'
+        local text = ("AATAT"):rep(100) -- length = 500
+        local seqs = {}
+        for i = 1, 10 do
+            seqs[i] = model.Sequence('s' .. i, text)
+        end
+        local for_block = {}
+        for i = 0, 99 do
+            local seqi = math.floor(i / 10) + 1
+            local framei = i % 10 + 1
+            local seq = seqs[seqi]
+            local start = framei * 30
+            local stop = start + 10
+            local f = model.Fragment(seq, start, stop, 1)
+            if not for_block[framei] then
+                for_block[framei] = {}
+            end
+            table.insert(for_block[framei], f)
+        end
+        local blocks = {}
+        for i, fragments in ipairs(for_block) do
+            blocks['block' .. i] = model.Block(fragments)
+        end
+        local bs = model.BlockSet(seqs, blocks)
+        --
+        local cs = algo.ConsensusSequences(bs)
+        assert.truthy(cs:sequenceByName('block1'))
+        assert.truthy(cs:sequenceByName('block10'))
+        local cs_covered = algo.Cover(cs)
+        --
+        local unwound1 = algo.UnwindBlocks(cs_covered,
+            {['']=bs})
+        local unwound2 = algo.Workers.UnwindBlocks(cs_covered,
+            {['']=bs})
+        assert.are.equal(unwound1, unwound2)
+        --
+        revert()
+    end)
 end)
