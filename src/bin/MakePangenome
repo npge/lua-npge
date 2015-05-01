@@ -11,6 +11,7 @@ local fname = assert(arg[1])
 local bs = algo.ReadSequencesFromFasta(io.lines(fname))
 local bs = algo.PrimaryHits(bs)
 local bs = algo.PangenomeMaker(bs)
+local bs = algo.GiveNames(bs)
 for part in algo.BlockSetToLua(bs) do
     io.write(part)
 end
