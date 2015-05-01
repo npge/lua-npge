@@ -161,6 +161,31 @@ describe("npge.algo.UnwindBlocks", function()
         assert.are.equal(unwound, unwound_exp)
     end)
 
+    it("keeps names of blocks", function()
+        local model = require 'npge.model'
+        local s1 = model.Sequence("g1&c&c", "AATAT")
+        local b1 = model.Block({
+            {model.Fragment(s1, 2, 4, 1), 'TAT'},
+        })
+        local bs1 = model.BlockSet({s1}, {b=b1})
+        --
+        local CS = require 'npge.algo.ConsensusSequences'
+        local cs = CS(bs1, "bs1-")
+        assert.equal(#cs:sequences(), 1)
+        local cons_seq1 = cs:sequenceByName("bs1-b")
+        local cons_b = model.Block({
+            {model.Fragment(cons_seq1, 0, 2, 1), 'TAT'},
+        })
+        local cons_bs = model.BlockSet({cons_seq1, cons_seq2},
+            {cons_b = cons_b})
+        --
+        local UnwindBlocks = require 'npge.algo.UnwindBlocks'
+        local unwound = UnwindBlocks(cons_bs, {['bs1-']=bs1})
+        assert.equal(unwound:nameByBlock(model.Block({
+            {model.Fragment(s1, 2, 4, 1), 'TAT'},
+        })), "cons_b")
+    end)
+
     it("unwinds blockset from consensus (gaps, gaps, gaps)",
     function()
         local model = require 'npge.model'

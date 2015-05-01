@@ -16,11 +16,11 @@ end
 
 return function(consensus_bs, prefix2blockset)
     local blocks = {}
-    for block in consensus_bs:iterBlocks() do
+    for block, name in consensus_bs:iterBlocks() do
         local unwind = require 'npge.block.unwind'
         local new_block = unwind(block, prefix2blockset)
         if new_block then
-            table.insert(blocks, new_block)
+            blocks[name] = new_block
         end
     end
     --
