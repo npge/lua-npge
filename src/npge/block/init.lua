@@ -19,4 +19,5 @@ return {
     genomes = require 'npge.block.genomes',
     blockType = require 'npge.block.blockType',
     giveName = require 'npge.block.giveName',
+    parseName = require 'npge.block.parseName',
 }
