@@ -26,32 +26,23 @@ return function(block, prefix2blockset)
         local seq = fragment:sequence()
         local orig_block = assert(getBlock(seq:name(),
             prefix2blockset), "No block for " .. seq:name())
-        if fragment:parted() then
-            -- unique seq on consensus built on unique seq
-            assert(block:size() == 1)
-            assert(block:length() == #block:text(fragment))
-            assert(orig_block:size() == 1)
-            local f = orig_block:fragments()[1]
-            assert(orig_block:length() == #orig_block:text(f))
-            table.insert(for_block, fragment)
-        else
-            local row = block:text(fragment)
+        assert(not fragment:parted())
+        local row = block:text(fragment)
+        if fragment:ori() == -1 then
+            local C = require 'npge.alignment.complement'
+            row = C(row)
+        end
+        local min, max = getMinMax(fragment)
+        local slice = require 'npge.block.slice'
+        local new_block = slice(orig_block, min, max, row)
+        if new_block then
             if fragment:ori() == -1 then
-                local C = require 'npge.alignment.complement'
-                row = C(row)
+                local reverse = require 'npge.block.reverse'
+                new_block = reverse(new_block)
             end
-            local min, max = getMinMax(fragment)
-            local slice = require 'npge.block.slice'
-            local new_block = slice(orig_block, min, max, row)
-            if new_block then
-                if fragment:ori() == -1 then
-                    local reverse = require 'npge.block.reverse'
-                    new_block = reverse(new_block)
-                end
-                for new_f in new_block:iterFragments() do
-                    local new_row = new_block:text(new_f)
-                    table.insert(for_block, {new_f, new_row})
-                end
+            for new_f in new_block:iterFragments() do
+                local new_row = new_block:text(new_f)
+                table.insert(for_block, {new_f, new_row})
             end
         end
     end
