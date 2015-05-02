@@ -17,8 +17,10 @@ dependencies = {
     "alnbox",
     "luaposix",
 }
-dependencies.windows = {
-    "lua >= 5.1",
+dependencies.platforms = {
+    win32 = {
+        "lua >= 5.1",
+    },
 }
 external_dependencies = {
     BOOST = {
