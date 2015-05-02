@@ -17,6 +17,9 @@ dependencies = {
     "alnbox",
     "luaposix",
 }
+dependencies.windows = {
+    "lua >= 5.1",
+}
 external_dependencies = {
     BOOST = {
         header = "boost/foreach.hpp"

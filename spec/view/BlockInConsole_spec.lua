@@ -23,7 +23,12 @@ end
 
 describe("npge.view.BlockInConsole", function()
     it("draws simple alignment", function()
-        local rote = require 'rote'
+        local has_rote, rote = pcall(require, 'rote')
+        local has_alnbox, alnbox = pcall(require, 'alnbox')
+        if not has_rote or not has_alnbox then
+            -- Dependencies are not installed
+            return
+        end
         local rt = rote.RoteTerm(24, 80)
         startCode(rt, function()
             local npge = require 'npge'
