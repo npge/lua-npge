@@ -46,4 +46,4 @@ build_script:
 
 test_script:
 - cd %APPVEYOR_BUILD_FOLDER%
-- busted -o .appveyor/busted-print.lua
+- busted -o .appveyor/busted-print.lua -t crash

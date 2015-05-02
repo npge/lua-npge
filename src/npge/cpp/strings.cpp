@@ -3,6 +3,8 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <stdio.h>
+
 #include "npge.hpp"
 
 namespace lnpge {
@@ -105,25 +107,39 @@ int toAtgcnAndGap(char* dst, const char* src, int length) {
 // returns length of result
 int unwindRow(char* result, const char* row, int row_size,
               const char* orig, int orig_size) {
+    printf("unwindRow %d %d\n", row_size, orig_size);
     int orig_i = 0;
     int i;
     for (i = 0; i < row_size; i++) {
+        printf("for i = %d\n", i);
         char c = row[i];
+        printf("c = %c\n", c);
         if (c == '-') {
+            printf("gap\n");
             result[i] = '-';
         } else {
+            printf("not gap\n");
             if (orig_i >= orig_size) {
+                printf("orig_i (%d) >= orig_size (%d)\n",
+                        orig_i, orig_size);
                 // Length of original row is not sufficient
                 return -1;
             }
+            printf("result[i (%d)] = orig[orig_i (%d)]\n",
+                    i, orig_i);
             result[i] = orig[orig_i];
             orig_i += 1;
+            printf("orig_i = %d \n", orig_i);
         }
+        printf("iter end\n");
     }
     if (orig_i != orig_size) {
         // Original row is too long
+        printf("orig_i (%d) != orig_size (%d)\n",
+                orig_i, orig_size);
         return -1;
     }
+    printf("return row_size (%d)\n", row_size);
     return row_size;
 }
 
