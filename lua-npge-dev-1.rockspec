@@ -14,12 +14,11 @@ description = {
 }
 dependencies = {
     "lua >= 5.1",
-    "alnbox",
-    "luaposix",
 }
 dependencies.platforms = {
-    win32 = {
-        "lua >= 5.1",
+    unix = {
+        "alnbox",
+        "luaposix",
     },
 }
 external_dependencies = {
