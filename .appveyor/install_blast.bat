@@ -16,3 +16,6 @@ if not exist c:\blast\blastn.exe (
 ) else (
     echo BLAST already installed at c:\blast
 )
+
+set PATH=c:\blast;%PATH%
+echo c:\blast added to PATH
