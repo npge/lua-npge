@@ -37,7 +37,7 @@ install:
 - call .appveyor\install.bat
 # Downloand and install blast to c:\blast
 - call .appveyor\install_blast.bat
-- luarocks install busted
+- luarocks install busted 1.11.1-2
 - luarocks install lua-llthreads2
 
 build_script:
