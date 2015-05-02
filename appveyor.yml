@@ -37,7 +37,8 @@ install:
 - call .appveyor\install.bat
 # Downloand and install blast to c:\blast
 - call .appveyor\install_blast.bat
-- luarocks install busted 1.11.1-2
+- luarocks install "https://raw.githubusercontent.com/starius/mediator_lua/master/mediator_lua-1.1.1-0.rockspec"
+- luarocks install busted
 - luarocks install lua-llthreads2
 
 build_script:
