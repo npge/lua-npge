@@ -41,7 +41,7 @@ install:
 - luarocks install lua-llthreads2
 
 build_script:
-- luarocks make BOOST_INCDIR=c:\Libraries\boost
+- luarocks make BOOST_INCDIR=c:\Libraries\boost "CFLAGS=/nologo /MD /O2 /EHsc"
 
 test_script:
 - cd %APPVEYOR_BUILD_FOLDER%
