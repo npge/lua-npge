@@ -40,7 +40,6 @@ build = {
                 "src/npge/cpp/goodSlices.cpp",
                 "src/npge/cpp/segmentTree.cpp",
             },
-            libraries = {"stdc++"},
             incdirs = {"$(BOOST_INCDIR)"},
         },
         ['npge.config'] = 'src/npge/config.lua',
@@ -146,6 +145,15 @@ build = {
         ['npge.algo.GiveNames'] = 'src/npge/algo/GiveNames.lua',
         ['npge.view'] = 'src/npge/view/init.lua',
         ['npge.view.BlockInConsole'] = 'src/npge/view/BlockInConsole.lua',
+    },
+    platforms = {
+        unix = {
+            modules = {
+                ['npge.cpp'] = {
+                    libraries = {"stdc++"},
+                },
+            },
+        },
     },
     install = {
         bin = {
