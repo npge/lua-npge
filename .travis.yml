@@ -23,7 +23,7 @@ install:
   - luarocks make --local CFLAGS="-O0 -fPIC -ftest-coverage -fprofile-arcs" LIBFLAG="-shared --coverage"
 
 script:
-  - .travis/lua-globals.sh `find src -name '*.lua'`
+  - if [[ "$LUA" != *"luajit"* ]]; then .travis/lua-globals.sh `find src -name '*.lua'`; fi
   - tar -cf /tmp/lua-src.tar.gz src/npge/*.lua src/npge/*/*.lua
   - rm src/npge/*.lua src/npge/*/*.lua
   - export LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0
