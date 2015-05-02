@@ -13,6 +13,7 @@ if not exist c:\blast\blastn.exe (
     copy npge-0.3.0\blastn.exe c:\blast
     copy npge-0.3.0\makeblastdb.exe c:\blast
     copy npge-0.3.0\vcomp100.dll c:\blast
+    echo BLAST files were copied to c:\blast
 ) else (
     echo BLAST already installed at c:\blast
 )
