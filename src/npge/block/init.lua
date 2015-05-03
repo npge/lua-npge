@@ -20,4 +20,5 @@ return {
     blockType = require 'npge.block.blockType',
     giveName = require 'npge.block.giveName',
     parseName = require 'npge.block.parseName',
+    hitName = require 'npge.block.hitName',
 }

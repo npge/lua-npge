@@ -103,6 +103,7 @@ build = {
         ['npge.block.blockType'] = 'src/npge/block/blockType.lua',
         ['npge.block.giveName'] = 'src/npge/block/giveName.lua',
         ['npge.block.parseName'] = 'src/npge/block/parseName.lua',
+        ['npge.block.hitName'] = 'src/npge/block/hitName.lua',
         ['npge.alignment'] = 'src/npge/alignment/init.lua',
         ['npge.alignment.alignRows'] = 'src/npge/alignment/alignRows.lua',
         ['npge.alignment.anchor'] = 'src/npge/alignment/anchor.lua',
