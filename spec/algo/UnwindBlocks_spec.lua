@@ -176,7 +176,7 @@ describe("npge.algo.UnwindBlocks", function()
         local cons_b = model.Block({
             {model.Fragment(cons_seq1, 0, 2, 1), 'TAT'},
         })
-        local cons_bs = model.BlockSet({cons_seq1, cons_seq2},
+        local cons_bs = model.BlockSet({cons_seq1},
             {cons_b = cons_b})
         --
         local UnwindBlocks = require 'npge.algo.UnwindBlocks'
