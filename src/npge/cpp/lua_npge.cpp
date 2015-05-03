@@ -387,15 +387,11 @@ int lua_Fragment_eq(lua_State *L) {
     return 1;
 }
 
-int lua_Fragment_lt_impl(lua_State *L) {
+int lua_Fragment_lt(lua_State *L) {
     const FragmentPtr& a = lua_tofr(L, 1);
     const FragmentPtr& b = lua_tofr(L, 2);
     lua_pushboolean(L, (*a) < (*b));
     return 1;
-}
-
-int lua_Fragment_lt(lua_State *L) {
-    LUA_CALL_WRAPPED(lua_Fragment_lt_impl);
 }
 
 static const luaL_Reg Fragment_methods[] = {
