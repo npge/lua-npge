@@ -3,7 +3,7 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <stdio.h>
+#include <iostream>
 
 #include "npge.hpp"
 
@@ -107,39 +107,40 @@ int toAtgcnAndGap(char* dst, const char* src, int length) {
 // returns length of result
 int unwindRow(char* result, const char* row, int row_size,
               const char* orig, int orig_size) {
-    printf("unwindRow %d %d\n", row_size, orig_size);
+    std::cout << "unwindRow " <<  row_size << ' '<< orig_size
+        << std::endl;
     int orig_i = 0;
     int i;
     for (i = 0; i < row_size; i++) {
-        printf("for i = %d\n", i);
+        std::cout << "for i = " << i << std::endl;
         char c = row[i];
-        printf("c = %c\n", c);
+        std::cout << "c = " << c << std::endl;
         if (c == '-') {
-            printf("gap\n");
+            std::cout << "gap" << std::endl;
             result[i] = '-';
         } else {
-            printf("not gap\n");
+            std::cout << "not gap" << std::endl;
             if (orig_i >= orig_size) {
-                printf("orig_i (%d) >= orig_size (%d)\n",
-                        orig_i, orig_size);
+                std::cout << "orig_i >= orig_size " <<
+                        orig_i << ' ' << orig_size << std::endl;
                 // Length of original row is not sufficient
                 return -1;
             }
-            printf("result[i (%d)] = orig[orig_i (%d)]\n",
-                    i, orig_i);
+            std::cout << "result[i] = orig[orig_i] " <<
+                    i << ' ' << orig_i << std::endl;
             result[i] = orig[orig_i];
             orig_i += 1;
-            printf("orig_i = %d \n", orig_i);
+            std::cout << "orig_i = " << orig_i << std::endl;
         }
-        printf("iter end\n");
+        std::cout << "iter end" << std::endl;
     }
     if (orig_i != orig_size) {
         // Original row is too long
-        printf("orig_i (%d) != orig_size (%d)\n",
-                orig_i, orig_size);
+        std::cout << "orig_i != orig_size " << orig_i << ' '
+                << orig_size << std::endl;
         return -1;
     }
-    printf("return row_size (%d)\n", row_size);
+    std::cout << "return row_size " << row_size << std::endl;
     return row_size;
 }
 
