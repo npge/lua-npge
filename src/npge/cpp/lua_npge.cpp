@@ -1191,7 +1191,7 @@ int lua_unwindRow(lua_State *L) {
         }
     }
     if (size == -1) {
-        luaL_error(L, "Original and consensus rows "
+        return luaL_error(L, "Original and consensus rows "
                 "do not match");
     }
     return 1;
