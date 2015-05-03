@@ -161,6 +161,16 @@ return function(blockset)
             end
         end
     end
+    -- make sure resulting blocks have greater length
+    -- than overlapping original blocks
+    local Overlapping = require 'npge.algo.Overlapping'
+    for _, new_block in ipairs(joined) do
+        local old_blocks = Overlapping(blockset, new_block)
+        for _, old_block in ipairs(old_blocks) do
+            assert(old_block:length() < new_block:length())
+        end
+    end
+    -- return
     local BlockSet = require 'npge.model.BlockSet'
     return BlockSet(blockset:sequences(), joined)
 end
