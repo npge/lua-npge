@@ -24,6 +24,7 @@ describe("npge.block.orient", function()
         local orient = require 'npge.block.orient'
         local reverse = require 'npge.block.reverse'
         assert.equal(orient(block), reverse(block))
+        assert.not_equal(orient(block), block)
     end)
 
     it("orients block (2 fragments, ori = 1)",

@@ -19,5 +19,6 @@ describe("npge.block.reverse", function()
             {model.Fragment(s, 3, 4, 1), 'A-T'},
         })
         assert.are.equal(block_rev, block_rev_exp)
+        assert.not_equal(block_rev, block)
     end)
 end)
