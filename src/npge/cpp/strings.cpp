@@ -3,8 +3,6 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <iostream>
-
 #include "npge.hpp"
 
 namespace lnpge {
@@ -107,40 +105,25 @@ int toAtgcnAndGap(char* dst, const char* src, int length) {
 // returns length of result
 int unwindRow(char* result, const char* row, int row_size,
               const char* orig, int orig_size) {
-    std::cout << "unwindRow " <<  row_size << ' '<< orig_size
-        << std::endl;
     int orig_i = 0;
     int i;
     for (i = 0; i < row_size; i++) {
-        std::cout << "for i = " << i << std::endl;
         char c = row[i];
-        std::cout << "c = " << c << std::endl;
         if (c == '-') {
-            std::cout << "gap" << std::endl;
             result[i] = '-';
         } else {
-            std::cout << "not gap" << std::endl;
             if (orig_i >= orig_size) {
-                std::cout << "orig_i >= orig_size " <<
-                        orig_i << ' ' << orig_size << std::endl;
                 // Length of original row is not sufficient
                 return -1;
             }
-            std::cout << "result[i] = orig[orig_i] " <<
-                    i << ' ' << orig_i << std::endl;
             result[i] = orig[orig_i];
             orig_i += 1;
-            std::cout << "orig_i = " << orig_i << std::endl;
         }
-        std::cout << "iter end" << std::endl;
     }
     if (orig_i != orig_size) {
         // Original row is too long
-        std::cout << "orig_i != orig_size " << orig_i << ' '
-                << orig_size << std::endl;
         return -1;
     }
-    std::cout << "return row_size " << row_size << std::endl;
     return row_size;
 }
 

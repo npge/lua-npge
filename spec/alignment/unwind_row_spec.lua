@@ -14,7 +14,7 @@ describe("npge.alignment.unwindRow", function()
         assert.equal(unwindRow('A-TGC', 'AT-C'), 'A-T-C')
     end)
 
-    it("throws if consensus row does not match original row #crash",
+    it("throws if consensus row does not match original row",
     function()
         local unwindRow = require 'npge.alignment.unwindRow'
         assert.has_error(function()

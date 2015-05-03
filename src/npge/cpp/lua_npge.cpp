@@ -3,8 +3,6 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <iostream>
-
 #include <cstdlib>
 #include <cassert>
 #include <cstring>
@@ -1179,28 +1177,20 @@ int lua_complement(lua_State* L) {
 int lua_unwindRow(lua_State *L) {
     size_t row_size, orig_size;
     const char* row = luaL_checklstring(L, 1, &row_size);
-    std::cout << "row_size " << row_size << std::endl;
     const char* orig = luaL_checklstring(L, 2, &orig_size);
-    std::cout << "orig_size " << orig_size << std::endl;
     luaL_argcheck(L, row_size >= orig_size, 1,
             "Length of row on consensus must be >= "
             "length of row on original sequence");
-    std::cout << "row_size >= orig_size" << std::endl;
     int size;
     {
-        std::cout << "creating buffer" << std::endl;
         Buffer buffer(new char[row_size]);
-        std::cout << "calling unwindRow" << std::endl;
         size = unwindRow(buffer.get(), row, row_size,
                          orig, orig_size);
-        std::cout << "size = " << size << std::endl;
         if (size != -1) {
             lua_pushlstring(L, buffer.get(), size);
         }
-        std::cout << "delete buffer" << std::endl;
     }
     if (size == -1) {
-        std::cout << "raising error" << std::endl;
         return luaL_error(L, "Original and consensus rows "
                 "do not match");
     }

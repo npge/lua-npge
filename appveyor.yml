@@ -39,11 +39,11 @@ install:
 - call .appveyor\install_blast.bat
 - luarocks install "https://gist.githubusercontent.com/starius/719b194bb34ce612458c/raw/7ab5aa457164c5dccef2c06e0e06ffbed09319df/mediator_lua-1.1.1-0.rockspec"
 - luarocks install busted
-#- luarocks install lua-llthreads2
+- luarocks install lua-llthreads2
 
 build_script:
 - luarocks make BOOST_INCDIR=c:\Libraries\boost "CFLAGS=/nologo /MD /O2 /EHsc"
 
 test_script:
 - cd %APPVEYOR_BUILD_FOLDER%
-- busted -o .appveyor/busted-print.lua -t crash
+- busted -o .appveyor/busted-print.lua
