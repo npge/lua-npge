@@ -147,6 +147,7 @@ build = {
         ['npge.algo.WriteSequencesToFasta'] = 'src/npge/algo/WriteSequencesToFasta.lua',
         ['npge.algo.GiveNames'] = 'src/npge/algo/GiveNames.lua',
         ['npge.algo.Overlapping'] = 'src/npge/algo/Overlapping.lua',
+        ['npge.algo.CheckPangenome'] = 'src/npge/algo/CheckPangenome.lua',
         ['npge.view'] = 'src/npge/view/init.lua',
         ['npge.view.BlockInConsole'] = 'src/npge/view/BlockInConsole.lua',
     },
