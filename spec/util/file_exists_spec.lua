@@ -5,7 +5,8 @@
 describe("npge.util.fileExists", function()
     it("checks if file exists", function()
         local fileExists = require 'npge.util.fileExists'
-        local tmp_fname = os.tmpname()
+        local tmpName = require 'npge.util.tmpName'
+        local tmp_fname = tmpName()
         local tmp_f = io.open(tmp_fname, 'w')
         tmp_f:write('test')
         tmp_f:close()

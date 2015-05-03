@@ -96,10 +96,11 @@ Workers.BlastHits = function(query, bank)
         return BlockSet({}, {})
     end
     local Blast = require 'npge.algo.Blast'
+    local tmpName = require 'npge.util.tmpName'
     Blast.checkNoCollisions(query, bank)
-    local bank_cons_fname = os.tmpname()
+    local bank_cons_fname = tmpName()
     Blast.makeConsensus(bank_cons_fname, bank)
-    local bank_fname = os.tmpname()
+    local bank_fname = tmpName()
     Blast.makeBlastDb(bank_fname, bank_cons_fname)
     local code = [[
         local BlockSet = require 'npge.model.BlockSet'

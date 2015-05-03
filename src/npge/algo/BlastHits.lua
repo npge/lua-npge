@@ -150,6 +150,7 @@ return function(query, bank, options)
     --   are discarded (optimisation). They are compared
     --   as instances of Fragment.
     local Blast = require 'npge.algo.Blast'
+    local tmpName = require 'npge.util.tmpName'
     options = options or {}
     local BlockSet = require 'npge.model.BlockSet'
     if #query:sequences() == 0 or #bank:sequences() == 0 then
@@ -161,16 +162,16 @@ return function(query, bank, options)
     if options.bank_fname then
         bank_fname = options.bank_fname
     else
-        bank_cons_fname = os.tmpname()
+        bank_cons_fname = tmpName()
         Blast.makeConsensus(bank_cons_fname, bank)
-        bank_fname = os.tmpname()
+        bank_fname = tmpName()
         Blast.makeBlastDb(bank_fname, bank_cons_fname)
     end
     local query_cons_fname
     if same and bank_cons_fname then
         query_cons_fname = bank_cons_fname
     else
-        query_cons_fname = os.tmpname()
+        query_cons_fname = tmpName()
         Blast.makeConsensus(query_cons_fname, query)
     end
     --

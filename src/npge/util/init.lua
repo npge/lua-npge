@@ -27,4 +27,5 @@ return {
     threads = require 'npge.util.threads',
     mapItems = require 'npge.util.mapItems',
     textToIt = require 'npge.util.textToIt',
+    tmpName = require 'npge.util.tmpName',
 }

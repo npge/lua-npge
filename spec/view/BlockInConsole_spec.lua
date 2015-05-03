@@ -11,7 +11,8 @@ local function startCode(rt, code)
     if type(code) == 'function' then
         code = string.dump(code)
     end
-    local fname = os.tmpname()
+    local tmpName = require 'npge.util.tmpName'
+    local fname = tmpName()
     local f = io.open(fname, 'w')
     f:write(code)
     f:close()

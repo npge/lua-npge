@@ -4,7 +4,8 @@
 
 describe("npge.util.readFile", function()
     it("reads whole file", function()
-        local fname = os.tmpname()
+        local tmpName = require 'npge.util.tmpName'
+        local fname = tmpName()
         local f = io.open(fname, 'w')
         f:write('test')
         f:close()

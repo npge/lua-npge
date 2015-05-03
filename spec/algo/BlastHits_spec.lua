@@ -1602,9 +1602,10 @@ GTGATACGACTATACTAGTGC]])
         local BlockSet = require 'npge.model.BlockSet'
         local bs = BlockSet({s1, s2}, {})
         local Blast = require 'npge.algo.Blast'
-        local bank_cons_fname = os.tmpname()
+        local tmpName = require 'npge.util.tmpName'
+        local bank_cons_fname = tmpName()
         Blast.makeConsensus(bank_cons_fname, bs)
-        local bank_fname = os.tmpname()
+        local bank_fname = tmpName()
         Blast.makeBlastDb(bank_fname, bank_cons_fname)
         local BlastHits = require 'npge.algo.BlastHits'
         local hits = BlastHits(bs, bs, {
@@ -1624,9 +1625,10 @@ GTGATACGACTATACTAGTGC]])
         local bank = BlockSet({s1}, {})
         local query = BlockSet({s2}, {})
         local Blast = require 'npge.algo.Blast'
-        local bank_cons_fname = os.tmpname()
+        local tmpName = require 'npge.util.tmpName'
+        local bank_cons_fname = tmpName()
         Blast.makeConsensus(bank_cons_fname, bank)
-        local bank_fname = os.tmpname()
+        local bank_fname = tmpName()
         Blast.makeBlastDb(bank_fname, bank_cons_fname)
         local BlastHits = require 'npge.algo.BlastHits'
         local hits = BlastHits(query, bank, {

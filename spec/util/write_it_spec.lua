@@ -7,7 +7,8 @@ describe("npge.util.writeIt", function()
         local writeIt = require 'npge.util.writeIt'
         local itFromArray = require 'npge.util.itFromArray'
         local array = {"123\n", "456\n"}
-        local tmp_fname = os.tmpname()
+        local tmpName = require 'npge.util.tmpName'
+        local tmp_fname = tmpName()
         writeIt(tmp_fname, itFromArray(array))
         local tmp_f = io.open(tmp_fname, 'rb')
         local text = tmp_f:read('*a')
