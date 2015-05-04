@@ -25,7 +25,7 @@ local config = {
         "Min number of equal columns around single mismatch"},
 
         GAP_CHECK = {2,
-        "Min number of equal columns around single mismatch"},
+        "Min number of equal columns around single gap"},
 
         ANCHOR = {7, "Min equal aligned part"},
     },
