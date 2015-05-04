@@ -28,22 +28,21 @@ return function(block)
     end
     -- check identity of end subblocks
     local min_ident = config.general.MIN_IDENTITY
-    local identityLess = (require 'npge.block.identity').less
     local identity = require 'npge.alignment.identity'
     local min_cols = config.general.MIN_END
-    local ident = identity(rows, 0, min_cols - 1)
-    if identityLess(ident, 1.0) then
-        return false, 'beginning identity', ident
+    local _, ident, all = identity(rows, 0, min_cols - 1)
+    if ident ~= all then
+        return false, 'beginning identity', ident / all
     end
-    local ident = identity(rows, block:length() - min_cols,
-        block:length() - 1)
-    if identityLess(ident, 1.0) then
-        return false, 'ending identity', ident
+    local _, ident, all = identity(rows,
+        block:length() - min_cols, block:length() - 1)
+    if ident ~= all then
+        return false, 'ending identity', ident / all
     end
     -- check identity of slices of length MIN_LENGTH
     local min_gc = min_length * min_ident
     local function goodIdentity(good_count)
-        return not identityLess(good_count, min_gc)
+        return good_count >= min_gc
     end
     local goodColumns = require 'npge.cpp'.func.goodColumns
     local col = goodColumns(rows)

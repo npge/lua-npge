@@ -184,7 +184,7 @@ describe("npge.block.isGood", function()
         -- check that identity of the block is enough
         local min_ident = config.general.MIN_IDENTITY
         local identity = require 'npge.block.identity'
-        if not identity.less(identity(block), min_ident) then
+        if identity(block) >= min_ident then
             local isGood = require 'npge.block.isGood'
             assert.falsy(isGood(block))
         end
@@ -211,7 +211,7 @@ describe("npge.block.isGood", function()
         -- check that identity of the block is enough
         local min_ident = config.general.MIN_IDENTITY
         local identity = require 'npge.block.identity'
-        if not identity.less(identity(block), min_ident) then
+        if identity(block) >= min_ident then
             local isGood = require 'npge.block.isGood'
             assert.truthy(isGood(block))
         end
@@ -239,7 +239,7 @@ describe("npge.block.isGood", function()
         -- check that identity of the block is enough
         local min_ident = config.general.MIN_IDENTITY
         local identity = require 'npge.block.identity'
-        if not identity.less(identity(block), min_ident) then
+        if identity(block) >= min_ident then
             local isGood = require 'npge.block.isGood'
             assert.falsy(isGood(block))
         end
@@ -266,7 +266,7 @@ describe("npge.block.isGood", function()
         -- check that identity of the block is enough
         local min_ident = config.general.MIN_IDENTITY
         local identity = require 'npge.block.identity'
-        if not identity.less(identity(block), min_ident) then
+        if identity(block) >= min_ident then
             local isGood = require 'npge.block.isGood'
             assert.truthy(isGood(block))
         end
@@ -298,7 +298,7 @@ describe("npge.block.isGood", function()
         -- check that identity of the block is enough
         local min_ident = config.general.MIN_IDENTITY
         local identity = require 'npge.block.identity'
-        if not identity.less(identity(block), min_ident) then
+        if identity(block) >= min_ident then
             local isGood = require 'npge.block.isGood'
             assert.falsy(isGood(block))
         end
@@ -330,7 +330,7 @@ describe("npge.block.isGood", function()
         -- check that identity of the block is enough
         local min_ident = config.general.MIN_IDENTITY
         local identity = require 'npge.block.identity'
-        if not identity.less(identity(block), min_ident) then
+        if identity(block) >= min_ident then
             local isGood = require 'npge.block.isGood'
             assert.falsy(isGood(block))
         end

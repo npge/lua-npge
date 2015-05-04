@@ -9,8 +9,7 @@ describe("npge.block.identity", function()
         local f = model.Fragment(s, 0, 3, 1)
         local b = model.Block({f, f})
         local identity = require 'npge.block.identity'
-        local b_identity = identity(b)
-        assert.truthy(identity.eq(b_identity, 1))
+        assert.equal(identity(b), 1)
     end)
 
     it("finds identity of block (50%)", function()
@@ -20,8 +19,7 @@ describe("npge.block.identity", function()
         local f2 = model.Fragment(s, 2, 3, 1)
         local b = model.Block({{f1, 'AT'}, {f2, 'TT'}})
         local identity = require 'npge.block.identity'
-        local b_identity = identity(b)
-        assert.truthy(identity.eq(b_identity, 0.5))
+        assert.equal(identity(b), 0.5)
     end)
 
     it("finds identity of block (gap)", function()
@@ -31,17 +29,6 @@ describe("npge.block.identity", function()
         local f2 = model.Fragment(s, 3, 3, 1)
         local b = model.Block({{f1, 'AT'}, {f2, '-T'}})
         local identity = require 'npge.block.identity'
-        local b_identity = identity(b)
-        assert.truthy(identity.eq(b_identity, 0.50))
-    end)
-
-    it("compares identuty", function()
-        local identity = require 'npge.block.identity'
-        assert.truthy(identity.eq(1, 1))
-        assert.truthy(identity.less(1, 2))
-        assert.falsy(identity.less(1, 1))
-        assert.falsy(identity.less(0.001, 0.001))
-        assert.truthy(identity.less(0.000, 0.001))
-        assert.truthy(identity.eq(0.00099999, 0.001))
+        assert.equal(identity(b), 0.5)
     end)
 end)
