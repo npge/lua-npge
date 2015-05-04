@@ -4,43 +4,55 @@
 
 local config = {
     general = {
-        -- Minimum acceptable identity of block (0.9 is 90%)
-        MIN_IDENTITY = 0.9,
+        MIN_IDENTITY = {0.9,
+        "Minimum acceptable block identity (0.9 is 90%)"},
 
-        -- Minimum acceptable length of fragment (b.p.)
-        MIN_LENGTH = 100,
+        MIN_LENGTH = {100,
+        "Minimum acceptable length of fragment (b.p.)"},
 
-        -- Minimum number of end identical and gapless  cols
-        MIN_END = 3,
+        MIN_END = {3,
+        "Minimum number of end good columns"},
     },
 
     blast = {
-        -- Filter out low complexity regions
-        DUST = false,
+        DUST = {false, "Filter out low complexity regions"},
 
-        -- E-value filter for blast
-        EVALUE = 0.001,
+        EVALUE = {0.001, "E-value filter for blast"},
 
-        -- Maximum number of subsequent N's in consensus
-        MAX_NS = 3,
+        MAX_NS = {3,
+        "Maximum number of subsequent N's in consensus"},
     },
 
     alignment = {
-        -- Min number of equal columns around single mismatch
-        MISMATCH_CHECK = 1,
+        MISMATCH_CHECK = {1,
+        "Min number of equal columns around single mismatch"},
 
-        -- Min number of equal columns around single mismatch
-        GAP_CHECK = 2,
+        GAP_CHECK = {2,
+        "Min number of equal columns around single mismatch"},
 
-        -- Min equal aligned part
-        ANCHOR = 7,
+        ANCHOR = {7, "Min equal aligned part"},
     },
 
     util = {
-        -- Number of workers for concurrent tasks
-        WORKERS = 1,
+        WORKERS = {1, "Number of parallel workers"},
     },
 }
+
+-- move descriptions to table about
+local about = {}
+for section_name, section in pairs(config) do
+    about[section_name] = {}
+    local names = {}
+    for name, value_and_desc in pairs(section) do
+        table.insert(names, name)
+    end
+    for _, name in ipairs(names) do
+        local value = section[name][1]
+        local desc = section[name][2]
+        section[name] = value
+        about[section_name][name] = desc
+    end
+end
 
 local function updateKeys(_, env)
     local revert = {}
@@ -68,6 +80,7 @@ end
 setmetatable(config, {
     __index = {
         updateKeys = updateKeys,
+        about = about,
     }
 })
 
