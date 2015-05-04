@@ -18,9 +18,6 @@ local config = {
         DUST = {false, "Filter out low complexity regions"},
 
         EVALUE = {0.001, "E-value filter for blast"},
-
-        MAX_NS = {3,
-        "Maximum number of subsequent N's in consensus"},
     },
 
     alignment = {
