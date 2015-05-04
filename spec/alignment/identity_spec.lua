@@ -8,6 +8,12 @@ describe("npge.alignment.identity", function()
         assert.equal(identity({'AT', 'TT'}), 0.5)
     end)
 
+    it("finds identity of rows (column with N is bad)",
+    function()
+        local identity = require 'npge.alignment.identity'
+        assert.equal(identity({'N', 'N'}), 0)
+    end)
+
     it("finds identity of rows (slice)", function()
         local identity = require 'npge.alignment.identity'
         assert.equal(identity({'AT', 'TT'}, 0, 0), 0)

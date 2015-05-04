@@ -6,9 +6,9 @@ describe("npge.cpp.func.goodColumns", function()
     it("gets type of alignment columns", function()
         local goodColumns = require 'npge.cpp'.func.goodColumns
         assert.same(goodColumns({
-            "AAAATTTG--GG",
-            "AA-ATTTG--GG",
-        }), {true, true, false, true, true, true, true, true,
+            "NAAATTTG--GG",
+            "NA-ATTTG--GG",
+        }), {false, true, false, true, true, true, true, true,
              false, false, true, true})
         assert.same(goodColumns({
             "AAT-AG",

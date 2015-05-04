@@ -3,7 +3,7 @@
 -- See the LICENSE file for terms of use.
 
 return function(block)
-    -- good column = identical and gapless
+    -- good column = identical and gapless and N-less
     -- AND(
     -- size >= 2 fragments
     -- length >= MIN_LENGTH
