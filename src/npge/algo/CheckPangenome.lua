@@ -29,6 +29,14 @@ return function(blockset)
             block1:length() < block2:length())
     end
 
+    local function blockNames(blocks)
+        local names = {}
+        for _, block in ipairs(blocks) do
+            table.insert(names, blockset:nameByBlock(block))
+        end
+        return names
+    end
+
     if not blockset:isPartition() then
         fail("The blockset is not a partition")
     end
@@ -125,9 +133,12 @@ return function(blockset)
         joined:size())
     for i, block in ipairs(joined:blocks()) do
         local block_name = npge.block.giveName(block, #genomes)
+        local blocks = npge.algo.Overlapping(blockset, block)
+        local names = table.concat(blockNames(blocks), ', ')
         local good_parts = npge.block.goodSubblocks(block)
-        warning("Joined block %s (%s) unwinds to %d good parts",
-            i, block_name, #good_parts)
+        warning([[Joined block %s (%s, composed from %s)
+            unwinds to %d good parts]],
+            i, block_name, names, #good_parts)
         for i, part in ipairs(good_parts) do
             inspectPart(i, part)
         end
