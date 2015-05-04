@@ -22,6 +22,15 @@ platform:
   - x86
   - x64
 
+# this is how to allow failing jobs in the matrix
+matrix:
+  # LuaJIT crashes on C++ exception on x86
+  allow_failures:
+    - platform: x86
+      LJ_VER: 2.0.3
+    - platform: x86
+      LJ_VER: 2.1
+
 cache:
   - c:\lua -> appveyor.yml
   - c:\external -> appveyor.yml
