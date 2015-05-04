@@ -108,7 +108,7 @@ return function(blockset)
                 blocks %s, all of them are minor, unique or
                 less than the part. This part must be included
                 into the pangenome!]],
-                i, part_name, table.concat(block_names))
+                i, part_name, table.concat(block_names, ', '))
         end
     end
 
