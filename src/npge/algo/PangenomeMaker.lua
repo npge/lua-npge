@@ -24,6 +24,6 @@ return function(bs)
         joined = algo.GoodSubblocks(joined)
         bs1 = algo.BlocksWithoutOverlaps(bs1, joined)
     end
-    bs = algo.Cover(bs)
+    bs = algo.Orient(algo.Cover(bs))
     return bs
 end
