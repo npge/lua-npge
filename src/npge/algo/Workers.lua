@@ -75,8 +75,7 @@ Workers.applyToBlockset = function(blockset, alg, map)
             table.insert(blocksets, bs)
         end
         local Merge = require 'npge.algo.Merge'
-        local unpack = require 'npge.util.unpack'
-        return Merge(unpack(blocksets))
+        return Merge(blocksets)
     end)
 end
 

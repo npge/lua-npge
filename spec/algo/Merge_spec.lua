@@ -13,7 +13,7 @@ describe("npge.algo.Merge", function()
         local b2 = model.Block({f2})
         local bs2 = model.BlockSet({s}, {b2})
         local Merge = require 'npge.algo.Merge'
-        local sum = Merge(bs1, bs2)
+        local sum = Merge({bs1, bs2})
         assert.truthy(sum:sameSequences(bs1))
         assert.same(sum:fragments(s), {f1, f2})
         assert.equal(sum:size(), 2)
@@ -32,7 +32,7 @@ describe("npge.algo.Merge", function()
         local b3 = model.Block({f3})
         local bs3 = model.BlockSet({s}, {b3})
         local Merge = require 'npge.algo.Merge'
-        local sum = Merge(bs1, bs2, bs3)
+        local sum = Merge({bs1, bs2, bs3})
         assert.equal(sum, model.BlockSet({s}, {b1, b2, b3}))
     end)
 
@@ -51,7 +51,7 @@ describe("npge.algo.Merge", function()
         local b3 = model.Block({f3})
         local bs3 = model.BlockSet({s2}, {b3})
         local Merge = require 'npge.algo.Merge'
-        local sum = Merge(bs1, bs2, bs3)
+        local sum = Merge({bs1, bs2, bs3})
         assert.equal(sum, model.BlockSet({s1, s2},
             {b1, b2, b3}))
     end)
@@ -63,7 +63,7 @@ describe("npge.algo.Merge", function()
         local b1 = model.Block({f1})
         local bs1 = model.BlockSet({s}, {b1})
         local Merge = require 'npge.algo.Merge'
-        local sum = Merge(bs1)
+        local sum = Merge({bs1})
         assert.equal(sum, model.BlockSet({s}, {b1}))
     end)
 
@@ -71,6 +71,13 @@ describe("npge.algo.Merge", function()
         assert.has_error(function()
             local Merge = require 'npge.algo.Merge'
             local blockset = Merge()
+        end)
+    end)
+
+    it("throws if called with {}", function()
+        assert.has_error(function()
+            local Merge = require 'npge.algo.Merge'
+            local blockset = Merge({})
         end)
     end)
 end)

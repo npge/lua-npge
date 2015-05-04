@@ -137,7 +137,7 @@ describe("npge.algo.UnwindBlocks", function()
         --
         local CS = require 'npge.algo.ConsensusSequences'
         local Merge = require 'npge.algo.Merge'
-        local cs = Merge(CS(bs1, "bs1-"), CS(bs2, "bs2-"))
+        local cs = Merge {CS(bs1, "bs1-"), CS(bs2, "bs2-")}
         assert.equal(#cs:sequences(), 2)
         local cons_seq1 = cs:sequenceByName("bs1-b")
         local cons_seq2 = cs:sequenceByName("bs2-b")

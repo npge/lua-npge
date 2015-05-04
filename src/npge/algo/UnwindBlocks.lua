@@ -9,9 +9,8 @@ local function mergeSequences(prefix2blockset)
         local seqs = blockset:sequences()
         table.insert(blocksets, BlockSet(seqs, {}))
     end
-    local unpack = require 'npge.util.unpack'
     local Merge = require 'npge.algo.Merge'
-    return Merge(unpack(blocksets)):sequences()
+    return Merge(blocksets):sequences()
 end
 
 return function(consensus_bs, prefix2blockset)

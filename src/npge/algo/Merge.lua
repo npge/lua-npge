@@ -2,8 +2,8 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-return function(...)
-    local blocksets = {...}
+return function(blocksets)
+    assert(blocksets)
     local bs1 = assert(blocksets[1])
     if #blocksets == 1 then
         assert(bs1:type() == 'BlockSet')
