@@ -17,13 +17,6 @@
 
 using namespace lnpge;
 
-#ifdef _MSC_VER
-// Microsoft Visual Studio
-#define NOINLINE __declspec(noinline)
-#else
-#define NOINLINE
-#endif
-
 #define LUA_CALL_WRAPPED(f) \
     int results = f(L); \
     if (results == -1) { \
@@ -130,7 +123,6 @@ static void lua_pushbs(lua_State* L, const BlockSetPtr& bs) {
 
 ////////
 
-NOINLINE
 int lua_Sequence_impl(lua_State *L) {
     size_t name_size, text_size;
     const char* name = luaL_checklstring(L, 1, &name_size);
@@ -224,7 +216,6 @@ int lua_Sequence_length(lua_State *L) {
     return 1;
 }
 
-NOINLINE
 int lua_Sequence_sub_impl(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
     int min = luaL_checkinteger(L, 2);
@@ -279,7 +270,6 @@ static const luaL_Reg Sequence_methods[] = {
     {NULL, NULL}
 };
 
-NOINLINE
 int lua_Fragment_impl(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
     int start = luaL_checkinteger(L, 2);
@@ -352,7 +342,6 @@ int lua_Fragment_id(lua_State *L) {
     return 1;
 }
 
-NOINLINE
 int lua_Fragment_parts_impl(lua_State *L) {
     const FragmentPtr& fragment = lua_tofr(L, 1);
     try {
@@ -430,7 +419,6 @@ static bool hasRows(lua_State* L, int index) {
 }
 
 // Block({fragment1, fragment2, ...})
-NOINLINE
 int lua_Block_impl(lua_State *L) {
     luaL_argcheck(L, lua_gettop(L) >= 1, 1,
                   "Provide list of fragments to Block()");
@@ -526,7 +514,6 @@ int lua_Block_size(lua_State *L) {
     return 1;
 }
 
-NOINLINE
 int lua_Block_text_impl(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
     const FragmentPtr& fragment = lua_tofr(L, 2);
@@ -580,7 +567,6 @@ int lua_Block_iterFragments(lua_State *L) {
     return 1;
 }
 
-NOINLINE
 int lua_Block_block2fragment_impl(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
     const FragmentPtr& fragment = lua_tofr(L, 2);
@@ -599,7 +585,6 @@ int lua_Block_block2fragment(lua_State *L) {
     LUA_CALL_WRAPPED(lua_Block_block2fragment_impl);
 }
 
-NOINLINE
 int lua_Block_block2right_impl(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
     const FragmentPtr& fragment = lua_tofr(L, 2);
@@ -618,7 +603,6 @@ int lua_Block_block2right(lua_State *L) {
     LUA_CALL_WRAPPED(lua_Block_block2right_impl);
 }
 
-NOINLINE
 int lua_Block_block2left_impl(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
     const FragmentPtr& fragment = lua_tofr(L, 2);
@@ -678,7 +662,6 @@ static const luaL_Reg Block_methods[] = {
 //////////
 
 // BlockSet(BlockSet, {sequences}, {blocks}, [names generator])
-NOINLINE
 int lua_BlockSet_impl(lua_State *L) {
     luaL_argcheck(L, lua_gettop(L) >= 3, 2,
                   "call BlockSet({sequences}, {blocks})");
@@ -923,7 +906,6 @@ int lua_BlockSet_iterSequences(lua_State *L) {
     return 1;
 }
 
-NOINLINE
 int lua_BlockSet_fragments_impl(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     const SequencePtr& seq = lua_toseq(L, 2);
@@ -971,7 +953,6 @@ static int BlockSet_fragmentsIterator(lua_State *L) {
     }
 }
 
-NOINLINE
 int lua_BlockSet_iterFragments_impl(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     const SequencePtr& seq = lua_toseq(L, 2);
@@ -1032,7 +1013,6 @@ int lua_BlockSet_overlappingFragments(lua_State *L) {
     return 1;
 }
 
-NOINLINE
 int lua_BlockSet_next_impl(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     const FragmentPtr& fr = lua_tofr(L, 2);
@@ -1050,7 +1030,6 @@ int lua_BlockSet_next(lua_State *L) {
     LUA_CALL_WRAPPED(lua_BlockSet_next_impl);
 }
 
-NOINLINE
 int lua_BlockSet_prev_impl(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     const FragmentPtr& fr = lua_tofr(L, 2);
