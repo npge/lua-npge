@@ -21,7 +21,10 @@ ShortForm.diff = function(dna1, dna2)
     end
     local base2pos1 = {}
     for base, pos in pairs(base2pos) do
-        local code = "[%q] = {%s}"
+        local code = "[%q]={%s}" -- {['-'] = {1,2,3}}
+        if base ~= '-' then
+            code = "%s={%s}" -- {A = {1,2,3}}
+        end
         code = code:format(base, table.concat(pos, ","))
         table.insert(base2pos1, code)
     end
@@ -86,17 +89,17 @@ ShortForm.encode = function(blockset)
         --
         for block, name in blockset:iterBlocks() do
             local consensus = npge.block.consensus(block)
-            print("addBlock {")
-            print("name = %q,", name)
-            print("consensus = %q,", consensus)
-            print("mutations = {")
+            print("addBlock{")
+            print("name=%q,", name)
+            print("consensus=%q,", consensus)
+            print("mutations={")
             for fragment in block:iterFragments() do
                 local text = block:text(fragment)
                 assert(#text == #consensus)
                 local diff = ShortForm.diff(consensus, text)
-                print("[%q] = %s,", fragment:id(), diff)
+                print("[%q]=%s,", fragment:id(), diff)
             end
-            print("},")
+            print("}")
             print("}")
             yield()
         end
