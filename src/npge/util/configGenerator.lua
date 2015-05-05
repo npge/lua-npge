@@ -4,9 +4,7 @@
 
 local function serialize(value)
     local format
-    if type(value) == "number" then
-        format = "%d"
-    elseif type(value) == "boolean" then
+    if type(value) == "number" or type(value) == "boolean"then
         value = tostring(value)
         format = "%s"
     elseif type(value) == "string" then
