@@ -25,12 +25,22 @@ ShortForm.diff = function(dna1, dna2)
         code = code:format(base, table.concat(pos, ","))
         table.insert(base2pos1, code)
     end
-    return "{" .. table.concat(base2pos1, ",") .. "}"
+    local diff = table.concat(base2pos1, ",")
+    if #diff < #dna2 then
+        return ("{%s}"):format(diff)
+    else
+        -- difference is larger than target string
+        return ("%q"):format(dna2)
+    end
 end
 
 -- apply difference diff to dna1 and return result
 -- position numbers in difference are 0-based
 ShortForm.patch = function(dna1, patch)
+    if type(patch) == 'string' then
+        -- difference is larger than target string
+        return patch
+    end
     local list = {}
     for i = 1, #dna1 do
         list[i] = dna1:sub(i, i)
