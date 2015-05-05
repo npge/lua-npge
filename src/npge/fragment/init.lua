@@ -12,4 +12,5 @@ return {
     sub = require 'npge.fragment.sub',
     sequenceToFragment = require 'npge.fragment.sequenceToFragment',
     fragmentToSequence = require 'npge.fragment.fragmentToSequence',
+    parseId = require 'npge.fragment.parseId',
 }

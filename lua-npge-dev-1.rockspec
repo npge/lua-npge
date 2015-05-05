@@ -86,6 +86,7 @@ build = {
         ['npge.fragment.sequenceToFragment'] = 'src/npge/fragment/sequenceToFragment.lua',
         ['npge.fragment.subfragment'] = 'src/npge/fragment/subfragment.lua',
         ['npge.fragment.sub'] = 'src/npge/fragment/sub.lua',
+        ['npge.fragment.parseId'] = 'src/npge/fragment/parseId.lua',
         ['npge.block'] = 'src/npge/block/init.lua',
         ['npge.block.align'] = 'src/npge/block/align.lua',
         ['npge.block.consensus'] = 'src/npge/block/consensus.lua',
