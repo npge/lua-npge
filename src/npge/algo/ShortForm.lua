@@ -6,7 +6,7 @@ local ShortForm = {}
 
 -- difference dna1 -> dna2
 -- position numbers in result are 0-based
-ShortForm.diff = function(dna1, dna2)
+function ShortForm.diff(dna1, dna2)
     assert(#dna1 == #dna2)
     local base2pos = {}
     for i = 1, #dna1 do
@@ -39,7 +39,7 @@ end
 
 -- apply difference diff to dna1 and return result
 -- position numbers in difference are 0-based
-ShortForm.patch = function(dna1, patch)
+function ShortForm.patch(dna1, patch)
     if type(patch) == 'string' then
         -- difference is larger than target string
         return patch
@@ -59,7 +59,7 @@ ShortForm.patch = function(dna1, patch)
 end
 
 -- returns iterator
-ShortForm.encode = function(blockset)
+function ShortForm.encode(blockset)
     assert(blockset:isPartition(),
         "Only a partition has short form")
     local npge = require 'npge'
@@ -108,7 +108,7 @@ end
 
 -- iterator must return individual commands
 -- ShortForm.encode yields exactly what is needed
-ShortForm.decode = function(iterator)
+function ShortForm.decode(iterator)
     local seqname2description
     local seqname2length
     local seqname2frids = {}
