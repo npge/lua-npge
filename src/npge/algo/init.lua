@@ -33,6 +33,7 @@ local members = {
     'GiveNames',
     'Overlapping',
     'CheckPangenome',
+    'ShortForm',
 }
 
 local algo = {}
