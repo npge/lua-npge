@@ -48,6 +48,44 @@ describe("npge.algo.ShortForm", function()
         assert.equal(bs1, bs)
     end)
 
+    it("reads direct fragments of length 1", function()
+        local ShortForm = require 'npge.algo.ShortForm'
+        local npge = require 'npge'
+        local s = npge.model.Sequence("s1&c&c", "ATGATGATG")
+        local f1 = npge.model.Fragment(s, 2, 5, 1)
+        local f2 = npge.model.Fragment(s, 6, 6, 1)
+        local f3 = npge.model.Fragment(s, 1, 7, -1)
+        local block = npge.model.Block({f1, f2, f3})
+        local bs = npge.model.BlockSet({s}, {block})
+        local bs1 = ShortForm.decode(ShortForm.encode(bs))
+        assert.equal(bs1, bs)
+    end)
+
+    it("reads reverse fragments of length 1", function()
+        local ShortForm = require 'npge.algo.ShortForm'
+        local npge = require 'npge'
+        local s = npge.model.Sequence("s1&c&c", "ATGATGATG")
+        local f1 = npge.model.Fragment(s, 2, 5, 1)
+        local f2 = npge.model.Fragment(s, 6, 6, -1)
+        local f3 = npge.model.Fragment(s, 1, 7, -1)
+        local block = npge.model.Block({f1, f2, f3})
+        local bs = npge.model.BlockSet({s}, {block})
+        local bs1 = ShortForm.decode(ShortForm.encode(bs))
+        assert.equal(bs1, bs)
+    end)
+
+    it("reads parted fragments", function()
+        local ShortForm = require 'npge.algo.ShortForm'
+        local npge = require 'npge'
+        local s = npge.model.Sequence("s1&c&c", "ATGATGATG")
+        local f1 = npge.model.Fragment(s, 2, 6, 1)
+        local f2 = npge.model.Fragment(s, 7, 1, 1)
+        local block = npge.model.Block({f1, f2})
+        local bs = npge.model.BlockSet({s}, {block})
+        local bs1 = ShortForm.decode(ShortForm.encode(bs))
+        assert.equal(bs1, bs)
+    end)
+
     it("makes short form of the sample pangenome", function()
         local ShortForm = require 'npge.algo.ShortForm'
         local readFile = require 'npge.util.readFile'

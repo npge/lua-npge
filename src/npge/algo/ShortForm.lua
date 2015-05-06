@@ -206,7 +206,7 @@ local function makeSequenceText(loader, seqname)
     local parted
     for i, frid in ipairs(frids) do
         local _, start, stop, ori = assert(parseId(frid))
-        if (stop - start + 1) * ori < 0 then
+        if (stop - start) * ori < 0 then
             parted = i
             break
         end
@@ -228,6 +228,7 @@ local function makeSequenceText(loader, seqname)
         if ori == -1 then
             text = complement(text)
         end
+        assert(#text > 0, frid)
         table.insert(texts, text)
     end
     local text = table.concat(texts)
