@@ -43,6 +43,42 @@ A* newLuaArray(lua_State* L, int size) {
     return reinterpret_cast<A*>(v);
 }
 
+const char** toRows(lua_State* L, int index,
+                    int nrows, int& length) {
+    // populate rows
+    const char** rows = newLuaArray<const char*>(L, nrows);
+    for (int irow = 0; irow < nrows; irow++) {
+        lua_rawgeti(L, index, irow + 1);
+        size_t len;
+        const char* row = luaL_checklstring(L, -1, &len);
+        rows[irow] = row;
+        if (irow == 0) {
+            length = len;
+        } else {
+            luaL_argcheck(L, len == length, 1,
+                    "All rows must be of equal length");
+        }
+        lua_pop(L, 1);
+    }
+    return rows;
+}
+
+const char** toRows(lua_State* L, int index,
+                    int nrows, int*& lens) {
+    const char** rows = newLuaArray<const char*>(L, nrows);
+    lens = newLuaArray<int>(L, nrows);
+    // populate rows
+    for (int irow = 0; irow < nrows; irow++) {
+        lua_rawgeti(L, index, irow + 1);
+        size_t len;
+        const char* row = luaL_checklstring(L, -1, &len);
+        rows[irow] = row;
+        lens[irow] = len;
+        lua_pop(L, 1);
+    }
+    return rows;
+}
+
 template <typename T>
 T& fromLua(lua_State* L, int index, const char* mt_name) {
     void* v = luaL_checkudata(L, index, mt_name);
@@ -1207,23 +1243,8 @@ int lua_identity(lua_State *L) {
         lua_pushnumber(L, 0);
         return 3;
     }
-    // populate rows
-    const char** rows = newLuaArray<const char*>(L, nrows);
     int length;
-    int irow;
-    for (irow = 0; irow < nrows; irow++) {
-        lua_rawgeti(L, 1, irow + 1);
-        size_t len;
-        const char* row = luaL_checklstring(L, -1, &len);
-        rows[irow] = row;
-        if (irow == 0) {
-            length = len;
-        } else {
-            luaL_argcheck(L, len == length, 1,
-                    "All rows must be of equal length");
-        }
-        lua_pop(L, 1);
-    }
+    const char** rows = toRows(L, 1, nrows, length);
     if (length == 0) {
         lua_pushnumber(L, 0);
         lua_pushnumber(L, 0);
@@ -1267,23 +1288,8 @@ int lua_good_columns(lua_State *L) {
         lua_newtable(L);
         return 1;
     }
-    // populate rows
-    const char** rows = newLuaArray<const char*>(L, nrows);
     int length;
-    int irow;
-    for (irow = 0; irow < nrows; irow++) {
-        lua_rawgeti(L, 1, irow + 1);
-        size_t len;
-        const char* row = luaL_checklstring(L, -1, &len);
-        rows[irow] = row;
-        if (irow == 0) {
-            length = len;
-        } else {
-            luaL_argcheck(L, len == length, 1,
-                    "All rows must be of equal length");
-        }
-        lua_pop(L, 1);
-    }
+    const char** rows = toRows(L, 1, nrows, length);
     if (length == 0) {
         lua_newtable(L);
         return 1;
@@ -1365,21 +1371,12 @@ static int lua_left(lua_State *L) {
         lua_newtable(L); // tails
         return 2;
     }
-    aln.rows = newLuaArray<const char*>(L, aln.nrows);
-    aln.lens = newLuaArray<int>(L, aln.nrows);
-    // populate rows
+    aln.rows = toRows(L, 1, aln.nrows, aln.lens);
     size_t min_len;
-    int irow;
-    for (irow = 0; irow < aln.nrows; irow++) {
-        lua_rawgeti(L, 1, irow + 1);
-        size_t len;
-        const char* row = luaL_checklstring(L, -1, &len);
-        aln.rows[irow] = row;
-        aln.lens[irow] = len;
-        if (irow == 0 || len < min_len) {
-            min_len = len;
+    for (int irow = 0; irow < aln.nrows; irow++) {
+        if (irow == 0 || aln.lens[irow] < min_len) {
+            min_len = aln.lens[irow];
         }
-        lua_pop(L, 1);
     }
     // read config
     lua_getglobal(L, "require");
@@ -1403,7 +1400,7 @@ static int lua_left(lua_State *L) {
     // push results
     lua_createtable(L, aln.nrows, 0); // aligned
     lua_createtable(L, aln.nrows, 0); // tails
-    for (irow = 0; irow < aln.nrows; irow++) {
+    for (int irow = 0; irow < aln.nrows; irow++) {
         lua_pushlstring(L, alignedRow(&aln, irow),
                 aln.used_aln[irow]); // aligned
         lua_rawseti(L, -3, irow + 1);
@@ -1429,21 +1426,13 @@ static int lua_moveIdentical(lua_State *L) {
         lua_newtable(L); // tails
         return 2;
     }
-    const char** rows = newLuaArray<const char*>(L, nrows);
-    size_t* lens = newLuaArray<size_t>(L, nrows);
-    // populate rows
-    int irow;
+    int* lens;
+    const char** rows = toRows(L, 1, nrows, lens);
     size_t min_len;
-    for (irow = 0; irow < nrows; irow++) {
-        lua_rawgeti(L, 1, irow + 1);
-        size_t len;
-        const char* row = luaL_checklstring(L, -1, &len);
-        rows[irow] = row;
-        lens[irow] = len;
-        if (irow == 0 || len < min_len) {
-            min_len = len;
+    for (int irow = 0; irow < nrows; irow++) {
+        if (irow == 0 || lens[irow] < min_len) {
+            min_len = lens[irow];
         }
-        lua_pop(L, 1);
     }
     // find common prefix
     int prefix_len = prefixLength(rows, nrows, min_len);
@@ -1451,7 +1440,7 @@ static int lua_moveIdentical(lua_State *L) {
     lua_pushlstring(L, rows[0], prefix_len);
     lua_createtable(L, nrows, 0); // prefixes
     lua_createtable(L, nrows, 0); // tails
-    for (irow = 0; irow < nrows; irow++) {
+    for (int irow = 0; irow < nrows; irow++) {
         lua_pushvalue(L, -3); // prefix
         lua_rawseti(L, -3, irow + 1);
         lua_pushlstring(L, rows[irow] + prefix_len,
@@ -1496,17 +1485,8 @@ static int lua_anchor(lua_State *L) {
         lua_pushnil(L);
         return 1;
     }
-    const char** rows = newLuaArray<const char*>(L, nrows);
-    int* lens = newLuaArray<int>(L, nrows);
-    // populate rows
-    for (int irow = 0; irow < nrows; irow++) {
-        lua_rawgeti(L, 1, irow + 1);
-        size_t len;
-        const char* row = luaL_checklstring(L, -1, &len);
-        rows[irow] = row;
-        lens[irow] = len;
-        lua_pop(L, 1);
-    }
+    int* lens;
+    const char** rows = toRows(L, 1, nrows, lens);
     int ANCHOR = getAnchor(L);
     int MIN_LENGTH = getMinLength(L);
     // find anchor
