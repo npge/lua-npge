@@ -66,13 +66,23 @@ function ShortForm.encode(blockset)
     return coroutine.wrap(function()
         local buffer = {}
         local function print(text, ...)
-            table.insert(buffer, text:format(...))
+            text = text:gsub('\n *', ' ')
+            text = text:format(...)
+            table.insert(buffer, text)
         end
         local function yield()
             table.insert(buffer, "\n")
             coroutine.yield(table.concat(buffer))
             buffer = {}
         end
+        print([[
+        local not_sandbox = _G and not _G.setDescriptions
+        if not_sandbox then
+            local ShortForm = require 'npge.algo.ShortForm'
+            ShortForm.initRawLoading()
+        end]])
+        yield()
+        --
         print("setDescriptions {")
         for seq in blockset:iterSequences() do
             print("[%q] = %q,", seq:name(), seq:description())
@@ -103,6 +113,13 @@ function ShortForm.encode(blockset)
             print("}")
             yield()
         end
+        --
+        print([[
+        if not_sandbox then
+            local ShortForm = require 'npge.algo.ShortForm'
+            return ShortForm.finishRawLoading()
+        end]])
+        yield()
     end)
 end
 
@@ -263,6 +280,23 @@ function ShortForm.decode(iterator)
         f()
     end
     return ShortForm.loader2blockset(loader)
+end
+
+function ShortForm.initRawLoading()
+    local loader, env = ShortForm.loaderAndEnv()
+    _G.loader = loader
+    _G.setDescriptions = env.setDescriptions
+    _G.setLengths = env.setLengths
+    _G.addBlock = env.addBlock
+end
+
+function ShortForm.finishRawLoading()
+    local bs = ShortForm.loader2blockset(_G.loader)
+    _G.loader = nil
+    _G.setDescriptions = nil
+    _G.setLengths = nil
+    _G.addBlock = nil
+    return bs
 end
 
 return ShortForm
