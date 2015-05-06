@@ -106,122 +106,139 @@ function ShortForm.encode(blockset)
     end)
 end
 
--- iterator must return individual commands
--- ShortForm.encode yields exactly what is needed
-function ShortForm.decode(iterator)
-    local seqname2description
-    local seqname2length
-    local seqname2frids = {}
-    local frid2text = {}
-    local blockname2frids = {}
+function ShortForm.loaderAndEnv()
+    local loader = {
+        seqname2description = nil,
+        seqname2length = nil,
+        seqname2frids = {},
+        frid2text = {},
+        blockname2frids = {},
+    }
+
+    local env = {}
+
+    function env.setDescriptions(s2d)
+        for seqname, _ in pairs(s2d) do
+            assert(type(seqname) == 'string')
+            loader.seqname2frids[seqname] = {}
+        end
+        loader.seqname2description = s2d
+    end
+
+    function env.setLengths(s2l)
+        loader.seqname2length = {}
+        for seqname, length in pairs(s2l) do
+            assert(type(seqname) == 'string')
+            assert(type(length) == 'number')
+            loader.seqname2length[seqname] = length
+        end
+    end
 
     local parseId = require 'npge.fragment.parseId'
 
-    local env = {
-        setDescriptions = function(...)
-            seqname2description = ...
-            for seqname, _ in pairs(seqname2description) do
-                seqname2frids[seqname] = {}
-            end
-        end,
-
-        setLengths = function(...)
-            seqname2length = ...
-        end,
-
-        addBlock = function(block_info)
-            local name = block_info.name
-            local consensus = block_info.consensus
-            local mutations = block_info.mutations
-            local frids = {}
-            blockname2frids[name] = frids
-            for fr_id, diff in pairs(mutations) do
-                local text = ShortForm.patch(consensus, diff)
-                local seqname = assert(parseId(fr_id), fr_id)
-                frid2text[fr_id] = text
-                table.insert(frids, fr_id)
-                local s_frids = assert(seqname2frids[seqname])
-                table.insert(s_frids, fr_id)
-            end
+    function env.addBlock(block_info)
+        local name = assert(block_info.name)
+        local consensus = assert(block_info.consensus)
+        local mutations = assert(block_info.mutations)
+        assert(type(name) == 'string')
+        assert(type(consensus) == 'string')
+        local frids = {}
+        loader.blockname2frids[name] = frids
+        for fr_id, diff in pairs(mutations) do
+            assert(type(fr_id) == 'string')
+            local text = ShortForm.patch(consensus, diff)
+            local seqname = assert(parseId(fr_id), fr_id)
+            loader.frid2text[fr_id] = text
+            table.insert(frids, fr_id)
+            local s_frids = loader.seqname2frids[seqname]
+            assert(s_frids)
+            table.insert(s_frids, fr_id)
         end
-    }
-
-    local sandbox = require 'npge.util.sandbox'
-    for line in iterator do
-        local f, err = assert(sandbox(env, line))
-        f()
     end
 
-    local complement = require 'npge.alignment.complement'
+    return loader, env
+end
+
+local function replaceParted(loader, parted, seqname)
+    local parseId = require 'npge.fragment.parseId'
     local toAtgcn = require 'npge.alignment.toAtgcn'
+    local frids = loader.seqname2frids[seqname]
+    local frid = frids[parted]
+    local _, start1, stop2, ori = assert(parseId(frid))
+    local stop1 = loader.seqname2length[seqname] - 1
+    local start2 = 0
+    if ori == -1 then
+        stop1, start2 = start2, stop1
+    end
+    local f = "%s_%d_%d_%d"
+    local part1 = f:format(seqname, start1, stop1, ori)
+    local part2 = f:format(seqname, start2, stop2, ori)
+    frids[parted] = part1
+    table.insert(frids, part2)
+    -- texts
+    local length1 = math.abs(stop1 - start1) + 1
+    local text = toAtgcn(loader.frid2text[frid])
+    loader.frid2text[part1] = text:sub(1, length1)
+    loader.frid2text[part2] = text:sub(length1 + 1, #text)
+end
+
+local function makeSequenceText(loader, seqname)
+    local parseId = require 'npge.fragment.parseId'
+    local complement = require 'npge.alignment.complement'
+    local frids = assert(loader.seqname2frids[seqname])
+    local parted
+    for i, frid in ipairs(frids) do
+        local _, start, stop, ori = assert(parseId(frid))
+        if (stop - start + 1) * ori < 0 then
+            parted = i
+            break
+        end
+    end
+    if parted then
+        replaceParted(loader, parted, seqname)
+    end
+    table.sort(frids, function(frid_a, frid_b)
+        local _, a_start, a_stop = assert(parseId(frid_a))
+        local _, b_start, b_stop = assert(parseId(frid_b))
+        local a_min = math.min(a_start, a_stop)
+        local b_min = math.min(b_start, b_stop)
+        return a_min < b_min
+    end)
+    local texts = {}
+    for _, frid in ipairs(frids) do
+        local text = assert(loader.frid2text[frid])
+        local _, _, _, ori = assert(parseId(frid))
+        if ori == -1 then
+            text = complement(text)
+        end
+        table.insert(texts, text)
+    end
+    local text = table.concat(texts)
+    return text
+end
+
+function ShortForm.loader2blockset(loader)
+    local parseId = require 'npge.fragment.parseId'
     local m = require 'npge.model'
 
     local seqname2seq = {}
     local seqs = {}
-
-    local function replaceParted(parted, seqname)
-        local frids = seqname2frids[seqname]
-        local frid = frids[parted]
-        local _, start1, stop2, ori = assert(parseId(frid))
-        local stop1 = seqname2length[seqname] - 1
-        local start2 = 0
-        if ori == -1 then
-            stop1, start2 = start2, stop1
-        end
-        local f = "%s_%d_%d_%d"
-        local part1 = f:format(seqname, start1, stop1, ori)
-        local part2 = f:format(seqname, start2, stop2, ori)
-        frids[parted] = part1
-        table.insert(frids, part2)
-        -- texts
-        local length1 = math.abs(stop1 - start1) + 1
-        local text = toAtgcn(frid2text[frid])
-        frid2text[part1] = text:sub(1, length1)
-        frid2text[part2] = text:sub(length1 + 1, #text)
-    end
+    local seqname2description = loader.seqname2description
 
     for seqname, description in pairs(seqname2description) do
-        local frids = assert(seqname2frids[seqname])
-        local parted
-        for i, frid in ipairs(frids) do
-            local _, start, stop, ori = assert(parseId(frid))
-            if (stop - start + 1) * ori < 0 then
-                parted = i
-                break
-            end
-        end
-        if parted then
-            replaceParted(parted, seqname)
-        end
-        table.sort(frids, function(frid_a, frid_b)
-            local _, a_start, a_stop = assert(parseId(frid_a))
-            local _, b_start, b_stop = assert(parseId(frid_b))
-            local a_min = math.min(a_start, a_stop)
-            local b_min = math.min(b_start, b_stop)
-            return a_min < b_min
-        end)
-        local texts = {}
-        for _, frid in ipairs(frids) do
-            local text = assert(frid2text[frid])
-            local _, _, _, ori = assert(parseId(frid))
-            if ori == -1 then
-                text = complement(text)
-            end
-            table.insert(texts, text)
-        end
-        local text = table.concat(texts)
+        local text = makeSequenceText(loader, seqname)
         local seq = m.Sequence(seqname, text, description)
-        assert(seq:length() == seqname2length[seqname])
+        assert(seq:length() == loader.seqname2length[seqname])
         table.insert(seqs, seq)
         seqname2seq[seqname] = seq
     end
 
     local blocks = {}
 
-    for blockname, frids in pairs(blockname2frids) do
+    for blockname, frids in pairs(loader.blockname2frids) do
         local fragments = {}
         for _, frid in ipairs(frids) do
-            local text = frid2text[frid]
+            local text = loader.frid2text[frid]
             local seqname, start, stop, ori = parseId(frid)
             local seq = seqname2seq[seqname]
             local fragment = m.Fragment(seq, start, stop, ori)
@@ -234,6 +251,18 @@ function ShortForm.decode(iterator)
     local bs = m.BlockSet(seqs, blocks)
     assert(bs:isPartition())
     return bs
+end
+
+-- iterator must return individual commands
+-- ShortForm.encode yields exactly what is needed
+function ShortForm.decode(iterator)
+    local loader, env = ShortForm.loaderAndEnv()
+    local sandbox = require 'npge.util.sandbox'
+    for line in iterator do
+        local f, err = assert(sandbox(env, line))
+        f()
+    end
+    return ShortForm.loader2blockset(loader)
 end
 
 return ShortForm
