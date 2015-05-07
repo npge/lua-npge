@@ -88,13 +88,14 @@ function ShortForm.loaderAndEnv()
         seqname2description = nil,
         seqname2length = nil,
         seqname2frids = {},
-        frid2text = {},
         blockname2frids = {},
+        frid2text = {}, -- value is {consensus, diff}
     }
 
     local env = {}
 
     function env.setDescriptions(s2d)
+        s2d.__metatable = nil
         for seqname, _ in pairs(s2d) do
             assert(type(seqname) == 'string')
             loader.seqname2frids[seqname] = {}
@@ -103,6 +104,7 @@ function ShortForm.loaderAndEnv()
     end
 
     function env.setLengths(s2l)
+        s2l.__metatable = nil
         loader.seqname2length = {}
         for seqname, length in pairs(s2l) do
             assert(type(seqname) == 'string')
@@ -114,18 +116,25 @@ function ShortForm.loaderAndEnv()
     local parseId = require 'npge.fragment.parseId'
 
     function env.addBlock(block_info)
+        block_info.__metatable = nil
         local name = assert(block_info.name)
         local consensus = assert(block_info.consensus)
         local mutations = assert(block_info.mutations)
         assert(type(name) == 'string')
         assert(type(consensus) == 'string')
+        assert(type(mutations) == 'table')
+        mutations.__metatable = nil
         local frids = {}
         loader.blockname2frids[name] = frids
         for fr_id, diff in pairs(mutations) do
             assert(type(fr_id) == 'string')
-            local text = ShortForm.patch(consensus, diff)
+            if type(diff) == 'table' then
+                diff.__metatable = nil
+                loader.frid2text[fr_id] = {consensus, diff}
+            elseif type(diff) == 'string' then
+                loader.frid2text[fr_id] = diff
+            end
             local seqname = assert(parseId(fr_id), fr_id)
-            loader.frid2text[fr_id] = text
             table.insert(frids, fr_id)
             local s_frids = loader.seqname2frids[seqname]
             assert(s_frids)
@@ -134,6 +143,16 @@ function ShortForm.loaderAndEnv()
     end
 
     return loader, env
+end
+
+local function getText(loader, frid)
+    local value = assert(loader.frid2text[frid])
+    if type(value) == 'string' then
+        return value
+    end
+    local consensus = value[1]
+    local diff = value[2]
+    return ShortForm.patch(consensus, diff)
 end
 
 local function replaceParted(loader, parted, seqname)
@@ -154,7 +173,7 @@ local function replaceParted(loader, parted, seqname)
     table.insert(frids, part2)
     -- texts
     local length1 = math.abs(stop1 - start1) + 1
-    local text = toAtgcn(loader.frid2text[frid])
+    local text = toAtgcn(getText(loader, frid))
     loader.frid2text[part1] = text:sub(1, length1)
     loader.frid2text[part2] = text:sub(length1 + 1, #text)
 end
@@ -183,7 +202,7 @@ local function makeSequenceText(loader, seqname)
     end)
     local texts = {}
     for _, frid in ipairs(frids) do
-        local text = assert(loader.frid2text[frid])
+        local text = getText(loader, frid)
         local _, _, _, ori = assert(parseId(frid))
         if ori == -1 then
             text = complement(text)
@@ -216,7 +235,7 @@ function ShortForm.loader2blockset(loader)
     for blockname, frids in pairs(loader.blockname2frids) do
         local fragments = {}
         for _, frid in ipairs(frids) do
-            local text = loader.frid2text[frid]
+            local text = getText(loader, frid)
             local seqname, start, stop, ori = parseId(frid)
             local seq = seqname2seq[seqname]
             local fragment = m.Fragment(seq, start, stop, ori)
