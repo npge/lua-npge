@@ -3,7 +3,11 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <cstring>
+#include <boost/algorithm/string/join.hpp>
+
 #include "npge.hpp"
+#include "cast.hpp"
 
 namespace lnpge {
 
@@ -194,10 +198,71 @@ char consensusAtPos(const char** rows, int nrows, int i) {
     return FROMINT_MAP[max_index];
 }
 
+// size of dst is length. 0 byte is not required
 void consensus(char* dst, const char** rows,
                int nrows, int length) {
     for (int i = 0; i < length; i++) {
         dst[i] = consensusAtPos(rows, nrows, i);
+    }
+}
+
+std::string stripLastComma(std::stringstream& ss) {
+    std::string result = ss.str();
+    if (!result.empty() && result[result.size() - 1] == ',') {
+        result.resize(result.size() - 1);
+    }
+    return result;
+}
+
+// size of dst is at least length + 2, 0 byte is not required
+int ShortForm_diff(char* dst, const char* consensus,
+                   const char* text, int length) {
+    Strings A, T, G, C, N, gap, _;
+    for (int i = 0; i < length; i++) {
+        char c = consensus[i];
+        char t = text[i];
+        if (t != c) {
+            Strings& ss =
+                (t == 'A') ? A :
+                (t == 'T') ? T :
+                (t == 'G') ? G :
+                (t == 'C') ? C :
+                (t == 'N') ? N :
+                (t == '-') ? gap : _;
+            ss.push_back(TO_S(i));
+        }
+    }
+    Strings results;
+    using namespace boost::algorithm;
+    if (!A.empty()) {
+        results.push_back("A={" + join(A, ",") + "}");
+    }
+    if (!T.empty()) {
+        results.push_back("T={" + join(T, ",") + "}");
+    }
+    if (!G.empty()) {
+        results.push_back("G={" + join(G, ",") + "}");
+    }
+    if (!C.empty()) {
+        results.push_back("C={" + join(C, ",") + "}");
+    }
+    if (!N.empty()) {
+        results.push_back("N={" + join(N, ",") + "}");
+    }
+    if (!gap.empty()) {
+        results.push_back("['-']={" + join(gap, ",") + "}");
+    }
+    std::string result_str = join(results, ",");
+    if (result_str.size() < length) {
+        dst[0] = '{';
+        memcpy(dst + 1, result_str.c_str(), result_str.size());
+        dst[result_str.size() + 1] = '}';
+        return result_str.size() + 2;
+    } else {
+        dst[0] = '"';
+        memcpy(dst + 1, text, length);
+        dst[length + 1] = '"';
+        return length + 2;
     }
 }
 

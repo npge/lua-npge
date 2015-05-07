@@ -34,8 +34,14 @@ double identity(const char** rows, int nrows,
 
 char consensusAtPos(const char** rows, int nrows, int i);
 
+// size of dst is length. 0 byte is not required
 void consensus(char* dst, const char** rows,
                int nrows, int length);
+
+// size of dst is at least length + 2, 0 byte is not required
+// returns length of result
+int ShortForm_diff(char* dst, const char* consensus,
+                   const char* text, int length);
 
 typedef std::pair<int, int> StartStop; // start, stop
 typedef std::vector<StartStop> Coordinates;

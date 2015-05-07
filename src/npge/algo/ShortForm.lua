@@ -7,34 +7,8 @@ local ShortForm = {}
 -- difference dna1 -> dna2
 -- position numbers in result are 0-based
 function ShortForm.diff(dna1, dna2)
-    assert(#dna1 == #dna2)
-    local base2pos = {}
-    for i = 1, #dna1 do
-        local base1 = dna1:sub(i, i)
-        local base2 = dna2:sub(i, i)
-        if base1 ~= base2 then
-            if not base2pos[base2] then
-                base2pos[base2] = {}
-            end
-            table.insert(base2pos[base2], i - 1)
-        end
-    end
-    local base2pos1 = {}
-    for base, pos in pairs(base2pos) do
-        local code = "[%q]={%s}" -- {['-'] = {1,2,3}}
-        if base ~= '-' then
-            code = "%s={%s}" -- {A = {1,2,3}}
-        end
-        code = code:format(base, table.concat(pos, ","))
-        table.insert(base2pos1, code)
-    end
-    local diff = table.concat(base2pos1, ",")
-    if #diff < #dna2 then
-        return ("{%s}"):format(diff)
-    else
-        -- difference is larger than target string
-        return ("%q"):format(dna2)
-    end
+    local ShortForm_diff = require 'npge.cpp'.func.diff
+    return ShortForm_diff(dna1, dna2)
 end
 
 -- apply difference diff to dna1 and return result

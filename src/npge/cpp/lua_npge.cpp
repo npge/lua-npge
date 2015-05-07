@@ -1298,6 +1298,24 @@ int lua_consensus(lua_State *L) {
 }
 
 // arguments:
+// 1. consensus
+// 2. text
+// results:
+// 1. diff's text as Lua code
+int lua_ShortForm_diff(lua_State *L) {
+    size_t cons_size, text_size;
+    const char* cons = luaL_checklstring(L, 1, &cons_size);
+    const char* text = luaL_checklstring(L, 2, &text_size);
+    luaL_argcheck(L, cons_size == text_size, 1,
+            "Length of text must be equal to consensus size");
+    int length = text_size;
+    char* diff = newLuaArray<char>(L, length + 2);
+    int diff_len = ShortForm_diff(diff, cons, text, length);
+    lua_pushlstring(L, diff, diff_len);
+    return 1;
+}
+
+// arguments:
 // 1. Lua table with rows
 // 2. start position (optional)
 // 3. stop position (optional)
@@ -1572,6 +1590,7 @@ static const luaL_Reg string_functions[] = {
     {"unwindRow", lua_unwindRow},
     {"identity", lua_identity},
     {"consensus", lua_consensus},
+    {"diff", lua_ShortForm_diff},
     {"goodColumns", lua_good_columns},
     {"goodSlices", lua_goodSlices},
     {NULL, NULL}
