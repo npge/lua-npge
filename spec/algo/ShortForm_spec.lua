@@ -48,6 +48,24 @@ describe("npge.algo.ShortForm", function()
         assert.equal(bs1, bs)
     end)
 
+    it("adding blocks on undeclared sequences fails",
+    function()
+        local ShortForm = require 'npge.algo.ShortForm'
+        assert.has_error(function()
+            ShortForm.decode(coroutine.wrap(function()
+                coroutine.yield [[
+                addBlock {
+                    name="1",
+                    consensus="GATA",
+                    mutations={
+                        ["s1&c&c_1_7_-1"]="ATCA",
+                        ["s1&c&c_2_4_1"]="GAT-",
+                        ["s1&c&c_5_6_1"]="GA--",}}
+                ]]
+            end))
+        end)
+    end)
+
     it("reads direct fragments of length 1", function()
         local ShortForm = require 'npge.algo.ShortForm'
         local npge = require 'npge'
