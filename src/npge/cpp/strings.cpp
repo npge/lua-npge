@@ -47,6 +47,27 @@ static const unsigned char ATGCN_MAP[] = {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
+// A => 1, T => 2, G => 3, C => 4, N => 0, other => 0
+static const unsigned char TOINT_MAP[] = {
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 1, 0, 4, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 4,
+0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+const int TOINT_MAX = 5;
+static const unsigned char FROMINT_MAP[] = {
+0, 'A', 'T', 'G', 'C', 'N'
+};
+
 static const unsigned char ATGCN_GAP_MAP[] = {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -151,6 +172,33 @@ double identity(const char** rows, int nrows,
         }
     }
     return ident;
+}
+
+char consensusAtPos(const char** rows, int nrows, int i) {
+    int count[TOINT_MAX + 1] = {0, 0, 0, 0, 0, 0};
+    for (int irow = 0; irow < nrows; irow++) {
+        char letter = rows[irow][i];
+        int index = TOINT_MAP[letter];
+        count[index] += 1;
+    }
+    const int A = TOINT_MAP['A'];
+    const int N = TOINT_MAX;
+    int max_index = N; // N is the default
+    // but it is overcomed by all other bases,
+    // because count[N] = 0
+    for (int index = A; index < N; index++) {
+        if (count[index] > count[max_index]) {
+            max_index = index;
+        }
+    }
+    return FROMINT_MAP[max_index];
+}
+
+void consensus(char* dst, const char** rows,
+               int nrows, int length) {
+    for (int i = 0; i < length; i++) {
+        dst[i] = consensusAtPos(rows, nrows, i);
+    }
 }
 
 }

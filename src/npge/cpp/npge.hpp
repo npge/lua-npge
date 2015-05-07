@@ -32,6 +32,11 @@ bool isColumnGood(const char** rows, int nrows, int i);
 double identity(const char** rows, int nrows,
                 int start, int stop);
 
+char consensusAtPos(const char** rows, int nrows, int i);
+
+void consensus(char* dst, const char** rows,
+               int nrows, int length);
+
 typedef std::pair<int, int> StartStop; // start, stop
 typedef std::vector<StartStop> Coordinates;
 typedef std::vector<bool> Columns;

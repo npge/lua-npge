@@ -1276,6 +1276,29 @@ int lua_identity(lua_State *L) {
 
 // arguments:
 // 1. Lua table with rows
+int lua_consensus(lua_State *L) {
+    int args = lua_gettop(L);
+    luaL_checktype(L, 1, LUA_TTABLE);
+    int nrows = npge_rawlen(L, 1);
+    if (nrows == 0) {
+        lua_pushnil(L);
+        return 1;
+    }
+    int length;
+    const char** rows = toRows(L, 1, nrows, length);
+    if (length == 0) {
+        lua_pushliteral(L, "");
+        return 1;
+    }
+    // calculate consensus
+    char* consensus_str = newLuaArray<char>(L, length);
+    consensus(consensus_str, rows, nrows, length);
+    lua_pushlstring(L, consensus_str, length);
+    return 1;
+}
+
+// arguments:
+// 1. Lua table with rows
 // 2. start position (optional)
 // 3. stop position (optional)
 // returns array of booleans. True for good column
@@ -1548,6 +1571,7 @@ static const luaL_Reg string_functions[] = {
     {"complement", lua_complement},
     {"unwindRow", lua_unwindRow},
     {"identity", lua_identity},
+    {"consensus", lua_consensus},
     {"goodColumns", lua_good_columns},
     {"goodSlices", lua_goodSlices},
     {NULL, NULL}
