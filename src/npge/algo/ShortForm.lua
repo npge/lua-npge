@@ -14,22 +14,8 @@ end
 -- apply difference diff to dna1 and return result
 -- position numbers in difference are 0-based
 function ShortForm.patch(dna1, patch)
-    if type(patch) == 'string' then
-        -- difference is larger than target string
-        return patch
-    end
-    local list = {}
-    for i = 1, #dna1 do
-        list[i] = dna1:sub(i, i)
-    end
-    for base, positions in pairs(patch) do
-        for _, i in ipairs(positions) do
-            assert(i >= 0)
-            assert(i < #dna1)
-            list[i + 1] = base
-        end
-    end
-    return table.concat(list)
+    local ShortForm_patch = require 'npge.cpp'.func.patch
+    return ShortForm_patch(dna1, patch)
 end
 
 -- returns iterator

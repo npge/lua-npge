@@ -4,6 +4,7 @@
  */
 
 #include <cstdlib>
+#include <cstring>
 #include <cassert>
 #include <cstring>
 #include <memory>
@@ -1316,6 +1317,60 @@ int lua_ShortForm_diff(lua_State *L) {
 }
 
 // arguments:
+// 1. consensus
+// 2. difference (a table or a string)
+// results:
+// 1. text
+int lua_ShortForm_patch(lua_State *L) {
+    size_t cons_size;
+    const char* cons = luaL_checklstring(L, 1, &cons_size);
+    int length = cons_size;
+    luaL_argcheck(L, length >= 1, 1,
+            "Length of a consensus must be >= 1");
+    luaL_argcheck(L, lua_type(L, 2) == LUA_TTABLE ||
+            lua_type(L, 2) == LUA_TSTRING, 2,
+            "Difference must be a string or a table");
+    if (lua_type(L, 2) == LUA_TSTRING) {
+        // text = difference
+        size_t diff_size;
+        const char* diff = luaL_checklstring(L, 2, &diff_size);
+        luaL_argcheck(L, diff_size == length, 2,
+                "Length of difference differs from "
+                "consensus length");
+        lua_pushvalue(L, 2);
+        return 1;
+    }
+    char* buffer = newLuaArray<char>(L, length);
+    memcpy(buffer, cons, length);
+    // iterate blocks as hash
+    lua_pushnil(L);  // first key
+    while (lua_next(L, 2) != 0) {
+        // 'key' at index -2 and 'value' at index -1
+        luaL_argcheck(L, lua_type(L, -2) == LUA_TSTRING, 2,
+                "Type of base must be string");
+        luaL_argcheck(L, lua_type(L, -1) == LUA_TTABLE, 2,
+                "Type of changes list must be table");
+        size_t base_len;
+        const char* base = luaL_checklstring(L, -2, &base_len);
+        luaL_argcheck(L, base_len == 1, 2,
+                "Length of a base must be 1");
+        char base_char = base[0];
+        int nchanges = npge_rawlen(L, -1);
+        for (int i = 1; i <= nchanges; i++) {
+            lua_rawgeti(L, -1, i);
+            int pos = luaL_checkinteger(L, -1);
+            luaL_argcheck(L, pos >= 0, 2, "pos >= 0");
+            luaL_argcheck(L, pos < length, 2, "pos < length");
+            buffer[pos] = base_char;
+            lua_pop(L, 1);
+        }
+        lua_pop(L, 1); // pop 'value'
+    }
+    lua_pushlstring(L, buffer, length);
+    return 1;
+}
+
+// arguments:
 // 1. Lua table with rows
 // 2. start position (optional)
 // 3. stop position (optional)
@@ -1591,6 +1646,7 @@ static const luaL_Reg string_functions[] = {
     {"identity", lua_identity},
     {"consensus", lua_consensus},
     {"diff", lua_ShortForm_diff},
+    {"patch", lua_ShortForm_patch},
     {"goodColumns", lua_good_columns},
     {"goodSlices", lua_goodSlices},
     {NULL, NULL}
