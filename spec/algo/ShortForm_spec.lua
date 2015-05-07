@@ -66,6 +66,130 @@ describe("npge.algo.ShortForm", function()
         end)
     end)
 
+    it("adding blocks with bad patches", function()
+        local ShortForm = require 'npge.algo.ShortForm'
+        assert.has_error(function()
+            ShortForm.decode(coroutine.wrap(function()
+                coroutine.yield [[
+                setDescriptions {["s1&c&c"] = "",}
+                setLengths {["s1&c&c"] = 9,}
+                addBlock {
+                    name="1",
+                    consensus="GATA",
+                    mutations={
+                        ["s1&c&c_1_7_-1"]={A={-1,1,2}},
+                        ["s1&c&c_2_4_1"]="GAT-",
+                        ["s1&c&c_5_6_1"]="GA--",}}
+                ]]
+            end))
+        end)
+        assert.has_error(function()
+            ShortForm.decode(coroutine.wrap(function()
+                coroutine.yield [[
+                setDescriptions {["s1&c&c"] = "",}
+                setLengths {["s1&c&c"] = 9,}
+                addBlock {
+                    name="1",
+                    consensus="GATA",
+                    mutations={
+                        ["s1&c&c_1_7_-1"]={A={0,1,2,10}},
+                        ["s1&c&c_2_4_1"]="GAT-",
+                        ["s1&c&c_5_6_1"]="GA--",}}
+                ]]
+            end))
+        end)
+        assert.has_error(function()
+            ShortForm.decode(coroutine.wrap(function()
+                coroutine.yield [[
+                setDescriptions {["s1&c&c"] = "",}
+                setLengths {["s1&c&c"] = 9,}
+                addBlock {
+                    name="1",
+                    consensus="GATA",
+                    mutations={
+                        ["s1&c&c_1_7_-1"]="A",
+                        ["s1&c&c_2_4_1"]="GAT-",
+                        ["s1&c&c_5_6_1"]="GA--",}}
+                ]]
+            end))
+        end)
+        assert.has_error(function()
+            ShortForm.decode(coroutine.wrap(function()
+                coroutine.yield [[
+                setDescriptions {["s1&c&c"] = "",}
+                setLengths {["s1&c&c"] = 9,}
+                addBlock {
+                    name="1",
+                    consensus="GATA",
+                    mutations={
+                        ["s1&c&c_1_7_-1"]=1,
+                        ["s1&c&c_2_4_1"]="GAT-",
+                        ["s1&c&c_5_6_1"]="GA--",}}
+                ]]
+            end))
+        end)
+        assert.has_error(function()
+            ShortForm.decode(coroutine.wrap(function()
+                coroutine.yield [[
+                setDescriptions {["s1&c&c"] = "",}
+                setLengths {["s1&c&c"] = 9,}
+                addBlock {
+                    name="1",
+                    consensus="GATA",
+                    mutations={
+                        ["s1&c&c_1_7_-1"]={AA={1,2,3}},
+                        ["s1&c&c_2_4_1"]="GAT-",
+                        ["s1&c&c_5_6_1"]="GA--",}}
+                ]]
+            end))
+        end)
+        assert.has_error(function()
+            ShortForm.decode(coroutine.wrap(function()
+                coroutine.yield [[
+                setDescriptions {["s1&c&c"] = "",}
+                setLengths {["s1&c&c"] = 9,}
+                addBlock {
+                    name="1",
+                    consensus="GATA",
+                    mutations={
+                        ["s1&c&c_1_7_-1"]={A="AA"},
+                        ["s1&c&c_2_4_1"]="GAT-",
+                        ["s1&c&c_5_6_1"]="GA--",}}
+                ]]
+            end))
+        end)
+        assert.has_error(function()
+            ShortForm.decode(coroutine.wrap(function()
+                coroutine.yield [[
+                setDescriptions {["s1&c&c"] = "",}
+                setLengths {["s1&c&c"] = 9,}
+                addBlock {
+                    name="1",
+                    consensus="GATA",
+                    mutations={
+                        ["s1&c&c_1_7_-1"]={A={'A',2,3},
+                        ["s1&c&c_2_4_1"]="GAT-",
+                        ["s1&c&c_5_6_1"]="GA--",}}
+                ]]
+            end))
+        end)
+        assert.has_error(function()
+            ShortForm.decode(coroutine.wrap(function()
+                coroutine.yield [[
+                setDescriptions {["s1&c&c"] = "",}
+                setLengths {["s1&c&c"] = 9,}
+                addBlock {
+                    name="1",
+                    consensus="GATA",
+                    mutations={
+                        ["s1&c&c_1_7_-1"]={[1]={2,3},
+                        ["s1&c&c_2_4_1"]="GAT-",
+                        ["s1&c&c_5_6_1"]="GA--",}}
+                ]]
+            end))
+        end)
+    end)
+
     it("reads direct fragments of length 1", function()
         local ShortForm = require 'npge.algo.ShortForm'
         local npge = require 'npge'
