@@ -5,9 +5,9 @@
 -- short form = consensuses + mutations
 -- short form is sufficient to recover full form
 
-describe("npge.algo.ShortForm", function()
+describe("npge.io.ShortForm", function()
     it("makes short form of a partition", function()
-        local ShortForm = require 'npge.algo.ShortForm'
+        local ShortForm = require 'npge.io.ShortForm'
         local npge = require 'npge'
         local s = npge.model.Sequence("s1&c&c", "ATGATGATG")
         local f1 = npge.model.Fragment(s, 2, 4, 1)
@@ -20,7 +20,7 @@ describe("npge.algo.ShortForm", function()
     end)
 
     it("iterator provides strings", function()
-        local ShortForm = require 'npge.algo.ShortForm'
+        local ShortForm = require 'npge.io.ShortForm'
         local npge = require 'npge'
         local s = npge.model.Sequence("s1&c&c", "ATGATGATG")
         local f1 = npge.model.Fragment(s, 2, 4, 1)
@@ -33,7 +33,7 @@ describe("npge.algo.ShortForm", function()
     end)
 
     it("raw Lua code is loadable", function()
-        local ShortForm = require 'npge.algo.ShortForm'
+        local ShortForm = require 'npge.io.ShortForm'
         local npge = require 'npge'
         local s = npge.model.Sequence("s1&c&c", "ATGATGATG")
         local f1 = npge.model.Fragment(s, 2, 4, 1)
@@ -50,7 +50,7 @@ describe("npge.algo.ShortForm", function()
 
     it("adding blocks on undeclared sequences fails",
     function()
-        local ShortForm = require 'npge.algo.ShortForm'
+        local ShortForm = require 'npge.io.ShortForm'
         assert.has_error(function()
             ShortForm.decode(coroutine.wrap(function()
                 coroutine.yield [[
@@ -67,7 +67,7 @@ describe("npge.algo.ShortForm", function()
     end)
 
     it("adding blocks with bad patches", function()
-        local ShortForm = require 'npge.algo.ShortForm'
+        local ShortForm = require 'npge.io.ShortForm'
         assert.has_error(function()
             ShortForm.decode(coroutine.wrap(function()
                 coroutine.yield [[
@@ -191,7 +191,7 @@ describe("npge.algo.ShortForm", function()
     end)
 
     it("reads direct fragments of length 1", function()
-        local ShortForm = require 'npge.algo.ShortForm'
+        local ShortForm = require 'npge.io.ShortForm'
         local npge = require 'npge'
         local s = npge.model.Sequence("s1&c&c", "ATGATGATG")
         local f1 = npge.model.Fragment(s, 2, 5, 1)
@@ -204,7 +204,7 @@ describe("npge.algo.ShortForm", function()
     end)
 
     it("reads reverse fragments of length 1", function()
-        local ShortForm = require 'npge.algo.ShortForm'
+        local ShortForm = require 'npge.io.ShortForm'
         local npge = require 'npge'
         local s = npge.model.Sequence("s1&c&c", "ATGATGATG")
         local f1 = npge.model.Fragment(s, 2, 5, 1)
@@ -217,7 +217,7 @@ describe("npge.algo.ShortForm", function()
     end)
 
     it("reads parted fragments", function()
-        local ShortForm = require 'npge.algo.ShortForm'
+        local ShortForm = require 'npge.io.ShortForm'
         local npge = require 'npge'
         local s = npge.model.Sequence("s1&c&c", "ATGATGATG")
         local f1 = npge.model.Fragment(s, 2, 6, 1)
@@ -229,9 +229,9 @@ describe("npge.algo.ShortForm", function()
     end)
 
     it("makes short form of the sample pangenome", function()
-        local ShortForm = require 'npge.algo.ShortForm'
+        local ShortForm = require 'npge.io.ShortForm'
         local readFile = require 'npge.util.readFile'
-        local LoadFromLua = require 'npge.algo.LoadFromLua'
+        local LoadFromLua = require 'npge.io.LoadFromLua'
         local sample = readFile('spec/sample_pangenome.lua')
         local bs = LoadFromLua(sample)()
         local bs1 = ShortForm.decode(ShortForm.encode(bs))

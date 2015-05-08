@@ -5,9 +5,6 @@
 local members = {
     'NonCovered',
     'Merge',
-    'ReadSequencesFromFasta',
-    'WriteSequencesToFasta',
-    'ReadFromBs',
     'ConsensusSequences',
     'UnwindBlocks',
     'Blast',
@@ -16,8 +13,6 @@ local members = {
     'FilterGoodBlocks',
     'BlocksWithoutOverlaps',
     'GoodSubblocks',
-    'LoadFromLua',
-    'BlockSetToLua',
     'Cover',
     'Align',
     'ReAlign',
@@ -33,7 +28,6 @@ local members = {
     'GiveNames',
     'Overlapping',
     'CheckPangenome',
-    'ShortForm',
 }
 
 local algo = {}

@@ -8,10 +8,10 @@ local npge = require 'npge'
 local algo = require 'npge.algo'
 
 local fname = assert(arg[1])
-local bs = algo.ReadSequencesFromFasta(io.lines(fname))
+local bs = npge.io.ReadSequencesFromFasta(io.lines(fname))
 local bs = algo.PrimaryHits(bs)
 local bs = algo.PangenomeMaker(bs)
 local bs = algo.GiveNames(bs)
-for part in algo.BlockSetToLua(bs) do
+for part in npge.io.BlockSetToLua(bs) do
     io.write(part)
 end

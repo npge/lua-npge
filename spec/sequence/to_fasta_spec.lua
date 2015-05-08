@@ -14,7 +14,7 @@ describe("npge.sequence.toFasta", function()
         local itFromArray = require 'npge.util.itFromArray'
         local it = itFromArray(lines)
         local ReadSequencesFromFasta =
-            require 'npge.algo.ReadSequencesFromFasta'
+            require 'npge.io.ReadSequencesFromFasta'
         local bs = ReadSequencesFromFasta(it)
         assert.equal(bs, model.BlockSet({s}, {}))
     end)

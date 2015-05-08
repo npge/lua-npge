@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.algo.ReadFromBs", function()
+describe("npge.io.ReadFromBs", function()
     it("reads blockset from .bs format #old_bs", function()
         -- prepare sequences
         local Sequence = require 'npge.model.Sequence'
@@ -12,7 +12,7 @@ describe("npge.algo.ReadFromBs", function()
         local BlockSet = require 'npge.model.BlockSet'
         local bs1 = BlockSet({s1, s2, s3}, {})
         -- parse .bs file
-        local ReadFromBs = require 'npge.algo.ReadFromBs'
+        local ReadFromBs = require 'npge.io.ReadFromBs'
         local itFromArray =
             require 'npge.util.itFromArray'
         local split = require 'npge.util.split'

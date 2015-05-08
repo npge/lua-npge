@@ -20,10 +20,9 @@ function Blast.makeBlastDb(bank_fname, consensus_fname)
 end
 
 function Blast.makeConsensus(consensus_fname, blockset)
-    local writeIt = require 'npge.util.writeIt'
-    local algo = require 'npge.algo'
-    writeIt(consensus_fname,
-        algo.WriteSequencesToFasta(blockset))
+    local npge = require 'npge'
+    npge.util.writeIt(consensus_fname,
+        npge.io.WriteSequencesToFasta(blockset))
 end
 
 function Blast.checkNoCollisions(bs1, bs2)

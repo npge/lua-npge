@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.algo.LoadFromLua", function()
+describe("npge.io.LoadFromLua", function()
     it("loads Lua files in #sandbox", function()
         local model = require 'npge.model'
         local s = model.Sequence("test_name", "ATAT")
@@ -11,10 +11,10 @@ describe("npge.algo.LoadFromLua", function()
         local block1 = model.Block({f2})
         local block2 = model.Block({f1})
         local blockset = model.BlockSet({s}, {block1, block2})
-        local BlockSetToLua = require 'npge.algo.BlockSetToLua'
+        local BlockSetToLua = require 'npge.io.BlockSetToLua'
         local readIt = require 'npge.util.readIt'
         local lua = readIt(BlockSetToLua(blockset))
-        local LoadFromLua = require 'npge.algo.LoadFromLua'
+        local LoadFromLua = require 'npge.io.LoadFromLua'
         local blockset1 = LoadFromLua(lua)()
         assert.equal(blockset1, blockset)
     end)
@@ -30,11 +30,9 @@ describe("npge.algo.LoadFromLua", function()
             {block1, block2})
         local seqs_bs = model.BlockSet({s}, {})
         local readIt = require 'npge.util.readIt'
-        local BlockSetToLua =
-            require 'npge.algo.BlockSetToLua'
+        local BlockSetToLua = require 'npge.io.BlockSetToLua'
         local lua = readIt(BlockSetToLua(blockset))
-        local LoadFromLua =
-            require 'npge.algo.LoadFromLua'
+        local LoadFromLua = require 'npge.io.LoadFromLua'
         local blockset1 = LoadFromLua(lua)(seqs_bs)
         assert.equal(blockset1, blockset)
     end)
@@ -52,7 +50,7 @@ describe("npge.algo.LoadFromLua", function()
                 return BlockSet.fromRef(%q)
             end ]]
             lua = lua:format(BlockSet.toRef(blockset))
-            local LoadFromLua = require 'npge.algo.LoadFromLua'
+            local LoadFromLua = require 'npge.io.LoadFromLua'
             local enableRefs = true
             local blockset1 = LoadFromLua(lua, enableRefs)()
             assert.equal(blockset1, blockset)

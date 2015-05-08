@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.algo.BlockSetToLua", function()
+describe("npge.io.BlockSetToLua", function()
     it("serializes blocksets", function()
         local model = require 'npge.model'
         local B = function(...)
@@ -15,7 +15,7 @@ describe("npge.algo.BlockSetToLua", function()
         local f1a = model.Fragment(s1, 1, 1, 1)
         local f2 = model.Fragment(s2, 0, 0, 1)
         local bs1 = BS({s1, s2}, {B(f1, f2), B(f1a)})
-        local BlockSetToLua = require 'npge.algo.BlockSetToLua'
+        local BlockSetToLua = require 'npge.io.BlockSetToLua'
         local readIt = require 'npge.util.readIt'
         local lua = readIt(BlockSetToLua(bs1))
         local loadstring = require 'npge.util.loadstring'
@@ -35,7 +35,7 @@ describe("npge.algo.BlockSetToLua", function()
         local f1a = model.Fragment(s1, 1, 1, 1)
         local f2 = model.Fragment(s2, 0, 0, 1)
         local bs1 = BS({s1, s2}, {x = B(f1, f2), y = B(f1a)})
-        local BlockSetToLua = require 'npge.algo.BlockSetToLua'
+        local BlockSetToLua = require 'npge.io.BlockSetToLua'
         local readIt = require 'npge.util.readIt'
         local lua = readIt(BlockSetToLua(bs1))
         local loadstring = require 'npge.util.loadstring'
@@ -54,7 +54,7 @@ describe("npge.algo.BlockSetToLua", function()
         local s = model.Sequence("g1&c&c", string.rep("A", 60))
         local f = model.Fragment(s, 0, 0, 1)
         local bs1 = BS({s}, {B(f)})
-        local BlockSetToLua = require 'npge.algo.BlockSetToLua'
+        local BlockSetToLua = require 'npge.io.BlockSetToLua'
         local readIt = require 'npge.util.readIt'
         local lua = readIt(BlockSetToLua(bs1))
         local loadstring = require 'npge.util.loadstring'
@@ -71,7 +71,7 @@ describe("npge.algo.BlockSetToLua", function()
         local s = model.Sequence("g1&c&c", string.rep("A", 60))
         local f = model.Fragment(s, 0, 0, 1)
         local bs1 = BS({s}, {B(f)})
-        local BlockSetToLua = require 'npge.algo.BlockSetToLua'
+        local BlockSetToLua = require 'npge.io.BlockSetToLua'
         local readIt = require 'npge.util.readIt'
         local has_sequences = true
         local lua = readIt(BlockSetToLua(bs1, true))

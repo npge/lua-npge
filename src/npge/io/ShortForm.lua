@@ -38,7 +38,7 @@ function ShortForm.encode(blockset)
         print([[
         local not_sandbox = _G and not _G.setDescriptions
         if not_sandbox then
-            local ShortForm = require 'npge.algo.ShortForm'
+            local ShortForm = require 'npge.io.ShortForm'
             ShortForm.initRawLoading()
         end]])
         yield()
@@ -76,7 +76,7 @@ function ShortForm.encode(blockset)
         --
         print([[
         if not_sandbox then
-            local ShortForm = require 'npge.algo.ShortForm'
+            local ShortForm = require 'npge.io.ShortForm'
             return ShortForm.finishRawLoading()
         end]])
         yield()
