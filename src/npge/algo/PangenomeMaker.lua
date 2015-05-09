@@ -24,7 +24,12 @@ return function(bs)
         joined = algo.GoodSubblocks(joined)
         bs1 = algo.BlocksWithoutOverlaps(bs1, joined)
     end
-    bs = algo.Orient(algo.Cover(bs))
+    -- prettify
+    bs = algo.Cover(bs)
+    local minor = algo.JoinUnique(bs)
+    bs = algo.BlocksWithoutOverlaps(bs, minor)
+    assert(bs:isPartition())
+    bs = algo.Orient(bs)
     bs = algo.GiveNames(bs)
     return bs
 end
