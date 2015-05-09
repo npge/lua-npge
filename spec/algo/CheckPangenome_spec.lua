@@ -3,6 +3,8 @@
 -- See the LICENSE file for terms of use.
 
 local AAA = ("A"):rep(1000)
+local AAA100 = ("A"):rep(100)
+local CCC100 = ("C"):rep(100)
 local rand600 = [[
 ACAAGCAAAGCAACGGGACTCCATCCCTAAGTCGTTTGTGAAGAAACGAGACTAATACGA
 CATGGCAATTGTGAGGATATCAATTTGTAATATCGCGGCCATAGTGAGCACCTCAGAGCT
@@ -14,6 +16,14 @@ TAACTCTAACTCTCCCTGTGCATTATCGGTACTAGCCACCCTCTAGATATCCGATGTATC
 TTGCTTGATTAAGCTCTTATCAATATCGGATCTAGGTACGGCGAGACCTAAAAATAGTGA
 TACCAGTTGACACTTTTAACAACATTTCGCCCCGGCAAACACCATATGTGTTGTGCGCGA
 GTCGAGTAGGCGTCGGCATAGGGACAATCGTTATCACTATCACACGCGGACAGTAGTACA
+]]
+local rand100n1 = [[
+GGGGACCTCAGTAAACACACATCGGGAAAGACTGTTTAGTAAGAACCAGCAGTCACTTAT
+TCCCTCCGACTGAGCACCTTTACCGTTAGGTCGACCCGTC
+]]
+local rand100n2 = [[
+CATAGTTGCAGATTTCCAGAGGTGGCTATTTATGAAATGCGACCTAGTATTCCGTTTGTG
+AGTCCATAACAGTATGATCTTGTCCTCCTTATATACTGCG
 ]]
 
 describe("npge.algo.CheckPangenome", function()
@@ -168,6 +178,86 @@ describe("npge.algo.CheckPangenome", function()
             {u1x600=u1, u1x600n1=u2}))
     end)
 
+    it("no blast hits can be added (control)", function()
+        local model = require 'npge.model'
+        local seq1 = model.Sequence("g1&c&l", [[
+GTAATAATGTGCGCTTTTGTATTTAGCGTTCCGCACCAATTGACTGTGCCAAAAAAAAAA
+CTTGCTATTGATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
+        ]])
+        -- replace 10 bases with complement
+        local seq2 = model.Sequence("g2&c&l", [[
+GTAATAATGTGCGCTTTTGTATTTAGCGTTCCGCACCAATTGACTGTGCCAAAAAAAAAA
+GAACGATAACATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
+        ]])
+        local seq3 = model.Sequence("g3&c&l", [[
+GTAATAATGTGCGCTTTTGTATTTAGCGTTCCGCACCAATTGACTGTGCCTTTTTTTTTT
+GAACGATAACATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
+        ]])
+        local seq4 = model.Sequence("g4&c&l", [[
+GTAATAATGTGCGCTTTTGTATTTTCGCAAGGCGACCAATTGACTGTGCCTTTTTTTTTT
+GAACGATAACATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
+        ]])
+        local block1 = model.Block({
+            model.Fragment(seq1, 0, seq1:length() - 1, 1),
+            model.Fragment(seq2, 0, seq2:length() - 1, 1),
+        })
+        local block2 = model.Block({
+            model.Fragment(seq3, 0, seq3:length() - 1, 1),
+            model.Fragment(seq4, 0, seq4:length() - 1, 1),
+        })
+        --
+        local algo = require 'npge.algo'
+        local function check(...)
+            local bs = model.BlockSet(...)
+            bs = algo.GiveNames(algo.Cover(bs))
+            return algo.CheckPangenome(bs)
+        end
+        --
+        assert.truthy(check({seq1, seq2, seq3, seq4},
+            {block1, block2}))
+    end)
+
+    it("no blast hits can be added (control's control)",
+    function()
+        local model = require 'npge.model'
+        local seq1 = model.Sequence("g1&c&l", [[
+GTAATAATGTGCGCTTTTGTATTTAGCGTTCCGCACCAATTGACTGTGCCCAAATAGAGC
+CTTGCTATTGATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
+        ]])
+        -- replace 10 bases with complement
+        local seq2 = model.Sequence("g2&c&l", [[
+GTAATAATGTGCGCTTTTGTATTTAGCGTTCCGCACCAATTGACTGTGCCCAAATAGAGC
+GAACGATAACATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
+        ]])
+        local seq3 = model.Sequence("g3&c&l", [[
+GTAATAATGTGCGCTTTTGTATTTAGCGTTCCGCACCAATTGACTGTGCCGTTTATCTCG
+GAACGATAACATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
+        ]])
+        local seq4 = model.Sequence("g4&c&l", [[
+GTAATAATGTGCGCTTTTGTATTTTCGCAAGGCGACCAATTGACTGTGCCGTTTATCTCG
+GAACGATAACATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
+        ]])
+        local block1 = model.Block({
+            model.Fragment(seq1, 0, seq1:length() - 1, 1),
+            model.Fragment(seq2, 0, seq2:length() - 1, 1),
+        })
+        local block2 = model.Block({
+            model.Fragment(seq3, 0, seq3:length() - 1, 1),
+            model.Fragment(seq4, 0, seq4:length() - 1, 1),
+        })
+        --
+        local algo = require 'npge.algo'
+        local function check(...)
+            local bs = model.BlockSet(...)
+            bs = algo.GiveNames(algo.Cover(bs))
+            return algo.CheckPangenome(bs)
+        end
+        --
+        assert.falsy(check({seq1, seq2, seq3, seq4},
+            {block1, block2}))
+        -- hit h2x121, gap
+    end)
+
     it("no joined blocks can be formed", function()
         local model = require 'npge.model'
         local seq1 = model.Sequence("g1&c&c", rand600)
@@ -194,5 +284,65 @@ describe("npge.algo.CheckPangenome", function()
         assert.truthy(check({seq1, seq2}, {s2x600=both}))
         assert.falsy(check({seq1, seq2},
             {u1x600=left, u1x600n1=right}))
+    end)
+
+    it("no joined blocks can be formed (control)", function()
+        local model = require 'npge.model'
+        local seq1 = model.Sequence("g1&c&l",
+            rand100n1 ..  --> left
+            AAA100 ..     --> bad part
+            rand100n2)    --> right
+        local seq2 = model.Sequence("g2&c&l",
+            rand100n1 ..  --> left
+            CCC100 ..     --> bad part
+            rand100n2)    --> right
+        local left = model.Block({
+            model.Fragment(seq1, 0, 99, 1),
+            model.Fragment(seq2, 0, 99, 1),
+        })
+        local right = model.Block({
+            model.Fragment(seq1, 200, 299, 1),
+            model.Fragment(seq2, 200, 299, 1),
+        })
+        --
+        local algo = require 'npge.algo'
+        local function check(...)
+            local bs = model.BlockSet(...)
+            bs = algo.GiveNames(algo.Cover(bs))
+            return algo.CheckPangenome(bs)
+        end
+        --
+        assert.truthy(check({seq1, seq2}, {left, right}))
+    end)
+
+    it("no joined blocks can be formed (control's control)",
+    function()
+        -- cyclic sequences => joined block of parted fragments
+        local model = require 'npge.model'
+        local seq1 = model.Sequence("g1&c&c",
+            rand100n1 ..  --> left
+            AAA100 ..     --> bad part
+            rand100n2)    --> right
+        local seq2 = model.Sequence("g2&c&c",
+            rand100n1 ..  --> left
+            CCC100 ..     --> bad part
+            rand100n2)    --> right
+        local left = model.Block({
+            model.Fragment(seq1, 0, 99, 1),
+            model.Fragment(seq2, 0, 99, 1),
+        })
+        local right = model.Block({
+            model.Fragment(seq1, 200, 299, 1),
+            model.Fragment(seq2, 200, 299, 1),
+        })
+        --
+        local algo = require 'npge.algo'
+        local function check(...)
+            local bs = model.BlockSet(...)
+            bs = algo.GiveNames(algo.Cover(bs))
+            return algo.CheckPangenome(bs)
+        end
+        --
+        assert.falsy(check({seq1, seq2}, {left, right}))
     end)
 end)
