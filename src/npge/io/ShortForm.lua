@@ -24,16 +24,20 @@ function ShortForm.encode(blockset)
         "Only a partition has short form")
     local npge = require 'npge'
     return coroutine.wrap(function()
-        local buffer = {}
+        local buffer = {''} -- replace '' with function
         local function print(text, ...)
             text = text:gsub('\n *', ' ')
             text = text:format(...)
             table.insert(buffer, text)
         end
-        local function yield()
-            table.insert(buffer, "\n")
+        local function yield(in_function)
+            if in_function then
+                buffer[1] = "(function()"
+                table.insert(buffer, "end)()")
+            end
+            table.insert(buffer, ";\n")
             coroutine.yield(table.concat(buffer))
-            buffer = {}
+            buffer = {''}
         end
         print([[
         local not_sandbox = _G and not _G.setDescriptions
@@ -71,7 +75,7 @@ function ShortForm.encode(blockset)
             end
             print("}")
             print("}")
-            yield()
+            yield('in_function')
         end
         --
         print([[
