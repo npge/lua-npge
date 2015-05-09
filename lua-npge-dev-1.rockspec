@@ -145,6 +145,7 @@ build = {
         ['npge.algo.Workers'] = 'src/npge/algo/Workers.lua',
         ['npge.algo.GiveNames'] = 'src/npge/algo/GiveNames.lua',
         ['npge.algo.Overlapping'] = 'src/npge/algo/Overlapping.lua',
+        ['npge.algo.JoinUnique'] = 'src/npge/algo/JoinUnique.lua',
         ['npge.algo.CheckPangenome'] = 'src/npge/algo/CheckPangenome.lua',
         ['npge.io'] = 'src/npge/io/init.lua',
         ['npge.io.ShortForm'] = 'src/npge/io/ShortForm.lua',

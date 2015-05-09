@@ -27,6 +27,7 @@ local members = {
     'Workers',
     'GiveNames',
     'Overlapping',
+    'JoinUnique',
     'CheckPangenome',
 }
 
