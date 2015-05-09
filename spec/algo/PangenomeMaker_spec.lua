@@ -10,14 +10,14 @@ describe("npge.algo.PangenomeMaker", function()
         })
         --
         local model = require 'npge.model'
-        local s1 = model.Sequence('s1', [[
+        local s1 = model.Sequence('g1&chr1&l', [[
     TACCAGGGGAAGGGCCGAGGTGTCTGGTGATCA
 TACGTATTGTGAATCTCTGGGGTGGCTGGTGATTGCGCAAACAAACTCACTCTGTAGGGA
     GGCAAAATAACCTCACATCTAGTCA
 TACGTATTGTGAATCTCTGGGGTGGCTGGTGATTGCGCAAACAAACTCACTCTGTAGGGA
     AGTCGAGCCCGAGTGGATTAGTTACGAGTGC
         ]])
-        local s2 = model.Sequence('s2', [[
+        local s2 = model.Sequence('g2&chr1&l', [[
     ATGGTGGCTCCGCAAAAAGCCGTTATAGCCGCAATGGCT
 TACGTATTGTGAATCTCTGGGGTGGCTGGTGATTGCGCAAACAAACTCACTCTGTAGGGA
     TGACTAAGTTTCCCCTCAGCACTCTTCGCC
@@ -32,6 +32,7 @@ TCCCTACAGAGTGAGTTTGTTTGCGCAATCACCAGCCACCCCAGAGATTCACAATACGTA
         local good_blocks = algo.FilterGoodBlocks(npg):blocks()
         assert.equal(#good_blocks, 1)
         assert.equal(good_blocks[1]:size(), 4)
+        assert.truthy(algo.CheckPangenome(npg))
         --
         revert()
     end)

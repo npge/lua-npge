@@ -25,5 +25,6 @@ return function(bs)
         bs1 = algo.BlocksWithoutOverlaps(bs1, joined)
     end
     bs = algo.Orient(algo.Cover(bs))
+    bs = algo.GiveNames(bs)
     return bs
 end
