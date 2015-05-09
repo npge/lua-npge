@@ -1309,6 +1309,8 @@ int lua_ShortForm_diff(lua_State *L) {
     const char* text = luaL_checklstring(L, 2, &text_size);
     luaL_argcheck(L, cons_size == text_size, 1,
             "Length of text must be equal to consensus size");
+    luaL_argcheck(L, cons_size >= 1, 1,
+            "Length of a consensus must be >= 1");
     int length = text_size;
     char* diff = newLuaArray<char>(L, length + 2);
     int diff_len = ShortForm_diff(diff, cons, text, length);
