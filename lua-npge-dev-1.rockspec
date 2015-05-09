@@ -112,6 +112,7 @@ build = {
         ['npge.alignment.complement'] = 'src/npge/alignment/complement.lua',
         ['npge.alignment.complementRows'] = 'src/npge/alignment/complementRows.lua',
         ['npge.alignment.identity'] = 'src/npge/alignment/identity.lua',
+        ['npge.alignment.consensus'] = 'src/npge/alignment/consensus.lua',
         ['npge.alignment.join'] = 'src/npge/alignment/join.lua',
         ['npge.alignment.left'] = 'src/npge/alignment/left.lua',
         ['npge.alignment.moveIdentical'] = 'src/npge/alignment/moveIdentical.lua',

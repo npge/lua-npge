@@ -7,6 +7,6 @@ return function(block)
     for fragment in block:iterFragments() do
         table.insert(rows, block:text(fragment))
     end
-    local consensus = require 'npge.cpp'.func.consensus
+    local consensus = require 'npge.alignment.consensus'
     return consensus(rows)
 end
