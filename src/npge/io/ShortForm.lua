@@ -39,12 +39,13 @@ function ShortForm.encode(blockset)
             coroutine.yield(table.concat(buffer))
             buffer = {''}
         end
-        print([[
+        local header = [[
         local not_sandbox = _G and not _G.setDescriptions
         if not_sandbox then
             local ShortForm = require 'npge.io.ShortForm'
             ShortForm.initRawLoading()
-        end]])
+        end]]
+        print(header)
         yield()
         --
         print("setDescriptions {")
@@ -78,19 +79,20 @@ function ShortForm.encode(blockset)
             yield('in_function')
         end
         --
-        print([[
+        local footer = [[
         if not_sandbox then
             local ShortForm = require 'npge.io.ShortForm'
             return ShortForm.finishRawLoading()
-        end]])
+        end]]
+        print(footer)
         yield()
     end)
 end
 
 function ShortForm.loaderAndEnv()
     local loader = {
-        seqname2description = nil,
-        seqname2length = nil,
+        -- seqname2description = nil,
+        -- seqname2length = nil,
         seqname2frids = {},
         blockname2frids = {},
         frid2text = {}, -- value is {consensus, diff}
