@@ -24,9 +24,11 @@ return function(blockset)
     end
 
     local function less(block1, block2)
-        return block1:size() < block2:size() or
-            (block1:size() == block2:size() and
-            block1:length() < block2:length())
+        local s1 = block1:size()
+        local s2 = block2:size()
+        local l1 = block1:length()
+        local l2 = block2:length()
+        return s1 < s2 or (s1 == s2 and l1 < l2)
     end
 
     local function blockNames(blocks)
@@ -96,19 +98,20 @@ return function(blockset)
             table.insert(block_names, block_name)
             local t = npge.block.parseName(block_name)
             if not badType(t) and not less(block, part) then
-                warning([[  part %d (%s) overlaps with block
+                local msg = [[  part %d (%s) overlaps with block
                     %s, which is greater or equal to the part.
-                    That is why this part was discarded.]],
-                    i, part_name, block_name)
+                    That is why this part was discarded.]]
+                warning(msg, i, part_name, block_name)
                 overlaps_greater = true
             end
         end
         if not overlaps_greater then
-            fail([[  part %d (%s) overlaps with
+            local names_str = table.concat(block_names, ', ')
+            local msg = [[  part %d (%s) overlaps with
                 blocks %s, all of them are minor, unique or
                 less than the part. This part must be included
-                into the pangenome!]],
-                i, part_name, table.concat(block_names, ', '))
+                into the pangenome!]]
+            fail(msg, i, part_name, names_str)
         end
     end
 
