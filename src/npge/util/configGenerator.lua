@@ -7,8 +7,8 @@ local function serialize(value)
     if type(value) == "number" or type(value) == "boolean"then
         value = tostring(value)
         format = "%s"
-    elseif type(value) == "string" then
-        format = "%q"
+    -- elseif type(value) == "string" then
+    --     format = "%q"
     end
     return format:format(value)
 end
