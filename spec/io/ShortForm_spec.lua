@@ -238,3 +238,59 @@ describe("npge.io.ShortForm", function()
         assert.equal(bs1, bs)
     end)
 end)
+
+describe("npge.io.ShortForm (diff + patch)", function()
+    local function eval(diff)
+        local loadstring = require 'npge.util.loadstring'
+        return loadstring('return ' .. diff)()
+    end
+
+    it("returns difference between two sequences", function()
+        local diff = require 'npge.cpp'.func.diff
+        local patch = require 'npge.cpp'.func.patch
+        assert.equal(patch("A", eval(diff("A", "T"))), "T")
+        assert.equal(patch(
+        "AGCTCATACTGCTTTGGGGAGCCGTTTCGACGGGCTCTGGGATAGGGAAA",
+        eval(diff(
+        "AGCTCATACTGCTTTGGGGAGCCGTTTCGACGGGCTCTGGGATAGGGAAA",
+        "-GCTCATACTGCTTTGGGGAGCCGTTTCGACGGGCTCTGGGATAGGGAA-")
+        )),
+        "-GCTCATACTGCTTTGGGGAGCCGTTTCGACGGGCTCTGGGATAGGGAA-")
+    end)
+
+    it("length of returned difference <= text length + 2",
+    function()
+        local diff = require 'npge.cpp'.func.diff
+        assert.truthy(#diff("A", "T") <= #"A" + 2)
+        assert.truthy(#diff(
+        "AGCTCATACTGCTTTGGGGAGCCGTTTCGACGGGCTCTGGGATAGGGAAA",
+        "-GCTCATACTGCTTTGGGGAGCCGTTTCGACGGGCTCTGGGATAGGGAA-"
+        ) <=
+       #"AGCTCATACTGCTTTGGGGAGCCGTTTCGACGGGCTCTGGGATAGGGAAA"
+        + 2)
+    end)
+
+    it("throws if text length != consensus length",
+    function()
+        local diff = require 'npge.cpp'.func.diff
+        local patch = require 'npge.cpp'.func.patch
+        assert.has_error(function()
+            diff("A", "AA")
+        end)
+        assert.has_error(function()
+            patch("A", "AA")
+        end)
+    end)
+
+    it("throws if consensus length is 0",
+    function()
+        local diff = require 'npge.cpp'.func.diff
+        local patch = require 'npge.cpp'.func.patch
+        assert.has_error(function()
+            diff("", "")
+        end)
+        assert.has_error(function()
+            patch("", "")
+        end)
+    end)
+end)
