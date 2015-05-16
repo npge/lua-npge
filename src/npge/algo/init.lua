@@ -5,6 +5,7 @@
 local members = {
     'NonCovered',
     'Merge',
+    'Subtract',
     'ConsensusSequences',
     'UnwindBlocks',
     'Blast',

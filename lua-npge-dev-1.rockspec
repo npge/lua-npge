@@ -137,6 +137,7 @@ build = {
         ['npge.algo.ExcludeSelfOverlap'] = 'src/npge/algo/ExcludeSelfOverlap.lua',
         ['npge.algo.Join'] = 'src/npge/algo/Join.lua',
         ['npge.algo.Merge'] = 'src/npge/algo/Merge.lua',
+        ['npge.algo.Subtract'] = 'src/npge/algo/Subtract.lua',
         ['npge.algo.NonCovered'] = 'src/npge/algo/NonCovered.lua',
         ['npge.algo.Orient'] = 'src/npge/algo/Orient.lua',
         ['npge.algo.PangenomeMaker'] = 'src/npge/algo/PangenomeMaker.lua',
