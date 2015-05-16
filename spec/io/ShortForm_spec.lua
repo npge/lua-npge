@@ -66,6 +66,79 @@ describe("npge.io.ShortForm", function()
         end)
     end)
 
+    it("adding sequence with bad description fails",
+    function()
+        local ShortForm = require 'npge.io.ShortForm'
+        assert.has_error(function()
+            ShortForm.decode(coroutine.wrap(function()
+                coroutine.yield [[
+                setDescriptions {["s1&c&c"] = {},}
+                setLengths {["s1&c&c"] = 4,}
+                addBlock {
+                    name="1",
+                    consensus="GATA",
+                    mutations={
+                        ["s1&c&c_0_3_1"]={},
+                    }
+                }
+                ]]
+            end))
+        end)
+    end)
+
+    it("adding sequence with bad description fails (control)",
+    function()
+        local ShortForm = require 'npge.io.ShortForm'
+        ShortForm.decode(coroutine.wrap(function()
+            coroutine.yield [[
+            setDescriptions {["s1&c&c"] = "",}
+            setLengths {["s1&c&c"] = 4,}
+            addBlock {
+                name="1",
+                consensus="GATA",
+                mutations={
+                    ["s1&c&c_0_3_1"]={},
+                }
+            }
+            ]]
+        end))
+    end)
+
+    it("adding sequence with bad sequence length fails",
+    function()
+        local ShortForm = require 'npge.io.ShortForm'
+        assert.has_error(function()
+            ShortForm.decode(coroutine.wrap(function()
+                coroutine.yield [[
+                setDescriptions {["s1&c&c"] = "",}
+                setLengths {["s1&c&c"] = -1,}
+                addBlock {
+                    name="1",
+                    consensus="GATA",
+                    mutations={
+                        ["s1&c&c_0_3_1"]={},
+                    }
+                }
+                ]]
+            end))
+        end)
+        assert.has_error(function()
+            ShortForm.decode(coroutine.wrap(function()
+                coroutine.yield [[
+                setDescriptions {["s1&c&c"] = "",}
+                setLengths {["s1&c&c"] = {},}
+                addBlock {
+                    name="1",
+                    consensus="GATA",
+                    mutations={
+                        ["s1&c&c_0_3_1"]={},
+                    }
+                }
+                ]]
+            end))
+        end)
+    end)
+
     it("adding blocks with bad patches fails", function()
         local ShortForm = require 'npge.io.ShortForm'
         assert.has_error(function()
