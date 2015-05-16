@@ -66,7 +66,7 @@ describe("npge.io.ShortForm", function()
         end)
     end)
 
-    it("adding blocks with bad patches", function()
+    it("adding blocks with bad patches fails", function()
         local ShortForm = require 'npge.io.ShortForm'
         assert.has_error(function()
             ShortForm.decode(coroutine.wrap(function()
