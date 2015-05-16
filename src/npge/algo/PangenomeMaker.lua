@@ -26,7 +26,7 @@ return function(bs)
     end
     -- prettify
     bs = algo.Cover(bs)
-    local minor = algo.JoinUnique(bs)
+    local minor = algo.Align(algo.JoinUnique(bs))
     bs = algo.BlocksWithoutOverlaps(bs, minor)
     assert(bs:isPartition())
     bs = algo.Orient(bs)
