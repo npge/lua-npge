@@ -18,6 +18,7 @@ local members = {
     'ReAlign',
     'Orient',
     'Join',
+    'Extend',
     'Genomes',
     'PrimaryHits',
     'PangenomeMaker',

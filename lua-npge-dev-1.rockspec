@@ -147,6 +147,7 @@ build = {
         ['npge.algo.Overlapping'] = 'src/npge/algo/Overlapping.lua',
         ['npge.algo.JoinUnique'] = 'src/npge/algo/JoinUnique.lua',
         ['npge.algo.CheckPangenome'] = 'src/npge/algo/CheckPangenome.lua',
+        ['npge.algo.Extend'] = 'src/npge/algo/Extend.lua',
         ['npge.io'] = 'src/npge/io/init.lua',
         ['npge.io.ShortForm'] = 'src/npge/io/ShortForm.lua',
         ['npge.io.ReadSequencesFromFasta'] = 'src/npge/io/ReadSequencesFromFasta.lua',
