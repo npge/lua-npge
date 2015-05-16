@@ -147,5 +147,22 @@ return function(blockset)
         end
     end
 
+    -- extend
+    local config = require 'npge.config'
+    local extend_length = config.general.MIN_LENGTH
+    for block, block_name in blockset:iterBlocks() do
+        local block2 = npge.block.extend(block, extend_length)
+        local blocks = npge.algo.Overlapping(blockset, block2)
+        local names = table.concat(blockNames(blocks), ', ')
+        local good_parts = npge.block.goodSubblocks(block2)
+        warning([[Block %s extended to %d positions left and
+            right overlaps with blocks %s and unwinds to %d
+            good parts]],
+            block_name, extend_length, names, #good_parts)
+        for i, part in ipairs(good_parts) do
+            inspectPart(i, part)
+        end
+    end
+
     return status, table.concat(messages, "\n")
 end

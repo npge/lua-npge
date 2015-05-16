@@ -17,6 +17,18 @@ TTGCTTGATTAAGCTCTTATCAATATCGGATCTAGGTACGGCGAGACCTAAAAATAGTGA
 TACCAGTTGACACTTTTAACAACATTTCGCCCCGGCAAACACCATATGTGTTGTGCGCGA
 GTCGAGTAGGCGTCGGCATAGGGACAATCGTTATCACTATCACACGCGGACAGTAGTACA
 ]]
+local rand600_bad_ends_10 = [[
+nnnnnnnnnnCAACGGGACTCCATCCCTAAGTCGTTTGTGAAGAAACGAGACTAATACGA
+CATGGCAATTGTGAGGATATCAATTTGTAATATCGCGGCCATAGTGAGCACCTCAGAGCT
+GATCCCCTGGAGATATCACCAGGTGGCGAGCGCAGGATAGCAACTATTAAAACGGTATCA
+ACGCCATCTTTTGTACTTATGAGTGAGGTTGTATAATGCCCTATGATAGTTAGCTACCCT
+ATGTGCTATACATCGACCATATTGTGCATGTGCACGCAGAATAGAGGCTGTGCGAATCTG
+TGATGCCTCTTAGGGGAATGGGATTAGGACATTTGAATTAGCAATGGTGACAGCTCACTA
+TAACTCTAACTCTCCCTGTGCATTATCGGTACTAGCCACCCTCTAGATATCCGATGTATC
+TTGCTTGATTAAGCTCTTATCAATATCGGATCTAGGTACGGCGAGACCTAAAAATAGTGA
+TACCAGTTGACACTTTTAACAACATTTCGCCCCGGCAAACACCATATGTGTTGTGCGCGA
+GTCGAGTAGGCGTCGGCATAGGGACAATCGTTATCACTATCACACGCGGAnnnnnnnnnn
+]]
 local rand100n1 = [[
 GGGGACCTCAGTAAACACACATCGGGAAAGACTGTTTAGTAAGAACCAGCAGTCACTTAT
 TCCCTCCGACTGAGCACCTTTACCGTTAGGTCGACCCGTC
@@ -344,5 +356,44 @@ GAACGATAACATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
         end
         --
         assert.falsy(check({seq1, seq2}, {left, right}))
+    end)
+
+    it("no blocks can be extended", function()
+        local model = require 'npge.model'
+        local seq1 = model.Sequence("g1&c&c", rand600)
+        local seq2 = model.Sequence("g2&c&c", rand600)
+        local block = model.Block({
+            model.Fragment(seq1, 10, 590, 1),
+            model.Fragment(seq2, 10, 590, 1),
+        })
+        --
+        local algo = require 'npge.algo'
+        local function check(...)
+            local bs = algo.GiveNames(algo.Cover(
+                model.BlockSet(...)))
+            return algo.CheckPangenome(bs)
+        end
+        --
+        assert.falsy(check({seq1, seq2}, {block}))
+    end)
+
+    it("no blocks can be extended (control)", function()
+        local model = require 'npge.model'
+        local seq1 = model.Sequence("g1&c&c", rand600)
+        local seq2 = model.Sequence("g2&c&c",
+            rand600_bad_ends_10)
+        local block = model.Block({
+            model.Fragment(seq1, 10, 589, 1),
+            model.Fragment(seq2, 10, 589, 1),
+        })
+        --
+        local algo = require 'npge.algo'
+        local function check(...)
+            local bs = algo.GiveNames(algo.Cover(
+                model.BlockSet(...)))
+            return algo.CheckPangenome(bs)
+        end
+        --
+        assert.truthy(check({seq1, seq2}, {block}))
     end)
 end)
