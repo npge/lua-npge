@@ -781,6 +781,7 @@ BlockSetPtr BlockSet::make(const Sequences& sequences,
     for (int i = 0; i < blocks.size(); i++) {
         bs->block2name_[i].block_ = blocks[i];
         bs->block2name_[i].name_ = names[i];
+        ASSERT_GT(names[i].size(), 0);
     }
     bs->name2block_ = bs->block2name_;
     std::sort(bs->block2name_.begin(), bs->block2name_.end(),
@@ -915,6 +916,14 @@ std::string BlockSet::nameByBlock(const BlockPtr& b) const {
     } else {
         return "";
     }
+}
+
+bool BlockSet::hasBlock(const BlockPtr& b) const {
+    typedef BlockRecords::const_iterator It;
+    It it = binarySearch(block2name_.begin(),
+                         block2name_.end(),
+                         b, BlockRecordBlockLess());
+    return it != block2name_.end();
 }
 
 const Fragments& BlockSet::parts(

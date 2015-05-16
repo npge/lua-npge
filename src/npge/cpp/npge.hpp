@@ -265,6 +265,7 @@ public:
 
     // searches by block value, not by pointer
     std::string nameByBlock(const BlockPtr& block) const;
+    bool hasBlock(const BlockPtr& block) const;
 
     const Fragments& parts(const SequencePtr& sequence) const;
 

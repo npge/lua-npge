@@ -882,6 +882,14 @@ int lua_BlockSet_nameByBlock(lua_State *L) {
     return 1;
 }
 
+int lua_BlockSet_hasBlock(lua_State *L) {
+    const BlockSetPtr& bs = lua_tobs(L, 1);
+    const BlockPtr& block = lua_toblock(L, 2);
+    bool has_block = bs->hasBlock(block);
+    lua_pushboolean(L, has_block);
+    return 1;
+}
+
 // first upvalue: blockset
 // second upvalue: index of block
 // yields (block, name)
@@ -1130,6 +1138,7 @@ static const luaL_Reg BlockSet_methods[] = {
     {"blocksNames", lua_BlockSet_blocksNames},
     {"blockByName", lua_BlockSet_blockByName},
     {"nameByBlock", lua_BlockSet_nameByBlock},
+    {"hasBlock", lua_BlockSet_hasBlock},
     {"iterBlocks", lua_BlockSet_iterBlocks},
     {"fragments", lua_BlockSet_fragments},
     {"iterFragments", lua_BlockSet_iterFragments},
