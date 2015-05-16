@@ -5,16 +5,16 @@
 local Blast = {}
 
 function Blast.makeBlastDb(bank_fname, consensus_fname)
+    local nullName = require 'npge.util.nullName'
     local args = {
         'makeblastdb',
         '-dbtype nucl',
         '-out', bank_fname,
         '-in', consensus_fname,
+        '-logfile', nullName(),
     }
-    -- not os.execute to suppress messages produced by blast
-    local f = assert(io.popen(table.concat(args, ' ')))
-    f:read('*a')
-    f:close()
+    local cmd = table.concat(args, ' ')
+    os.execute(cmd)
     local util = require 'npge.util'
     assert(util.fileExists(bank_fname .. '.nhr'))
 end
@@ -39,6 +39,7 @@ end
 
 function Blast.blastnCmd(bank_fname, query_fname, options)
     local config = require 'npge.config'
+    local nullName = require 'npge.util.nullName'
     local args = {
         'blastn',
         '-task blastn',
@@ -46,6 +47,7 @@ function Blast.blastnCmd(bank_fname, query_fname, options)
         '-query', query_fname,
         '-evalue', tostring(config.blast.EVALUE),
         '-dust', (config.blast.DUST and 'yes' or 'no'),
+        '-logfile', nullName(),
     }
     return table.concat(args, ' ')
 end
