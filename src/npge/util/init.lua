@@ -28,5 +28,6 @@ return {
     mapItems = require 'npge.util.mapItems',
     textToIt = require 'npge.util.textToIt',
     tmpName = require 'npge.util.tmpName',
+    nullName = require 'npge.util.nullName',
     configGenerator = require 'npge.util.configGenerator',
 }
