@@ -5,7 +5,11 @@
 return function(block, genomes_number)
     assert(genomes_number, "Provide number of genomes")
     local config = require 'npge.config'
-    if block:length() < config.general.MIN_LENGTH then
+    local max_length = 0
+    for fragment in block:iterFragments() do
+        max_length = math.max(max_length, fragment:length())
+    end
+    if max_length < config.general.MIN_LENGTH then
         return "minor"
     end
     if block:size() == 1 then
@@ -13,7 +17,7 @@ return function(block, genomes_number)
     end
     local isGood = require 'npge.block.isGood'
     if not isGood(block) then
-        return "minor"
+        return "bad"
     end
     local hasRepeats = require 'npge.block.hasRepeats'
     if hasRepeats(block) then

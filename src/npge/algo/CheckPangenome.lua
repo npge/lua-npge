@@ -20,7 +20,7 @@ return function(blockset)
 
     -- returns true for "m" (minor) and "u" (unique)
     local function badType(t)
-        return t == 'u' or t == 'm'
+        return t == 'u' or t == 'm' or t == 'b'
     end
 
     local function less(block1, block2)
@@ -79,6 +79,9 @@ return function(blockset)
         local t2 = npge.block.parseName(true_name)
         if t2 ~= t then
             fail("Block %s should have type %s", name, t2)
+        end
+        if t2 == 'b' then
+            fail("Bad block: %s", name)
         end
         if npge.block.orient(block) ~= block then
             fail("Block %s should be inverted", name)

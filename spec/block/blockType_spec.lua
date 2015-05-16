@@ -32,7 +32,7 @@ describe("npge.block.blockType", function()
         assert.equal(blockType(B({
             F(g1c1, 0, 200, 1),
             F(g1c1, 200, 0, 1),
-        }), genomes_number), "minor")
+        }), genomes_number), "bad")
         assert.equal(blockType(B({
             F(g1c1, 0, 400, 1),
         }), genomes_number), "unique")
