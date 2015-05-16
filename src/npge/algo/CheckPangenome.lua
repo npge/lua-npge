@@ -23,13 +23,7 @@ return function(blockset)
         return t == 'u' or t == 'm' or t == 'b'
     end
 
-    local function less(block1, block2)
-        local s1 = block1:size()
-        local s2 = block2:size()
-        local l1 = block1:length()
-        local l2 = block2:length()
-        return s1 < s2 or (s1 == s2 and l1 < l2)
-    end
+    local better = npge.block.better
 
     local function blockNames(blocks)
         local names = {}
@@ -100,7 +94,7 @@ return function(blockset)
             local block_name = blockset:nameByBlock(block)
             table.insert(block_names, block_name)
             local t = npge.block.parseName(block_name)
-            if not badType(t) and not less(block, part) then
+            if not badType(t) and not better(part, block) then
                 local msg = [[  part %d (%s) overlaps with block
                     %s, which is greater or equal to the part.
                     That is why this part was discarded.]]

@@ -52,6 +52,7 @@ return function(orig, added)
     end
     table.sort(bb, function(b1, b2)
         -- sort by size, then length, prefer blocks from orig
+        -- see also npge.block.better
         local arraysLess = require 'npge.util.arraysLess'
         local orig1 = from_orig[b1] and 1 or 2
         local orig2 = from_orig[b2] and 1 or 2
