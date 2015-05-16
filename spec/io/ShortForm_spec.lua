@@ -309,6 +309,14 @@ describe("npge.io.ShortForm", function()
         local bs = LoadFromLua(sample)()
         local bs1 = ShortForm.decode(ShortForm.encode(bs))
         assert.equal(bs1, bs)
+        -- only good blocks
+        local Filter = require 'npge.algo.FilterGoodBlocks'
+        local good_blocks = Filter(bs)
+        assert.not_equal(good_blocks, bs)
+        local has_sequences = true
+        local it = ShortForm.encode(good_blocks, has_sequences)
+        local good_blocks1 = ShortForm.decode(it, bs)
+        assert.equal(good_blocks1, good_blocks)
     end)
 end)
 

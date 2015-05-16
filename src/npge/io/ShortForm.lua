@@ -19,8 +19,8 @@ function ShortForm.patch(dna1, patch)
 end
 
 -- returns iterator
-function ShortForm.encode(blockset)
-    assert(blockset:isPartition(),
+function ShortForm.encode(blockset, has_sequences)
+    assert(has_sequences or blockset:isPartition(),
         "Only a partition has short form")
     local npge = require 'npge'
     return coroutine.wrap(function()
@@ -39,6 +39,12 @@ function ShortForm.encode(blockset)
             coroutine.yield(table.concat(buffer))
             buffer = {''}
         end
+        if has_sequences then
+            print("-- This file doesn't cover all sequences")
+        else
+            print("-- This file covers all sequences")
+        end
+        yield()
         local header = [[
         local not_sandbox = _G and not _G.setDescriptions
         if not_sandbox then
@@ -82,7 +88,7 @@ function ShortForm.encode(blockset)
         local footer = [[
         if not_sandbox then
             local ShortForm = require 'npge.io.ShortForm'
-            return ShortForm.finishRawLoading()
+            return ShortForm.finishRawLoading(...)
         end]]
         print(footer)
         yield()
@@ -93,7 +99,7 @@ function ShortForm.loaderAndEnv()
     local loader = {
         -- seqname2description = nil,
         -- seqname2length = nil,
-        seqname2frids = {},
+        -- seqname2frids = nil,
         blockname2frids = {},
         frid2text = {}, -- value is {consensus, diff}
     }
@@ -102,6 +108,7 @@ function ShortForm.loaderAndEnv()
 
     function env.setDescriptions(s2d)
         s2d.__metatable = nil
+        loader.seqname2frids = {}
         for seqname, _ in pairs(s2d) do
             assert(type(seqname) == 'string')
             loader.seqname2frids[seqname] = {}
@@ -142,9 +149,11 @@ function ShortForm.loaderAndEnv()
             end
             local seqname = assert(parseId(fr_id), fr_id)
             table.insert(frids, fr_id)
-            local s_frids = loader.seqname2frids[seqname]
-            assert(s_frids)
-            table.insert(s_frids, fr_id)
+            if loader.seqname2frids then
+                local s_frids = loader.seqname2frids[seqname]
+                assert(s_frids)
+                table.insert(s_frids, fr_id)
+            end
         end
     end
 
@@ -220,7 +229,7 @@ local function makeSequenceText(loader, seqname)
     return text
 end
 
-function ShortForm.loader2blockset(loader)
+function ShortForm.loader2blockset(loader, seq_bs)
     local parseId = require 'npge.fragment.parseId'
     local m = require 'npge.model'
 
@@ -229,9 +238,15 @@ function ShortForm.loader2blockset(loader)
     local seqname2description = loader.seqname2description
 
     for seqname, description in pairs(seqname2description) do
-        local text = makeSequenceText(loader, seqname)
-        local seq = m.Sequence(seqname, text, description)
+        local seq
+        if seq_bs then
+            seq = assert(seq_bs:sequenceByName(seqname))
+        else
+            local text = makeSequenceText(loader, seqname)
+            seq = m.Sequence(seqname, text, description)
+        end
         assert(seq:length() == loader.seqname2length[seqname])
+        assert(seq:description() == description)
         table.insert(seqs, seq)
         seqname2seq[seqname] = seq
     end
@@ -252,20 +267,22 @@ function ShortForm.loader2blockset(loader)
     end
 
     local bs = m.BlockSet(seqs, blocks)
-    assert(bs:isPartition())
+    if not seq_bs then
+        assert(bs:isPartition())
+    end
     return bs
 end
 
 -- iterator must return individual commands
 -- ShortForm.encode yields exactly what is needed
-function ShortForm.decode(iterator)
+function ShortForm.decode(iterator, seq_bs)
     local loader, env = ShortForm.loaderAndEnv()
     local sandbox = require 'npge.util.sandbox'
     for line in iterator do
         local f, err = assert(sandbox(env, line))
         f()
     end
-    return ShortForm.loader2blockset(loader)
+    return ShortForm.loader2blockset(loader, seq_bs)
 end
 
 function ShortForm.initRawLoading()
@@ -276,8 +293,8 @@ function ShortForm.initRawLoading()
     _G.addBlock = env.addBlock
 end
 
-function ShortForm.finishRawLoading()
-    local bs = ShortForm.loader2blockset(_G.loader)
+function ShortForm.finishRawLoading(seq_bs)
+    local bs = ShortForm.loader2blockset(_G.loader, seq_bs)
     _G.loader = nil
     _G.setDescriptions = nil
     _G.setLengths = nil
