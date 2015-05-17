@@ -13,6 +13,7 @@ return {
     moveIdentical = require 'npge.alignment.moveIdentical',
     join = require 'npge.alignment.join',
     alignRows = require 'npge.alignment.alignRows',
+    refine = require 'npge.alignment.refine',
     identity = require 'npge.alignment.identity',
     consensus = require 'npge.alignment.consensus',
     goodSlices = require 'npge.alignment.goodSlices',

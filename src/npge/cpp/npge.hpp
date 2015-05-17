@@ -16,6 +16,10 @@ namespace lnpge {
 
 // strings
 
+typedef std::pair<const char*, int> CString;
+typedef std::vector<CString> CStrings;
+typedef std::vector<std::string> Strings;
+
 int complement(char* dst, const char* src, int length);
 
 int toAtgcn(char* dst, const char* src, int length);
@@ -76,6 +80,8 @@ int prefixLength(const char** rows, int nrows, int len);
 bool findAnchor(int* result, int nrows, const char** rows,
         const int* lens, int ANCHOR, int MIN_LENGTH);
 
+void refineAlignment(Strings& aligned);
+
 // model
 
 class Sequence;
@@ -89,10 +95,7 @@ typedef boost::intrusive_ptr<const Block> BlockPtr;
 typedef boost::intrusive_ptr<const BlockSet> BlockSetPtr;
 
 typedef std::pair<FragmentPtr, FragmentPtr> TwoFragments;
-typedef std::pair<const char*, int> CString;
 
-typedef std::vector<CString> CStrings;
-typedef std::vector<std::string> Strings;
 typedef std::vector<SequencePtr> Sequences;
 typedef std::vector<FragmentPtr> Fragments;
 typedef std::vector<BlockPtr> Blocks;
