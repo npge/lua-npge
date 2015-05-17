@@ -27,6 +27,13 @@ describe("npge.alignment.refine", function()
             "AATTCAGG-ATCAAAAAT",
             "AATTCACGAATCGAAAAT",
         })
+        assert.same(refine({
+            "ATGCTTGCTATTTAATGC",
+            "ATGC----------ATGC",
+        }), {
+            "ATGCTTGCTATTTAATGC",
+            "ATGC----------ATGC",
+        })
     end)
 
     it("throws if the argument is nil", function()
@@ -49,7 +56,7 @@ describe("npge.alignment.refine", function()
         })
     end)
 
-    pending("moves base A to make good column", function()
+    it("moves base A to make good column", function()
         local refine = require 'npge.alignment.refine'
         local rows = refine({
             "AATTCAGG-ATCAAAAAT",
@@ -60,7 +67,7 @@ describe("npge.alignment.refine", function()
             rows[2] == "AATTCAGG-ATCAAAAAT")
     end)
 
-    pending("moves base A to make good column (2 vs 2)",
+    it("moves base A to make good column (2 vs 2)",
     function()
         local refine = require 'npge.alignment.refine'
         assert.same(refine({
