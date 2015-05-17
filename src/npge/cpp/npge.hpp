@@ -197,6 +197,9 @@ public:
 
     std::string tostring() const;
 
+    int fragment2block(const FragmentPtr& fragment,
+                       int fragmentpos) const;
+
     int block2fragment(const FragmentPtr& fragment,
                        int blockpos) const;
 

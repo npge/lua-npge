@@ -546,6 +546,27 @@ std::string Block::tostring() const {
            "length " + TO_S(length());
 }
 
+int Block::fragment2block(const FragmentPtr& fragment,
+                          int fragmentpos) const {
+    ASSERT_LTE(0, fragmentpos);
+    ASSERT_LT(fragmentpos, fragment->length());
+    const std::string& t_str = text(fragment);
+    const char* t = t_str.c_str();
+    int nongaps_before = 0;
+    int result = 0;
+    int l = length();
+    for (int bp = 0; bp < l; bp++) {
+        if (t[bp] != '-') {
+            if (nongaps_before == fragmentpos) {
+                result = bp;
+                break;
+            }
+            nongaps_before += 1;
+        }
+    }
+    return result;
+}
+
 static int countNongaps(const char* t, int length) {
     int nongaps_before = 0;
     for (int bp = 0; bp < length; bp++) {

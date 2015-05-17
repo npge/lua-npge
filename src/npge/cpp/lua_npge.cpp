@@ -604,6 +604,24 @@ int lua_Block_iterFragments(lua_State *L) {
     return 1;
 }
 
+int lua_Block_fragment2block_impl(lua_State *L) {
+    const BlockPtr& block = lua_toblock(L, 1);
+    const FragmentPtr& fragment = lua_tofr(L, 2);
+    int fp = luaL_checkinteger(L, 3);
+    try {
+        int bp = block->fragment2block(fragment, fp);
+        lua_pushinteger(L, bp);
+        return 1;
+    } catch (std::exception& e) {
+        lua_pushstring(L, e.what());
+        return -1;
+    }
+}
+
+int lua_Block_fragment2block(lua_State *L) {
+    LUA_CALL_WRAPPED(lua_Block_fragment2block_impl);
+}
+
 int lua_Block_block2fragment_impl(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
     const FragmentPtr& fragment = lua_tofr(L, 2);
@@ -687,6 +705,7 @@ static const luaL_Reg Block_methods[] = {
     {"text", lua_Block_text},
     {"fragments", lua_Block_fragments},
     {"iterFragments", lua_Block_iterFragments},
+    {"fragment2block", lua_Block_fragment2block},
     {"block2fragment", lua_Block_block2fragment},
     {"block2left", lua_Block_block2left},
     {"block2right", lua_Block_block2right},
