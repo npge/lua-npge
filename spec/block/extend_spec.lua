@@ -123,7 +123,7 @@ describe("npge.block.extend", function()
         }))
     end)
 
-    pending("real example (#mosses)", function()
+    it("real example (#mosses)", function()
         local bs = dofile 'spec/sample_pangenome.lua'
         local block = assert(bs:blockByName('s3x103n1'))
         local extend = require 'npge.block.extend'

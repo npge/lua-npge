@@ -165,6 +165,66 @@ describe("npge.alignment.alignRows", function()
         revert()
     end)
 
+    it("align multiple rows (#only_left #mosses)", function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 1,
+                GAP_CHECK = 2,
+                ANCHOR = 7,
+            },
+        })
+        --
+        local f = require 'npge.alignment.alignRows'
+        assert.same(f({
+            "TCCGTACAAAACGATTCATAAATTCGCTATGTAAATG",
+            "TCCGTACAAAACGATTCATAAATTCGCTATGTAAATG",
+            "TCCGTACAAAACGATTCATGAATTAGCTATGT",
+        }, true), {
+            "TCCGTACAAAACGATTCATAAATTCGCTATGTAAATG",
+            "TCCGTACAAAACGATTCATAAATTCGCTATGTAAATG",
+            "TCCGTACAAAACGATTCATGAATTAGCTATGT-----",
+        })
+        --
+        revert()
+    end)
+
+    it("align multiple rows (#only_left #mosses2)", function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            alignment = {
+                MISMATCH_CHECK = 1,
+                GAP_CHECK = 2,
+                ANCHOR = 7,
+            },
+        })
+        --
+        local f = require 'npge.alignment.alignRows'
+        assert.same(f({
+            "CTTAGACACTCTTGGACCTTGCATCACCGAAGGCTCCCTGAGCT" ..
+            "GAAACCGCTTCGAGCTGTTTCCGTACAAAACGATTCATAAATTC" ..
+            "GCTATGTAAATG",
+            "CTTAGACACTCTTGGACCTTGCATCACCGAAGGCTCCCTGAGCT" ..
+            "GAAACCGCTTCGAGCTGTTTCCGTACAAAACGATTCATAAATTC" ..
+            "GCTATGTAAATG",
+            "ATTTAGAGAGAGACTCTTAAGCCTTTCATCACCGGAGGCTCCTA" ..
+            "GAGCTGAAACCGCTTCAAGTTGTTTCCGTACAAAACGATTCATG" ..
+            "AATTAGCTATGT",
+        }, true), {
+            "CTT-AGACA----CTCTTGGACCTTGCATCACCGAAGGCTCCCT" ..
+            "GAGCTGAAACCGCTTCGAGCTGTTTCCGTACAAAACGATTCATA" ..
+            "AATTCGCTATGTAAATG",
+            "CTT-AGACA----CTCTTGGACCTTGCATCACCGAAGGCTCCCT" ..
+            "GAGCTGAAACCGCTTCGAGCTGTTTCCGTACAAAACGATTCATA" ..
+            "AATTCGCTATGTAAATG",
+            "ATTTAGAGAGAGACTCTTAAGCCTTTCATCACCGGAGGCTCCTA" ..
+            "GAGCTGAAACCGCTTCAAGTTGTTTCCGTACAAAACGATTCATG" ..
+            "AATTAGCTATGT-----",
+        })
+        --
+        revert()
+    end)
+
     it("align multiple rows (#addGapsForBetterIdentity)",
     function()
         local config = require 'npge.config'
