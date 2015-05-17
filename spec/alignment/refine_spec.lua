@@ -6,6 +6,8 @@ describe("npge.alignment.refine", function()
     it("does nothing if alignment if good", function()
         local refine = require 'npge.alignment.refine'
         assert.same(refine({}), {})
+        assert.same(refine({""}), {""})
+        assert.same(refine({"", ""}), {"", ""})
         assert.same(refine({"ATGC"}), {"ATGC"})
         assert.same(refine({
             "AATTCAGGA-TCAAAAAT",
@@ -25,6 +27,13 @@ describe("npge.alignment.refine", function()
             "AATTCAGG-ATCAAAAAT",
             "AATTCACGAATCGAAAAT",
         })
+    end)
+
+    it("throws if the argument is nil", function()
+        local refine = require 'npge.alignment.refine'
+        assert.has_error(function()
+            refine()
+        end)
     end)
 
     it("moves base A to make good column", function()

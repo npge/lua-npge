@@ -1654,8 +1654,10 @@ static int lua_refineAlignment(lua_State *L) {
     for (int i = 0; i < nrows; i++) {
         aligned[i].assign(rows[i], len);
     }
-    // refine
-    refineAlignment(aligned);
+    if (nrows != 0 && len != 0) {
+        // refine
+        refineAlignment(aligned);
+    }
     // write result
     lua_createtable(L, nrows, 0);
     for (int irow = 0; irow < nrows; irow++) {
