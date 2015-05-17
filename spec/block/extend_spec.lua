@@ -122,4 +122,29 @@ describe("npge.block.extend", function()
             model.Fragment(s2, 2, 0, -1),
         }))
     end)
+
+    pending("real example (#mosses)", function()
+        local bs = dofile 'spec/sample_pangenome.lua'
+        local block = assert(bs:blockByName('s3x103n1'))
+        local extend = require 'npge.block.extend'
+        local extended = extend(block, 100)
+--[[
+Bad:
+                            10        20        30        40
+ANOAT_60228_60529_1 -CATTTACATAGCGAATTTATGAATCGTTTTGTACGGAAA
+ANORU_60306_60607_1 -CATTTACATAGCGAATTTATGAATCGTTTTGTACGGAAA
+ATRAN_65630_65932_1 ACAT------AGCTAATTCATGAATCGTTTTGTACGGAAA
+consensus           ACATTTACATAGCGAATTTATGAATCGTTTTGTACGGAAA
+
+Good:
+                           10        20        30        40
+ANOAT_60228_60529_1 CATTTACATAGCGAATTTATGAATCGTTTTGTACGGAAA
+ANORU_60306_60607_1 CATTTACATAGCGAATTTATGAATCGTTTTGTACGGAAA
+ATRAN_65630_65932_1 -----ACATAGCTAATTCATGAATCGTTTTGTACGGAAA
+consensus           CATTTACATAGCGAATTTATGAATCGTTTTGTACGGAAA
+]]
+        local consensus = require 'npge.block.consensus'
+        local c = consensus(extended)
+        assert.equal(c:sub(1, 5), 'CATTT')
+    end)
 end)
