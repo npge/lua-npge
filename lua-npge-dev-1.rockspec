@@ -111,6 +111,7 @@ build = {
         ['npge.block.parseName'] = 'src/npge/block/parseName.lua',
         ['npge.block.hitName'] = 'src/npge/block/hitName.lua',
         ['npge.block.better'] = 'src/npge/block/better.lua',
+        ['npge.block.excludeBetterOrEqual'] = 'src/npge/block/excludeBetterOrEqual.lua',
         ['npge.alignment'] = 'src/npge/alignment/init.lua',
         ['npge.alignment.alignRows'] = 'src/npge/alignment/alignRows.lua',
         ['npge.alignment.refine'] = 'src/npge/alignment/refine.lua',

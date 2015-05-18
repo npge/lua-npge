@@ -23,4 +23,5 @@ return {
     parseName = require 'npge.block.parseName',
     hitName = require 'npge.block.hitName',
     better = require 'npge.block.better',
+    excludeBetterOrEqual = require 'npge.block.excludeBetterOrEqual',
 }
