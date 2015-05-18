@@ -47,7 +47,7 @@ function Blast.blastnCmd(bank_fname, query_fname, options)
         '-query', query_fname,
         '-evalue', tostring(config.blast.EVALUE),
         '-dust', (config.blast.DUST and 'yes' or 'no'),
-        '-logfile', nullName(),
+        '2>', nullName(),
     }
     return table.concat(args, ' ')
 end
