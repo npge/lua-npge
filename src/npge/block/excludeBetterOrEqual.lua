@@ -24,7 +24,9 @@ local function iteration(block, blockset)
     local for_block = {}
     for f1 in block:iterFragments() do
         local f2 = excludeBetterOrEqual(f1, block, blockset)
-        if f2 then
+        if f2 == f1 then
+            table.insert(for_block, {f1, block:text(f1)})
+        elseif f2 then
             local fstart = s2f(f1, f2:start())
             local fstop = s2f(f1, f2:stop())
             local start = block:fragment2block(f1, fstart)
