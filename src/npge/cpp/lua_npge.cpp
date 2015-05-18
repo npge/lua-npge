@@ -1194,6 +1194,35 @@ void registerBlockSetFromRef(lua_State* L) {
 
 /////////
 
+static int lengthsSum(const BlockPtr& a) {
+    int len = 0;
+    const Fragments& fragments = a->fragments();
+    int size = a->size();
+    for (int i = 0; i < size; i++) {
+        len += fragments[i]->length();
+    }
+    return len;
+}
+
+// arguments: two blocks
+// implementation of npge.block.better
+static int lua_block_better(lua_State* L) {
+    const BlockPtr& a = lua_toblock(L, 1);
+    const BlockPtr& b = lua_toblock(L, 2);
+    int result = (a->size() > b->size()) ||
+        (a->size() == b->size() &&
+         lengthsSum(a) > lengthsSum(b));
+    lua_pushboolean(L, result);
+    return 1;
+}
+
+static const luaL_Reg block_functions[] = {
+    {"better", lua_block_better},
+    {NULL, NULL}
+};
+
+/////////
+
 typedef boost::scoped_array<char> Buffer;
 
 int lua_toAtgcn(lua_State* L) {
@@ -1735,6 +1764,10 @@ int luaopen_npge_cpp(lua_State *L) {
                  lua_BlockSet, BlockSet_methods);
     registerBlockSetFromRef(L);
     lua_setfield(L, -2, "model");
+    //
+    lua_newtable(L); // npge.cpp.block
+    npge_setfuncs(L, block_functions);
+    lua_setfield(L, -2, "block");
     //
     lua_newtable(L); // npge.cpp.func
     npge_setfuncs(L, string_functions);
