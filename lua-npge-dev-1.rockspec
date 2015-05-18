@@ -177,6 +177,7 @@ build = {
     install = {
         bin = {
             "src/bin/MakePangenome",
+            "src/bin/CheckPangenome",
         },
     },
 }

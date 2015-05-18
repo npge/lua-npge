@@ -1,0 +1,23 @@
+#!/usr/bin/env lua
+
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
+local npge = require 'npge'
+local algo = require 'npge.algo'
+
+local fname = assert(arg[1])
+local bs = npge.io.ShortForm.decode(io.lines(fname))
+
+local ok, report = npge.algo.CheckPangenome(bs)
+
+if ok then
+    print '[good pangenome]'
+else
+    print '[bad pangenome]'
+end
+print()
+print('Detailed report')
+print('===============')
+print(report)
