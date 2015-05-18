@@ -13,6 +13,8 @@ return function()
         if TMP then
             fname = TMP .. fname
         end
+        local f = assert(io.open(fname, 'w'))
+        f:close()
     end
     return fname
 end
