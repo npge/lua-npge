@@ -49,6 +49,7 @@ return function(block, prefix2blockset)
     if #for_block == 0 then
         return nil
     end
+    local refine = require 'npge.block.refine'
     local Block = require 'npge.model.Block'
-    return Block(for_block)
+    return refine(Block(for_block))
 end

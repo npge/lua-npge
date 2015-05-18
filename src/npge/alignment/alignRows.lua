@@ -107,10 +107,10 @@ alignRows = function(rows, only_left)
     if anchor then
         l3 = alignRemaining(l3)
         r3 = alignRows(r3, only_left)
-        return A.join(l1, l2, l3, anchor, r3, r2, r1)
+        return A.refine(A.join(l1, l2, l3, anchor, r3, r2, r1))
     else
         m2 = alignRemaining(m2)
-        return A.join(l1, l2, m2, r2, r1)
+        return A.refine(A.join(l1, l2, m2, r2, r1))
     end
 end
 

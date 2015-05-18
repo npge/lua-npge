@@ -2,43 +2,6 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-local function removePureGapCols(for_block)
-    assert(#for_block >= 2)
-    local frag2row = {}
-    for _, pair in ipairs(for_block) do
-        local fragment = pair[1]
-        frag2row[fragment] = {}
-    end
-    local length = #(for_block[1][2])
-    for col = 1, length do
-        local all_gaps = true
-        for _, pair in ipairs(for_block) do
-            local row = pair[2]
-            local letter = row:sub(col, col)
-            assert(#letter == 1)
-            if letter ~= '-' then
-                all_gaps = false
-                break
-            end
-        end
-        if not all_gaps then
-            for _, pair in ipairs(for_block) do
-                local fragment = pair[1]
-                local row = pair[2]
-                local letter = row:sub(col, col)
-                assert(#letter == 1)
-                table.insert(frag2row[fragment], letter)
-            end
-        end
-    end
-    local for_block1 = {}
-    for fragment, row in pairs(frag2row) do
-        row = table.concat(row)
-        table.insert(for_block1, {fragment, row})
-    end
-    return for_block1
-end
-
 local function removeMostDistant(block)
     local consensus = require 'npge.block.consensus'
     local identity = require 'npge.alignment.identity'
@@ -61,9 +24,9 @@ local function removeMostDistant(block)
         end
     end
     assert(#for_block == block:size() - 1)
-    for_block = removePureGapCols(for_block)
+    local refine = require 'npge.block.refine'
     local Block = require 'npge.model.Block'
-    return Block(for_block)
+    return refine(Block(for_block))
 end
 
 local function goodSubblocks(block)
