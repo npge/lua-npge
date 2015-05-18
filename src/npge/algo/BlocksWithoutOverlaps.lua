@@ -50,14 +50,17 @@ return function(orig, added)
     if added then
         bb = concat(bb, added:blocks())
     end
+    local better = require 'npge.block.better'
     table.sort(bb, function(b1, b2)
-        -- sort by size, then length, prefer blocks from orig
-        -- see also npge.block.better
-        local arraysLess = require 'npge.util.arraysLess'
-        local orig1 = from_orig[b1] and 1 or 2
-        local orig2 = from_orig[b2] and 1 or 2
-        return arraysLess({-b1:size(), -b1:length(), orig1},
-            {-b2:size(), -b2:length(), orig2})
+        if better(b1, b2) then
+            return true
+        elseif better(b2, b1) then
+            return false
+        else
+            local orig1 = from_orig[b1] and 1 or 2
+            local orig2 = from_orig[b2] and 1 or 2
+            return orig1 < orig2
+        end
     end)
     for _, block in ipairs(bb) do
         if not overlapping(block) then
