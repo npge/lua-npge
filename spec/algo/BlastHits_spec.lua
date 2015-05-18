@@ -1658,4 +1658,25 @@ AGCGCTCCACGTCGATAGGGTGGGAGAGGGAGAAAA
             require 'npge.algo.HasSelfOverlap'
         assert.truthy(HasSelfOverlap(hits))
     end)
+
+    it("reports lines from blast output", function()
+        local Sequence = require 'npge.model.Sequence'
+        local s1 = Sequence('s1', string.rep('ATGC', 100))
+        local s2 = Sequence('s2', string.rep('ATGC', 100))
+        local BlockSet = require 'npge.model.BlockSet'
+        local bs_with_seqs = BlockSet({s1, s2}, {})
+        local BlastHits = require 'npge.algo.BlastHits'
+        local lines = {}
+        BlastHits(bs_with_seqs, bs_with_seqs,
+            {line_handler = function(line)
+                table.insert(lines, line)
+            end})
+        local text = table.concat(lines, '\n')
+        assert.truthy(text:match('Sbjct'))
+        assert.truthy(text:match('\nQuery'))
+        assert.truthy(text:match('> s1'))
+        assert.truthy(text:match('> s2'))
+        assert.truthy(text:match(
+            'ATGCATGCATGCATGCATGCATGCATGCATGCATGC'))
+    end)
 end)

@@ -10,7 +10,7 @@ local ori = function(start, stop)
     end
 end
 
-local function readBlast(file, query, bank, same)
+local function readBlast(file, query, bank, same, line_handler)
     local new_blocks = {}
     local query_name, bank_name
     local query_row, bank_row
@@ -75,6 +75,9 @@ local function readBlast(file, query, bank, same)
     local unpack = require 'npge.util.unpack'
     local file_is_empty = true
     for line in file:lines() do
+        if line_handler then
+            line_handler(line)
+        end
         file_is_empty = false
         if startsWith(line, 'Query=') then
             -- Example: Query= consensus000567
@@ -149,6 +152,8 @@ return function(query, bank, options)
     --   a subset of bank. All hits where query > bank
     --   are discarded (optimisation). They are compared
     --   as instances of Fragment.
+    -- - line_handler - a function that is called with
+    --   each line of blast output
     local Blast = require 'npge.algo.Blast'
     local tmpName = require 'npge.util.tmpName'
     options = options or {}
@@ -179,7 +184,7 @@ return function(query, bank, options)
         query_cons_fname, options)
     local f = assert(io.popen(cmd, 'r'))
     local hits = readBlast(f, query, bank,
-        same or options.subset)
+        same or options.subset, options.line_handler)
     f:close()
     if bank_cons_fname then
         os.remove(bank_cons_fname)
