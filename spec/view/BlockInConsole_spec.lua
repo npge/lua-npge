@@ -28,6 +28,20 @@ describe("npge.view.BlockInConsole", function()
         local has_alnbox, alnbox = pcall(require, 'alnbox')
         if not has_rote or not has_alnbox then
             -- Dependencies are not installed
+            if not has_alnbox then
+                assert.has_error(function()
+                    local npge = require 'npge'
+                    local model = npge.model
+                    local s = model.Sequence("ttt", "AATAT")
+                    local f1 = model.Fragment(s, 0, 2, 1)
+                    local f2 = model.Fragment(s, 4, 3, -1)
+                    local block = model.Block({
+                        {f1, "AAT"},
+                        {f2, "-AT"}
+                    })
+                    npge.view.BlockInConsole(block)
+                end)
+            end
             return
         end
         local rt = rote.RoteTerm(24, 80)
