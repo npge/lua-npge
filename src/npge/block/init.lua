@@ -12,6 +12,7 @@ return {
     isGood = require 'npge.block.isGood',
     goodSubblocks = require 'npge.block.goodSubblocks',
     align = require 'npge.block.align',
+    refine = require 'npge.block.refine',
     extend = require 'npge.block.extend',
     hasSelfOverlap = require 'npge.block.hasSelfOverlap',
     excludeSelfOverlap = require 'npge.block.excludeSelfOverlap',

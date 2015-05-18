@@ -91,6 +91,7 @@ build = {
         ['npge.fragment.parseId'] = 'src/npge/fragment/parseId.lua',
         ['npge.block'] = 'src/npge/block/init.lua',
         ['npge.block.align'] = 'src/npge/block/align.lua',
+        ['npge.block.refine'] = 'src/npge/block/refine.lua',
         ['npge.block.consensus'] = 'src/npge/block/consensus.lua',
         ['npge.block.extend'] = 'src/npge/block/extend.lua',
         ['npge.block.goodSubblocks'] = 'src/npge/block/goodSubblocks.lua',
