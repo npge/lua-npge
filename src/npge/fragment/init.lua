@@ -13,4 +13,5 @@ return {
     sequenceToFragment = require 'npge.fragment.sequenceToFragment',
     fragmentToSequence = require 'npge.fragment.fragmentToSequence',
     parseId = require 'npge.fragment.parseId',
+    exclude = require 'npge.fragment.exclude',
 }
