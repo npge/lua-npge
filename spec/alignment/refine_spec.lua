@@ -95,4 +95,122 @@ describe("npge.alignment.refine", function()
             "AATTCACGAATCGAAAAT",
         })
     end)
+
+    it("moves a base over gaps", function()
+        local refine = require 'npge.alignment.refine'
+        assert.same(refine({
+            "AAACCCCTTTTT",
+            "AAAT----TTTT",
+        }), {
+            "AAACCCCTTTTT",
+            "AAA----TTTTT",
+        })
+        assert.same(refine({
+            "AAA----TTTTT",
+            "AAAT----TTTT",
+        }), {
+            "AAATTTTT",
+            "AAATTTTT",
+        })
+        assert.same(refine({
+            "AAAC---TTTTT",
+            "AAAT----TTTT",
+        }), {
+            "AAACTTTTT",
+            "AAA-TTTTT",
+        })
+        assert.same(refine({
+            "AAACCCCTTTTT",
+            "AA----ATTTTT",
+        }), {
+            "AAACCCCTTTTT",
+            "AAA----TTTTT",
+        })
+        assert.same(refine({
+            "AAA----TTTTT",
+            "AA----ATTTTT",
+        }), {
+            "AAATTTTT",
+            "AAATTTTT",
+        })
+        assert.same(refine({
+            "AAA---CTTTTT",
+            "AA----ATTTTT",
+        }), {
+            "AAACTTTTT",
+            "AAA-TTTTT",
+        })
+    end)
+
+    it("moves a base over group of equal bases", function()
+        local refine = require 'npge.alignment.refine'
+        assert.same(refine({
+            "AAACCCC-",
+            "AAAGCCCC",
+        }), {
+            "AAA-CCCC",
+            "AAAGCCCC",
+        })
+        assert.same(refine({
+            "AAACCCCG",
+            "AAA-CCCC",
+        }), {
+            "AAACCCCG",
+            "AAACCCC-",
+        })
+        assert.same(refine({
+            "AAACCCC-TT",
+            "AAAGCCCCTT",
+        }), {
+            "AAA-CCCCTT",
+            "AAAGCCCCTT",
+        })
+        assert.same(refine({
+            "AAACCCCGTT",
+            "AAA-CCCCTT",
+        }), {
+            "AAACCCCGTT",
+            "AAACCCC-TT",
+        })
+    end)
+
+    it("moves even if number of bases in sorce if higher",
+    function()
+        local refine = require 'npge.alignment.refine'
+        assert.same(refine({
+            "AAACCCC-",
+            "AAACCCC-",
+            "AAACCCC-",
+            "AAAGCCCC",
+        }), {
+            "AAA-CCCC",
+            "AAA-CCCC",
+            "AAA-CCCC",
+            "AAAGCCCC",
+        })
+        assert.same(refine({
+            "AAACCCCTTTTT",
+            "AA----ATTTTT",
+            "AA----ATTTTT",
+            "AA----ATTTTT",
+        }), {
+            "AAACCCCTTTTT",
+            "AAA----TTTTT",
+            "AAA----TTTTT",
+            "AAA----TTTTT",
+        })
+    end)
+
+    it("applies multiple refinements", function()
+        local refine = require 'npge.alignment.refine'
+        assert.same(refine({
+            "AAACCCC-TTAAA",
+            "AAACCCC-TTAAA",
+            "AAAGCCCCT---T",
+        }), {
+            "AAA-CCCCTTAAA",
+            "AAA-CCCCTTAAA",
+            "AAAGCCCCTT---",
+        })
+    end)
 end)
