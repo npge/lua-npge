@@ -2,13 +2,12 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-local function excludeBetterOrEqual(f1, b1, blockset)
-    local better = require 'npge.block.better'
+local function excludeBetterOrEqual(f1, betterOrEqual, blockset)
     local exclude = require 'npge.fragment.exclude'
     for _, f2 in ipairs(blockset:overlappingFragments(f1)) do
         local b2 = assert(blockset:blockByFragment(f2))
         -- exclude if b2 is better or equal to b1
-        if not better(b1, b2) then
+        if betterOrEqual(b2) then
             f1 = exclude(f1, f2)
             if not f1 then
                 return f1
@@ -18,12 +17,13 @@ local function excludeBetterOrEqual(f1, b1, blockset)
     return f1
 end
 
-local function iteration(block, blockset)
+local function iteration(block, betterOrEqual, blockset)
     -- find slice not overlapping with better or equal blocks
     local s2f = require 'npge.fragment.sequenceToFragment'
     local for_block = {}
     for f1 in block:iterFragments() do
-        local f2 = excludeBetterOrEqual(f1, block, blockset)
+        local f2 = excludeBetterOrEqual(f1, betterOrEqual,
+            blockset)
         if f2 == f1 then
             table.insert(for_block, {f1, block:text(f1)})
         elseif f2 then
@@ -51,9 +51,14 @@ end
 -- multiple iterations are needed when block gets worse
 
 return function(block, blockset)
+    local better = require 'npge.block.better'
+    local function betterOrEqual(b2)
+        return not better(block, b2)
+    end
     local prev_state
     while block ~= prev_state do
-        local next_state = iteration(block, blockset)
+        local next_state = iteration(block, betterOrEqual,
+            blockset)
         if not next_state then
             return nil
         end
@@ -62,9 +67,8 @@ return function(block, blockset)
     end
     -- check that block is better than all overlapping blocks
     local Overlapping = require 'npge.algo.Overlapping'
-    local better = require 'npge.block.better'
     for _, block2 in ipairs(Overlapping(blockset, block)) do
-        assert(better(block, block2))
+        assert(not betterOrEqual(block2))
     end
     return block
 end
