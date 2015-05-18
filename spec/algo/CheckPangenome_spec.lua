@@ -134,6 +134,49 @@ describe("npge.algo.CheckPangenome", function()
         assert.falsy(check({seq1, seq2}, {s2x400=s2}))
     end)
 
+    it("pangenome must no include blocks of type '#bad'",
+    function()
+        local model = require 'npge.model'
+        local seq1b = model.Sequence("g1&c&c", rand100n1)
+        local seq1a = model.Sequence("g1&c&c",
+            seq1b:text():sub(1, 99))
+        local seq2b = model.Sequence("g2&c&c", rand100n2)
+        local seq2a = model.Sequence("g2&c&c",
+            seq2b:text():sub(1, 99))
+        local u1a = model.Block({
+            model.Fragment(seq1a, 0, 98, 1),
+        })
+        local u2a = model.Block({
+            model.Fragment(seq2a, 0, 98, 1),
+        })
+        local u2b = model.Block({
+            model.Fragment(seq2b, 0, 99, 1),
+        })
+        local s2a = model.Block({
+            model.Fragment(seq1a, 0, 98, 1),
+            model.Fragment(seq2a, 0, 98, 1),
+        })
+        local s2b = model.Block({
+            model.Fragment(seq1a, 0, 98, 1),
+            model.Fragment(seq2b, 0, 99, 1),
+        })
+        --
+        local algo = require 'npge.algo'
+        local function check(...)
+            local bs = model.BlockSet(...)
+            bs = algo.GiveNames(algo.Cover(bs))
+            return algo.CheckPangenome(bs)
+        end
+        --
+        assert.truthy(check({seq1a, seq2a}, {u1a, u2a}))
+        assert.truthy(check({seq1a, seq2b}, {u1a, u2b}))
+        assert.truthy(check({seq1a, seq2a}, {s2a}))
+        assert.falsy(check({seq1a, seq2b}, {s2b}))
+        local blockType = require 'npge.block.blockType'
+        assert.equal(blockType(s2a, 2), 'minor')
+        assert.equal(blockType(s2b, 2), 'bad')
+    end)
+
     it("blocks must not be reverted", function()
         local model = require 'npge.model'
         local seq1 = model.Sequence("g1&c&c", rand600)
