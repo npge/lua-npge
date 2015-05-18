@@ -43,6 +43,9 @@ describe("npge.fragment.exclude", function()
         assert.equal(exclude(F(seq, 0, 3, 1),
             F(seq, 1, 1, 1)),
             F(seq, 2, 3, 1))
+        assert.equal(exclude(F(seq, 0, 3, 1),
+            F(seq, 2, 2, 1)),
+            F(seq, 0, 1, 1))
     end)
 
     it("excludes parted fragment from non parted", function()
