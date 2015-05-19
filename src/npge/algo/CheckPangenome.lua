@@ -23,14 +23,18 @@ return function(blockset)
         return t == 'u' or t == 'm' or t == 'b'
     end
 
-    local better = npge.block.better
+    local genomes = npge.algo.Genomes(blockset)
 
     local function blockNames(blocks)
         local names = {}
         for _, block in ipairs(blocks) do
-            table.insert(names, blockset:nameByBlock(block))
+            local name = blockset:nameByBlock(block)
+            if name == '' then
+                name = npge.block.giveName(block, #genomes)
+            end
+            table.insert(names, name)
         end
-        return names
+        return table.concat(names, ', ')
     end
 
     if not blockset:isPartition() then
@@ -56,8 +60,6 @@ return function(blockset)
         end
     end
 
-    local genomes = npge.algo.Genomes(blockset)
-
     -- block names must correspond their types
     -- block must be in right orientation
     -- Quality of s,h,r-blocks is part of this step
@@ -82,33 +84,27 @@ return function(blockset)
         end
     end
 
-    local function inspectPart(i, part)
-        assert(part:size() >= 2)
-        local part_name = npge.block.giveName(part, #genomes)
-        local blocks = npge.algo.Overlapping(blockset, part)
-        warning(" part %d (%s) overlaps with %d blocks",
-            i, part_name, #blocks)
-        local overlaps_greater
-        local block_names = {}
-        for _, block in ipairs(blocks) do
-            local block_name = blockset:nameByBlock(block)
-            table.insert(block_names, block_name)
-            local t = npge.block.parseName(block_name)
-            if not badType(t) and not better(part, block) then
-                local msg = [[  part %d (%s) overlaps with block
-                    %s, which is greater or equal to the part.
-                    That is why this part was discarded.]]
-                warning(msg, i, part_name, block_name)
-                overlaps_greater = true
+    local function inspectBlock(name, block)
+        warning("")
+        warning("Inspecting %s", name)
+        local blocks = npge.algo.Overlapping(blockset, block)
+        local names = blockNames(blocks)
+        warning(" %s overlaps with %d blocks: %s",
+            name, #blocks, names)
+        local good_parts = npge.block.goodSubblocks(block)
+        warning(" %s produces %d good parts",
+            name, #good_parts)
+        if #good_parts > 0 then
+            local better_parts = npge.block.betterSubblocks(
+                block, blockset)
+            if #better_parts == 0 then
+                warning([[ All of these good parts were
+                    eliminated by better or equal blocks]])
+            else
+                local names = blockNames(better_parts)
+                fail(" The following %d parts can be added: %s",
+                    #better_parts, names)
             end
-        end
-        if not overlaps_greater then
-            local names_str = table.concat(block_names, ', ')
-            local msg = [[  part %d (%s) overlaps with
-                blocks %s, all of them are minor, unique or
-                less than the part. This part must be included
-                into the pangenome!]]
-            fail(msg, i, part_name, names_str)
         end
     end
 
@@ -119,12 +115,7 @@ return function(blockset)
     for cons_hit in cons_hits:iterBlocks() do
         local name = npge.block.hitName(cons_hit)
         local hit = npge.block.unwind(cons_hit, {['']=blockset})
-        local good_parts = npge.block.goodSubblocks(hit)
-        warning("Hit %s unwinds to %d good parts",
-            name, #good_parts)
-        for i, part in ipairs(good_parts) do
-            inspectPart(i, part)
-        end
+        inspectBlock('Hit ' .. name, hit)
     end
 
     -- join
@@ -133,31 +124,17 @@ return function(blockset)
         joined:size())
     for i, block in ipairs(joined:blocks()) do
         local block_name = npge.block.giveName(block, #genomes)
-        local blocks = npge.algo.Overlapping(blockset, block)
-        local names = table.concat(blockNames(blocks), ', ')
-        local good_parts = npge.block.goodSubblocks(block)
-        warning([[Joined block %s (%s, composed from %s)
-            unwinds to %d good parts]],
-            i, block_name, names, #good_parts)
-        for i, part in ipairs(good_parts) do
-            inspectPart(i, part)
-        end
+        inspectBlock('Joined ' .. block_name, block)
     end
 
     -- extend
     local config = require 'npge.config'
-    local extend_length = config.general.MIN_LENGTH
+    local ex_len = config.general.MIN_LENGTH
+    local extend = npge.block.extend
     for block, block_name in blockset:iterBlocks() do
-        local block2 = npge.block.extend(block, extend_length)
-        local blocks = npge.algo.Overlapping(blockset, block2)
-        local names = table.concat(blockNames(blocks), ', ')
-        local good_parts = npge.block.goodSubblocks(block2)
-        warning([[Block %s extended to %d positions left and
-            right overlaps with blocks %s and unwinds to %d
-            good parts]],
-            block_name, extend_length, names, #good_parts)
-        for i, part in ipairs(good_parts) do
-            inspectPart(i, part)
+        if not badType(npge.block.parseName(block_name)) then
+            local e = extend(block, ex_len)
+            inspectBlock('Extended from ' .. block_name, e)
         end
     end
 
