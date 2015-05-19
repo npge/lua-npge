@@ -11,6 +11,7 @@ return {
     unwind = require 'npge.block.unwind',
     isGood = require 'npge.block.isGood',
     goodSubblocks = require 'npge.block.goodSubblocks',
+    betterSubblocks = require 'npge.block.betterSubblocks',
     align = require 'npge.block.align',
     refine = require 'npge.block.refine',
     extend = require 'npge.block.extend',
