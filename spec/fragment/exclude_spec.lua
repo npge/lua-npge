@@ -99,6 +99,12 @@ describe("npge.fragment.exclude", function()
         assert.equal(exclude(F(seq, 2, 1, 1),
             F(seq, 1, 2, 1)),
             F(seq, 3, 0, 1))
+        assert.equal(exclude(F(seq, 2, 1, 1),
+            F(seq, 1, 3, 1)),
+            F(seq, 0, 0, 1))
+        assert.equal(exclude(F(seq, 2, 1, 1),
+            F(seq, 0, 2, 1)),
+            F(seq, 3, 3, 1))
     end)
 
     it("excludes parted fragment from parted", function()
@@ -109,5 +115,17 @@ describe("npge.fragment.exclude", function()
         assert.equal(exclude(F(seq, 2, 1, 1),
             F(seq, 4, 0, 1)),
             F(seq, 2, 3, 1))
+    end)
+
+    it("produces nil if fragment is covered entirely",
+    function()
+        local m = require 'npge.model'
+        local F = m.Fragment
+        local seq = m.Sequence("g&c&c", "ATATA")
+        local exclude = require 'npge.fragment.exclude'
+        assert.falsy(exclude(F(seq, 2, 1, 1), F(seq, 0, 4, 1)))
+        assert.falsy(exclude(F(seq, 1, 2, 1), F(seq, 1, 3, 1)))
+        assert.falsy(exclude(F(seq, 1, 2, 1), F(seq, 0, 2, 1)))
+        assert.falsy(exclude(F(seq, 1, 2, 1), F(seq, 2, 1, 1)))
     end)
 end)
