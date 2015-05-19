@@ -23,6 +23,10 @@ return function(bs)
         local joined = algo.Join(bs1)
         joined = algo.BetterSubblocks(joined, bs1)
         bs1 = algo.BlocksWithoutOverlaps(bs1, joined)
+        -- extend
+        local extended = algo.Extend(bs1)
+        extended = algo.BetterSubblocks(extended, bs1)
+        bs1 = algo.BlocksWithoutOverlaps(bs1, extended)
     end
     -- prettify
     bs = algo.Cover(bs)
