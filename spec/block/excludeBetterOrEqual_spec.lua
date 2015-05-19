@@ -42,6 +42,25 @@ describe("npge.block.excludeBetterOrEqual", function()
         })
     end)
 
+    it("can exclude all overlapping parts", function()
+        local m = require 'npge.model'
+        local s = m.Sequence("s", "ATAT")
+        local F = m.Fragment
+        local B = m.Block
+        local BS = m.BlockSet
+        local e = require 'npge.block.excludeBetterOrEqual'
+        local all = true
+        assert.truthy(e(B {
+            F(s, 0, 3, 1),
+        }, BS({s}, {
+            B {
+                F(s, 3, 3, 1),
+            },
+        }), all), B {
+            F(s, 0, 2, 1),
+        })
+    end)
+
     it("replaces overlappings parts with gaps", function()
         local m = require 'npge.model'
         local s1 = m.Sequence("s1", "ATAT")

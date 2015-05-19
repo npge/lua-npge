@@ -50,10 +50,15 @@ end
 
 -- multiple iterations are needed when block gets worse
 
-return function(block, blockset)
+return function(block, blockset, exclude_all)
     local better = require 'npge.block.better'
     local function betterOrEqual(b2)
         return not better(block, b2)
+    end
+    if exclude_all then
+        betterOrEqual = function()
+            return true
+        end
     end
     local prev_state
     while block ~= prev_state do
