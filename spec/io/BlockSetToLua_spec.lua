@@ -45,7 +45,7 @@ describe("npge.io.BlockSetToLua", function()
         assert.equal(bs2:blockByName("y"), B(f1a))
     end)
 
-    it("serializes blocksets (fragment length 60)", function()
+    it("serializes blocksets (fragment length 1)", function()
         local model = require 'npge.model'
         local B = function(...)
             return model.Block({...})
