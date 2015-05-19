@@ -29,7 +29,7 @@ script:
   - export LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0
   - lua -lnpge.cpp -e'os.exit()'
   - busted -c
-  - LOAD_LUACOV=-lluacov busted
+  - LOAD_LUACOV=-lluacov busted --sort -o .appveyor/busted-print.lua
   - echo 'os.exit = function() end' > exitless-busted
   - echo 'require "busted.runner"({ batch = true })' >> exitless-busted
   - if [[ "$LUA" != *"luajit"* ]]; then valgrind --error-exitcode=1 --leak-check=full --gen-suppressions=all --suppressions=.travis/nsswitch_c_678.supp lua exitless-busted; fi
