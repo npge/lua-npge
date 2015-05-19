@@ -17,13 +17,19 @@ end
 
 local function blockToLua(block)
     local asLines = require 'npge.util.asLines'
+    local areLeft = require 'npge.block.areAlignedToLeft'
     local ff = {}
+    local aligned_left = areLeft(block)
     for fragment in block:iterFragments() do
-        local text = block:text(fragment)
-        text = asLines(text)
         local fragment_str = fragmentToLua(fragment)
-        local lua = "{%s,\n%q}"
-        table.insert(ff, lua:format(fragment_str, text))
+        if aligned_left then
+            table.insert(ff, fragment_str)
+        else
+            local text = block:text(fragment)
+            text = asLines(text)
+            local lua = "{%s,\n%q}"
+            table.insert(ff, lua:format(fragment_str, text))
+        end
     end
     ff = table.concat(ff, ',\n')
     local lua = "(function() return Block({%s}) end)()"

@@ -23,6 +23,28 @@ describe("npge.io.BlockSetToLua", function()
         assert.equal(bs1, bs2)
     end)
 
+    it("serializes blockset with alignment", function()
+        local model = require 'npge.model'
+        local B = model.Block
+        local BS = model.BlockSet
+        local s1 = model.Sequence("g1&c&c", "ATAT")
+        local s2 = model.Sequence("g2&c&c", "ATTAT")
+        local f1 = model.Fragment(s1, 0, 3, 1)
+        local f2 = model.Fragment(s2, 0, 4, 1)
+        local bs1 = BS({s1, s2}, {
+            B {
+                {f1, "A-TAT"},
+                {f2, "ATTAT"},
+            },
+        })
+        local BlockSetToLua = require 'npge.io.BlockSetToLua'
+        local readIt = require 'npge.util.readIt'
+        local lua = readIt(BlockSetToLua(bs1))
+        local loadstring = require 'npge.util.loadstring'
+        local bs2 = loadstring(lua)()
+        assert.equal(bs1, bs2)
+    end)
+
     it("serializes blocksets (named blocks)", function()
         local model = require 'npge.model'
         local B = function(...)
