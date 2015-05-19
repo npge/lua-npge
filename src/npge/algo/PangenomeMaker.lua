@@ -21,7 +21,7 @@ return function(bs)
         bs1 = algo.BlocksWithoutOverlaps(bs, hits)
         -- join
         local joined = algo.Join(bs1)
-        joined = algo.GoodSubblocks(joined)
+        joined = algo.BetterSubblocks(joined, bs1)
         bs1 = algo.BlocksWithoutOverlaps(bs1, joined)
     end
     -- prettify
