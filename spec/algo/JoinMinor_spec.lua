@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.algo.JoinUnique", function()
+describe("npge.algo.JoinMinor", function()
 
     local revert
 
@@ -36,7 +36,7 @@ describe("npge.algo.JoinUnique", function()
         })
         local bs = model.BlockSet({g1, g2}, {block1, block2})
         bs = algo.Cover(bs)
-        local minor = algo.JoinUnique(bs)
+        local minor = algo.JoinMinor(bs)
         assert.equal(minor, model.BlockSet({g1, g2}, {
             model.Block({
                 model.Fragment(g1, 501, 509, 1),
