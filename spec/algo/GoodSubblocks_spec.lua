@@ -23,7 +23,7 @@ describe("npge.algo.GoodSubblocks", function()
     it("extracts good blocks of parts (mismatches in groups)",
     function()
         -- AAAAAAAA
-        -- ACATTACA
+        -- AAATTAAA
         local config = require 'npge.config'
         local min_len = config.general.MIN_LENGTH
         local good_len = 2 * min_len
