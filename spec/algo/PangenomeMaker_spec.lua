@@ -38,6 +38,10 @@ TCCCTACAGAGTGAGTTTGTTTGCGCAATCACCAGCCACCCCAGAGATTCACAATACGTA
     end)
 
     it("builds good pangenome from #mosses genomes", function()
+        if package.loaded.luacov then
+            -- too slow
+            return
+        end
         local good = dofile('spec/sample_pangenome2.lua')
         local npge = require 'npge'
         local seqs = npge.model.BlockSet(good:sequences(), {})
