@@ -139,6 +139,7 @@ build = {
         ['npge.algo.FilterGoodBlocks'] = 'src/npge/algo/FilterGoodBlocks.lua',
         ['npge.algo.Genomes'] = 'src/npge/algo/Genomes.lua',
         ['npge.algo.GoodSubblocks'] = 'src/npge/algo/GoodSubblocks.lua',
+        ['npge.algo.BetterSubblocks'] = 'src/npge/algo/BetterSubblocks.lua',
         ['npge.algo.HasOverlap'] = 'src/npge/algo/HasOverlap.lua',
         ['npge.algo.HasSelfOverlap'] = 'src/npge/algo/HasSelfOverlap.lua',
         ['npge.algo.ExcludeSelfOverlap'] = 'src/npge/algo/ExcludeSelfOverlap.lua',

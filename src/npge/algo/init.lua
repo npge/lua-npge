@@ -14,6 +14,7 @@ local members = {
     'FilterGoodBlocks',
     'BlocksWithoutOverlaps',
     'GoodSubblocks',
+    'BetterSubblocks',
     'Cover',
     'Align',
     'ReAlign',
