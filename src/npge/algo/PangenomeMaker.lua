@@ -2,7 +2,7 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-return function(bs)
+return function(bs, silent)
     -- input a blockset of good blocks only
     -- output: pangenome (partition, blocks are good or unique,
     --      no new good blocks can be found neither in blast
@@ -27,6 +27,11 @@ return function(bs)
         local extended = algo.Extend(bs1)
         extended = algo.BetterSubblocks(extended, bs1)
         bs1 = algo.BlocksWithoutOverlaps(bs1, extended)
+        -- print '.'
+        if not silent then
+            io.write('.')
+            io.flush()
+        end
     end
     -- prettify
     bs = algo.Cover(bs)
