@@ -36,4 +36,13 @@ TCCCTACAGAGTGAGTTTGTTTGCGCAATCACCAGCCACCCCAGAGATTCACAATACGTA
         --
         revert()
     end)
+
+    it("builds good pangenome from #mosses genomes", function()
+        local good = dofile('spec/sample_pangenome2.lua')
+        local npge = require 'npge'
+        local seqs = npge.model.BlockSet(good:sequences(), {})
+        assert.equal(#seqs:blocks(), 0)
+        local pangenome = npge.algo.PangenomeMaker(seqs)
+        assert.truthy(npge.algo.CheckPangenome(pangenome))
+    end)
 end)
