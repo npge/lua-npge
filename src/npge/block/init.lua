@@ -25,4 +25,5 @@ return {
     hitName = require 'npge.block.hitName',
     better = require 'npge.block.better',
     excludeBetterOrEqual = require 'npge.block.excludeBetterOrEqual',
+    isAlignedToLeft = require 'npge.block.isAlignedToLeft',
 }
