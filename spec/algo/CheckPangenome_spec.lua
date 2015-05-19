@@ -398,4 +398,12 @@ GAACGATAACATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
         --
         assert.truthy(check({seq1, seq2}, {block}))
     end)
+
+    it("real pangenome #mosses passes the check", function()
+        local bad = dofile('spec/sample_pangenome.lua')
+        local good = dofile('spec/sample_pangenome2.lua')
+        local algo = require 'npge.algo'
+        assert.falsy(algo.CheckPangenome(bad))
+        assert.truthy(algo.CheckPangenome(good))
+    end)
 end)
