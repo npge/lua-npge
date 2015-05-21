@@ -9,8 +9,7 @@ env:
     - LUA=lua5.3
     - LUA=luajit # latest stable version (2.0.3)
     - LUA=luajit2.0 # current head of 2.0 branch
-    #- LUA=luajit2.1 # current head of 2.1 branch
-    # http://www.freelists.org/post/luajit/Luajit-v21-segfault-code-example,1
+    - LUA=luajit2.1 # current head of 2.1 branch
 
 before_install:
   - sudo apt-get update

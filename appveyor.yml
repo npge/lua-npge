@@ -16,8 +16,7 @@ environment:
   - LUA_VER: 5.3.0
     NOCOMPAT: true
   - LJ_VER: 2.0.3
-  #- LJ_VER: 2.1
-  # http://www.freelists.org/post/luajit/Luajit-v21-segfault-code-example,1
+  - LJ_VER: 2.1
 
 platform:
   - x86
