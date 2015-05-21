@@ -400,6 +400,10 @@ GAACGATAACATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
     end)
 
     it("real pangenome #mosses passes the check", function()
+        -- https://travis-ci.org/npge/lua-npge/jobs/63467470
+        if os.getenv('UNDER_VALGRIND') then
+            return
+        end
         local bad = dofile('spec/sample_pangenome.lua')
         local good = dofile('spec/sample_pangenome2.lua')
         local algo = require 'npge.algo'
