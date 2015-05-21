@@ -38,7 +38,13 @@ TCCCTACAGAGTGAGTTTGTTTGCGCAATCACCAGCCACCCCAGAGATTCACAATACGTA
     end)
 
     it("builds good pangenome from #mosses genomes", function()
+        -- https://travis-ci.org/npge/lua-npge/jobs/63181172
         if package.loaded.luacov then
+            -- too slow
+            return
+        end
+        -- https://travis-ci.org/npge/lua-npge/jobs/63193857
+        if os.getenv('UNDER_VALGRIND') then
             -- too slow
             return
         end
