@@ -76,6 +76,36 @@ describe("npge.block.blockType", function()
         revert()
     end)
 
+    it("considers good block of #short fragments good",
+    function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            general = {
+                MIN_LENGTH = 10,
+                MIN_IDENTITY = 0.8,
+                MIN_END = 1,
+            },
+        })
+        --
+        local model = require 'npge.model'
+        local g1c1 = model.Sequence('g1&c1&c', "GTGGTA-TGC")
+        local g2c1 = model.Sequence('g2&c1&c', "GT-GTACTGC")
+        local genomes_number = 2
+        local F = model.Fragment
+        local B = model.Block
+        local blockType = require 'npge.block.blockType'
+        assert.equal(blockType(B({
+            {F(g1c1, 0, 8, 1), 'GTGGTA-TGC'},
+            {F(g2c1, 0, 8, 1), 'GT-GTACTGC'},
+        }), genomes_number), "stable")
+        assert.equal(blockType(B({
+            F(g1c1, 0, 8, 1),
+            F(g2c1, 0, 8, 1),
+        }), genomes_number), "minor")
+        --
+        revert()
+    end)
+
     it("throws if genomes are unknown", function()
         local config = require 'npge.config'
         local revert = config:updateKeys({
