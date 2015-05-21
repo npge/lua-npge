@@ -29,6 +29,7 @@ script:
   - export LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0
   - lua -lnpge.cpp -e'os.exit()'
   - busted -c
+  - busted --sort -o .appveyor/busted-print.lua
   - LOAD_LUACOV=-lluacov busted --sort -o .appveyor/busted-print.lua
   - echo 'os.exit = function() end' > exitless-busted
   - echo 'require "busted.runner"({ batch = true })' >> exitless-busted
