@@ -19,6 +19,35 @@ describe("npge.io.LoadFromLua", function()
         assert.equal(blockset1, blockset)
     end)
 
+    it("is protected from a crash", function()
+        local lua = [[
+        local model = require 'npge.model'
+        local s = model.Sequence("test_name", "ATAT")
+        s.__gc(s)
+        local n = s:name()
+        ]]
+        local LoadFromLua = require 'npge.io.LoadFromLua'
+        assert.has_error(function()
+            local blockset1 = LoadFromLua(lua)()
+        end)
+    end)
+
+    it("can't change metatables of our classes", function()
+        local lua = [[
+        local model = require 'npge.model'
+        local s = model.Sequence("test_name", "ATAT")
+        s.__index.name = function() return 'hack' end
+        return s
+        ]]
+        local LoadFromLua = require 'npge.io.LoadFromLua'
+        assert.has_error(function()
+            local blockset1 = LoadFromLua(lua)()
+        end)
+        local model = require 'npge.model'
+        local s = model.Sequence("test_name", "ATAT")
+        assert.not_equal(s:name(), 'hack')
+    end)
+
     it("loads sequences + blockset", function()
         local model = require 'npge.model'
         local s = model.Sequence("test_name", "ATAT")

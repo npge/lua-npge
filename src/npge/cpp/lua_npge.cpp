@@ -291,8 +291,14 @@ int lua_Sequence_eq(lua_State *L) {
     return 1;
 }
 
-static const luaL_Reg Sequence_methods[] = {
+static const luaL_Reg Sequence_mt[] = {
     {"__gc", lua_Sequence_gc},
+    {"__tostring", lua_Sequence_tostring},
+    {"__eq", lua_Sequence_eq},
+    {NULL, NULL}
+};
+
+static const luaL_Reg Sequence_methods[] = {
     {"type", lua_Sequence_type},
     {"name", lua_Sequence_name},
     {"description", lua_Sequence_description},
@@ -302,8 +308,6 @@ static const luaL_Reg Sequence_methods[] = {
     {"text", lua_Sequence_text},
     {"length", lua_Sequence_length},
     {"sub", lua_Sequence_sub},
-    {"__tostring", lua_Sequence_tostring},
-    {"__eq", lua_Sequence_eq},
     {NULL, NULL}
 };
 
@@ -431,8 +435,15 @@ int lua_Fragment_lt(lua_State *L) {
     return 1;
 }
 
-static const luaL_Reg Fragment_methods[] = {
+static const luaL_Reg Fragment_mt[] = {
     {"__gc", lua_Fragment_gc},
+    {"__tostring", lua_Fragment_tostring},
+    {"__eq", lua_Fragment_eq},
+    {"__lt", lua_Fragment_lt},
+    {NULL, NULL}
+};
+
+static const luaL_Reg Fragment_methods[] = {
     {"type", lua_Fragment_type},
     {"sequence", lua_Fragment_sequence},
     {"start", lua_Fragment_start},
@@ -444,9 +455,6 @@ static const luaL_Reg Fragment_methods[] = {
     {"parts", lua_Fragment_parts},
     {"text", lua_Fragment_text},
     {"common", lua_Fragment_common},
-    {"__tostring", lua_Fragment_tostring},
-    {"__eq", lua_Fragment_eq},
-    {"__lt", lua_Fragment_lt},
     {NULL, NULL}
 };
 
@@ -697,8 +705,15 @@ int lua_Block_lt(lua_State *L) {
     return 1;
 }
 
-static const luaL_Reg Block_methods[] = {
+static const luaL_Reg Block_mt[] = {
     {"__gc", lua_Block_gc},
+    {"__tostring", lua_Block_tostring},
+    {"__eq", lua_Block_eq},
+    {"__lt", lua_Block_lt},
+    {NULL, NULL}
+};
+
+static const luaL_Reg Block_methods[] = {
     {"type", lua_Block_type},
     {"size", lua_Block_size},
     {"length", lua_Block_length},
@@ -709,9 +724,6 @@ static const luaL_Reg Block_methods[] = {
     {"block2fragment", lua_Block_block2fragment},
     {"block2left", lua_Block_block2left},
     {"block2right", lua_Block_block2right},
-    {"__tostring", lua_Block_tostring},
-    {"__eq", lua_Block_eq},
-    {"__lt", lua_Block_lt},
     {NULL, NULL}
 };
 
@@ -1146,8 +1158,14 @@ int lua_BlockSet_fromRef(lua_State *L) {
     return 1;
 }
 
-static const luaL_Reg BlockSet_methods[] = {
+static const luaL_Reg BlockSet_mt[] = {
     {"__gc", lua_BlockSet_gc},
+    {"__tostring", lua_BlockSet_tostring},
+    {"__eq", lua_BlockSet_eq},
+    {NULL, NULL}
+};
+
+static const luaL_Reg BlockSet_methods[] = {
     {"type", lua_BlockSet_type},
     {"size", lua_BlockSet_size},
     {"sameSequences", lua_BlockSet_sameSequences},
@@ -1170,8 +1188,6 @@ static const luaL_Reg BlockSet_methods[] = {
         lua_BlockSet_overlappingFragments},
     {"next", lua_BlockSet_next},
     {"prev", lua_BlockSet_prev},
-    {"__tostring", lua_BlockSet_tostring},
-    {"__eq", lua_BlockSet_eq},
     {NULL, NULL}
 };
 
@@ -1705,6 +1721,7 @@ static void registerType(lua_State *L,
                          const char* mt_name,
                          const char* cache_name,
                          lua_CFunction constructor,
+                         const luaL_Reg* mt,
                          const luaL_Reg* methods) {
     // cache
     lua_newtable(L);
@@ -1715,9 +1732,10 @@ static void registerType(lua_State *L,
     lua_setfield(L, LUA_REGISTRYINDEX, cache_name);
     // metatable for instance
     luaL_newmetatable(L, mt_name);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -2, "__index"); // mt.__index = mt
+    npge_setfuncs(L, mt);
+    lua_newtable(L); // mt.__index
     npge_setfuncs(L, methods);
+    lua_setfield(L, -2, "__index");
     lua_pop(L, 1); // metatable of instance
     // constructor
     lua_pushcfunction(L, constructor);
@@ -1751,17 +1769,17 @@ int luaopen_npge_cpp(lua_State *L) {
     lua_newtable(L); // npge.cpp
     lua_newtable(L); // npge.cpp.model
     registerType(L, "Sequence", "npge_Sequence",
-                 "npge_Sequence_cache",
-                 lua_Sequence, Sequence_methods);
+                 "npge_Sequence_cache", lua_Sequence,
+                 Sequence_mt, Sequence_methods);
     registerType(L, "Fragment", "npge_Fragment",
-                 "npge_Fragment_cache",
-                 lua_Fragment, Fragment_methods);
+                 "npge_Fragment_cache", lua_Fragment,
+                 Fragment_mt, Fragment_methods);
     registerType(L, "Block", "npge_Block",
-                 "npge_Block_cache",
-                 lua_Block, Block_methods);
+                 "npge_Block_cache", lua_Block,
+                 Block_mt, Block_methods);
     registerType(L, "BlockSet", "npge_BlockSet",
-                 "npge_BlockSet_cache",
-                 lua_BlockSet, BlockSet_methods);
+                 "npge_BlockSet_cache", lua_BlockSet,
+                 BlockSet_mt, BlockSet_methods);
     registerBlockSetFromRef(L);
     lua_setfield(L, -2, "model");
     //
