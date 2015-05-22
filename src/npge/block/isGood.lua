@@ -40,9 +40,11 @@ return function(block)
         return false, 'ending identity', ident / all
     end
     -- check identity of slices of length MIN_LENGTH
-    local min_gc = min_length * min_ident
+    local minIdentical = require 'npge.alignment.minIdentical'
+    local min_gc = minIdentical(min_length, min_ident)
     local function goodIdentity(good_count)
-        return good_count >= min_gc
+        -- both good_count and min_gc must be integers
+        return good_count + 0.5 >= min_gc
     end
     local goodColumns = require 'npge.cpp'.func.goodColumns
     local col = goodColumns(rows)

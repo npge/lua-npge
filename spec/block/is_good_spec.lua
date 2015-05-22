@@ -335,4 +335,48 @@ describe("npge.block.isGood", function()
             assert.falsy(isGood(block))
         end
     end)
+
+    it("rounds identity properly (55 / 100 and 55%, #real)",
+    function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            general = {
+                MIN_LENGTH = 100,
+                MIN_END = 3,
+                MIN_IDENTITY = 0.55,
+            },
+        })
+        --
+        local t1 = [[
+ATCTCGTTTATCTGTGAGATGTTCTTGTCGAGTTGGCTCAACTTGCGCTGCTATTG
+TTGTGTCCTCTCCATTGGCCCGGATTCGTT---------GACTAGGCATTTGGTAT
+CGTCCAGTATAGATCTGCCGCGTAGCTTTTTGAGAAAAGGCGTAG--------CGG
+GACCAAGCTTTTT-----------------------GGTTGGGGTTTTCCAACATG
+CT]]
+        local t2 = [[
+ATCTCGTTTATCTGTGAGATGTTCTTGTCGAGTTGGCTCAACTTGCGCTGCTATTG
+TTGTGTCCTCTCCATTGGCCCGGATTCGTT---------GACTAGGCATTTGGTAT
+CGTCCAGTATAGATCTGCCGCGTAGCTTTTTGAGAAAAGGCGTAG--------CGG
+GACCAAGCTTTTT-----------------------GGTTGGGGTTTTCCAACATG
+CT]]
+        local t3 = [[
+ATCTCATCTATCTGTGAGACGTCCTTGTCGAGTTGGCCCAATTTTCGCA-----TG
+TGGTGAATT-TCTACCGGTCCGGAGTATTTAATGTTATTGACTGGGCATTTGTTAT
+CGTCCAGTATAGATCTGCTGCTTAGCATTTCAAAAAGAGGCGTGGTCTGTAGGCGG
+GACCAAGCTTTTTTTGAAGTCCCACAAGTTGAGTGCGGTTAGGAGTTTCCTCAATG
+CT]]
+        local m = require 'npge.model'
+        local s1 = m.Sequence('s1', t1)
+        local s2 = m.Sequence('s2', t2)
+        local s3 = m.Sequence('s3', t3)
+        local block = m.Block {
+            {m.Fragment(s1, 0, s1:length() - 1, 1), t1},
+            {m.Fragment(s2, 0, s2:length() - 1, 1), t2},
+            {m.Fragment(s3, 0, s3:length() - 1, 1), t3},
+        }
+        local isGood = require 'npge.block.isGood'
+        assert.truthy(isGood(block))
+        --
+        revert()
+    end)
 end)

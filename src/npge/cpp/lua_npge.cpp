@@ -1492,7 +1492,7 @@ int lua_good_columns(lua_State *L) {
 // 1. good_col, Lua table of booleans
 // 2. min_length (integer)
 // 3. min_end (integer)
-// 4. min_identity (double)
+// 4. min_identity (integer)
 // returns array of slice. Each slice is {start, stop}.
 int lua_goodSlices(lua_State *L) {
     int args = lua_gettop(L);
@@ -1510,8 +1510,7 @@ int lua_goodSlices(lua_State *L) {
     }
     int min_length = lua_tointeger(L, 2);
     int min_end = lua_tointeger(L, 3);
-    double min_identity = lua_tonumber(L, 4);
-    int min_ident = min_identity * double(min_length) + 0.99;
+    int min_ident = lua_tointeger(L, 4);
     Coordinates slices = goodSlices(columns, min_length,
             min_end, min_ident);
     lua_createtable(L, slices.size(), 0); // slices

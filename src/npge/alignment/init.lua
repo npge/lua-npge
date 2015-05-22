@@ -17,4 +17,5 @@ return {
     identity = require 'npge.alignment.identity',
     consensus = require 'npge.alignment.consensus',
     goodSlices = require 'npge.alignment.goodSlices',
+    minIdentical = require 'npge.alignment.minIdentical',
 }

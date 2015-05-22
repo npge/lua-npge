@@ -13,4 +13,9 @@
 --    Each slice is a table {start, stop}
 -- Indices start and stop start from 0
 
-return require 'npge.cpp'.func.goodSlices
+return function(good_col, min_length, min_end, min_identity)
+    local impl = require 'npge.cpp'.func.goodSlices
+    local minIdentical = require 'npge.alignment.minIdentical'
+    local min_gc = minIdentical(min_length, min_identity)
+    return impl(good_col, min_length, min_end, min_gc)
+end
