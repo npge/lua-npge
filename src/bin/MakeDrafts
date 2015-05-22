@@ -1,0 +1,55 @@
+#!/usr/bin/env lua
+
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
+local npge = require 'npge'
+local algo = require 'npge.algo'
+
+local config = require 'npge.config'
+local revert = config:updateKeys({
+    general = {MIN_IDENTITY = 0.5},
+})
+
+local fname = assert(arg[1])
+local bs = npge.io.ReadSequencesFromFasta(io.lines(fname))
+local bs = algo.PrimaryHits(bs)
+
+local total = 0
+for seq in bs:iterSequences() do
+    total = total + seq:length()
+end
+
+local genomes = npge.algo.Genomes(bs)
+
+local function stableCoverage(bs)
+    local stable_sum = 0
+    for block in bs:iterBlocks() do
+        local bt = npge.block.blockType(block, #genomes)
+        if bt == 'stable' then
+            for fragment in block:iterFragments() do
+                stable_sum = stable_sum + fragment:length()
+            end
+        end
+    end
+    return stable_sum / total
+end
+
+local function save(bs, fname)
+    local skip_seqs = true
+    local it = npge.io.ShortForm.encode(bs, skip_seqs)
+    npge.util.writeIt(fname, it)
+end
+
+local IDENTITIES = {0.5, 0.55, 0.6, 0.65, 0.7, 0.75,
+    0.8, 0.85, 0.9, 0.95, 0.97, 0.99}
+
+for _, identity in ipairs(IDENTITIES) do
+    local revert = config:updateKeys({
+        general = {MIN_IDENTITY = identity},
+    })
+    bs = npge.algo.GoodSubblocks(bs)
+    save(bs, fname .. '.npg-' .. identity)
+    print(identity, stableCoverage(bs))
+end

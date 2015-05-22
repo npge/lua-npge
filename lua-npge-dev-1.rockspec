@@ -184,6 +184,7 @@ build = {
         bin = {
             "src/bin/MakePangenome",
             "src/bin/CheckPangenome",
+            "src/bin/MakeDrafts",
         },
     },
 }
