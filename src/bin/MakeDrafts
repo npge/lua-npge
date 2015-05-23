@@ -49,7 +49,7 @@ for _, identity in ipairs(IDENTITIES) do
     local revert = config:updateKeys({
         general = {MIN_IDENTITY = identity},
     })
-    bs = npge.algo.GoodSubblocks(bs)
+    bs = npge.algo.Workers.GoodSubblocks(bs)
     save(bs, fname .. '.npg-' .. identity)
     print(identity, stableCoverage(bs))
 end
