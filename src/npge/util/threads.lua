@@ -8,16 +8,19 @@
 -- LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0 lua ...
 
 local workerCode = [[
+local config = require 'npge.config'
+config:load(%q)
 return pcall(function()
     %s
 end)
 ]]
 
-local spawnWorkers = function(generator, workers)
+local spawnWorkers = function(generator, workers, conf)
     local llthreads2 = require "llthreads2"
     local threads = {}
     for _, code in ipairs(generator(workers)) do
-        local thread = llthreads2.new(workerCode:format(code))
+        local code1 = workerCode:format(conf, code)
+        local thread = llthreads2.new(code1)
         thread:start()
         table.insert(threads, thread)
     end
@@ -57,6 +60,8 @@ return function(generator, collector)
         local result = assert(loadstring(code)())
         return collector({result})
     end
-    local threads = spawnWorkers(generator, workers)
+    local config = require 'npge.config'
+    local conf = config:save()
+    local threads = spawnWorkers(generator, workers, conf)
     return collectResults(collector, threads)
 end

@@ -69,4 +69,27 @@ describe("npge.util.threads", function()
         --
         revert()
     end)
+
+    it("copies config to thread's Lua state", function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            general = {MIN_LENGTH = 200},
+            util = {WORKERS = 10},
+        })
+        --
+        local threads = require 'npge.util.threads'
+        threads(function(n)
+            local code = [[
+            local config = require 'npge.config'
+            assert(config.general.MIN_LENGTH == 200)
+            ]]
+            local t = {}
+            for i = 1, n do
+                table.insert(t, code)
+            end
+            return t
+        end, function() end)
+        --
+        revert()
+    end)
 end)
