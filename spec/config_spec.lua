@@ -98,4 +98,19 @@ describe("npge.config", function()
 
     it("can't call updateKeys",
         checkError('updateKeys()\n'))
+
+    it("serializes and parses the config", function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys {
+            general = {MIN_LENGTH=200},
+        }
+        local conf = config:save()
+        assert.equal(config.general.MIN_LENGTH, 200)
+        revert()
+        assert.equal(config.general.MIN_LENGTH, 100)
+        config:load(conf)
+        assert.equal(config.general.MIN_LENGTH, 200)
+        revert()
+        assert.equal(config.general.MIN_LENGTH, 100)
+    end)
 end)

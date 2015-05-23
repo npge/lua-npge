@@ -74,18 +74,7 @@ local function updateKeys(_, env)
     end
 end
 
-setmetatable(config, {
-    __index = {
-        updateKeys = updateKeys,
-        about = about,
-    }
-})
-
-local fileExists = require 'npge.util.fileExists'
-if fileExists('npge.conf') then
-    local conf_file = io.open('npge.conf')
-    local conf = conf_file:read('*a')
-    conf_file:close()
+local function loadConfig(_, conf)
     local sandbox = require 'npge.util.sandbox'
     local env = {}
     for section_name, section in pairs(config) do
@@ -102,6 +91,23 @@ if fileExists('npge.conf') then
     else
         error('Failed to read config: ' .. message)
     end
+end
+
+setmetatable(config, {
+    __index = {
+        updateKeys = updateKeys,
+        about = about,
+        save = require 'npge.util.configGenerator',
+        load = loadConfig,
+    }
+})
+
+local fileExists = require 'npge.util.fileExists'
+if fileExists('npge.conf') then
+    local conf_file = io.open('npge.conf')
+    local conf = conf_file:read('*a')
+    conf_file:close()
+    loadConfig(nil, conf)
 end
 
 return config
