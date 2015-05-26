@@ -10,8 +10,10 @@
 local workerCode = [[
 local config = require 'npge.config'
 config:load(%q)
-return pcall(function()
+return xpcall(function()
     %s
+end, function(message)
+    return message .. '\n' .. debug.traceback()
 end)
 ]]
 
