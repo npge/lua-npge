@@ -626,11 +626,29 @@ describe("npge.model.BlockSet", function()
                     blockset2:sequences())
         assert.same(blockset:blocks(),
                     blockset2:blocks())
+    end)
+
+    it("changes refcount", function()
+        local BlockSet = require 'npge.model.BlockSet'
+        local blockset
+        do
+            local s1 = model.Sequence("g1&c&c", "ATAT")
+            local s2 = model.Sequence("g2&c&c", "ATAT")
+            local f1 = model.Fragment(s1, 1, 2, 1)
+            local f2 = model.Fragment(s2, 3, 0, 1) -- parted
+            local b1 = model.Block({f1})
+            local b2 = model.Block({f2})
+            blockset = BlockSet({s1, s2}, {b1, b2})
+        end
         -- change reference counter
         local increase_count = true
         local ref = BlockSet.toRef(blockset, increase_count)
+        blockset = nil
+        collectgarbage()
+        collectgarbage()
+        collectgarbage()
         local decrease_count = true
         local blockset2 = BlockSet.fromRef(ref, decrease_count)
-        assert.equal(blockset, blockset2)
+        assert.equal(blockset2:size(), 2)
     end)
 end)
