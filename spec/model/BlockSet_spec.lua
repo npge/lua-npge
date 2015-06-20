@@ -614,10 +614,10 @@ describe("npge.model.BlockSet", function()
         local s1 = model.Sequence("g1&c&c", "ATAT")
         local s2 = model.Sequence("g2&c&c", "ATAT")
         local f1 = model.Fragment(s1, 1, 2, 1)
-        local f2 = model.Fragment(s1, 3, 0, 1) -- parted
+        local f2 = model.Fragment(s2, 3, 0, 1) -- parted
         local b1 = model.Block({f1})
-        local b1 = model.Block({f2})
-        local blockset = BlockSet({s1}, {b1})
+        local b2 = model.Block({f2})
+        local blockset = BlockSet({s1, s2}, {b1, b2})
         local ref = BlockSet.toRef(blockset)
         local blockset2 = BlockSet.fromRef(ref)
         assert.equal(blockset, blockset2)
