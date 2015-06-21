@@ -1,10 +1,8 @@
-local ansicolors = require 'ansicolors'
-
 return function(options)
   local handler = require 'busted.outputHandlers.utfTerminal'(options)
 
   handler.fileStart = function(file)
-    io.write('\n' .. ansicolors('%{cyan}' .. file.name) .. ':')
+    io.write('\n' .. file.name .. ':')
   end
 
   handler.testStart = function(element, parent, status, debug)
