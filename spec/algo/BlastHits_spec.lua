@@ -1579,7 +1579,7 @@ GTGATACGACTATACTAGTGC]])
         local hits = BlastHits(bs_with_seqs, bs_with_seqs)
         assert.truthy(#hits:blocks() > 0)
 -- example of output
-[[
+--[[
     Query  31492  GAGCGCAGCGGCCGTATTCTTCACTGCCCCACTGCCCCACTGCCCCACTGCCCCACT---  31548
                   |||||||||||||||||||||||||||||||||||||||||||||||||||||||||
     Sbjct  5309   GAGCGCAGCGGCCGTATTCTTCACTGCCCCACTGCCCCACTGCCCCACTGCCCCACTGCC  5250
