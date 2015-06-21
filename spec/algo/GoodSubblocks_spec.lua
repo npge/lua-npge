@@ -55,6 +55,14 @@ describe("npge.algo.GoodSubblocks", function()
 
     it("no crash on many passes of GoodSubblocks (threads)",
     function()
+        -- too slow
+        if package.loaded.luacov then
+            return
+        end
+        if os.getenv('UNDER_VALGRIND') then
+            return
+        end
+        --
         local npge = require 'npge'
         local algo = require 'npge.algo'
         local config = require 'npge.config'
