@@ -52,4 +52,27 @@ describe("npge.algo.GoodSubblocks", function()
         assert.truthy(#good_blocks:blocks() >= 1)
         assert.truthy(isGood(good_blocks:blocks()[1]))
     end)
+
+    it("no crash on many passes of GoodSubblocks (threads)",
+    function()
+        local npge = require 'npge'
+        local algo = require 'npge.algo'
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            general = {MIN_IDENTITY = 0.5},
+            util = {WORKERS = 10},
+        })
+        local bs = dofile 'spec/sample_pangenome.lua'
+        bs = npge.model.BlockSet(bs:sequences(), {})
+        bs = algo.PrimaryHits(bs)
+        local IDENTITIES = {0.5, 0.55, 0.6, 0.65, 0.7, 0.75,
+            0.8, 0.85, 0.9, 0.95, 0.97, 0.99}
+        for _, identity in ipairs(IDENTITIES) do
+            config:updateKeys({
+                general = {MIN_IDENTITY = identity},
+            })
+            bs = npge.algo.Workers.GoodSubblocks(bs)
+        end
+        revert()
+    end)
 end)
