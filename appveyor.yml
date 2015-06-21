@@ -32,7 +32,7 @@ matrix:
       LJ_VER: 2.1
 
 cache:
-  - c:\lua -> appveyor.yml
+  #- c:\lua -> appveyor.yml
   - c:\external -> appveyor.yml
   - c:\blast -> appveyor.yml
 
