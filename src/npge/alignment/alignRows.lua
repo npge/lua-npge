@@ -4,7 +4,7 @@
 
 local alignRows
 
-local compress = function(rows)
+local function compress(rows)
     -- filter out empty rows
     -- returns new rows, decompression_info
     local new_rows = {}
@@ -20,7 +20,7 @@ local compress = function(rows)
     return new_rows, decompression_info
 end
 
-local decompress = function(rows, decompression_info)
+local function decompress(rows, decompression_info)
     -- returns old rows
     local old_rows = {}
     local length = #rows[1]
@@ -35,7 +35,7 @@ local decompress = function(rows, decompression_info)
     return old_rows
 end
 
-local addGaps = function(rows)
+local function addGaps(rows)
     assert(#rows >= 1)
     local max_length = 0
     for _, row in ipairs(rows) do
@@ -49,7 +49,7 @@ local addGaps = function(rows)
     return result
 end
 
-local addGapsForBetterIdentity = function(rows)
+local function addGapsForBetterIdentity(rows)
     local alignment = require 'npge.alignment'
     local var1 = addGaps(rows)
     local cr = alignment.complementRows
@@ -62,7 +62,7 @@ local addGapsForBetterIdentity = function(rows)
     end
 end
 
-local alignRemaining = function(rows)
+local function alignRemaining(rows)
     local rows1, decompression_info = compress(rows)
     if #rows1 == #rows or #rows1 == 0 then
         return addGapsForBetterIdentity(rows)
@@ -72,7 +72,7 @@ local alignRemaining = function(rows)
     end
 end
 
-local emptyRows = function(n)
+local function emptyRows(n)
     local rows = {}
     for i = 1, n do
         table.insert(rows, '')
@@ -80,7 +80,7 @@ local emptyRows = function(n)
     return rows
 end
 
-local strip = function(rows, func, only_left)
+local function strip(rows, func, only_left)
     local alignment = require 'npge.alignment'
     local left, middle = func(rows)
     local right
