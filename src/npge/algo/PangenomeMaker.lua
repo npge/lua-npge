@@ -29,8 +29,8 @@ return function(bs, silent)
         bs1 = algo.BlocksWithoutOverlaps(bs1, extended)
         -- print '.'
         if not silent then
-            io.write('.')
-            io.flush()
+            io.stderr:write('.')
+            io.stderr:flush()
         end
     end
     -- prettify
