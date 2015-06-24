@@ -77,8 +77,9 @@ void alignLeft(Aln* aln);
 
 int prefixLength(const char** rows, int nrows, int len);
 
-bool findAnchor(int* result, int nrows, const char** rows,
-        const int* lens, int ANCHOR, int MIN_LENGTH);
+bool findAnchor(int* result, int nrows,
+        const char** rows, const int* lens,
+        int& ANCHOR, int MIN_LENGTH, int MIN_ANCHOR);
 
 void refineAlignment(Strings& aligned);
 

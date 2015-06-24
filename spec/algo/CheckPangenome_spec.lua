@@ -405,9 +405,11 @@ GAACGATAACATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
             return
         end
         local bad = dofile('spec/sample_pangenome.lua')
-        local good = dofile('spec/sample_pangenome2.lua')
+        local bad2 = dofile('spec/sample_pangenome2.lua')
+        local good = dofile('spec/sample_pangenome3.lua')
         local algo = require 'npge.algo'
         assert.falsy(algo.CheckPangenome(bad))
+        assert.falsy(algo.CheckPangenome(bad2))
         assert.truthy(algo.CheckPangenome(good))
     end)
 end)

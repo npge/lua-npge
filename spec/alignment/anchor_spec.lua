@@ -187,11 +187,67 @@ describe("npge.alignment.anchor", function()
         local anchor = require 'npge.alignment.anchor'
         local left, middle, right = anchor({
             'ATTATTCATTATTC',
-            'GGGGGGGATTACCT',
+            'GGGGGGGCGCGCCT',
         })
         assert.falsy(left)
         assert.falsy(middle)
         assert.falsy(right)
+        --
+        revert()
+    end)
+
+    it("finds anchor (none control)",
+    function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            alignment = {ANCHOR = 7},
+        })
+        --
+        local anchor = require 'npge.alignment.anchor'
+        local left, middle, right = anchor({
+            'CGCGTTCATTATTC',
+            'GGGGGGGATTACCT',
+        })
+        assert.same(left, {
+            'CGCGTTC',
+            'GGGGGGG',
+        })
+        assert.same(middle, {
+            'ATTA',
+            'ATTA',
+        })
+        assert.same(right, {
+            'TTC',
+            'CCT',
+        })
+        --
+        revert()
+    end)
+
+    it("finds anchor (none control 2)",
+    function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            alignment = {ANCHOR = 7},
+        })
+        --
+        local anchor = require 'npge.alignment.anchor'
+        local left, middle, right = anchor({
+            'ATTATTCTAATTTC',
+            'GGGGGGGATTATTC',
+        })
+        assert.same(left, {
+            '',
+            'GGGGGGG',
+        })
+        assert.same(middle, {
+            'ATTATTC',
+            'ATTATTC',
+        })
+        assert.same(right, {
+            'TAATTTC',
+            '',
+        })
         --
         revert()
     end)

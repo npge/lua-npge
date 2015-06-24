@@ -402,9 +402,9 @@ bool findAnchorImpl(int* result, T& dict,
 
 // returns if the anchor was found
 // result is int[nrows], list of anchor starts
-bool findAnchor(int* result, int nrows, const char** rows,
-        const int* lens, int ANCHOR, int MIN_LENGTH) {
-    int max_len = maxLength(nrows, lens);
+static bool tryFindAnchor(int* result, int nrows,
+        const char** rows, const int* lens,
+        int ANCHOR, int MIN_LENGTH, int max_len) {
     int last = max_len - ANCHOR;
     if (last > MIN_LENGTH) {
         last = MIN_LENGTH;
@@ -418,6 +418,24 @@ bool findAnchor(int* result, int nrows, const char** rows,
         return findAnchorImpl(result, dict, nrows, rows,
                 lens, ANCHOR, last);
     }
+}
+
+// returns if the anchor was found
+// result 1 is int[nrows], list of anchor starts
+// result 2 is ANCHOR (it is modified)
+bool findAnchor(int* result, int nrows,
+        const char** rows, const int* lens,
+        int& ANCHOR, int MIN_LENGTH, int MIN_ANCHOR) {
+    int max_len = maxLength(nrows, lens);
+    do {
+        bool ok = tryFindAnchor(result, nrows, rows, lens,
+                    ANCHOR, MIN_LENGTH, max_len);
+        if (ok) {
+            return true;
+        }
+        ANCHOR -= 1;
+    } while (ANCHOR >= MIN_ANCHOR);
+    return false;
 }
 
 }

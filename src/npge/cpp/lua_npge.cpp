@@ -1631,6 +1631,17 @@ static int getAnchor(lua_State* L) {
     return ANCHOR;
 }
 
+// return require("npge.config").alignment.GAP_CHECK
+static int getGapCheck(lua_State* L) {
+    lua_getglobal(L, "require");
+    lua_pushliteral(L, "npge.config");
+    lua_call(L, 1, 1);
+    lua_getfield(L, -1, "alignment");
+    lua_getfield(L, -1, "GAP_CHECK");
+    int ANCHOR = luaL_checkinteger(L, -1);
+    return ANCHOR;
+}
+
 // return require("npge.config").general.MIN_LENGTH
 static int getMinLength(lua_State* L) {
     lua_getglobal(L, "require");
@@ -1658,11 +1669,12 @@ static int lua_anchor(lua_State *L) {
     int* lens;
     const char** rows = toRows(L, 1, nrows, lens);
     int ANCHOR = getAnchor(L);
+    int MIN_ANCHOR = getGapCheck(L);
     int MIN_LENGTH = getMinLength(L);
     // find anchor
     int* anchor = newLuaArray<int>(L, nrows);
     bool ok = findAnchor(anchor, nrows, rows, lens,
-                         ANCHOR, MIN_LENGTH);
+                         ANCHOR, MIN_LENGTH, MIN_ANCHOR);
     // results
     if (!ok) {
         lua_pushnil(L);
