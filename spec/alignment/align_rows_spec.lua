@@ -294,4 +294,36 @@ describe("npge.alignment.alignRows", function()
         --
         revert()
     end)
+
+    it("finds shorter anchor", function()
+        local f = require 'npge.alignment.alignRows'
+        local rows1 = f({
+            "GAATCTAGTCCATCCAATTCTGGGC",
+            "GAATCTAGTCCAATTCCGGGC",
+            "GAGAATCTAGTCCATTTAATCCCGGGC",
+            "AAATTTAGTCTAATTCTAGAC",
+            "GAATCTAGTCTGATTCCAGGC",
+            "GAATCTAGTCCATCCAATTCCGGGG",
+            "GAATCTAGTCCATCCAATTCTGGAC",
+        })
+        local identity = require 'npge.alignment.identity'
+        assert.truthy(identity(rows1) > 0.4)
+        -- can be even better
+--[[
+>1
+GA--ATCTAGTCCATCCAATTCTGGGC
+>2
+GA--ATCTAGTCCA----ATTCCGGGC
+>3
+GAGAATCTAGTCCATTTAATCCCGGGC
+>4
+AA--ATTTAGTC----TAATTCTAGAC
+>5
+GA--ATCTAGTC----TGATTCCAGGC
+>6
+GA--ATCTAGTCCATCCAATTCCGGGG
+>7
+GA--ATCTAGTCCATCCAATTCTGGAC
+]]
+    end)
 end)
