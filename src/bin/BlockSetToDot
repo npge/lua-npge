@@ -1,0 +1,22 @@
+#!/usr/bin/env lua
+
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
+local npge = require 'npge'
+
+local fname = assert(arg[1])
+local bs = npge.io.ShortForm.decode(io.lines(fname))
+
+-- filter only stem
+local blocks = {}
+for block, name in bs:iterBlocks() do
+    if name:match('^s') then
+        blocks[name] = block
+    end
+end
+
+local bs = npge.model.BlockSet(bs:sequences(), blocks)
+
+print(npge.io.ToDot(bs))
