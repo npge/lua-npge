@@ -17,7 +17,8 @@ local function iteration(block, blockset)
                 table.insert(result_better, b)
             else
                 for _, b2 in ipairs(good) do
-                    assert(b2 < b)
+                    -- it isn't guaranteed that b2 < b
+                    -- because of gaps
                     table.insert(stack, b2)
                 end
                 if #good >= 1 and not result_good then
