@@ -155,16 +155,12 @@ int unwindRow(char* result, const char* row, int row_size,
 bool isColumnGood(const char** rows, int nrows, int i) {
     assert(nrows > 0);
     char first = rows[0][i];
-    if (first == '-' || first == 'N') {
-        return false;
-    }
+    bool ok = true;
     for (int irow = 0; irow < nrows; irow++) {
         char letter = rows[irow][i];
-        if (letter != first) {
-            return false;
-        }
+        ok &= (letter == first);
     }
-    return true;
+    return ok && first != '-' && first != 'N';
 }
 
 double identity(const char** rows, int nrows,
