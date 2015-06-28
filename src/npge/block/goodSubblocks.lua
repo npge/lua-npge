@@ -53,7 +53,7 @@ local function goodSubblocks(block)
         table.insert(rows, block:text(fragment))
     end
     -- find continous groups of identical columns
-    local goodColumns = require 'npge.cpp'.func.goodColumns
+    local goodColumns = require 'npge.alignment.goodColumns'
     local goodSlices = require 'npge.alignment.goodSlices'
     local slice = require 'npge.block.slice'
     local good_col = goodColumns(rows)

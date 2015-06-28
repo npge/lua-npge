@@ -131,6 +131,7 @@ build = {
         ['npge.alignment.toAtgcn'] = 'src/npge/alignment/toAtgcn.lua',
         ['npge.alignment.unwindRow'] = 'src/npge/alignment/unwindRow.lua',
         ['npge.alignment.goodSlices'] = 'src/npge/alignment/goodSlices.lua',
+        ['npge.alignment.goodColumns'] = 'src/npge/alignment/goodColumns.lua',
         ['npge.alignment.minIdentical'] = 'src/npge/alignment/minIdentical.lua',
         ['npge.algo'] = 'src/npge/algo/init.lua',
         ['npge.algo.AddGoodBlast'] = 'src/npge/algo/AddGoodBlast.lua',

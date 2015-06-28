@@ -2,9 +2,9 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("npge.cpp.func.goodColumns", function()
+describe("npge.alignment.goodColumns", function()
     it("gets type of alignment columns", function()
-        local goodColumns = require 'npge.cpp'.func.goodColumns
+        local goodColumns = require 'npge.alignment.goodColumns'
         assert.same(goodColumns({
             "NAAATTTG--GG",
             "NA-ATTTG--GG",
@@ -18,14 +18,14 @@ describe("npge.cpp.func.goodColumns", function()
     end)
 
     it("returns empty table if input is empty", function()
-        local goodColumns = require 'npge.cpp'.func.goodColumns
+        local goodColumns = require 'npge.alignment.goodColumns'
         assert.same(goodColumns({}), {})
         assert.same(goodColumns({""}), {})
         assert.same(goodColumns({"", ""}), {})
     end)
 
     it("throws for invalid input", function()
-        local goodColumns = require 'npge.cpp'.func.goodColumns
+        local goodColumns = require 'npge.alignment.goodColumns'
         assert.has_error(function()
             goodColumns({
                 "AAT-AG",
