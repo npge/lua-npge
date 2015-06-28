@@ -3,10 +3,10 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <cassert>
 #include <boost/foreach.hpp>
 
 #include "npge.hpp"
+#include "throw_assert.hpp"
 
 namespace lnpge {
 
@@ -114,7 +114,7 @@ public:
             if (curr_good) {
                 if (prev_good) {
                     // increase previous slice
-                    assert(slices0.size() > 0);
+                    ASSERT_GT(slices0.size(), 0);
                     slices0.back().second += 1;
                 } else {
                     // add new slice
