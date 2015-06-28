@@ -1447,12 +1447,9 @@ int lua_ShortForm_patch(lua_State *L) {
 
 // arguments:
 // 1. Lua table with rows
-// 2. start position (optional)
-// 3. stop position (optional)
 // returns array of booleans. True for good column
 // good column = identical and gapless
 int lua_good_columns(lua_State *L) {
-    int args = lua_gettop(L);
     luaL_checktype(L, 1, LUA_TTABLE);
     int nrows = npge_rawlen(L, 1);
     if (nrows == 0) {
@@ -1468,16 +1465,6 @@ int lua_good_columns(lua_State *L) {
     // start and stop
     int start = 0;
     int stop = length - 1;
-    if (args >= 2) {
-        start = luaL_checknumber(L, 2);
-        luaL_argcheck(L, start >= 0, 2, "start >= 0");
-    }
-    if (args >= 3) {
-        stop = luaL_checknumber(L, 3);
-        luaL_argcheck(L, start <= stop, 3, "start <= stop");
-        luaL_argcheck(L, stop <= length - 1, 3,
-                "stop <= length - 1");
-    }
     // table of booleans
     lua_createtable(L, stop - start + 1, 0);
     for (int i = start; i <= stop; i++) {

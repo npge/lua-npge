@@ -24,20 +24,6 @@ describe("npge.cpp.func.goodColumns", function()
         assert.same(goodColumns({"", ""}), {})
     end)
 
-    it("can return statuses for slice", function()
-        local goodColumns = require 'npge.cpp'.func.goodColumns
-        assert.same(goodColumns({
-            "AAT-AG",
-            "ACTGTG",
-            "ACTG-G",
-        }, 1, 3), {false, true, false})
-        assert.same(goodColumns({
-            "AAT-AG",
-            "ACTGTG",
-            "ACTG-G",
-        }, 1), {false, true, false, false, true})
-    end)
-
     it("throws for invalid input", function()
         local goodColumns = require 'npge.cpp'.func.goodColumns
         assert.has_error(function()
@@ -51,18 +37,6 @@ describe("npge.cpp.func.goodColumns", function()
                 "AAT-AG",
                 "",
             })
-        end)
-        assert.has_error(function()
-            goodColumns({
-                "AAT-AG",
-                "ACTG-G",
-            }, -1, 2)
-        end)
-        assert.has_error(function()
-            goodColumns({
-                "AAT-AG",
-                "ACTG-G",
-            }, 0, 6)
         end)
     end)
 end)
