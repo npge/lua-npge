@@ -16,43 +16,54 @@ static int ssLength(const StartStop& ss) {
 
 class GoodSlicer {
 private:
-    std::vector<int> good_sum_; // number of good columns < i
-    int min_length_;
-    int min_end_;
-    int min_ident_;
+    std::vector<int> score_;
+    std::vector<int> score_sum_; // prefix sum
+    int frame_length_;
+    int end_length_;
+    int frame_score_;
+    int end_score_;
     int block_length_;
 
 public:
-    GoodSlicer(const Columns& columns, int min_length,
-               int min_end, int min_ident):
-        min_length_(min_length),
-        min_end_(min_end),
-        min_ident_(min_ident) {
-        block_length_ = columns.size();
-        good_sum_.resize(block_length_ + 1);
-        good_sum_[0] = 0;
+    GoodSlicer(const Scores& score,
+               int frame_length, int end_length,
+               int min_identity):
+        score_(score),
+        frame_length_(frame_length),
+        end_length_(end_length),
+        frame_score_(frame_length * min_identity),
+        end_score_(end_length * min_identity) {
+        block_length_ = score.size();
+        score_sum_.resize(block_length_ + 1);
+        score_sum_[0] = 0;
         for (int i = 0; i < block_length_; i++) {
-            good_sum_[i + 1] = good_sum_[i] + int(columns[i]);
+            int value = score[i];
+            // for gap columns, multiply score by min_ident
+            value = (value == MAX_COLUMN_SCORE) ? value :
+                (value * min_identity / MAX_COLUMN_SCORE);
+            score_sum_[i + 1] = score_sum_[i] + value;
         }
     }
 
-    int countGood(int start, int stop) const {
-        return good_sum_[stop + 1] - good_sum_[start - 1 + 1];
+    int countScore(int start, int stop) const {
+        return score_sum_[stop + 1] - score_sum_[start - 1 + 1];
     }
 
     bool goodSlice(int start) const {
-        int stop = start + min_length_ - 1;
-        return countGood(start, stop) >= min_ident_;
+        int stop = start + frame_length_ - 1;
+        return countScore(start, stop) >= frame_score_;
     }
 
     bool goodLeftEnd(int start) const {
-        int stop = start + min_end_ - 1;
-        return countGood(start, stop) == min_end_;
+        int stop = start + end_length_ - 1;
+        return score_[start] == MAX_COLUMN_SCORE &&
+               countScore(start, stop) >= end_score_;
     }
 
     bool goodRightEnd(int stop) const {
-        int start = stop - min_end_ + 1;
-        return countGood(start, stop) == min_end_;
+        int start = stop - end_length_ + 1;
+        return score_[stop] == MAX_COLUMN_SCORE &&
+               countScore(start, stop) >= end_score_;
     }
 
     bool overlaps(const StartStop& self,
@@ -90,18 +101,18 @@ public:
         int start1 = self.first;
         int stop1 = self.second;
         while (!goodLeftEnd(start1) &&
-                start1 + min_end_ - 1 < stop1) {
+                start1 + end_length_ - 1 < stop1) {
             start1 = start1 + 1;
         }
         while (!goodRightEnd(stop1) &&
-                start1 + min_end_ - 1 < stop1) {
+                start1 + end_length_ - 1 < stop1) {
             stop1 = stop1 - 1;
         }
         return StartStop(start1, stop1);
     }
 
     bool valid(const StartStop& self) const {
-        return ssLength(self) >= min_length_ &&
+        return ssLength(self) >= frame_length_ &&
             self.first >= 0 && self.second < block_length_;
     }
 
@@ -109,7 +120,8 @@ public:
     Coordinates joinedSlices() const {
         Coordinates slices0;
         bool prev_good = false;
-        for (int i = 0; i <= block_length_ - min_length_; i++) {
+        int max_i = block_length_ - frame_length_;
+        for (int i = 0; i <= max_i; i++) {
             bool curr_good = goodSlice(i);
             if (curr_good) {
                 if (prev_good) {
@@ -118,7 +130,7 @@ public:
                     slices0.back().second += 1;
                 } else {
                     // add new slice
-                    int stop = i + min_length_ - 1;
+                    int stop = i + frame_length_ - 1;
                     slices0.push_back(StartStop(i, stop));
                 }
             }
@@ -163,13 +175,11 @@ public:
     }
 
     bool parametersAreCorrect() const {
-        if (min_length_ > block_length_ || min_length_ <= 0) {
+        if (frame_length_ > block_length_ ||
+                frame_length_ <= 0) {
             return false;
         }
-        if (min_end_ > min_length_ || min_end_ < 0) {
-            return false;
-        }
-        if (min_ident_ > min_length_ || min_ident_ < 0) {
+        if (end_length_ > frame_length_ || end_length_ < 0) {
             return false;
         }
         return true;
@@ -183,7 +193,7 @@ public:
         Coordinates result;
         while (!slices.empty()) {
             StartStop selected = maxSlice(slices);
-            if (ssLength(selected) >= min_length_) {
+            if (ssLength(selected) >= frame_length_) {
                 result.push_back(selected);
                 slices = excludeSlice(slices, selected);
             }
@@ -192,10 +202,12 @@ public:
     }
 };
 
-Coordinates goodSlices(const Columns& columns, int min_length,
-                       int min_end, int min_ident) {
-    GoodSlicer slicer(columns, min_length,
-                      min_end, min_ident);
+Coordinates goodSlices(const Scores& score,
+                       int frame_length, int end_length,
+                       int min_identity) {
+    GoodSlicer slicer(score,
+                      frame_length, end_length,
+                      min_identity);
     return slicer.calculate();
 }
 

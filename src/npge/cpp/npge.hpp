@@ -50,12 +50,16 @@ void consensus(char* dst, const char** rows,
 int ShortForm_diff(char* dst, const char* consensus,
                    const char* text, int length);
 
+const int MAX_COLUMN_SCORE = 100;
+
 typedef std::pair<int, int> StartStop; // start, stop
 typedef std::vector<StartStop> Coordinates;
-typedef std::vector<bool> Columns;
+typedef std::vector<int> Scores;
 
-Coordinates goodSlices(const Columns& columns, int min_length,
-                       int min_end, int min_ident);
+Scores goodColumns(const char** rows, int nrows, int length);
+Coordinates goodSlices(const Scores& score,
+                       int frame_length, int end_length,
+                       int min_identity);
 
 // alignment
 

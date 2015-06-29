@@ -16,6 +16,6 @@
 return function(good_col, min_length, min_end, min_identity)
     local impl = require 'npge.cpp'.func.goodSlices
     local minIdentical = require 'npge.alignment.minIdentical'
-    local min_gc = minIdentical(min_length, min_identity)
-    return impl(good_col, min_length, min_end, min_gc)
+    local ident = minIdentical(min_identity)
+    return impl(good_col, min_length, min_end, ident)
 end

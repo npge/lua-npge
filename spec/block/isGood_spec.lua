@@ -171,6 +171,35 @@ describe("npge.block.isGood", function()
         local length = 10000
         local s = Sequence('s', string.rep('A', length))
         local row1 = string.rep('A', length)
+        local row2 = 'A' .. string.rep('-', min_end - 1) ..
+            string.rep('A', length - min_end)
+        local Fragment = require 'npge.model.Fragment'
+        local f1 = Fragment(s, 0, length - 1, 1)
+        local f2 = Fragment(s, 0, length - (min_end - 1) - 1, 1)
+        local Block = require 'npge.model.Block'
+        local block = Block({
+            {f1, row1},
+            {f2, row2},
+        })
+        -- check that identity of the block is enough
+        local min_ident = config.general.MIN_IDENTITY
+        local identity = require 'npge.block.identity'
+        if identity(block) >= min_ident then
+            local isGood = require 'npge.block.isGood'
+            assert.falsy(isGood(block))
+        end
+    end)
+
+    it("checks if a block is bad (bad left end, control)",
+    function()
+        -- insert a gap in the column of end, which
+        -- is the nearest to the middle of block
+        local Sequence = require 'npge.model.Sequence'
+        local config = require 'npge.config'
+        local min_end = config.general.MIN_END
+        local length = 10000
+        local s = Sequence('s', string.rep('A', length))
+        local row1 = string.rep('A', length)
         local row2 = string.rep('A', min_end - 1) ..
             '-' .. string.rep('A', length - min_end)
         local Fragment = require 'npge.model.Fragment'
@@ -186,7 +215,7 @@ describe("npge.block.isGood", function()
         local identity = require 'npge.block.identity'
         if identity(block) >= min_ident then
             local isGood = require 'npge.block.isGood'
-            assert.falsy(isGood(block))
+            assert.truthy(isGood(block))
         end
     end)
 
@@ -227,6 +256,35 @@ describe("npge.block.isGood", function()
         local s = Sequence('s', string.rep('A', length))
         local row1 = string.rep('A', length)
         local row2 = string.rep('A', length - min_end) ..
+            string.rep('-', min_end - 1) .. 'A'
+        local Fragment = require 'npge.model.Fragment'
+        local f1 = Fragment(s, 0, length - 1, 1)
+        local f2 = Fragment(s, 0, length - (min_end-1) - 1, 1)
+        local Block = require 'npge.model.Block'
+        local block = Block({
+            {f1, row1},
+            {f2, row2},
+        })
+        -- check that identity of the block is enough
+        local min_ident = config.general.MIN_IDENTITY
+        local identity = require 'npge.block.identity'
+        if identity(block) >= min_ident then
+            local isGood = require 'npge.block.isGood'
+            assert.falsy(isGood(block))
+        end
+    end)
+
+    it("checks if a block is bad (bad right end, control)",
+    function()
+        -- insert a gap in the column of end, which
+        -- is the nearest to the middle of block
+        local Sequence = require 'npge.model.Sequence'
+        local config = require 'npge.config'
+        local min_end = config.general.MIN_END
+        local length = 10000
+        local s = Sequence('s', string.rep('A', length))
+        local row1 = string.rep('A', length)
+        local row2 = string.rep('A', length - min_end) ..
             '-' .. string.rep('A', min_end - 1)
         local Fragment = require 'npge.model.Fragment'
         local f1 = Fragment(s, 0, length - 1, 1)
@@ -241,7 +299,7 @@ describe("npge.block.isGood", function()
         local identity = require 'npge.block.identity'
         if identity(block) >= min_ident then
             local isGood = require 'npge.block.isGood'
-            assert.falsy(isGood(block))
+            assert.truthy(isGood(block))
         end
     end)
 

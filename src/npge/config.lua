@@ -10,7 +10,7 @@ local config = {
         MIN_LENGTH = {100,
         "Minimum acceptable length of fragment (b.p.)"},
 
-        MIN_END = {3,
+        MIN_END = {10,
         "Minimum number of end good columns"},
     },
 

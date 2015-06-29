@@ -48,7 +48,7 @@ describe("npge.algo.CheckPangenome", function()
             general = {
                 MIN_LENGTH = 100,
                 MIN_IDENTITY = 0.9,
-                MIN_END = 3,
+                MIN_END = 10,
             },
         })
     end)
@@ -406,10 +406,12 @@ GAACGATAACATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
         end
         local bad = dofile('spec/sample_pangenome.lua')
         local bad2 = dofile('spec/sample_pangenome2.lua')
-        local good = dofile('spec/sample_pangenome3.lua')
+        local bad3 = dofile('spec/sample_pangenome3.lua')
+        local good = dofile('spec/sample_pangenome4.lua')
         local algo = require 'npge.algo'
         assert.falsy(algo.CheckPangenome(bad))
         assert.falsy(algo.CheckPangenome(bad2))
+        assert.falsy(algo.CheckPangenome(bad3))
         assert.truthy(algo.CheckPangenome(good))
     end)
 end)

@@ -39,6 +39,7 @@ build = {
                 "src/npge/cpp/strings.cpp",
                 "src/npge/cpp/alignment.cpp",
                 "src/npge/cpp/goodSlices.cpp",
+                "src/npge/cpp/goodColumns.cpp",
                 "src/npge/cpp/segmentTree.cpp",
                 "src/npge/cpp/refineAlignment.cpp",
             },

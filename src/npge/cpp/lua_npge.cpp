@@ -1447,8 +1447,7 @@ int lua_ShortForm_patch(lua_State *L) {
 
 // arguments:
 // 1. Lua table with rows
-// returns array of booleans. True for good column
-// good column = identical and gapless
+// returns array of integers: 0-100 (100 is good)
 int lua_good_columns(lua_State *L) {
     luaL_checktype(L, 1, LUA_TTABLE);
     int nrows = npge_rawlen(L, 1);
@@ -1462,44 +1461,42 @@ int lua_good_columns(lua_State *L) {
         lua_newtable(L);
         return 1;
     }
-    // start and stop
-    int start = 0;
-    int stop = length - 1;
-    // table of booleans
-    lua_createtable(L, stop - start + 1, 0);
-    for (int i = start; i <= stop; i++) {
-        bool good = isColumnGood(rows, nrows, i);
-        lua_pushboolean(L, good);
-        lua_rawseti(L, -2, i - start + 1);
+    Scores scores = goodColumns(rows, nrows, length);
+    // table of integers
+    lua_createtable(L, length, 0);
+    for (int i = 0; i < length; i++) {
+        lua_pushinteger(L, scores[i]);
+        lua_rawseti(L, -2, i + 1);
     }
     return 1;
 }
 
 // arguments:
-// 1. good_col, Lua table of booleans
-// 2. min_length (integer)
-// 3. min_end (integer)
-// 4. min_identity (integer)
+// 1. scores, Lua table of integers
+// 2. frame_length (integer)
+// 3. end_length (integer)
+// 4. min_identity (integer) 0-100
 // returns array of slice. Each slice is {start, stop}.
 int lua_goodSlices(lua_State *L) {
-    int args = lua_gettop(L);
     luaL_checktype(L, 1, LUA_TTABLE);
     int block_length = npge_rawlen(L, 1);
     if (block_length == 0) {
         lua_newtable(L);
         return 1;
     }
-    Columns columns(block_length);
+    int frame_length = luaL_checkinteger(L, 2);
+    int end_length = luaL_checkinteger(L, 3);
+    int min_identity = luaL_checkinteger(L, 4);
+    Scores scores(block_length);
     for (int i = 0; i < block_length; i++) {
         lua_rawgeti(L, 1, i + 1);
-        columns[i] = lua_toboolean(L, -1);
+        // not luaL_checkinteger not to throw (vector scores)
+        scores[i] = lua_tointeger(L, -1);
         lua_pop(L, 1);
     }
-    int min_length = lua_tointeger(L, 2);
-    int min_end = lua_tointeger(L, 3);
-    int min_ident = lua_tointeger(L, 4);
-    Coordinates slices = goodSlices(columns, min_length,
-            min_end, min_ident);
+    Coordinates slices = goodSlices(scores,
+            frame_length, end_length,
+            min_identity);
     lua_createtable(L, slices.size(), 0); // slices
     for (int i = 0; i < slices.size(); i++) {
         const StartStop& slice = slices[i];
@@ -1791,6 +1788,8 @@ int luaopen_npge_cpp(lua_State *L) {
     //
     lua_newtable(L); // npge.cpp.alignment
     npge_setfuncs(L, alignment_functions);
+    lua_pushinteger(L, MAX_COLUMN_SCORE);
+    lua_setfield(L, -2, "MAX_COLUMN_SCORE");
     lua_setfield(L, -2, "alignment");
     return 1;
 }

@@ -517,4 +517,45 @@ CTTTACAATTATACCGTTTTCGTATAAGTGCTGCAC]]
         --
         revert()
     end)
+
+    it("extracts good parts (real example, cuts bad #ends)",
+    function()
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            general = {
+                MIN_LENGTH = 100,
+                MIN_END = 10,
+                MIN_IDENTITY = 0.7,
+            },
+        })
+        --
+        local t1 = [[
+AAAAGTATTCTGCAGCGCCAAAGCCTTTATTATGATTATATCGCGGGATAGAGTAATTGG
+TAACTCGTCAGGCTCATAATCTGAATGTTGTAGGTTCGAATCTTACTCCCGCCAAATGTT
+ATAAGTCGTGTTTGTTAAACAGCAGGATGTATAAAGTAGTGCATCTATCACTTGGTCGTT
+TCCGCGCGCCCTTGATCTTAGAAAAT]]
+        local t2 = [[
+AAAAAAAGAATATTTTGCAGTTGAATAAACTCTATTATGCTCGCGGGATAGAGTAATTGG
+TAACTCGTCAGGCTCATAATCTGAATGTTGTAGGTTCAAATCCTATTCCCGCCAAATGTT
+ATAAGT-GTTTTTGGTAAATAGTGGAATCTAGAAAGCAGTGCATCTATTACTTGCTCGTT
+TTTGTGCGCTTTTTCTTTTCTCAAAT]]
+        local model = require 'npge.model'
+        local s1 = model.Sequence('s1', t1)
+        local s2 = model.Sequence('s2', t2)
+        local f1 = model.Fragment(s1, 0, s1:length() - 1, 1)
+        local f2 = model.Fragment(s2, 0, s2:length() - 1, 1)
+        local block = model.Block({{f1, t1}, {f2, t2}})
+        local goodSubblocks = require 'npge.block.goodSubblocks'
+        local subblocks = goodSubblocks(block)
+        --
+        assert.equal(#subblocks, 1)
+        local subblock = subblocks[1]
+        assert.equal(subblock:length(), 153)
+        local f = subblock:fragments()[1]
+        local t = subblock:text(f)
+        assert.equal(t:sub(1, 7), 'TCGCGGG')
+        assert.equal(t:sub(-2), 'TT')
+        --
+        revert()
+    end)
 end)

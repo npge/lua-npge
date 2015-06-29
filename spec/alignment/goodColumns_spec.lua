@@ -8,13 +8,21 @@ describe("npge.alignment.goodColumns", function()
         assert.same(goodColumns({
             "NAAATTTG--GG",
             "NA-ATTTG--GG",
-        }), {false, true, false, true, true, true, true, true,
-             false, false, true, true})
+        }), {0, 100, 0, 100, 100, 100, 100, 100,
+             0, 0, 100, 100})
         assert.same(goodColumns({
             "AAT-AG",
             "ACTGTG",
             "ACTG-G",
-        }), {true, false, true, false, false, true})
+        }), {100, 0, 100, 0, 0, 100})
+        assert.same(goodColumns({
+            "AAATTT",
+            "A--TTT",
+        }), {100, 20, 20, 100, 100, 100})
+        assert.same(goodColumns({
+            "AAAAAAAA",
+            "A------A",
+        }), {100, 53, 53, 53, 53, 53, 53, 100})
     end)
 
     it("returns empty table if input is empty", function()

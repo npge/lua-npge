@@ -5,17 +5,23 @@
 describe("npge.alignment.goodSlices", function()
     it("finds good slices", function()
         local goodSlices = require 'npge.alignment.goodSlices'
-        assert.same(goodSlices({true, false, true, true, true,
-            false, false, false, false, true, true, true},
+        assert.same(goodSlices({100, 0, 100, 100, 100,
+            0, 0, 0, 0, 100, 100, 100},
             3, 1, 0.6), {
                 {0, 4},
                 {9, 11},
             })
-        assert.same(goodSlices({true, false, true, true, true,
-            false, false, false, false, true, true, true, true},
+        assert.same(goodSlices({100, 0, 100, 100, 100,
+            0, 0, 0, 0, 100, 100, 100, 100},
             3, 2, 0.6), {
                 {9, 12},
                 {2, 4},
+            })
+        assert.same(goodSlices({100, 0, 100, 100, 100,
+            0, 0, 0, 0, 100, 100, 100, 100},
+            3, 3, 0.6), {
+                {0, 4},
+                {9, 12},
             })
     end)
 
@@ -23,7 +29,8 @@ describe("npge.alignment.goodSlices", function()
         row = row:gsub('%s', '')
         local array = {}
         for i = 1, #row do
-            table.insert(array, row:sub(i, i) ~= '-')
+            local score = (row:sub(i, i) ~= '-') and 100 or 0
+            table.insert(array, score)
         end
         return array
     end
