@@ -30,10 +30,6 @@ local function removeMostDistant(block)
 end
 
 local function goodSubblocks(block)
-    local isGood = require 'npge.block.isGood'
-    if isGood(block) then
-        return {block}
-    end
     -- try to find subblocks of same size as original block
     local config = require 'npge.config'
     local min_length = config.general.MIN_LENGTH
@@ -63,7 +59,6 @@ local function goodSubblocks(block)
         local result = {}
         for _, s in ipairs(good_slices) do
             local subblock = slice(block, s[1], s[2])
-            assert(isGood(subblock))
             table.insert(result, subblock)
         end
         return result
