@@ -1476,6 +1476,7 @@ int lua_good_columns(lua_State *L) {
 // 2. frame_length (integer)
 // 3. end_length (integer)
 // 4. min_identity (integer) 0-100
+// 5. min_length (integer)
 // returns array of slice. Each slice is {start, stop}.
 int lua_goodSlices(lua_State *L) {
     luaL_checktype(L, 1, LUA_TTABLE);
@@ -1487,6 +1488,7 @@ int lua_goodSlices(lua_State *L) {
     int frame_length = luaL_checkinteger(L, 2);
     int end_length = luaL_checkinteger(L, 3);
     int min_identity = luaL_checkinteger(L, 4);
+    int min_length = luaL_checkinteger(L, 5);
     Scores scores(block_length);
     for (int i = 0; i < block_length; i++) {
         lua_rawgeti(L, 1, i + 1);
@@ -1496,7 +1498,7 @@ int lua_goodSlices(lua_State *L) {
     }
     Coordinates slices = goodSlices(scores,
             frame_length, end_length,
-            min_identity);
+            min_identity, min_length);
     lua_createtable(L, slices.size(), 0); // slices
     for (int i = 0; i < slices.size(); i++) {
         const StartStop& slice = slices[i];

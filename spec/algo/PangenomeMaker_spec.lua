@@ -6,7 +6,7 @@ describe("npge.algo.PangenomeMaker", function()
     it("converts blockset to pangenome", function()
         local config = require 'npge.config'
         local revert = config:updateKeys({
-            general = {MIN_LENGTH = 60},
+            general = {MIN_LENGTH = 60, FRAME_LENGTH = 60},
         })
         --
         local model = require 'npge.model'

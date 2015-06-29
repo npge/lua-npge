@@ -59,7 +59,7 @@ typedef std::vector<int> Scores;
 Scores goodColumns(const char** rows, int nrows, int length);
 Coordinates goodSlices(const Scores& score,
                        int frame_length, int end_length,
-                       int min_identity);
+                       int min_identity, int min_length);
 
 // alignment
 

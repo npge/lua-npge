@@ -10,6 +10,9 @@ local config = {
         MIN_LENGTH = {100,
         "Minimum acceptable length of fragment (b.p.)"},
 
+        FRAME_LENGTH = {100,
+        "Length of alignment checker frame (b.p.)"},
+
         MIN_END = {10,
         "Minimum number of end good columns"},
     },

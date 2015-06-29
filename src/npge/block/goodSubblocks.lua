@@ -35,6 +35,7 @@ local function goodSubblocks(block)
     local min_length = config.general.MIN_LENGTH
     local min_identity = config.general.MIN_IDENTITY
     local min_end = config.general.MIN_END
+    local frame_length = config.general.FRAME_LENGTH
     if block:length() < min_length then
         -- block is too short
         return {}
@@ -53,8 +54,9 @@ local function goodSubblocks(block)
     local goodSlices = require 'npge.alignment.goodSlices'
     local slice = require 'npge.block.slice'
     local good_col = goodColumns(rows)
-    local good_slices = goodSlices(good_col, min_length,
-            min_end, min_identity)
+    local good_slices = goodSlices(good_col,
+            frame_length, min_end,
+            min_identity, min_length)
     if #good_slices > 0 then
         local result = {}
         for _, s in ipairs(good_slices) do

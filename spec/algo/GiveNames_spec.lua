@@ -8,6 +8,7 @@ describe("npge.algo.GiveNames", function()
         local revert = config:updateKeys({
             general = {
                 MIN_LENGTH = 100,
+                FRAME_LENGTH = 100,
                 MIN_IDENTITY = 0.9,
                 MIN_END = 3,
             },

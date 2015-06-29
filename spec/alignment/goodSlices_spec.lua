@@ -7,19 +7,19 @@ describe("npge.alignment.goodSlices", function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices({100, 0, 100, 100, 100,
             0, 0, 0, 0, 100, 100, 100},
-            3, 1, 0.6), {
+            3, 1, 0.6, 3), {
                 {0, 4},
                 {9, 11},
             })
         assert.same(goodSlices({100, 0, 100, 100, 100,
             0, 0, 0, 0, 100, 100, 100, 100},
-            3, 2, 0.6), {
+            3, 2, 0.6, 3), {
                 {9, 12},
                 {2, 4},
             })
         assert.same(goodSlices({100, 0, 100, 100, 100,
             0, 0, 0, 0, 100, 100, 100, 100},
-            3, 3, 0.6), {
+            3, 3, 0.6, 3), {
                 {0, 4},
                 {9, 12},
             })
@@ -38,12 +38,12 @@ describe("npge.alignment.goodSlices", function()
     it("finds good slices (rows)", function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices(bools("+-+++----++++"),
-            3, 1, 0.6), {
+            3, 1, 0.6, 3), {
                 {0, 4},
                 {9, 12},
             })
         assert.same(goodSlices(bools("+-+++----++++"),
-            3, 2, 0.6), {
+            3, 2, 0.6, 3), {
                 {9, 12},
                 {2, 4},
             })
@@ -53,7 +53,7 @@ describe("npge.alignment.goodSlices", function()
     function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices(bools("++-+++++++++-+"),
-            10, 1, 0.9), {
+            10, 1, 0.9, 10), {
                 {0, 13}
             })
     end)
@@ -62,7 +62,7 @@ describe("npge.alignment.goodSlices", function()
     function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices(bools("+++"),
-            3, 1, 0.9), {
+            3, 1, 0.9, 3), {
                 {0, 2}
             })
     end)
@@ -71,7 +71,7 @@ describe("npge.alignment.goodSlices", function()
     function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices(bools("+++"),
-            3, 3, 0.9), {
+            3, 3, 0.9, 3), {
                 {0, 2}
             })
     end)
@@ -80,7 +80,7 @@ describe("npge.alignment.goodSlices", function()
     function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices(bools("+++"),
-            2, 0, 0.9), {
+            2, 0, 0.9, 2), {
                 {0, 2}
             })
     end)
@@ -89,7 +89,7 @@ describe("npge.alignment.goodSlices", function()
     function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices(bools("+++"),
-            2, 3, 0.9), {
+            2, 3, 0.9, 2), {
             })
     end)
 
@@ -97,7 +97,7 @@ describe("npge.alignment.goodSlices", function()
     function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices(bools("+++"),
-            2, 1, 1.46), {
+            2, 1, 1.46, 2), {
             })
     end)
 
@@ -105,7 +105,7 @@ describe("npge.alignment.goodSlices", function()
     function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices(bools("+++"),
-            2, 1, 1.0), {
+            2, 1, 1.0, 2), {
                 {0, 2}
             })
     end)
@@ -114,7 +114,7 @@ describe("npge.alignment.goodSlices", function()
     function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices(bools("+-+"),
-            2, 1, 0.0), {
+            2, 1, 0.0, 2), {
                 {0, 2}
             })
     end)
@@ -123,14 +123,14 @@ describe("npge.alignment.goodSlices", function()
     function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices(bools(""),
-            2, 1, 0.9), {})
+            2, 1, 0.9, 2), {})
     end)
 
     it("finds good slices (short input)",
     function()
         local goodSlices = require 'npge.alignment.goodSlices'
         assert.same(goodSlices(bools("+"),
-            2, 1, 0.9), {})
+            2, 1, 0.9, 2), {})
     end)
 
     it("finds good slices (long rows)", function()
@@ -153,7 +153,7 @@ describe("npge.alignment.goodSlices", function()
 ++++++-+++-+++++--+++++++++++++++++-+++++++++++++-++++++++++
 +++++++++++++++++++++++++-+++++-+++++++++++++++++++-++++++++
 ++++++++++++-++++++-++++++++++++++++++++]]
-        assert.same(goodSlices(bools(row), 100, 3, 0.9), {
+        assert.same(goodSlices(bools(row), 100, 3, 0.9, 100), {
             {396, 712},
             {157, 393},
             {801, 999},

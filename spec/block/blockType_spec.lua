@@ -8,6 +8,7 @@ describe("npge.block.blockType", function()
         local revert = config:updateKeys({
             general = {
                 MIN_LENGTH = 100,
+                FRAME_LENGTH = 100,
                 MIN_IDENTITY = 0.9,
                 MIN_END = 3,
             },
@@ -82,6 +83,7 @@ describe("npge.block.blockType", function()
         local revert = config:updateKeys({
             general = {
                 MIN_LENGTH = 10,
+                FRAME_LENGTH = 10,
                 MIN_IDENTITY = 0.8,
                 MIN_END = 1,
             },
@@ -111,6 +113,7 @@ describe("npge.block.blockType", function()
         local revert = config:updateKeys({
             general = {
                 MIN_LENGTH = 100,
+                FRAME_LENGTH = 100,
                 MIN_IDENTITY = 0.9,
                 MIN_END = 3,
             },
@@ -142,6 +145,7 @@ describe("npge.block.blockType", function()
         local revert = config:updateKeys({
             general = {
                 MIN_LENGTH = 100,
+                FRAME_LENGTH = 100,
                 MIN_IDENTITY = 0.9,
                 MIN_END = 3,
             },

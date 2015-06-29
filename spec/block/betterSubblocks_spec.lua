@@ -11,6 +11,7 @@ describe("npge.block.betterSubblocks", function()
         revert = config:updateKeys({
             general = {
                 MIN_LENGTH = 10,
+                FRAME_LENGTH = 10,
                 MIN_IDENTITY = 0.9,
                 MIN_END = 3,
             },

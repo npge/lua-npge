@@ -30,6 +30,7 @@ describe("npge.block.isGood", function()
         local config = require 'npge.config'
         local revert = config:updateKeys({general = {
             MIN_LENGTH = 3,
+            FRAME_LENGTH = 3,
             MIN_IDENTITY = 0.6,
             MIN_END = 1,
         }})
@@ -400,6 +401,7 @@ describe("npge.block.isGood", function()
         local revert = config:updateKeys({
             general = {
                 MIN_LENGTH = 100,
+                FRAME_LENGTH = 100,
                 MIN_END = 3,
                 MIN_IDENTITY = 0.55,
             },
@@ -435,6 +437,76 @@ CT]]
         local isGood = require 'npge.block.isGood'
         assert.truthy(isGood(block))
         --
+        revert()
+    end)
+
+    it("works if FRAME_LENGTH != MIN_LENGTH", function()
+        local isGood = require 'npge.block.isGood'
+        local config = require 'npge.config'
+        --
+        local t1 = "TATATTTTTTTTTTTTT"
+        local t2 = "TTTTTTTTTTTTTTTTT"
+        local Sequence = require 'npge.model.Sequence'
+        local s1 = Sequence('s1', t1)
+        local s2 = Sequence('s2', t2)
+        local Fragment = require 'npge.model.Fragment'
+        local f1 = Fragment(s1, 0, s1:length() - 1, 1)
+        local f2 = Fragment(s2, 0, s2:length() - 1, 1)
+        local Block = require 'npge.model.Block'
+        local block = Block({f1, f2})
+        --
+        local revert = config:updateKeys({general = {
+            MIN_LENGTH = 3,
+            FRAME_LENGTH = 2,
+            MIN_IDENTITY = 0.5,
+            MIN_END = 1,
+        }})
+        assert.truthy(isGood(block))
+        revert()
+        --
+        local revert = config:updateKeys({general = {
+            MIN_LENGTH = 3,
+            FRAME_LENGTH = 2,
+            MIN_IDENTITY = 0.5,
+            MIN_END = 3,
+        }})
+        assert.truthy(isGood(block))
+        revert()
+        --
+        local revert = config:updateKeys({general = {
+            MIN_LENGTH = 3,
+            FRAME_LENGTH = 3,
+            MIN_IDENTITY = 0.5,
+            MIN_END = 1,
+        }})
+        assert.falsy(isGood(block))
+        revert()
+        --
+        local revert = config:updateKeys({general = {
+            MIN_LENGTH = 2,
+            FRAME_LENGTH = 3,
+            MIN_IDENTITY = 0.5,
+            MIN_END = 1,
+        }})
+        assert.falsy(isGood(block))
+        revert()
+        --
+        local revert = config:updateKeys({general = {
+            MIN_LENGTH = 100,
+            FRAME_LENGTH = 2,
+            MIN_IDENTITY = 0.5,
+            MIN_END = 1,
+        }})
+        assert.falsy(isGood(block))
+        revert()
+        --
+        local revert = config:updateKeys({general = {
+            MIN_LENGTH = 3,
+            FRAME_LENGTH = 100,
+            MIN_IDENTITY = 0.5,
+            MIN_END = 1,
+        }})
+        assert.truthy(isGood(block))
         revert()
     end)
 end)

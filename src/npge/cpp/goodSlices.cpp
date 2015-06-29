@@ -23,17 +23,21 @@ private:
     int frame_score_;
     int end_score_;
     int block_length_;
+    int min_length_;
 
 public:
     GoodSlicer(const Scores& score,
                int frame_length, int end_length,
-               int min_identity):
-        score_(score),
-        frame_length_(frame_length),
-        end_length_(end_length),
-        frame_score_(frame_length * min_identity),
-        end_score_(end_length * min_identity) {
+               int min_identity, int min_length):
+        score_(score) {
         block_length_ = score.size();
+        // if block < frame, decrease frame (not min_length!)
+        frame_length_ = std::min(frame_length, block_length_);
+        end_length_ = end_length;
+        frame_score_ = frame_length_ * min_identity;
+        end_score_ = end_length * min_identity;
+        min_length_ = min_length;
+        //
         score_sum_.resize(block_length_ + 1);
         score_sum_[0] = 0;
         for (int i = 0; i < block_length_; i++) {
@@ -112,7 +116,7 @@ public:
     }
 
     bool valid(const StartStop& self) const {
-        return ssLength(self) >= frame_length_ &&
+        return ssLength(self) >= min_length_ &&
             self.first >= 0 && self.second < block_length_;
     }
 
@@ -175,11 +179,20 @@ public:
     }
 
     bool parametersAreCorrect() const {
+        // checks:
+        // 1. min <= block
+        // 2. frame <= block
+        // 3. end <= min
+        if (min_length_ > block_length_ ||
+                min_length_ <= 0) {
+            return false;
+        }
         if (frame_length_ > block_length_ ||
                 frame_length_ <= 0) {
             return false;
         }
-        if (end_length_ > frame_length_ || end_length_ < 0) {
+        if (end_length_ > min_length_ ||
+                end_length_ < 0) {
             return false;
         }
         return true;
@@ -204,10 +217,10 @@ public:
 
 Coordinates goodSlices(const Scores& score,
                        int frame_length, int end_length,
-                       int min_identity) {
+                       int min_identity, int min_length) {
     GoodSlicer slicer(score,
                       frame_length, end_length,
-                      min_identity);
+                      min_identity, min_length);
     return slicer.calculate();
 }
 

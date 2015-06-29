@@ -4,18 +4,23 @@
 
 -- Arguments:
 -- 1. list of column statuses (true is good column)
--- 2. min_length (integer)
--- 3. min_end (integer) -- number of begin and end good columns
+-- 2. frame_length (integer)
+-- 3. frame_end (integer)
 -- 4. min_identity (from 0.0 to 1.0)
+-- 5. min_length (integer)
 
 -- Results:
 -- 1. List of good slices
 --    Each slice is a table {start, stop}
 -- Indices start and stop start from 0
 
-return function(good_col, min_length, min_end, min_identity)
+return function(good_col,
+        frame_length, frame_end,
+        min_identity, min_length)
     local impl = require 'npge.cpp'.func.goodSlices
     local minIdentical = require 'npge.alignment.minIdentical'
     local ident = minIdentical(min_identity)
-    return impl(good_col, min_length, min_end, ident)
+    return impl(good_col,
+        frame_length, frame_end,
+        ident, min_length)
 end
