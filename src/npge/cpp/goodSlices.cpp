@@ -206,9 +206,11 @@ public:
         Coordinates result;
         while (!slices.empty()) {
             StartStop selected = maxSlice(slices);
-            if (ssLength(selected) >= frame_length_) {
+            if (ssLength(selected) >= min_length_) {
                 result.push_back(selected);
                 slices = excludeSlice(slices, selected);
+            } else {
+                break;
             }
         }
         return result;
