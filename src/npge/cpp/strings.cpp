@@ -163,6 +163,22 @@ bool isColumnGood(const char** rows, int nrows, int i) {
     return ok && first != '-' && first != 'N';
 }
 
+bool isColumnIdentGap(const char** rows, int nrows, int i) {
+    assert(nrows > 0);
+    bool gap = false;
+    int A = 0, T = 0, G = 0, C = 0, N = 0;
+    for (int irow = 0; irow < nrows; irow++) {
+        char letter = rows[irow][i];
+        gap |= (letter == '-');
+        A |= (letter == 'A');
+        T |= (letter == 'T');
+        G |= (letter == 'G');
+        C |= (letter == 'C');
+        N |= (letter == 'N');
+    }
+    return gap && (A + T + G + C == 1) && !N;
+}
+
 double identity(const char** rows, int nrows,
                 int start, int stop) {
     double ident = 0;
