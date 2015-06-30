@@ -17,6 +17,7 @@ local members = {
     'BetterSubblocks',
     'Cover',
     'Align',
+    'AlignLeft',
     'ReAlign',
     'Orient',
     'Join',
