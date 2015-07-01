@@ -415,4 +415,25 @@ GAACGATAACATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
         assert.falsy(algo.CheckPangenome(bad3))
         assert.truthy(algo.CheckPangenome(good))
     end)
+
+    it("real pangenome #mosses (changed options)", function()
+        -- https://travis-ci.org/npge/lua-npge/jobs/63467470
+        if os.getenv('UNDER_VALGRIND') then
+            return
+        end
+        local config = require 'npge.config'
+        revert = config:updateKeys({
+            general = {
+                MIN_LENGTH = 50,
+                FRAME_LENGTH = 200,
+                MIN_IDENTITY = 0.65,
+                MIN_END = 10,
+            },
+        })
+        local t = dofile('spec/mosses_id65_len50_frame200.lua')
+        local algo = require 'npge.algo'
+        assert.truthy(algo.CheckPangenome(t))
+        --
+        revert()
+    end)
 end)

@@ -85,6 +85,11 @@ return function(blockset)
     end
 
     local function inspectBlock(name, block)
+        -- apply excludeSelfOverlap after goodSubblocks?
+        block = npge.block.excludeSelfOverlap(block)[1]
+        if not block then
+            return
+        end
         warning("")
         warning("Inspecting %s", name)
         local blocks = npge.algo.Overlapping(blockset, block)
