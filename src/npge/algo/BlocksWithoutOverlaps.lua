@@ -15,7 +15,11 @@ return function(orig, added)
             concat(bs:blocks(), blocks))
         blocks = {}
     end
+    local hasSelfOverlap = require 'npge.block.hasSelfOverlap'
     local function overlapping(block)
+        if hasSelfOverlap(block) then
+            return true
+        end
         for f in block:iterFragments() do
             if #(bs:overlappingFragments(f)) > 0 then
                 return true
