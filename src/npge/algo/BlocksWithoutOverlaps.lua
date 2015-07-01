@@ -15,7 +15,7 @@ return function(orig, added)
             concat(bs:blocks(), blocks))
         blocks = {}
     end
-    local overlapping = function(block)
+    local function overlapping(block)
         for f in block:iterFragments() do
             if #(bs:overlappingFragments(f)) > 0 then
                 return true
