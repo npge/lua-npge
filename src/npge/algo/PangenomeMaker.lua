@@ -25,6 +25,7 @@ return function(bs, silent)
         bs1 = algo.BlocksWithoutOverlaps(bs1, joined)
         -- extend
         local extended = algo.Extend(bs1)
+        extended = algo.ExcludeSelfOverlap(extended)
         extended = algo.BetterSubblocks(extended, bs1)
         bs1 = algo.BlocksWithoutOverlaps(bs1, extended)
         -- print '.'
