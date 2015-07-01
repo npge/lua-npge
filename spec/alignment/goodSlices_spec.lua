@@ -161,6 +161,20 @@ describe("npge.alignment.goodSlices", function()
         })
     end)
 
+    it("finds good slices (MIN_LENGTH<FRAME_LENGTH, end gaps)",
+    function()
+        local goodSlices = require 'npge.alignment.goodSlices'
+        local row = [[
++---+++---+----------+---+---+-------+++++++-+-+++++++++++
+        ]]
+        row = bools(row)
+        row[2] = 99 -- gap
+        row[3] = 99 -- gap
+        row[4] = 99 -- gap
+        -- error: find all, then cut begin, so identity < 50%
+        assert.same(goodSlices(row, 99, 3, 0.5, 50), {})
+    end)
+
     it("finds good slices (bad end)", function()
         local goodSlices = require 'npge.alignment.goodSlices'
         local scores = {}

@@ -26,6 +26,7 @@ private:
     int end_score_;
     int block_length_;
     int min_length_;
+    int min_identity_;
 
 public:
     GoodSlicer(const Scores& score,
@@ -39,6 +40,7 @@ public:
         frame_score_ = frame_length_ * min_identity;
         end_score_ = end_length * min_identity;
         min_length_ = min_length;
+        min_identity_ = min_identity;
         //
         score_sum_.resize(block_length_ + 1);
         score_sum_[0] = 0;
@@ -129,9 +131,21 @@ public:
             self.first >= 0 && self.second < block_length_;
     }
 
+    bool goodFrame(const StartStop& self) const {
+        // longer or equal to frame_length
+        // OR good identity
+        if (ssLength(self) >= frame_length_) {
+            return true;
+        }
+        int score = countScore(self.first, self.second);
+        int min_score = min_identity_ * ssLength(self);
+        return score >= min_score;
+    }
+
     bool goodEnds(const StartStop& self) const {
         return goodLeftEnd(self.first) &&
-            goodRightEnd(self.second);
+            goodRightEnd(self.second) &&
+            goodFrame(self);
     }
 
     // Return list of joined slices
