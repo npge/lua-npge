@@ -27,6 +27,7 @@ describe("npge.alignment.goodColumns", function()
 
     it("can limit max length of a gap", function()
         local goodColumns = require 'npge.alignment.goodColumns'
+        local BAD = -100 * 100
         assert.same(goodColumns({
             "AAAAAAAA",
             "A------A",
@@ -34,11 +35,11 @@ describe("npge.alignment.goodColumns", function()
         assert.same(goodColumns({
             "AAAAAAAA",
             "A------A",
-        }, nil, 2), {100, 0, 0, 0, 0, 0, 0, 100})
+        }, nil, 2), {100, BAD, BAD, BAD, BAD, BAD, BAD, 100})
         assert.same(goodColumns({
             "AAAAAAAA",
             "A------A",
-        }, nil, 6), {100, 0, 0, 0, 0, 0, 0, 100})
+        }, nil, 6), {100, BAD, BAD, BAD, BAD, BAD, BAD, 100})
         assert.same(goodColumns({
             "AAAAAAAA",
             "A------A",

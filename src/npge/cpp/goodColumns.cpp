@@ -132,10 +132,6 @@ const int LOG_SCORE_SIZE = 1000;
 
 static void mapGap(Scores& scores, int start, int length,
                    int min_identity, int min_length) {
-    if (length >= min_length) {
-        // length of gap can't be >= min_length
-        return;
-    }
     int end = start + length;
     if (length >= LOG_SCORE_SIZE) {
         length = LOG_SCORE_SIZE - 1;
@@ -144,6 +140,10 @@ static void mapGap(Scores& scores, int start, int length,
     // for gap columns, multiply score by min_ident
     score = (score == MAX_COLUMN_SCORE) ? score :
         (score * min_identity / MAX_COLUMN_SCORE);
+    if (length >= min_length) {
+        // length of gap can't be >= min_length
+        score = -100 * MAX_COLUMN_SCORE;
+    }
     for (int i = start; i < end; i++) {
         scores[i] = score;
     }
