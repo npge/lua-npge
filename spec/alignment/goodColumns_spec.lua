@@ -25,6 +25,34 @@ describe("npge.alignment.goodColumns", function()
         }), {100, 53, 53, 53, 53, 53, 53, 100})
     end)
 
+    it("can limit max length of a gap", function()
+        local goodColumns = require 'npge.alignment.goodColumns'
+        assert.same(goodColumns({
+            "AAAAAAAA",
+            "A------A",
+        }), {100, 53, 53, 53, 53, 53, 53, 100})
+        assert.same(goodColumns({
+            "AAAAAAAA",
+            "A------A",
+        }, 2), {100, 0, 0, 0, 0, 0, 0, 100})
+        assert.same(goodColumns({
+            "AAAAAAAA",
+            "A------A",
+        }, 6), {100, 0, 0, 0, 0, 0, 0, 100})
+        assert.same(goodColumns({
+            "AAAAAAAA",
+            "A------A",
+        }, 7), {100, 53, 53, 53, 53, 53, 53, 100})
+        assert.same(goodColumns({
+            "AAAAAAAA",
+            "A------A",
+        }, 8), {100, 53, 53, 53, 53, 53, 53, 100})
+        assert.same(goodColumns({
+            "AAAAAAAA",
+            "A------A",
+        }, 100), {100, 53, 53, 53, 53, 53, 53, 100})
+    end)
+
     it("returns empty table if input is empty", function()
         local goodColumns = require 'npge.alignment.goodColumns'
         assert.same(goodColumns({}), {})

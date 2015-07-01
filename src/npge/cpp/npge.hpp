@@ -56,7 +56,9 @@ typedef std::pair<int, int> StartStop; // start, stop
 typedef std::vector<StartStop> Coordinates;
 typedef std::vector<int> Scores;
 
-Scores goodColumns(const char** rows, int nrows, int length);
+// if min_identity or min_length == 1, it is not applied
+Scores goodColumns(const char** rows, int nrows, int length,
+                   int min_length);
 Coordinates goodSlices(const Scores& score,
                        int frame_length, int end_length,
                        int min_identity, int min_length);

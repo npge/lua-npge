@@ -1447,8 +1447,12 @@ int lua_ShortForm_patch(lua_State *L) {
 
 // arguments:
 // 1. Lua table with rows
+// 2. (optional) min_length
 // returns array of integers: 0-100 (100 is good)
 int lua_good_columns(lua_State *L) {
+    const int DEFAULT_VALUE = -1;
+    int min_length = luaL_optinteger(L, 2, DEFAULT_VALUE);
+    //
     luaL_checktype(L, 1, LUA_TTABLE);
     int nrows = npge_rawlen(L, 1);
     if (nrows == 0) {
@@ -1461,7 +1465,8 @@ int lua_good_columns(lua_State *L) {
         lua_newtable(L);
         return 1;
     }
-    Scores scores = goodColumns(rows, nrows, length);
+    Scores scores = goodColumns(rows, nrows, length,
+            min_length);
     // table of integers
     lua_createtable(L, length, 0);
     for (int i = 0; i < length; i++) {
