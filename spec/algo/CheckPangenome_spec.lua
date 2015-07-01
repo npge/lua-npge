@@ -430,9 +430,13 @@ GAACGATAACATAGCGGTGCGTGCGAGGAGCCCATGGGCCACTATAGATACCGTCATTCT
                 MIN_END = 10,
             },
         })
-        local t = dofile('spec/mosses_id65_len50_frame200.lua')
+        local t = dofile(
+            'spec/mosses_id65_len50_frame200.lua')
+        local t2 = dofile(
+            'spec/mosses_id65_len50_frame200_2.lua')
         local algo = require 'npge.algo'
-        assert.truthy(algo.CheckPangenome(t))
+        assert.falsy(algo.CheckPangenome(t))
+        assert.truthy(algo.CheckPangenome(t2))
         --
         revert()
     end)

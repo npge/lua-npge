@@ -58,7 +58,7 @@ typedef std::vector<int> Scores;
 
 // if min_identity or min_length == 1, it is not applied
 Scores goodColumns(const char** rows, int nrows, int length,
-                   int min_length);
+                   int min_identity, int min_length);
 Coordinates goodSlices(const Scores& score,
                        int frame_length, int end_length,
                        int min_identity, int min_length);

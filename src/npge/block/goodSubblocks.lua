@@ -53,7 +53,8 @@ local function goodSubblocks(block)
     local goodColumns = require 'npge.alignment.goodColumns'
     local goodSlices = require 'npge.alignment.goodSlices'
     local slice = require 'npge.block.slice'
-    local good_col = goodColumns(rows)
+    local good_col = goodColumns(rows,
+            min_identity, min_length)
     local good_slices = goodSlices(good_col,
             frame_length, min_end,
             min_identity, min_length)

@@ -41,11 +41,7 @@ public:
         score_sum_.resize(block_length_ + 1);
         score_sum_[0] = 0;
         for (int i = 0; i < block_length_; i++) {
-            int value = score[i];
-            // for gap columns, multiply score by min_ident
-            value = (value == MAX_COLUMN_SCORE) ? value :
-                (value * min_identity / MAX_COLUMN_SCORE);
-            score_sum_[i + 1] = score_sum_[i] + value;
+            score_sum_[i + 1] = score_sum_[i] + score[i];
         }
     }
 

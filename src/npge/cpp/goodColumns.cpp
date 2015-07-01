@@ -131,7 +131,7 @@ const int LOG_SCORE[] = {
 const int LOG_SCORE_SIZE = 1000;
 
 static void mapGap(Scores& scores, int start, int length,
-                   int min_length) {
+                   int min_identity, int min_length) {
     if (length >= min_length) {
         // length of gap can't be >= min_length
         return;
@@ -141,16 +141,23 @@ static void mapGap(Scores& scores, int start, int length,
         length = LOG_SCORE_SIZE - 1;
     }
     int score = LOG_SCORE[length];
+    // for gap columns, multiply score by min_ident
+    score = (score == MAX_COLUMN_SCORE) ? score :
+        (score * min_identity / MAX_COLUMN_SCORE);
     for (int i = start; i < end; i++) {
         scores[i] = score;
     }
 }
 
 Scores goodColumns(const char** rows, int nrows, int length,
-                   int min_length) {
+                   int min_identity, int min_length) {
     if (min_length == -1) {
         // longest than all possible gaps
         min_length = length;
+    }
+    if (min_identity == -1) {
+        // doesn't change score of gapped columns
+        min_identity = MAX_COLUMN_SCORE;
     }
     Scores scores(length);
     int gap_length = 0;
@@ -164,13 +171,13 @@ Scores goodColumns(const char** rows, int nrows, int length,
             gap_length += 1;
         } else if (gap_length > 0) {
             mapGap(scores, i - gap_length, gap_length,
-                   min_length);
+                   min_identity, min_length);
             gap_length = 0;
         }
     }
     if (gap_length > 0) {
         mapGap(scores, length - gap_length, gap_length,
-               min_length);
+               min_identity, min_length);
         gap_length = 0;
     }
     return scores;

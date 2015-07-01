@@ -34,23 +34,36 @@ describe("npge.alignment.goodColumns", function()
         assert.same(goodColumns({
             "AAAAAAAA",
             "A------A",
-        }, 2), {100, 0, 0, 0, 0, 0, 0, 100})
+        }, nil, 2), {100, 0, 0, 0, 0, 0, 0, 100})
         assert.same(goodColumns({
             "AAAAAAAA",
             "A------A",
-        }, 6), {100, 0, 0, 0, 0, 0, 0, 100})
+        }, nil, 6), {100, 0, 0, 0, 0, 0, 0, 100})
         assert.same(goodColumns({
             "AAAAAAAA",
             "A------A",
-        }, 7), {100, 53, 53, 53, 53, 53, 53, 100})
+        }, nil, 7), {100, 53, 53, 53, 53, 53, 53, 100})
         assert.same(goodColumns({
             "AAAAAAAA",
             "A------A",
-        }, 8), {100, 53, 53, 53, 53, 53, 53, 100})
+        }, nil, 8), {100, 53, 53, 53, 53, 53, 53, 100})
         assert.same(goodColumns({
             "AAAAAAAA",
             "A------A",
-        }, 100), {100, 53, 53, 53, 53, 53, 53, 100})
+        }, nil, 100), {100, 53, 53, 53, 53, 53, 53, 100})
+    end)
+
+    it("can set min identity (changes scores of gap columns",
+    function()
+        local goodColumns = require 'npge.alignment.goodColumns'
+        assert.same(goodColumns({
+            "AAAAAAAA",
+            "A------A",
+        }), {100, 53, 53, 53, 53, 53, 53, 100})
+        assert.same(goodColumns({
+            "AAAAAAAA",
+            "A------A",
+        }, 0.5), {100, 26, 26, 26, 26, 26, 26, 100})
     end)
 
     it("returns empty table if input is empty", function()

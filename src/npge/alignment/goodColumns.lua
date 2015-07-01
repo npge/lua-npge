@@ -2,4 +2,9 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-return require 'npge.cpp'.func.goodColumns
+return function(rows, min_identity, min_length)
+    local impl = require 'npge.cpp'.func.goodColumns
+    local minIdentical = require 'npge.alignment.minIdentical'
+    local ident = min_identity and minIdentical(min_identity)
+    return impl(rows, ident, min_length)
+end
