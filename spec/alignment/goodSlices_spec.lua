@@ -160,4 +160,21 @@ describe("npge.alignment.goodSlices", function()
             {0, 151},
         })
     end)
+
+    it("finds good slices (bad end)", function()
+        local goodSlices = require 'npge.alignment.goodSlices'
+        local scores = {}
+        for i = 1, 100 do
+            scores[i] = 99 -- gaps
+        end
+        scores[1] = 100
+        scores[100] = 100
+        -- control
+        assert.same(
+            goodSlices(scores, 100, 1, 0.6, 100),
+            {{0, 99}})
+        assert.same(
+            goodSlices(scores, 100, 10, 0.6, 100),
+            {})
+    end)
 end)

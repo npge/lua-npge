@@ -17,7 +17,9 @@ static int ssLength(const StartStop& ss) {
 class GoodSlicer {
 private:
     std::vector<int> score_;
-    std::vector<int> score_sum_; // prefix sum
+    // prefix sums
+    std::vector<int> score_sum_;
+    std::vector<int> gapless_sum_;
     int frame_length_;
     int end_length_;
     int frame_score_;
@@ -40,13 +42,24 @@ public:
         //
         score_sum_.resize(block_length_ + 1);
         score_sum_[0] = 0;
+        gapless_sum_.resize(block_length_ + 1);
+        gapless_sum_[0] = 0;
         for (int i = 0; i < block_length_; i++) {
             score_sum_[i + 1] = score_sum_[i] + score[i];
+            // end checking: set scores of gaps to 0
+            int value = (score_[i] == MAX_COLUMN_SCORE)
+                ? MAX_COLUMN_SCORE : std::min(score_[i], 0);
+            gapless_sum_[i + 1] = gapless_sum_[i] + value;
         }
     }
 
     int countScore(int start, int stop) const {
         return score_sum_[stop + 1] - score_sum_[start - 1 + 1];
+    }
+
+    int countGaplessScore(int start, int stop) const {
+        return gapless_sum_[stop + 1] -
+               gapless_sum_[start - 1 + 1];
     }
 
     bool goodSlice(int start) const {
@@ -57,13 +70,13 @@ public:
     bool goodLeftEnd(int start) const {
         int stop = start + end_length_ - 1;
         return score_[start] == MAX_COLUMN_SCORE &&
-               countScore(start, stop) >= end_score_;
+               countGaplessScore(start, stop) >= end_score_;
     }
 
     bool goodRightEnd(int stop) const {
         int start = stop - end_length_ + 1;
         return score_[stop] == MAX_COLUMN_SCORE &&
-               countScore(start, stop) >= end_score_;
+               countGaplessScore(start, stop) >= end_score_;
     }
 
     bool overlaps(const StartStop& self,
