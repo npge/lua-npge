@@ -129,6 +129,11 @@ public:
             self.first >= 0 && self.second < block_length_;
     }
 
+    bool goodEnds(const StartStop& self) const {
+        return goodLeftEnd(self.first) &&
+            goodRightEnd(self.second);
+    }
+
     // Return list of joined slices
     Coordinates joinedSlices() const {
         Coordinates slices0;
@@ -179,7 +184,7 @@ public:
             } else {
                 StartStop slice1 = exclude(slice, selected);
                 slice1 = strip(slice1);
-                if (valid(slice1)) {
+                if (valid(slice1) && goodEnds(slice1)) {
                     slices1.push_back(slice1);
                 }
             }
@@ -215,7 +220,7 @@ public:
         Coordinates result;
         while (!slices.empty()) {
             StartStop selected = maxSlice(slices);
-            if (ssLength(selected) >= min_length_) {
+            if (valid(selected) && goodEnds(selected)) {
                 result.push_back(selected);
                 slices = excludeSlice(slices, selected);
             } else {

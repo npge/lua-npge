@@ -177,4 +177,12 @@ describe("npge.alignment.goodSlices", function()
             goodSlices(scores, 100, 10, 0.6, 100),
             {})
     end)
+
+    it("finds good slices (bad end, min_length=min_end)",
+    function()
+        local goodSlices = require 'npge.alignment.goodSlices'
+        assert.same(goodSlices(
+            {100, 100, 99, 99, 99, 99, 99, 99, 100, 100},
+            10, 10, 0.6, 10), {})
+    end)
 end)
