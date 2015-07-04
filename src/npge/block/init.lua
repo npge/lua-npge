@@ -28,4 +28,5 @@ return {
     excludeBetterOrEqual = require 'npge.block.excludeBetterOrEqual',
     isAlignedToLeft = require 'npge.block.isAlignedToLeft',
     areAlignedToLeft = require 'npge.block.areAlignedToLeft',
+    gc = require 'npge.block.gc',
 }

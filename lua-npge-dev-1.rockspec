@@ -118,6 +118,7 @@ build = {
         ['npge.block.betterSubblocks'] = 'src/npge/block/betterSubblocks.lua',
         ['npge.block.isAlignedToLeft'] = 'src/npge/block/isAlignedToLeft.lua',
         ['npge.block.areAlignedToLeft'] = 'src/npge/block/areAlignedToLeft.lua',
+        ['npge.block.gc'] = 'src/npge/block/gc.lua',
         ['npge.alignment'] = 'src/npge/alignment/init.lua',
         ['npge.alignment.alignRows'] = 'src/npge/alignment/alignRows.lua',
         ['npge.alignment.refine'] = 'src/npge/alignment/refine.lua',
