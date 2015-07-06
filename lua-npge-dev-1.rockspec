@@ -176,6 +176,7 @@ build = {
         ['npge.io.LoadFromLua'] = 'src/npge/io/LoadFromLua.lua',
         ['npge.io.BlockSetToLua'] = 'src/npge/io/BlockSetToLua.lua',
         ['npge.io.ToDot'] = 'src/npge/io/ToDot.lua',
+        ['npge.io.BlockInfo'] = 'src/npge/io/BlockInfo.lua',
         ['npge.view'] = 'src/npge/view/init.lua',
         ['npge.view.BlockInConsole'] = 'src/npge/view/BlockInConsole.lua',
     },

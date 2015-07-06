@@ -10,6 +10,7 @@ local members = {
     'BlockSetToLua',
     'ShortForm',
     'ToDot',
+    'BlockInfo',
 }
 
 local npge_io = {}
