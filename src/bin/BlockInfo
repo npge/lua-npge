@@ -1,0 +1,14 @@
+#!/usr/bin/env lua
+
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
+local npge = require 'npge'
+
+local fname = assert(arg[1])
+local bs = npge.io.ShortForm.decode(io.lines(fname))
+
+local bi_fname = fname .. '.bi'
+
+npge.util.writeIt(bi_fname, npge.io.BlockInfo(bs))
