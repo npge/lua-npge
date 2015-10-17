@@ -18,7 +18,7 @@ Requirements:
 [luarocks]: https://luarocks.org/
 [gcc]: https://gcc.gnu.org/
 [boost]: http://www.boost.org/
-[blast]: www.ncbi.nlm.nih.gov/BLAST/
+[blast]: http://www.ncbi.nlm.nih.gov/BLAST/
 
 ```bash
 $ git clone https://github.com/npge/lua-npge
