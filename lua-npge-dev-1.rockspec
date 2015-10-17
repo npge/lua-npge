@@ -195,6 +195,7 @@ build = {
             "src/bin/CheckPangenome",
             "src/bin/MakeDrafts",
             "src/bin/BlockSetToDot",
+            "src/bin/BlockInfo",
         },
     },
 }
