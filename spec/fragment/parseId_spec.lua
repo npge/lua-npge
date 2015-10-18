@@ -14,4 +14,11 @@ describe("npge.fragment.parseId", function()
         assert.same({parseId("g&c&c_0_100_1")},
             {"g&c&c", 0, 100, 1})
     end)
+
+    it("understands old id fromat", function()
+        local parseId = require 'npge.fragment.parseId'
+        assert.same({parseId("A_0_100")}, {"A", 0, 100, 1})
+        assert.same({parseId("A_100_0")}, {"A", 100, 0, -1})
+        assert.same({parseId("A_100_-1")}, {"A", 100, 100, -1})
+    end)
 end)

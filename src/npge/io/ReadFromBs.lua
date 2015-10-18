@@ -15,19 +15,9 @@ return function(lines, blockset_with_sequences)
         if name then
             -- add sequence
             local ev = require 'npge.util.extractValue'
+            local parseId = require 'npge.fragment.parseId'
             local blockname = assert(ev(description, "block"))
-            local seqname, start, stop =
-                assert(name:match("([^_]+)_(%d+)_(-?%d+)"))
-            start = tonumber(start)
-            stop = tonumber(stop)
-            local ori = 1
-            if stop == -1 then
-                -- special case: fragment of length 1, ori=-1
-                stop = start
-                ori = -1
-            elseif stop < start then
-                ori = -1
-            end
+            local seqname, start, stop, ori = parseId(name)
             local seq = assert(bs1:sequenceByName(seqname))
             local Fragment = require 'npge.model.Fragment'
             local fragment = Fragment(seq, start, stop, ori)
