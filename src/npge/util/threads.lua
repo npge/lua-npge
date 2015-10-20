@@ -35,6 +35,7 @@ local collectResults = function(collector, threads)
     for _, thread in ipairs(threads) do
         local _, status, result = thread:join()
         if status then
+            -- if result is nil, do table.insert does nothing
             table.insert(results, result)
         else
             table.insert(errors, result)
@@ -59,7 +60,7 @@ return function(generator, collector)
     if workers == 1 or not has_llthreads2 then
         local loadstring = require 'npge.util.loadstring'
         local code = generator(1)[1]
-        local result = assert(loadstring(code)())
+        local result = loadstring(code)()
         return collector({result})
     end
     local config = require 'npge.config'
