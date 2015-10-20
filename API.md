@@ -526,3 +526,67 @@ BlockSets can be compared with operator `==`. Comparison
 succeeds if blocksets have same sets of sequences and
 sets of blocks. To compare only sets of sequences use method
 `sameSequences`.
+
+## Configuration
+
+Parameters of NPGe algorithms are located in `npge.config`.
+
+Create an alias for it:
+
+```lua
+>  config = npge.config
+```
+
+There are following configuration parameters:
+
+  * `blast`
+    * `blast.EVALUE = 0.001` -- E-value filter for blast
+    * `blast.DUST = false` -- Filter out low complexity regions
+  * `util`
+    * `util.WORKERS = 1` -- Number of parallel workers
+  * `general`
+    * `general.MIN_LENGTH = 100` -- Minimum acceptable length of fragment (b.p.)
+    * `general.MIN_END = 10` -- Minimum number of end good columns
+    * `general.MIN_IDENTITY = 0.9` -- Minimum acceptable block identity (0.9 is 90%)
+    * `general.FRAME_LENGTH = 100` -- Length of alignment checker frame (b.p.)
+  * `alignment`
+    * `alignment.ANCHOR = 7` -- Min equal aligned part
+    * `alignment.MISMATCH_CHECK = 1` -- Min number of equal columns around single mismatch
+    * `alignment.GAP_CHECK = 2` -- Min number of equal columns around single gap
+
+This list is generated from file `src/npge/config.lua` by function
+`npge.util.configGenerator({markdown=true})`.
+
+To change configuration, create file `npge.conf` in current directory.
+Example:
+
+```lua
+general.MIN_LENGTH = 200
+alignment.GAP_CHECK = 3
+```
+
+To apply a transient change from Lua, use the following code:
+
+```lua
+>  npge = require 'npge'
+>  config = npge.config
+>  reverting_function = config:updateKeys {
+>> general = {MIN_LENGTH = 200},
+>> alignment = {GAP_CHECK = 3} }
+>  config.general
+{
+  MIN_LENGTH = 200,
+  MIN_END = 10,
+  MIN_IDENTITY = 0.9,
+  FRAME_LENGTH = 100,
+}
+>  reverting_function()
+>  config.general
+{
+  MIN_LENGTH = 100,
+  MIN_END = 10,
+  MIN_IDENTITY = 0.9,
+  FRAME_LENGTH = 100,
+}
+
+```
