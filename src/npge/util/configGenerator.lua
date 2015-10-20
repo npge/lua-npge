@@ -13,17 +13,31 @@ local function serialize(value)
     return format:format(value)
 end
 
-return function()
-    local config = require 'npge.config'
+return function(options)
+    options = options or {}
+    local markdown = options.markdown
     local lines = {}
+    local function print(text)
+        table.insert(lines, text)
+    end
+    local config = require 'npge.config'
     for section_name, section in pairs(config) do
+        if markdown then
+            print(("  * `%s`"):format(section_name))
+        end
         for name, value in pairs(section) do
             local about = config.about[section_name][name]
-            table.insert(lines, "-- " .. about)
-            local line = "%s.%s = %s"
-            table.insert(lines, line:format(section_name,
-                name, serialize(value)))
-            table.insert(lines, "")
+            if markdown then
+                local line = "    * `%s.%s = %s` -- %s"
+                print(line:format(section_name, name,
+                      serialize(value), about))
+            else
+                print("-- " .. about)
+                local line = "%s.%s = %s"
+                print(line:format(section_name,
+                    name, serialize(value)))
+                print("")
+            end
         end
     end
     return table.concat(lines, "\n")
