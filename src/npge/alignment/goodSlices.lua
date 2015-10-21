@@ -12,7 +12,7 @@
 -- Results:
 -- 1. List of good slices
 --    Each slice is a table {start, stop}
--- Indices start and stop start from 0
+-- Indices start and stop are 0-based.
 
 return function(good_col,
         frame_length, frame_end,
