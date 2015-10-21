@@ -13,6 +13,19 @@ local function serialize(value)
     return format:format(value)
 end
 
+local function sorted(dict)
+    return coroutine.wrap(function()
+        local keys = {}
+        for key, _ in pairs(dict) do
+            table.insert(keys, key)
+        end
+        table.sort(keys)
+        for _, key in ipairs(keys) do
+            coroutine.yield(key, dict[key])
+        end
+    end)
+end
+
 return function(options)
     options = options or {}
     local markdown = options.markdown
@@ -21,11 +34,11 @@ return function(options)
         table.insert(lines, text)
     end
     local config = require 'npge.config'
-    for section_name, section in pairs(config) do
+    for section_name, section in sorted(config) do
         if markdown then
             print(("  * `%s`"):format(section_name))
         end
-        for name, value in pairs(section) do
+        for name, value in sorted(section) do
             local about = config.about[section_name][name]
             if markdown then
                 local line = "    * `%s.%s = %s` -- %s"
