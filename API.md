@@ -539,20 +539,20 @@ Create an alias for it:
 
 There are following configuration parameters:
 
-  * `blast`
-    * `blast.EVALUE = 0.001` -- E-value filter for blast
-    * `blast.DUST = false` -- Filter out low complexity regions
-  * `util`
-    * `util.WORKERS = 1` -- Number of parallel workers
-  * `general`
-    * `general.MIN_LENGTH = 100` -- Minimum acceptable length of fragment (b.p.)
-    * `general.MIN_END = 10` -- Minimum number of end good columns
-    * `general.MIN_IDENTITY = 0.9` -- Minimum acceptable block identity (0.9 is 90%)
-    * `general.FRAME_LENGTH = 100` -- Length of alignment checker frame (b.p.)
   * `alignment`
     * `alignment.ANCHOR = 7` -- Min equal aligned part
-    * `alignment.MISMATCH_CHECK = 1` -- Min number of equal columns around single mismatch
     * `alignment.GAP_CHECK = 2` -- Min number of equal columns around single gap
+    * `alignment.MISMATCH_CHECK = 1` -- Min number of equal columns around single mismatch
+  * `blast`
+    * `blast.DUST = false` -- Filter out low complexity regions
+    * `blast.EVALUE = 0.001` -- E-value filter for blast
+  * `general`
+    * `general.FRAME_LENGTH = 100` -- Length of alignment checker frame (b.p.)
+    * `general.MIN_END = 10` -- Minimum number of end good columns
+    * `general.MIN_IDENTITY = 0.9` -- Minimum acceptable block identity (0.9 is 90%)
+    * `general.MIN_LENGTH = 100` -- Minimum acceptable length of fragment (b.p.)
+  * `util`
+    * `util.WORKERS = 1` -- Number of parallel workers
 
 This list is generated from file `src/npge/config.lua` by function
 `npge.util.configGenerator({markdown=true})`.
