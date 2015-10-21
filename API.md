@@ -589,4 +589,251 @@ To apply a transient change from Lua, use the following code:
   FRAME_LENGTH = 100,
 }
 
+
 ```
+## Alignment and string functions of NPGe
+
+These functions helps dealing with DNA sequences and alignments
+in Lua. A sequence is represented with Lua string. An alignment
+is represented with Lua list of strings.
+
+Only these functions must be used from other modules to deal
+with content of DNA sequences. Don't write dozens of consensus
+getting functions!
+
+Alignment and string functions are in `npge.alignment`.
+Create an alias for it:
+
+```lua
+>  alignment = npge.alignment
+```
+
+### Complement sequence
+
+```lua
+>  alignment.complement('AAG')
+"CTT"
+
+>  alignment.complementRows({'AAG', 'GGG'})
+{ "CTT", "CCC",  }
+```
+
+### Consensus
+
+```lua
+>  alignment.consensus({'AAG', 'AAC', 'A-C'})
+"AAC"
+
+>  alignment.consensus({'AAG'})
+"AAG"
+```
+
+### Filter out unknown letters
+
+All letters are uppercased.
+Letters from [IUPAC code for incomplete nucleic acid
+specification][n] ("N", "R", "Y", "M", "K", "S", "W",
+"H", "B", "V", "D") are replaced with "N".
+All unknown letters are skipped.
+
+```lua
+>  alignment.toAtgcn("A-T~G")
+"ATG"
+
+>  alignment.toAtgcnAndGap("A-T~G")
+"A-TG"
+```
+
+### Join alignments
+
+```lua
+>  alignment.join({
+>> "AT",
+>> "A-",
+>> }, {
+>> "CC",
+>> "CG",
+>> })
+{
+  "ATCC",
+  "A-CG",
+}
+```
+
+### Unwinding gapped rows
+
+A "row" is a sequence with gaps.
+
+"Unwinding" means making a row from two rows:
+
+  * *consensus* with gaps added,
+  * *original* row which is in the alignment
+    producing the consensus.
+
+Example:
+```
+Original alignment:
+
+   AAGC
+   ATGT
+   AT-C  <-- original
+   ====
+   ATGC  <-- consensus
+
+Alignment of consensuses:
+
+   A-TGC  <-- consensus of alignment 1
+   AATGC
+
+Result of unwinding:
+
+>  alignment.unwindRow('A-TGC', 'AT-C')
+"A-T-C"
+```
+
+Result of unwinding is used when a block build on consensuses
+is converted into a block built on original sequences (function
+`npge.block.unwind`).
+
+### Scoring an alignment
+
+Calculate identity:
+
+```lua
+>  ident, good, all = alignment.identity({'AAG', 'AAC', 'A-C'})
+>  print(ident, good, all)
+0.33333333333333        1       3
+```
+
+Function `alignment.goodColumns` takes an alignment and
+returns a list of integers, which are scores of corresponding
+columns. Normally score belongs to the interval [0, 100].
+100 corresponds to perfect column (no gaps, no N's all letters
+are equal), 0 corresponds to bad column.
+
+Example:
+
+```lua
+>  alignment.goodColumns({
+>> "AAATTT",
+>> "A--TAT",
+>> })
+{ 100, 20, 20, 100, 0, 100, }
+
+>  alignment.goodColumns({
+>> "AAA-----ATTATTCN",
+>> "GGGGGGGGATTATTC-",
+>> })
+{ 0, 0, 0, 48, 48, 48, 48, 48,
+  100, 100, 100, 100, 100, 100, 100,
+  0, }
+```
+
+Scores of a column with a gap depends on neighbour columns
+(whether they also have a gap).
+
+Function `goodSlices` takes a list returned by `goodColumns`
+as well as some constants and returns a list of good slices.
+Each slice is a tuple {start, stop}. Indices start and stop
+are 0-based.
+
+```lua
+>  frame_length = 4
+>  frame_end = 1
+>  min_identity = 1.0
+>  min_length = 3
+>  good_col = alignment.goodColumns({
+>> "AAA-----ATTATTCN",
+>> "GGGGGGGGATTATTC-",
+>> })
+>  good_col
+{ 0, 0, 0, 48, 48, 48, 48, 48,
+  100, 100, 100, 100, 100, 100, 100,
+  0, }
+>  alignment.goodSlices(good_col, frame_length, frame_end,
+>> min_identity, min_length)
+{
+  { 8, 14,  },
+}
+```
+
+### Make alignment
+
+There are several functions which build an alignment.
+They split input to alignable and non-alignable parts
+and return both of them.
+
+Function `alignment.moveIdentical` takes a list of sequences
+and tries to align them without gaps and without mismatches
+from left to right. It returns an alignment and a list of
+remaining parts of sequences:
+
+```lua
+>  alignment.moveIdentical({
+>> 'ATGC',
+>> 'ATC',
+>> })
+{ "AT",
+  "AT", }
+{ "GC",
+  "C", }
+```
+
+Function `alignment.left` is similar to
+`alignment.moveIdentical`, but it allows gaps and mismatches.
+It is regulated by NPGe configuration `npge.config.alignment`
+(see above).
+
+```lua
+>  alignment.left({
+>> 'AGTATGA',
+>> 'AGATGTTT',
+>> })
+{ "AGTATG",
+  "AG-ATG", }
+{ "A",
+  "TTT", }
+```
+
+Function `alignment.anchor` takes a list of sequences and
+tries to find an anchor. An anchor is a sequence of length
+`npge.config.alignment.ANCHOR` which belongs to all sequences.
+If it can't find an anchor, it returns nothing.
+If it succeeds, it returns three lists:
+
+  * a list of parts of sequences *before* the anchor
+  * a list of anchor sequences
+  * a list of parts of sequences *after* the anchor
+
+```lua
+>  npge.config.alignment.ANCHOR
+7
+>  alignment.anchor({
+>> 'AAAATTATTCN',
+>> 'GGGGGGGGATTATTC',
+>> })
+{ "AAA",
+  "GGGGGGGG",  }
+{ "ATTATTC",
+  "ATTATTC",  }
+{ "N",
+  "",  }
+```
+
+Function `alignment.alignRows` takes a list of sequences
+and returns an alignment. Second argument `only_left` is
+optional. If it is truthy, the sequences are considered
+aligned only from left, right ends are considered not aligned.
+
+```lua
+>  alignment.alignRows({
+>> 'AAAATTATTCN',
+>> 'GGGGGGGGATTATTC',
+>> })
+{ "AAA-----ATTATTCN",
+  "GGGGGGGGATTATTC-",  }
+```
+
+Function `alignment.alignRows` uses previously defined
+functions (`moveIdentical`, `left`, `anchor`, `complementRows`,
+`identity`, `join`).
