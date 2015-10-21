@@ -837,3 +837,52 @@ aligned only from left, right ends are considered not aligned.
 Function `alignment.alignRows` uses previously defined
 functions (`moveIdentical`, `left`, `anchor`, `complementRows`,
 `identity`, `join`).
+
+## Module npge.fragment
+
+Module `npge.fragment` includes functions operating on objects
+of class `Fragment`.
+
+```lua
+>  seq_name, start, stop, ori = npge.fragment.parseId("A_0_100_1")
+>  print(seq_name, start, stop, ori)
+A       0       100     1
+
+>  s = npge.model.Sequence("s", "ATGCTT")
+>  f = model.Fragment(s, 1, 3, 1)
+>  f
+Fragment s_1_3_1 of length 3
+>  npge.fragment.reverse(f)
+Fragment s_3_1_-1 of length 3
+
+>  npge.fragment.sub(f, 2, 1, -1)
+"GC"
+>  f1 = npge.fragment.subfragment(f, 2, 1, -1)
+>  f1
+Fragment s_3_2_-1 of length 2
+>  f1:text()
+"GC"
+
+>  npge.fragment.hasPos(f, 0)
+false
+>  npge.fragment.hasPos(f, 2)
+true
+
+>  npge.fragment.fragmentToSequence(f, 0)
+1
+>  npge.fragment.fragmentToSequence(f, 1)
+2
+>  npge.fragment.sequenceToFragment(f, 1)
+0
+>  npge.fragment.sequenceToFragment(f, 2)
+1
+
+>  small_fragment = npge.model.Fragment(s, 2, 2, 1)
+>  large_fragment = npge.model.Fragment(s, 1, 2, 1)
+>  npge.fragment.isSubfragmentOf(small_fragment, large_fragment)
+true
+>  npge.fragment.isSubfragmentOf(large_fragment, small_fragment)
+false
+>  npge.fragment.exclude(large_fragment, small_fragment)
+Fragment s_1_1_1 of length 1
+```
