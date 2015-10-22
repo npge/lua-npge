@@ -4,11 +4,11 @@
 
 return function(id)
     local seqname, start, stop, ori =
-        id:match("^(%S+)_(%d+)_(%d+)_(-?1)$")
+        id:match("^([^%s_]+)_(%d+)_(%d+)_(-?1)$")
     if not seqname then
         -- old format
         seqname, start, stop =
-            id:match("^(%S+)_(%d+)_(-?%d+)$")
+            id:match("^([^%s_]+)_(%d+)_(-?%d+)$")
         start = tonumber(start)
         stop = tonumber(stop)
         if not start or not stop then
