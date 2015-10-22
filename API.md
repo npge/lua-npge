@@ -419,6 +419,14 @@ AT-
 C-C
 ```
 
+Blocks can be compared with operator `==`. Blocks are equal
+if they are composed from equal fragments and have equal
+alignments.
+
+Blocks are ordered with operator `<` as well. The order
+is not specified, but it has the following property:
+`a < b and b < c  =>  a < c`.
+
 ### BlockSet
 
 BlockSet is a collection of Sequences + a collection of
@@ -603,8 +611,8 @@ Sequence BRUAB&chr1&c of length 6
 
 BlockSets can be compared with operator `==`. Comparison
 succeeds if blocksets have same sets of sequences and
-sets of blocks. To compare only sets of sequences use method
-`sameSequences`.
+sets of blocks. Block names are ignored. To compare only
+sets of sequences use method `sameSequences`.
 
 ## Configuration
 
