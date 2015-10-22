@@ -544,6 +544,9 @@ describe("npge.model.BlockSet", function()
             BS({s1, s2}, {B(f1), B(f1a), B(f2)}))
         assert.not_equal(BS({s1, s2}, {B(f1), B(f1), B(f2)}),
             BS({s1, s2}, {B(f1), B(f1a), B(f2)}))
+        -- names are ignores
+        assert.equal(BS({s1, s2}, {x=B(f1)}),
+            BS({s1, s2}, {y=B(f1)}))
         -- method BlockSet:cmp
         local status, reason =
             BS({s1, s2}, {B(f1), B(f1), B(f2)}):cmp(
