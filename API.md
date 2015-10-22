@@ -265,7 +265,7 @@ succeeds iff all properties of fragments are equal.
 true
 
 >  part1 == part2
-true
+false
 ```
 
 Fragments can be compared with operators `<`, `>`, `<=`, `>=`.
