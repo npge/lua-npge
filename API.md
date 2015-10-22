@@ -210,6 +210,7 @@ Fragment BRUAB&chr1&c_2_0_-1 of length 3
 A fragment crossing the "beginning" of a circular sequence
 is called *parted fragment*:
 ```lua
+>  seq = model.Sequence("BRUAB&chr1&c", "ATTCCC", "Brucella")
 >  start = 4
 >  stop = 1
 >  ori = 1
@@ -253,13 +254,19 @@ Method `:parts()` returns two fragments. First of them has
 start position of the parent fragment:
 
 ```lua
->  part1, part2 = fr:parts() -- only for parted fragments
+>  seq = model.Sequence("BRUAB&chr1&c", "ATTCCC")
+>  parted = model.Fragment(seq, 4, 1, 1)
+>  part1, part2 = parted:parts() -- only for parted fragments
 
 >  part1
 Fragment BRUAB&chr1&c_4_5_1 of length 2
+>  part1:text()
+"CC"
 
 >  part2
 Fragment BRUAB&chr1&c_0_1_1 of length 2
+>  part2:text()
+"AT"
 ```
 
 Fragments can be compared with operator `==`. Comparison
@@ -277,6 +284,7 @@ Fragments can be compared with operators `<`, `>`, `<=`, `>=`.
 Fragments are compared as tuples
 (sequence.name, min-pos, max-pos, ori). Min-pos is minimum of
 start and stop. Max-pos is maximum of start and stop.
+*Note*. For parted fragments the same definition is used.
 
 ```lua
 >  part1 < part2
@@ -284,15 +292,27 @@ false
 ```
 
 Counting shared positions of two fragments:
+
 ```lua
->  fr:common(part1)
+-- create fragments
+>  seq = model.Sequence("BRUAB&chr1&c", "ATTCCC")
+>  parted = model.Fragment(seq, 4, 1, 1)
+>  fr2 = model.Fragment(seq, 1, 4, 1)
+>  part1, part2 = parted:parts() -- only for parted fragments
+
+>  parted:common(part1)
 2
 
->  part1:common(fr)
+>  part1:common(parted)
 2
 
 >  part1:common(part2)
 0
+
+-- parted fragment may have two overlapping areas
+-- they are counted correctly
+>  parted:common(fr2)
+2
 ```
 
 ### Block
@@ -309,6 +329,9 @@ There are two methods to create a block:
 
 >  bl1:text(part2)
 "AT"
+
+>  bl1
+Block of 2 fragments, length 2
 ```
 
 ```lua
@@ -320,6 +343,10 @@ There are two methods to create a block:
 >  bl2:text(part2)
 "AT-"
 ```
+
+In the latter case alignment's content must correspond to
+sequence's content. A column can contain gaps only. Such
+a column does count in `:length()` method.
 
 Methods:
 
@@ -333,30 +360,41 @@ Methods:
 >  bl2:text(part1)
 "C-C"
 
--- convert alignment (block) and fragment positions
+-- convert fragment position to its position in alignment
 
 >  bl2:fragment2block(part1, 0)
 0
 >  bl2:fragment2block(part1, 1)
 2
 
+-- convert alignment position to its position in fragment
+-- return -1 for gaps
+
 >  bl2:block2fragment(part1, 0)
 0
->  bl2:block2fragment(part1, 1)
+>  bl2:block2fragment(part1, 1) -- gap
 -1
 >  bl2:block2fragment(part1, 2)
 1
 
+-- convert alignment position to its position in fragment
+-- for gap positions find nearest left non-gap position
+-- if there is no such a position, return -1
+
 >  bl2:block2left(part1, 0)
 0
->  bl2:block2left(part1, 1)
+>  bl2:block2left(part1, 1) -- gap
 0
 >  bl2:block2left(part1, 2)
 1
 
+-- convert alignment position to its position in fragment
+-- for gap positions find nearest right non-gap position
+-- if there is no such a position, return -1
+
 >  bl2:block2right(part1, 0)
 0
->  bl2:block2right(part1, 1)
+>  bl2:block2right(part1, 1) -- gap
 1
 >  bl2:block2right(part1, 2)
 1
@@ -436,6 +474,7 @@ BlockSet stores names of blocks:
 ```lua
 >  bs = model.BlockSet({seq}, {xxx=block1, yyy=block2})
 
+-- convert names to blocks and vice-versa
 >  bs:blockByName("xxx")
 Block of 2 fragments, length 2
 >  bs:blockByName("yyy")
@@ -445,12 +484,14 @@ Block of 1 fragments, length 2
 >  bs:nameByBlock(block2)
 "yyy"
 
+-- iterate through blocks with names
 >  for b, name in bs:iterBlocks() do
 >> print("block " .. name .. " has size " .. b:size())
 >> end
 block xxx has size 2
 block yyy has size 1
 
+-- get a map from name to block
 >  bs:blocks(true)
 {
   xxx = Block of 2 fragments, length 2,
@@ -460,6 +501,16 @@ block yyy has size 1
 
 If you provide a list of blocks without names, then block names
 are keys of a Lua table converted to strings: "1", "2", etc.
+
+```lua
+>  bs = model.BlockSet({seq}, {block1, block2})
+
+>  bs:blocks(true)
+{
+  ["1"] = Block of 2 fragments, length 2,
+  ["2"] = Block of 1 fragments, length 2,
+}
+```
 
 Get block by fragment:
 ```lua
@@ -494,6 +545,26 @@ BRUAB&chr1&c_3_2_-1
 BRUAB&chr1&c_4_5_1
 ```
 
+For a parted fragment:
+
+```lua
+>  seq = model.Sequence("BRUAB&chr1&c", "ATTCCC")
+>  parted = model.Fragment(seq, 4, 1, 1)
+>  nonparted = model.Fragment(seq, 2, 3, 1)
+>  bs = model.BlockSet({seq}, {model.Block({parted, nonparted})})
+>  bs:fragments(seq)
+{ Fragment BRUAB&chr1&c_4_1_1 of length 4 (parted)
+  Fragment BRUAB&chr1&c_2_3_1 of length 2,
+  Fragment BRUAB&chr1&c_4_1_1 of length 4 (parted), }
+
+>  for fragment, part in bs:iterFragments(seq) do
+>> print(fragment:id(), part:id(), fragment:parted())
+>> end
+BRUAB&chr1&c_4_1_1      BRUAB&chr1&c_0_1_1      true
+BRUAB&chr1&c_2_3_1      BRUAB&chr1&c_2_3_1      false
+BRUAB&chr1&c_4_1_1      BRUAB&chr1&c_4_5_1      true
+```
+
 BlockSet can find previous and next fragment for the given
 fragment. These methods respect sequence's orientation and
 ignore fragment's orientation.
@@ -509,6 +580,9 @@ Fragment BRUAB&chr1&c_4_5_1 of length 2
 >  bs:prev(fr2)
 Fragment BRUAB&chr1&c_0_1_1 of length 2
 ```
+
+*Note*. For a circular sequence, iterating with `next()`
+and `prev()` is infinite.
 
 Get information about sequences:
 ```lua
