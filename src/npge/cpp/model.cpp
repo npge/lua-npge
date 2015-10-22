@@ -186,34 +186,37 @@ const std::string& Sequence::description() const {
     return description_;
 }
 
-std::string Sequence::genome() const {
-    using namespace boost::algorithm;
-    Strings parts;
-    split(parts, name(), is_any_of("&"));
-    if (parts.size() == 3) {
-        return parts[0];
-    } else {
-        return "";
+struct GenomeChrCirc {
+    GenomeChrCirc(const std::string& name):
+        circ(false) {
+        using namespace boost::algorithm;
+        Strings parts;
+        split(parts, name, is_any_of("&"));
+        if (parts.size() == 3 && !parts[0].empty() &&
+                !parts[1].empty() && !parts[2].empty()) {
+            genome.swap(parts[0]);
+            chr.swap(parts[1]);
+            circ = (parts[2][0] == 'c');
+        }
     }
+
+    std::string genome, chr;
+    bool circ;
+};
+
+std::string Sequence::genome() const {
+    GenomeChrCirc gcc(name());
+    return gcc.genome;
 }
 
 std::string Sequence::chromosome() const {
-    using namespace boost::algorithm;
-    Strings parts;
-    split(parts, name(), is_any_of("&"));
-    if (parts.size() == 3) {
-        return parts[1];
-    } else {
-        return "";
-    }
+    GenomeChrCirc gcc(name());
+    return gcc.chr;
 }
 
 bool Sequence::circular() const {
-    using namespace boost::algorithm;
-    Strings parts;
-    split(parts, name(), is_any_of("&"));
-    return (parts.size() == 3 && parts[2].length() >= 1 &&
-            parts[2][0] == 'c');
+    GenomeChrCirc gcc(name());
+    return gcc.circ;
 }
 
 int Sequence::length() const {

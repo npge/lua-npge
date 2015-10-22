@@ -113,7 +113,7 @@ It can represent temporary generated sequence
 
 Sequence has the following properties:
 
-  * `name` (e.g., "BRUAB&chr1&c")
+  * `name` (e.g., "BRUAB&chr1&c", "consensus0001")
   * `text` (e.g., "ATTCCC")
   * `description` (e.g., "Brucella")
 
@@ -160,6 +160,11 @@ true
 >  seq:sub(0, 2)
 "ATT"
 ```
+
+Methods `genome()`, `chromosome()` and `circular()` work if
+only the name's format is "GENOME&CHROMOSOME&CIRCULARITY",
+because they get data from the name. Genome or chromosome
+can't be empty in this case.
 
 Sequences can be compared with operator `==`. Comparison
 ignores all properties but sequence name.
