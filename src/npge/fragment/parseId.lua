@@ -9,15 +9,18 @@ return function(id)
         -- old format
         seqname, start, stop =
             id:match("^(%S+)_(%d+)_(-?%d+)$")
+        start = assert(tonumber(start))
+        stop = assert(tonumber(stop))
         ori = (start <= stop) and 1 or -1
-        if stop == '-1' then
+        if stop == -1 then
             -- special case for reverse fragment of length 1
             stop = start
             ori = -1
         end
+    else
+        start = assert(tonumber(start))
+        stop = assert(tonumber(stop))
+        ori = assert(tonumber(ori))
     end
-    start = assert(tonumber(start))
-    stop = assert(tonumber(stop))
-    ori = assert(tonumber(ori))
     return seqname, start, stop, ori
 end
