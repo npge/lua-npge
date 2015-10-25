@@ -199,4 +199,20 @@ describe("npge.alignment.goodSlices", function()
             {100, 100, 99, 99, 99, 99, 99, 99, 100, 100},
             10, 10, 0.6, 10), {})
     end)
+
+    it("finds good slices (bad frame_length negative)",
+    function()
+        local goodSlices = require 'npge.alignment.goodSlices'
+        assert.same(goodSlices({100, 0, 100, 100, 100,
+            0, 0, 0, 0, 100, 100, 100},
+            -1, 1, 0.6, 3), {})
+    end)
+
+    it("finds good slices (bad frame_length > block_length)",
+    function()
+        local goodSlices = require 'npge.alignment.goodSlices'
+        assert.same(goodSlices({100, 0, 100, 100, 100,
+            0, 0, 0, 0, 100, 100, 100},
+            100, 1, 0.6, 3), {})
+    end)
 end)
