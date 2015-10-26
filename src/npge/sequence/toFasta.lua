@@ -3,7 +3,8 @@
 -- See the LICENSE file for terms of use.
 
 return function(sequence)
-    local asLines = require 'npge.util.asLines'
-    return (">%s %s\n%s\n"):format(sequence:name(),
-        sequence:description(), asLines(sequence:text()))
+    local toFasta = require 'npge.util.toFasta'
+    return toFasta(sequence:name(),
+        sequence:description(),
+        sequence:text())
 end

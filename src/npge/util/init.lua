@@ -30,4 +30,5 @@ return {
     tmpName = require 'npge.util.tmpName',
     nullName = require 'npge.util.nullName',
     configGenerator = require 'npge.util.configGenerator',
+    toFasta = require 'npge.util.toFasta',
 }

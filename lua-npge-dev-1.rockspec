@@ -73,6 +73,7 @@ build = {
         ['npge.util.textToIt'] = 'src/npge/util/textToIt.lua',
         ['npge.util.tmpName'] = 'src/npge/util/tmpName.lua',
         ['npge.util.nullName'] = 'src/npge/util/nullName.lua',
+        ['npge.util.toFasta'] = 'src/npge/util/toFasta.lua',
         ['npge.util.configGenerator'] = 'src/npge/util/configGenerator.lua',
         ['npge.model'] = 'src/npge/model/init.lua',
         ['npge.model.Block'] = 'src/npge/model/Block.lua',
