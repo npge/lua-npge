@@ -14,9 +14,9 @@
 --    Each slice is a table {start, stop}
 -- Indices start and stop are 0-based.
 
-return function(good_col,
-        frame_length, frame_end,
-        min_identity, min_length)
+-- single line to satisfy luacov
+-- https://github.com/keplerproject/luacov/issues/33
+return function(good_col, frame_length, frame_end, min_identity, min_length)
     local impl = require 'npge.cpp'.func.goodSlices
     local minIdentical = require 'npge.alignment.minIdentical'
     local ident = minIdentical(min_identity)
