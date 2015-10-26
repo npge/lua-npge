@@ -7,8 +7,9 @@ return function(id)
         id:match("^([^%s_]+)_(%d+)_(%d+)_(-?1)$")
     if not seqname then
         -- old format
-        seqname, start, stop =
-            id:match("^([^%s_]+)_(%d+)_(-?%d+)$")
+        -- single line to satisfy luacov
+        -- https://github.com/keplerproject/luacov/issues/33
+        seqname, start, stop = id:match("^([^%s_]+)_(%d+)_(-?%d+)$")
         start = tonumber(start)
         stop = tonumber(stop)
         if not start or not stop then
