@@ -10,45 +10,21 @@ return function(lines, blockset_with_sequences)
     end
     local bs1 = blockset_with_sequences
     local blockname2fragments = {}
-    local name, description, text_lines
-    local function tryAddSeq()
-        if name then
-            -- add sequence
-            local ev = require 'npge.util.extractValue'
-            local parseId = require 'npge.fragment.parseId'
-            local blockname = assert(ev(description, "block"))
-            local seqname, start, stop, ori = parseId(name)
-            local seq = assert(bs1:sequenceByName(seqname))
-            local Fragment = require 'npge.model.Fragment'
-            local fragment = Fragment(seq, start, stop, ori)
-            local text = table.concat(text_lines)
-            if not blockname2fragments[blockname] then
-                blockname2fragments[blockname] = {}
-            end
-            table.insert(blockname2fragments[blockname],
-                {fragment, text})
-            name = nil
-            description = nil
-            text_lines = nil
+    local fromFasta = require 'npge.util.fromFasta'
+    local ev = require 'npge.util.extractValue'
+    local parseId = require 'npge.fragment.parseId'
+    local Fragment = require 'npge.model.Fragment'
+    for name, description, text in fromFasta(lines) do
+        local blockname = assert(ev(description, "block"))
+        local seqname, start, stop, ori = parseId(name)
+        local seq = assert(bs1:sequenceByName(seqname))
+        local fragment = Fragment(seq, start, stop, ori)
+        if not blockname2fragments[blockname] then
+            blockname2fragments[blockname] = {}
         end
+        table.insert(blockname2fragments[blockname],
+            {fragment, text})
     end
-    for line in lines do
-        if line:sub(1, 1) == '>' then
-            tryAddSeq()
-            local header = line:sub(2, -1)
-            local split = require 'npge.util.split'
-            header = split(header, '%s+', 1)
-            name = header[1]
-            description = header[2]
-            text_lines = {}
-        elseif #line > 0 then
-            assert(name)
-            table.insert(text_lines, line)
-        end
-    end
-    -- add last sequence
-    tryAddSeq()
-    --
     local blocks = {}
     for blockname, fragments in pairs(blockname2fragments) do
         local Block = require 'npge.model.Block'
