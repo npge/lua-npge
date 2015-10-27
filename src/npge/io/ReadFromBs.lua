@@ -28,7 +28,7 @@ return function(lines, blockset_with_sequences)
     local blocks = {}
     for blockname, fragments in pairs(blockname2fragments) do
         local Block = require 'npge.model.Block'
-        table.insert(blocks, Block(fragments))
+        blocks[blockname] = Block(fragments)
     end
     local BlockSet = require 'npge.model.BlockSet'
     return BlockSet(bs1:sequences(), blocks)

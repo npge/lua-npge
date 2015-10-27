@@ -43,23 +43,29 @@ AT-
         --
         local Block = require 'npge.model.Block'
         local Fragment = require 'npge.model.Fragment'
+        local b1 = Block({
+            Fragment(s1, 0, 1, 1),
+            Fragment(s2, 0, 1, 1),
+            Fragment(s3, 5, 4, -1),
+        })
+        local b2 = Block({
+            Fragment(s1, 0, 0, 1),
+            Fragment(s2, 1, 1, -1),
+            Fragment(s3, 5, 5, -1),
+        })
+        local b3 = Block({
+            {Fragment(s1, 1, 0, -1), 'AT-'},
+            {Fragment(s2, 1, 0, -1), 'A-T'},
+            {Fragment(s3, 4, 5, 1), 'AT-'},
+        })
         local bs3 = BlockSet({s1, s2, s3}, {
-            Block({
-                Fragment(s1, 0, 1, 1),
-                Fragment(s2, 0, 1, 1),
-                Fragment(s3, 5, 4, -1),
-            }),
-            Block({
-                Fragment(s1, 0, 0, 1),
-                Fragment(s2, 1, 1, -1),
-                Fragment(s3, 5, 5, -1),
-            }),
-            Block({
-                {Fragment(s1, 1, 0, -1), 'AT-'},
-                {Fragment(s2, 1, 0, -1), 'A-T'},
-                {Fragment(s3, 4, 5, 1), 'AT-'},
-            }),
+            b1,
+            b2,
+            b3,
         })
         assert.equal(bs2, bs3)
+        assert.equal(bs2:blockByName("b1"), b1)
+        assert.equal(bs2:blockByName("b2"), b2)
+        assert.equal(bs2:blockByName("b3"), b3)
     end)
 end)
