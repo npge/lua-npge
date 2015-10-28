@@ -4,6 +4,7 @@
  */
 
 #include <cassert>
+#include <climits>
 #include <cstdlib>
 #include <cstring>
 #include <memory>
@@ -470,6 +471,7 @@ int lua_Block(lua_State *L) {
             lua_rawgeti(L, -1, 2); // row
             size_t s;
             const char* t = luaL_checklstring(L, -1, &s);
+            ASSERT_LTE(s, INT_MAX);
             rows[i] = CString(t, s);
             lua_pop(L, 2); // row, {fragment, row}
         }
