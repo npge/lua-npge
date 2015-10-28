@@ -3,9 +3,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#include <cstdlib>
-#include <cstring>
 #include <cassert>
+#include <cstdlib>
 #include <cstring>
 #include <memory>
 #include <boost/scoped_array.hpp>
