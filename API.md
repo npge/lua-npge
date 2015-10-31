@@ -81,7 +81,7 @@ Now you are ready to use NPGe:
 
 ## Data structures provided by NPGe
 
-Ses also [specs](spec/model).
+See also [specs](spec/model).
 
 Data structures provide low level access to NPG.
 All data structures are immutable: no changes after creation.
