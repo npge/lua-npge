@@ -251,7 +251,8 @@ true
 ```
 
 Method `:parts()` returns two fragments. First of them has
-start position of the parent fragment:
+start position of the parent fragment. This method can be
+applied only to a parted fragment.
 
 ```lua
 >  seq = model.Sequence("BRUAB&chr1&c", "ATTCCC")
