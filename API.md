@@ -629,7 +629,7 @@ There are following configuration parameters:
     * `blast.EVALUE = 0.001` -- E-value filter for blast
   * `general`
     * `general.FRAME_LENGTH = 100` -- Length of alignment checker frame (b.p.)
-    * `general.MIN_END = 10` -- Minimum number of end good columns
+    * `general.MIN_END = 10` -- Minimum number of end columns with good alignment
     * `general.MIN_IDENTITY = 0.9` -- Minimum acceptable block identity (0.9 is 90%)
     * `general.MIN_LENGTH = 100` -- Minimum acceptable length of fragment (b.p.)
   * `util`

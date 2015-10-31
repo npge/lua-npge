@@ -14,7 +14,7 @@ local config = {
         "Length of alignment checker frame (b.p.)"},
 
         MIN_END = {10,
-        "Minimum number of end good columns"},
+        "Minimum number of end columns with good alignment"},
     },
 
     blast = {
