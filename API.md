@@ -539,13 +539,8 @@ BlockSet can find overlapping fragments very fast:
   Fragment BRUAB&chr1&c_3_2_-1 of length 2,  }
 ```
 
-Get a list of fragments by sequence ordered by positions:
+Iterate fragments by sequence ordered by positions:
 ```lua
->  bs:fragments(seq)
-{ Fragment BRUAB&chr1&c_0_1_1 of length 2,
-  Fragment BRUAB&chr1&c_3_2_-1 of length 2,
-  Fragment BRUAB&chr1&c_4_5_1 of length 2,  }
-
 >  for f in bs:iterFragments(seq) do
 >> print(f:id())
 >> end
@@ -561,11 +556,6 @@ For a parted fragment:
 >  parted = model.Fragment(seq, 4, 1, 1)
 >  nonparted = model.Fragment(seq, 2, 3, 1)
 >  bs = model.BlockSet({seq}, {model.Block({parted, nonparted})})
->  bs:fragments(seq)
-{ Fragment BRUAB&chr1&c_4_1_1 of length 4 (parted)
-  Fragment BRUAB&chr1&c_2_3_1 of length 2,
-  Fragment BRUAB&chr1&c_4_1_1 of length 4 (parted), }
-
 >  for fragment, part in bs:iterFragments(seq) do
 >> print(fragment:id(), part:id(), fragment:parted())
 >> end
@@ -573,6 +563,9 @@ BRUAB&chr1&c_4_1_1      BRUAB&chr1&c_0_1_1      true
 BRUAB&chr1&c_2_3_1      BRUAB&chr1&c_2_3_1      false
 BRUAB&chr1&c_4_1_1      BRUAB&chr1&c_4_5_1      true
 ```
+The iterator returned by `iterFragments` yields the fragment
+from the BlockSet and a part of the fragment. The former is
+not equal to the latter only for a parted fragment.
 
 BlockSet can find previous and next fragment for the given
 fragment. These methods respect sequence's orientation and

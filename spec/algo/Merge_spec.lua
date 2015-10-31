@@ -15,7 +15,11 @@ describe("npge.algo.Merge", function()
         local Merge = require 'npge.algo.Merge'
         local sum = Merge({bs1, bs2})
         assert.truthy(sum:sameSequences(bs1))
-        assert.same(sum:fragments(s), {f1, f2})
+        local clone = require 'npge.util.clone'
+        local arrayFromIt = clone.arrayFromIt
+        local it = sum:iterFragments(s)
+        local fragments = arrayFromIt(it)
+        assert.same(fragments, {f1, f2})
         assert.equal(sum:size(), 2)
     end)
 

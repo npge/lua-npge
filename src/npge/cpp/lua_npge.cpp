@@ -891,21 +891,6 @@ int lua_BlockSet_iterSequences(lua_State *L) {
     return 1;
 }
 
-int lua_BlockSet_fragments(lua_State *L) {
-    const BlockSetPtr& bs = lua_tobs(L, 1);
-    const SequencePtr& seq = lua_toseq(L, 2);
-    const Fragments& parts = bs->parts(seq);
-    int n = parts.size();
-    lua_createtable(L, n, 0);
-    for (int i = 0; i < n; i++) {
-        const FragmentPtr& part = parts[i];
-        const FragmentPtr& f = bs->parentOrFragment(part);
-        lua_pushfr(L, f);
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
-}
-
 // first upvalue: blockset
 // second upvalue: sequence
 // third upvalue: index of sequence
@@ -1050,7 +1035,6 @@ static const luaL_Reg BlockSet_methods[] = {
     {"nameByBlock", lua_BlockSet_nameByBlock},
     {"hasBlock", lua_BlockSet_hasBlock},
     {"iterBlocks", lua_BlockSet_iterBlocks},
-    {"fragments", wrap<lua_BlockSet_fragments>::func},
     {"iterFragments", wrap<lua_BlockSet_iterFragments>::func},
     {"sequences", lua_BlockSet_sequences},
     {"iterSequences", lua_BlockSet_iterSequences},
