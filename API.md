@@ -718,8 +718,8 @@ specification][n] ("N", "R", "Y", "M", "K", "S", "W",
 All unknown letters are skipped.
 
 ```lua
->  alignment.toAtgcn("A-T~G")
-"ATG"
+>  alignment.toAtgcn("A-N~G W")
+"ANGN"
 
 >  alignment.toAtgcnAndGap("A-T~G")
 "A-TG"
