@@ -298,7 +298,6 @@ Counting shared positions of two fragments:
 -- create fragments
 >  seq = model.Sequence("BRUAB&chr1&c", "ATTCCC")
 >  parted = model.Fragment(seq, 4, 1, 1)
->  fr2 = model.Fragment(seq, 1, 4, 1)
 >  part1, part2 = parted:parts() -- only for parted fragments
 
 >  parted:common(part1)
@@ -312,6 +311,7 @@ Counting shared positions of two fragments:
 
 -- parted fragment may have two overlapping areas
 -- they are counted correctly
+>  fr2 = model.Fragment(seq, 1, 4, 1)
 >  parted:common(fr2)
 2
 ```
