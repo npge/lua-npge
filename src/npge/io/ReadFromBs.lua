@@ -7,7 +7,8 @@ local function readWithReference(generator, bs1)
     local ev = require 'npge.util.extractValue'
     local parseId = require 'npge.fragment.parseId'
     for name, description, text in generator do
-        local blockname = assert(ev(description, "block"))
+        local blockname = assert(ev(description, "block"),
+            ("No block name found in %q"):format(description))
         local seqname, start, stop, ori = parseId(name)
         if not blockname2fragments[blockname] then
             blockname2fragments[blockname] = {}
