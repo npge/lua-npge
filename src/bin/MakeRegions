@@ -1,0 +1,56 @@
+#!/usr/bin/env lua
+
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
+local npge = require 'npge'
+
+local bs_fname = assert(arg[1])
+local seqs_fname = assert(arg[2]) -- TODO remove this argument
+local seqs_lines = io.lines(seqs_fname)
+local bs_lines = io.lines(bs_fname)
+local seqs = npge.io.ReadSequencesFromFasta(seqs_lines)
+local bs = npge.io.ReadFromBs(bs_lines, seqs)
+
+local function makeRegions(block)
+    local alignment = {}
+    for fr in block:iterFragments() do
+        table.insert(alignment, block:text(fr))
+    end
+    local good_col = npge.alignment.goodColumns(alignment)
+    local regions = {}
+    local region, prev_color
+    for _, q in ipairs(good_col) do
+        local color = (q == 100) and 1 or 0
+        if color == prev_color then
+            region.length = region.length + 1
+        else
+            region = {length = 1, color = color}
+            table.insert(regions, region)
+        end
+        prev_color = color
+    end
+    return regions
+end
+
+local COLORS = {
+    [0] = '-',
+    [1] = '+',
+}
+local LINE = "%s\t%d\n"
+local function writeRegions(regions_file, regions)
+    for _, region in ipairs(regions) do
+        local region_color = COLORS[region.color]
+        local line = LINE:format(region_color, region.length)
+        regions_file:write(line)
+    end
+end
+
+for block, name in bs:iterBlocks() do
+    local regions = makeRegions(block)
+    local regions_fname = name .. '.regions'
+    local regions_file = io.open(regions_fname, 'w')
+    writeRegions(regions_file, regions)
+    regions_file:close()
+end
