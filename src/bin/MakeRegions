@@ -4,6 +4,9 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
+-- See https://gist.github.com/starius/62a400868f3c0e6795e4
+-- See https://github.com/npge/npge/issues/26
+
 local npge = require 'npge'
 
 local bs_fname = assert(arg[1])
