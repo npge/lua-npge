@@ -83,6 +83,7 @@ local function loadConfig(_, conf)
     for section_name, section in pairs(config) do
         env[section_name] = {}
     end
+    env.Decimal = function() end -- C++ NPGe compatibility
     local conf_sandboxed, message = sandbox(env, conf)
     if conf_sandboxed then
         local status = pcall(conf_sandboxed)

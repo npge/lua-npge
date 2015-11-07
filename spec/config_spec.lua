@@ -55,6 +55,17 @@ describe("npge.config", function()
         restoreConfig()
     end)
 
+    it("reads npge.conf produced by C++ NPGe", function()
+        prepareConfig [[
+            MIN_LENGTH = 250
+            MIN_IDENTITY = Decimal('0.9')
+        ]]
+        -- load config
+        local config = require 'npge.config'
+        -- unload config
+        restoreConfig()
+    end)
+
     local function checkError(conf)
         return function()
             prepareConfig(conf)
