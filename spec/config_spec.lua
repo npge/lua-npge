@@ -39,7 +39,7 @@ describe("npge.config", function()
         package.loaded['npge.config'] = nil
         -- remove testing npge.conf
         os.remove('npge.conf')
-        -- recover previous npge.conf if it exsted
+        -- recover previous npge.conf if it existed
         local fileExists = require 'npge.util.fileExists'
         if fileExists('npge.conf-bak-by-busted') then
             os.rename('npge.conf-bak-by-busted', 'npge.conf')
