@@ -198,6 +198,7 @@ build = {
             "src/bin/MakeDrafts",
             "src/bin/BlockSetToDot",
             "src/bin/BlockInfo",
+            "src/bin/MakeRegions",
         },
     },
 }
