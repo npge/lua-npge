@@ -1,0 +1,137 @@
+#!/usr/bin/env lua
+
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
+local npge = require 'npge'
+
+local bs_fname = assert(arg[1])
+local seqs_fname = assert(arg[2]) -- TODO remove this argument
+local ndiag = assert(tonumber(arg[3]))
+-- local njtree = assert(arg[4]) -- TODO
+local seqs_lines = io.lines(seqs_fname)
+local bs_lines = io.lines(bs_fname)
+local seqs = npge.io.ReadSequencesFromFasta(seqs_lines)
+local bs = npge.io.ReadFromBs(bs_lines, seqs)
+
+local function findDiagnosticPositions(alignment)
+    local good_col = npge.alignment.goodColumns(alignment)
+    local length = #good_col
+    local diagnostic_positions = {}
+
+    local function isSubstitution(i)
+        if good_col[i] == 100 then
+            return false
+        end
+        local seen = {}
+        for _, text in ipairs(alignment) do
+            local c = text:sub(i, i)
+            if c == '-' or c == 'N' then
+                return false
+            end
+            seen[c] = true
+        end
+        local nseen = 0
+        for c in pairs(seen) do
+            nseen = nseen + 1
+        end
+        return nseen == 2
+    end
+
+    local function isPerfect(start, stop)
+        if start >= 1 and stop <= length then
+            for i = start, stop do
+                if good_col[i] ~= 100 then
+                    return false
+                end
+            end
+            return true
+        end
+        return false
+    end
+
+    for i = 1, length do
+        if isSubstitution(i) and isPerfect(i - ndiag, i - 1) and isPerfect(i + 1, i + ndiag) then
+            table.insert(diagnostic_positions, i)
+        end
+    end
+    return diagnostic_positions
+end
+
+local function partitionByColumn(alignment, col)
+    local p = {}
+    local first = alignment[1]:sub(col, col)
+    for _, text in ipairs(alignment) do
+        if text:sub(col, col) == first then
+            table.insert(p, '0')
+        else
+            table.insert(p, '1')
+        end
+    end
+    return table.concat(p)
+end
+
+local function genomesByPartition(partition, genomes)
+    local clade0 = {}
+    local clade1 = {}
+    for g, genome in ipairs(genomes) do
+        if partition:sub(g, g) == '0' then
+            table.insert(clade0, genome)
+        else
+            table.insert(clade1, genome)
+        end
+    end
+    return clade0, clade1
+end
+
+local function alignmentForGenomes(block, genomes)
+    assert(block:size(), #genomes)
+    local genome2fr = {}
+    for fr in block:iterFragments() do
+        local genome = assert(fr:sequence():genome())
+        assert(not genome2fr[genome])
+        genome2fr[genome] = fr
+    end
+    local alignment = {}
+    for _, genome in ipairs(genomes) do
+        local fr = assert(genome2fr[genome])
+        table.insert(alignment, block:text(fr))
+    end
+    return alignment
+end
+
+local function cladeToString(clade)
+    return ("{%s}"):format(table.concat(clade, ','))
+end
+
+local function isStem(name)
+    -- FIXME
+    return name:match('^s')
+end
+
+local genomes = npge.algo.Genomes(bs)
+local partition2weght = {}
+for block, name in bs:iterBlocks() do
+    if isStem(name) then
+        local alignment = alignmentForGenomes(block, genomes)
+        local diagnostic_positions = findDiagnosticPositions(alignment)
+        for _, pos in ipairs(diagnostic_positions) do
+            local partition = partitionByColumn(alignment, pos)
+            partition2weght[partition] = (partition2weght[partition] or 0) + 1
+        end
+    end
+end
+
+local items = {}
+for partition, weight in pairs(partition2weght) do
+    table.insert(items, {partition=partition, weight=weight})
+end
+table.sort(items, function(item1, item2)
+    return item1.weight > item2.weight
+end)
+
+for _, item in ipairs(items) do
+    local clade0, clade1 = genomesByPartition(item.partition, genomes)
+    print(cladeToString(clade0), cladeToString(clade1), item.weight)
+end
