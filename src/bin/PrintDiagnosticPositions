@@ -135,3 +135,7 @@ for _, item in ipairs(items) do
     local clade0, clade1 = genomesByPartition(item.partition, genomes)
     print(cladeToString(clade0), cladeToString(clade1), item.weight)
 end
+
+-- TODO read tree
+-- TODO find discrepancies with the tree
+-- TODO print block names and positions of discrepancies
