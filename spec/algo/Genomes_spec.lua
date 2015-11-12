@@ -3,11 +3,6 @@
 -- See the LICENSE file for terms of use.
 
 describe("npge.algo.Genomes", function()
-    local sorted = function(x)
-        table.sort(x)
-        return x
-    end
-
     it("gets a list of genomes of a blockset", function()
         local model = require 'npge.model'
         local bs = model.BlockSet({
@@ -17,7 +12,7 @@ describe("npge.algo.Genomes", function()
         local Genomes = require 'npge.algo.Genomes'
         local gg1 = Genomes(bs)
         local gg2 = {'genome1', 'genome2'}
-        assert.same(sorted(gg1), sorted(gg2))
+        assert.same(gg1, gg2)
     end)
 
     it("gets a dict from genome to list of sequences",

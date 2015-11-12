@@ -16,5 +16,6 @@ return function(blockset)
     for genome, _ in pairs(genome2seqs) do
         table.insert(genomes, genome)
     end
+    table.sort(genomes)
     return genomes, genome2seqs
 end
