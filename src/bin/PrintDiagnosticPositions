@@ -172,6 +172,8 @@ local function isStem(name)
     return name:match('^s')
 end
 
+local partition2sources = {}
+
 local genomes = npge.algo.Genomes(bs)
 local partition2weght = {}
 for block, name in bs:iterBlocks() do
@@ -181,6 +183,14 @@ for block, name in bs:iterBlocks() do
         for _, pos in ipairs(diagnostic_positions) do
             local partition = partitionByColumn(alignment, pos)
             partition2weght[partition] = (partition2weght[partition] or 0) + 1
+            if not partition2sources[partition] then
+                partition2sources[partition] = {}
+            end
+            if not partition2sources[partition][block] then
+                partition2sources[partition][block] = {}
+            end
+            local poss = partition2sources[partition][block]
+            table.insert(poss, pos)
         end
     end
 end
@@ -213,6 +223,16 @@ for _, item in ipairs(items) do
         item.weight,
         discrepancy and '*' or ''
     )
+    if discrepancy then
+        print("Sources of the discrepancy:")
+        local sources = partition2sources[item.partition]
+        for block, poss in pairs(sources) do
+            print(
+                bs:nameByBlock(block),
+                table.concat(poss, ', ')
+            )
+        end
+    end
 end
 
 -- remove names of non-leaf nodes
@@ -222,5 +242,3 @@ for node in tree:iterNodes() do
     end
 end
 print(treelua.toNewick(tree))
-
--- TODO print block names and positions of discrepancies
