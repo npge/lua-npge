@@ -1,0 +1,73 @@
+#!/usr/bin/env lua
+
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
+local npge = require 'npge'
+
+local bs_fname = assert(arg[1])
+local seqs_fname = assert(arg[2]) -- TODO remove this argument
+
+local seqs_lines = io.lines(seqs_fname)
+local bs_lines = io.lines(bs_fname)
+local seqs = npge.io.ReadSequencesFromFasta(seqs_lines)
+local bs = npge.io.ReadFromBs(bs_lines, seqs)
+
+-- FIXME
+local function isMinor(name)
+    return name:sub(1, 1) == 'm'
+end
+
+local function removeMinor(blockset)
+    local blocks = {}
+    for block, name in blockset:iterBlocks() do
+        if not isMinor(name) then
+            blocks[name] = block
+        end
+    end
+    return npge.model.BlockSet(blockset:sequences(), blocks)
+end
+
+local bs = removeMinor(bs)
+
+local pair2count = {}
+
+local function increaseCounter(f1, f2)
+    if f1 and f2 then
+        local b1 = bs:blockByFragment(f1)
+        local b2 = bs:blockByFragment(f2)
+        local name1 = bs:nameByBlock(b1)
+        local name2 = bs:nameByBlock(b2)
+        assert(not name1:match('\t'))
+        assert(not name2:match('\t'))
+        local pair = name1 .. '\t' .. name2
+        pair2count[pair] = (pair2count[pair] or 0) + 1
+    end
+end
+
+for block, name in bs:iterBlocks() do
+    for fragment in block:iterFragments() do
+        local n1 = bs:next(fragment)
+        local n2 = bs:prev(fragment)
+        increaseCounter(fragment, n1)
+        increaseCounter(fragment, n2)
+    end
+end
+
+local t = {}
+for pair, count in pairs(pair2count) do
+    table.insert(t, {pair, count})
+end
+
+table.sort(t, function(e1, e2)
+    return e1[2] > e2[2]
+end)
+
+for _, e in ipairs(t) do
+    local pair, count = npge.util.unpack(e)
+    local name1, name2 = npge.util.unpack(
+        npge.util.split(pair, '\t')
+    )
+    print(("%s\t%s\t%d"):format(name1, name2, count))
+end
