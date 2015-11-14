@@ -233,7 +233,7 @@ local function addSources(block, name)
     end
 end
 
-local function printSources(sources)
+local function dumpSources(sources)
     if SOURCE == 'diagnostic-positions' then
         local sources_list = {}
         for block, poss in pairs(sources) do
@@ -242,18 +242,21 @@ local function printSources(sources)
         table.sort(sources_list, function(s1, s2)
             return #s1.poss > #s2.poss
         end)
+        local discrepancies = {}
         for _, source in ipairs(sources_list) do
-            print(
+            local discrepancy = ("%s: %s"):format(
                 bs:nameByBlock(source.block),
-                table.concat(source.poss, ', ')
+                table.concat(source.poss, ',')
             )
+            table.insert(discrepancies, discrepancy)
         end
+        return table.concat(discrepancies, ', ')
     elseif SOURCE == 'h-blocks' then
         local block_names = {}
         for _, block in pairs(sources) do
             table.insert(block_names, bs:nameByBlock(block))
         end
-        print(table.concat(block_names, ', '))
+        return table.concat(block_names, ', ')
     else
         error("Unknown source: " .. SOURCE)
     end
@@ -285,18 +288,15 @@ end
 for _, item in ipairs(items) do
     local clade0, clade1 = genomesByPartition(item.partition, genomes)
     local discrepancy = not tree_partition_set[item.partition]
+    local sources = partition2sources[item.partition]
     print(
         cladeToString(clade0),
         cladeToString(clade1),
         item.weight,
         discrepancy and '*' or '',
-        partition2blocklengthsum[item.partition] or ''
+        partition2blocklengthsum[item.partition] or '',
+        dumpSources(sources)
     )
-    if discrepancy then
-        print("Sources of the discrepancy:")
-        local sources = partition2sources[item.partition]
-        printSources(sources)
-    end
 end
 
 -- remove names of non-leaf nodes
