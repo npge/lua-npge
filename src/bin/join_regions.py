@@ -27,29 +27,46 @@ def read_regions(input_file):
             regions.append(region)
     return regions
 
+def change_type(regions, new_type):
+    for region in regions:
+        region["type"] = new_type
+
 def join_regions(regions, min_identity, min_length, frame):
     regions = copy.deepcopy(regions)
     long_good_region_ids = []
     for i, region in enumerate(regions):
         if region["length"] >= frame and region["type"] == '+':
             long_good_region_ids.append(i)
-    def is_good_group(regions_between):
+    def is_good_group(regions_between, leverage):
+        if not regions_between:
+            return False
         for region in regions_between:
             if region["type"] == '-' and region["length"] >= frame:
                 return False
-        good_between = [region["good_length"] for region in regions_between if region["type"] == '+']
+        good_between = [region["good_length"] for region in regions_between]
         length_between = [region["length"] for region in regions_between]
-        good_all = sum(good_between) + 2 * frame
-        length_all = sum(length_between) + 2 * frame
-        return  float(good_all) / float(length_all) >= min_identity
+        good_all = sum(good_between) + leverage * frame
+        length_all = sum(length_between) + leverage * frame
+        return float(good_all) / float(length_all) >= min_identity
+    if not long_good_region_ids:
+        # test all regions together
+        change_to_good = is_good_group(regions, leverage=0)
+        change_type(regions, change_to_good and '+' or '-')
+        return regions
+    # regions between two long long regions
     for prev_good, next_good in zip(long_good_region_ids, long_good_region_ids[1:]):
-        regions_between = [regions[i] for i in range(prev_good + 1, next_good)]
-        change_to_good = is_good_group(regions_between)
-        for region in regions_between:
-            if change_to_good:
-                region["type"] = '+'
-            else:
-                region["type"] = '-'
+        first_bad = prev_good + 1
+        regions_between = regions[first_bad:next_good]
+        change_to_good = is_good_group(regions_between, leverage=2)
+        change_type(regions_between, change_to_good and '+' or '-')
+    # regions before first good long region
+    regions1 = regions[:long_good_region_ids[0]]
+    change_to_good = is_good_group(regions1, leverage=1)
+    change_type(regions1, change_to_good and '+' or '-')
+    # regions after last good long region
+    regions1 = regions[long_good_region_ids[-1] + 1 :]
+    change_to_good = is_good_group(regions1, leverage=1)
+    change_type(regions1, change_to_good and '+' or '-')
     return regions
 
 def fold(regions):
