@@ -298,4 +298,5 @@ for node in tree:iterNodes() do
         node.name = nil
     end
 end
+print("Branch lengthes were assigned to partition counts")
 print(treelua.toNewick(tree))
