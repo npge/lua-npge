@@ -229,10 +229,17 @@ end
 
 local function printSources(sources)
     if SOURCE == 'diagnostic-positions' then
+        local sources_list = {}
         for block, poss in pairs(sources) do
+            table.insert(sources_list, {block=block, poss=poss})
+        end
+        table.sort(sources_list, function(s1, s2)
+            return #s1.poss > #s2.poss
+        end)
+        for _, source in ipairs(sources_list) do
             print(
-                bs:nameByBlock(block),
-                table.concat(poss, ', ')
+                bs:nameByBlock(source.block),
+                table.concat(source.poss, ', ')
             )
         end
     elseif SOURCE == 'h-blocks' then
