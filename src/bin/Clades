@@ -172,6 +172,7 @@ end
 local partition2sources = {}
 local genomes = npge.algo.Genomes(bs)
 local partition2weght = {}
+local partition2blocklengthsum = {}
 
 local function isStem(name)
     -- FIXME
@@ -212,6 +213,9 @@ local function addByHBlocks(block, name)
         end
         local partition = partitionByClade(clade, genomes)
         partition2weght[partition] = (partition2weght[partition] or 0) + 1
+        partition2blocklengthsum[partition] =
+            (partition2blocklengthsum[partition] or 0) +
+            block:length()
         if not partition2sources[partition] then
             partition2sources[partition] = {}
         end
@@ -285,7 +289,8 @@ for _, item in ipairs(items) do
         cladeToString(clade0),
         cladeToString(clade1),
         item.weight,
-        discrepancy and '*' or ''
+        discrepancy and '*' or '',
+        partition2blocklengthsum[item.partition] or ''
     )
     if discrepancy then
         print("Sources of the discrepancy:")
