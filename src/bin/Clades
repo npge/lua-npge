@@ -12,6 +12,7 @@ local seqs_fname = assert(arg[2]) -- TODO remove this argument
 local ndiag = assert(tonumber(arg[3]))
 local tree_fname = assert(arg[4])
 local SOURCE = assert(arg[5] or 'diagnostic-positions')
+local min_h_block_length = assert(tonumber(arg[6] or 100))
 
 local seqs_lines = io.lines(seqs_fname)
 local bs_lines = io.lines(bs_fname)
@@ -196,13 +197,14 @@ local function addByDiagnosticPositions(block, name)
     end
 end
 
-local function isHBlock(name)
+local function isHBlock(block, name)
     -- FIXME
     return name:match('^h')
+        and block:length() > min_h_block_length
 end
 
 local function addByHBlocks(block, name)
-    if isHBlock(name) then
+    if isHBlock(block, name) then
         local clade = {}
         for fragment in block:iterFragments() do
             local genome = fragment:sequence():genome()
