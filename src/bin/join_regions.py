@@ -76,7 +76,7 @@ def print_regions(regions, g, print_orig_type):
 if __name__ == '__main__':
     min_length = int(sys.argv[1])
     min_identity = float(sys.argv[2])
-    # -1 because mutation is not counted
+    # -1 because the mutation itself is not counted
     frame = max(3, int(round(1.0 / (1.0 - min_identity) - 1)))
     step = int(sys.argv[3])
     infile = sys.argv[4]
