@@ -5,15 +5,18 @@
 -- See the LICENSE file for terms of use.
 
 local npge = require 'npge'
+local treelua = require 'treelua'
 
 local bs_fname = assert(arg[1])
 local seqs_fname = assert(arg[2]) -- TODO remove this argument
 local ndiag = assert(tonumber(arg[3]))
--- local njtree = assert(arg[4]) -- TODO
+local tree_fname = assert(arg[4]) -- TODO
+
 local seqs_lines = io.lines(seqs_fname)
 local bs_lines = io.lines(bs_fname)
 local seqs = npge.io.ReadSequencesFromFasta(seqs_lines)
 local bs = npge.io.ReadFromBs(bs_lines, seqs)
+local tree = treelua.fromNewick(io.open(tree_fname):read('*a'))
 
 local function findDiagnosticPositions(alignment)
     local good_col = npge.alignment.goodColumns(alignment)
@@ -105,6 +108,65 @@ local function cladeToString(clade)
     return ("{%s}"):format(table.concat(clade, ','))
 end
 
+-- TODO move to tree.lua
+local function iterEdges(tree)
+    return coroutine.wrap(function()
+        local leafs = tree:leafs()
+        local root = leafs[1]
+        for node, level, parent, edge in tree:iterDepth(root) do
+            if edge then
+                coroutine.yield(edge, node, parent)
+            end
+        end
+    end)
+end
+
+-- TODO move to tree.lua
+local function cladeByEdge(edge, node, bad_node, tree)
+    local bad_nodes = {[bad_node] = true}
+    local clade = {}
+    for node, level, parent, edge in tree:iterDepth(node) do
+        if bad_nodes[node] or bad_nodes[parent] then
+            bad_nodes[node] = true
+        elseif tree:isLeaf(node) then
+            table.insert(clade, node)
+        end
+    end
+    return clade
+end
+
+-- TODO move to tree.lua
+local function cladesOfTree(tree)
+    return coroutine.wrap(function()
+        for edge, node1, node2 in iterEdges(tree) do
+            local clade = cladeByEdge(edge, node1, node2, tree)
+            coroutine.yield(clade, edge)
+        end
+    end)
+end
+
+local function cladeOfNames(clade)
+    local clade_of_names = {}
+    for _, leaf in ipairs(clade) do
+        table.insert(clade_of_names, leaf.name)
+    end
+    return clade_of_names
+end
+
+local function partitionByClade(clade, genomes)
+    local clade_set = {}
+    for _, genome in ipairs(clade) do
+        clade_set[genome] = true
+    end
+    local ifhas = clade_set[genomes[1]] and '0' or '1'
+    local ifnothas = clade_set[genomes[1]] and '1' or '0'
+    local p = {}
+    for _, genome in ipairs(genomes) do
+        table.insert(p, clade_set[genome] and ifhas or ifnothas)
+    end
+    return table.concat(p)
+end
+
 local function isStem(name)
     -- FIXME
     return name:match('^s')
@@ -136,6 +198,20 @@ for _, item in ipairs(items) do
     print(cladeToString(clade0), cladeToString(clade1), item.weight)
 end
 
--- TODO read tree
+-- set lengths of the tree branches according to the partitions
+for clade, edge in cladesOfTree(tree) do
+    local clade_of_names = cladeOfNames(clade)
+    local partition = partitionByClade(clade_of_names, genomes)
+    local weight = partition2weght[partition] or 0
+    edge.length = weight
+end
+-- remove names of non-leaf nodes
+for node in tree:iterNodes() do
+    if not tree:isLeaf(node) then
+        node.name = nil
+    end
+end
+print(treelua.toNewick(tree))
+
 -- TODO find discrepancies with the tree
 -- TODO print block names and positions of discrepancies
