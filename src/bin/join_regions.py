@@ -95,35 +95,31 @@ if __name__ == '__main__':
     min_identity = float(sys.argv[2])
     # -1 because the mutation itself is not counted
     frame = max(3, int(round(1.0 / (1.0 - min_identity) - 1)))
-    step = int(sys.argv[3])
-    infile = sys.argv[4]
-    f = open(infile)
-    for x in f:
-        if len(x.strip()) == 0:
-            continue
-        h = open(x.strip())
-        regions0 = read_regions(h)
-        regions1 = join_regions(regions0, min_identity, min_length, frame)
+    infile = sys.argv[3]
+    max_step = 4
+    for step in range(1, max_step + 1):
         dir = "step%d" % step
         try:
             os.mkdir(dir)
         except:
             pass
-        fname = os.path.join(dir, x.strip())
-        g = open(fname, 'w')
-        if step == 1:
-            print_regions(regions1, g, print_orig_type=True)
-        elif step == 2:
+    f = open(infile)
+    for x in f:
+        x = x.strip()
+        if not x:
+            continue
+        h = open(x)
+        regions0 = read_regions(h)
+        regions1 = join_regions(regions0, min_identity, min_length, frame)
+        with open("step1/" + x, 'w') as step1:
+            print_regions(regions1, step1, print_orig_type=True)
+        with open("step2/" + x, 'w') as step2:
             regions2 = fold(regions1)
-            print_regions(regions2, g, print_orig_type=False)
-        elif step == 3:
-            regions2 = fold(regions1)
+            print_regions(regions2, step2, print_orig_type=False)
+        with open("step3/" + x, 'w') as step3:
             regions3 = join_regions(regions2, min_identity, min_length, frame=min_length)
-            print_regions(regions3, g, print_orig_type=True)
-        elif step == 4:
-            regions2 = fold(regions1)
-            regions3 = join_regions(regions2, min_identity, min_length, frame=min_length)
+            print_regions(regions3, step3, print_orig_type=True)
+        with open("step4/" + x, 'w') as step4:
             regions4 = fold(regions3)
-            print_regions(regions4, g, print_orig_type=False)
-        g.close()
+            print_regions(regions4, step4, print_orig_type=False)
         h.close()
