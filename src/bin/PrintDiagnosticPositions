@@ -193,18 +193,28 @@ table.sort(items, function(item1, item2)
     return item1.weight > item2.weight
 end)
 
-for _, item in ipairs(items) do
-    local clade0, clade1 = genomesByPartition(item.partition, genomes)
-    print(cladeToString(clade0), cladeToString(clade1), item.weight)
-end
+local tree_partition_set = {}
 
--- set lengths of the tree branches according to the partitions
 for clade, edge in cladesOfTree(tree) do
     local clade_of_names = cladeOfNames(clade)
     local partition = partitionByClade(clade_of_names, genomes)
     local weight = partition2weght[partition] or 0
+    -- set length according to the partition
     edge.length = weight
+    tree_partition_set[partition] = true
 end
+
+for _, item in ipairs(items) do
+    local clade0, clade1 = genomesByPartition(item.partition, genomes)
+    local discrepancy = not tree_partition_set[item.partition]
+    print(
+        cladeToString(clade0),
+        cladeToString(clade1),
+        item.weight,
+        discrepancy and '*' or ''
+    )
+end
+
 -- remove names of non-leaf nodes
 for node in tree:iterNodes() do
     if not tree:isLeaf(node) then
@@ -213,5 +223,4 @@ for node in tree:iterNodes() do
 end
 print(treelua.toNewick(tree))
 
--- TODO find discrepancies with the tree
 -- TODO print block names and positions of discrepancies
