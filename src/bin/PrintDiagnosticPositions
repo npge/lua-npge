@@ -10,7 +10,7 @@ local treelua = require 'treelua'
 local bs_fname = assert(arg[1])
 local seqs_fname = assert(arg[2]) -- TODO remove this argument
 local ndiag = assert(tonumber(arg[3]))
-local tree_fname = assert(arg[4]) -- TODO
+local tree_fname = assert(arg[4])
 
 local seqs_lines = io.lines(seqs_fname)
 local bs_lines = io.lines(bs_fname)
