@@ -200,7 +200,7 @@ end
 
 local function isHBlock(block, name)
     -- FIXME
-    return name:match('^h')
+    return name:match('^[hu]')
         and block:length() > min_h_block_length
 end
 
