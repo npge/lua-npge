@@ -11,6 +11,7 @@ local bs_fname = assert(arg[1])
 local seqs_fname = assert(arg[2]) -- TODO remove this argument
 local ndiag = assert(tonumber(arg[3]))
 local tree_fname = assert(arg[4])
+local SOURCE = assert(arg[5] or 'diagnostic-positions')
 
 local seqs_lines = io.lines(seqs_fname)
 local bs_lines = io.lines(bs_fname)
@@ -167,16 +168,16 @@ local function partitionByClade(clade, genomes)
     return table.concat(p)
 end
 
+local partition2sources = {}
+local genomes = npge.algo.Genomes(bs)
+local partition2weght = {}
+
 local function isStem(name)
     -- FIXME
     return name:match('^s')
 end
 
-local partition2sources = {}
-
-local genomes = npge.algo.Genomes(bs)
-local partition2weght = {}
-for block, name in bs:iterBlocks() do
+local function addByDiagnosticPositions(block, name)
     if isStem(name) then
         local alignment = alignmentForGenomes(block, genomes)
         local diagnostic_positions = findDiagnosticPositions(alignment)
@@ -193,6 +194,60 @@ for block, name in bs:iterBlocks() do
             table.insert(poss, pos)
         end
     end
+end
+
+local function isHBlock(name)
+    -- FIXME
+    return name:match('^h')
+end
+
+local function addByHBlocks(block, name)
+    if isHBlock(name) then
+        local clade = {}
+        for fragment in block:iterFragments() do
+            local genome = fragment:sequence():genome()
+            table.insert(clade, genome)
+        end
+        local partition = partitionByClade(clade, genomes)
+        partition2weght[partition] = (partition2weght[partition] or 0) + 1
+        if not partition2sources[partition] then
+            partition2sources[partition] = {}
+        end
+        table.insert(partition2sources[partition], block)
+    end
+end
+
+local function addSources(block, name)
+    if SOURCE == 'diagnostic-positions' then
+        addByDiagnosticPositions(block, name)
+    elseif SOURCE == 'h-blocks' then
+        addByHBlocks(block, name)
+    else
+        error("Unknown source: " .. SOURCE)
+    end
+end
+
+local function printSources(sources)
+    if SOURCE == 'diagnostic-positions' then
+        for block, poss in pairs(sources) do
+            print(
+                bs:nameByBlock(block),
+                table.concat(poss, ', ')
+            )
+        end
+    elseif SOURCE == 'h-blocks' then
+        local block_names = {}
+        for _, block in pairs(sources) do
+            table.insert(block_names, bs:nameByBlock(block))
+        end
+        print(table.concat(block_names, ', '))
+    else
+        error("Unknown source: " .. SOURCE)
+    end
+end
+
+for block, name in bs:iterBlocks() do
+    addSources(block, name)
 end
 
 local items = {}
@@ -226,12 +281,7 @@ for _, item in ipairs(items) do
     if discrepancy then
         print("Sources of the discrepancy:")
         local sources = partition2sources[item.partition]
-        for block, poss in pairs(sources) do
-            print(
-                bs:nameByBlock(block),
-                table.concat(poss, ', ')
-            )
-        end
+        printSources(sources)
     end
 end
 
