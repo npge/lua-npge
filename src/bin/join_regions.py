@@ -45,6 +45,7 @@ def join_regions(regions, min_identity, min_length, frame):
                 return False
         good_between = [region["good_length"] for region in regions_between]
         length_between = [region["length"] for region in regions_between]
+        # TODO: accurate calculations for step3 (good_length != length)
         good_all = sum(good_between) + leverage * frame
         length_all = sum(length_between) + leverage * frame
         return float(good_all) / float(length_all) >= min_identity

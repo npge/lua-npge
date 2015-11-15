@@ -286,6 +286,7 @@ for clade, edge in cladesOfTree(tree) do
 end
 
 for _, item in ipairs(items) do
+    -- TODO ungroup by block
     local clade0, clade1 = genomesByPartition(item.partition, genomes)
     local discrepancy = not tree_partition_set[item.partition]
     local sources = partition2sources[item.partition]
