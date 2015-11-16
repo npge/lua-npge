@@ -25,7 +25,7 @@ return function(lines)
                 local header = line:sub(2, -1)
                 local fields = split(header, '%s+', 1)
                 name = fields[1]
-                description = fields[2]
+                description = fields[2] or ''
                 text_lines = {}
             elseif #line > 0 then
                 assert(name)

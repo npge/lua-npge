@@ -11,7 +11,11 @@ ATGC
 
 >bar several words
 AAA
-TTT]]
+TTT
+
+>nodescription
+ACC
+]]
         local textToIt = require 'npge.util.textToIt'
         local lines = textToIt(fasta)
         local parser = fromFasta(lines)
@@ -23,6 +27,10 @@ TTT]]
         assert.equal(bar_name, "bar")
         assert.equal(bar_descr, "several words")
         assert.equal(bar_text, "AAATTT")
+        local nod_name, nod_descr, nod_text = parser()
+        assert.equal(nod_name, "nodescription")
+        assert.equal(nod_descr, "")
+        assert.equal(nod_text, "ACC")
     end)
 
     it("parses fasta representation from generator (newlines)",
