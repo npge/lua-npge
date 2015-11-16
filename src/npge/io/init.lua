@@ -5,6 +5,7 @@
 local members = {
     'ReadSequencesFromFasta',
     'WriteSequencesToFasta',
+    'WriteToBs',
     'ReadFromBs',
     'LoadFromLua',
     'BlockSetToLua',

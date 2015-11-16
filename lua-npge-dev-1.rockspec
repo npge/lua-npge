@@ -174,6 +174,7 @@ build = {
         ['npge.io.ShortForm'] = 'src/npge/io/ShortForm.lua',
         ['npge.io.ReadSequencesFromFasta'] = 'src/npge/io/ReadSequencesFromFasta.lua',
         ['npge.io.WriteSequencesToFasta'] = 'src/npge/io/WriteSequencesToFasta.lua',
+        ['npge.io.WriteToBs'] = 'src/npge/io/WriteToBs.lua',
         ['npge.io.ReadFromBs'] = 'src/npge/io/ReadFromBs.lua',
         ['npge.io.LoadFromLua'] = 'src/npge/io/LoadFromLua.lua',
         ['npge.io.BlockSetToLua'] = 'src/npge/io/BlockSetToLua.lua',
