@@ -2,8 +2,8 @@
 -- Copyright (C) 2014-2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-return function(lines)
-    -- lines is iterator (like file:lines())
+return function(chunks)
+    -- chunks is iterator (like file:lines())
     local split = require 'npge.util.split'
     local trim = require 'npge.util.trim'
     return coroutine.wrap(function()
@@ -18,18 +18,20 @@ return function(lines)
                 text_lines = nil
             end
         end
-        for line in lines do
-            line = trim(line)
-            if line:sub(1, 1) == '>' then
-                yield()
-                local header = line:sub(2, -1)
-                local fields = split(header, '%s+', 1)
-                name = fields[1]
-                description = fields[2] or ''
-                text_lines = {}
-            elseif #line > 0 then
-                assert(name)
-                table.insert(text_lines, line)
+        for chunk in chunks do
+            for line in chunk:gmatch("([^\n]+)") do
+                line = trim(line)
+                if line:sub(1, 1) == '>' then
+                    yield()
+                    local header = line:sub(2, -1)
+                    local fields = split(header, '%s+', 1)
+                    name = fields[1]
+                    description = fields[2] or ''
+                    text_lines = {}
+                elseif #line > 0 then
+                    assert(name)
+                    table.insert(text_lines, line)
+                end
             end
         end
         -- add last sequence
