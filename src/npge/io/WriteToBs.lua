@@ -4,6 +4,7 @@
 
 return function(blockset)
     local WSTF = require 'npge.io.WriteSequencesToFasta'
+    local toFasta = require 'npge.util.toFasta'
     return coroutine.wrap(function()
         -- TODO don't dump sequences if is partition
         for line in WSTF(blockset) do
@@ -15,8 +16,8 @@ return function(blockset)
             for fragment in block:iterFragments() do
                 local id = fragment:id()
                 local block_str = ("block=%s"):format(name)
-                coroutine.yield((">%s %q\n"):format(id, block_str))
-                coroutine.yield(block:text(fragment) .. '\n')
+                local text = block:text(fragment)
+                coroutine.yield(toFasta(id, block_str, text))
             end
         end
     end)
