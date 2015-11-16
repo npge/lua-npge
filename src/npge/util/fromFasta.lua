@@ -5,6 +5,7 @@
 return function(lines)
     -- lines is iterator (like file:lines())
     local split = require 'npge.util.split'
+    local trim = require 'npge.util.trim'
     return coroutine.wrap(function()
         local name, description, text_lines
         local function yield()
@@ -18,6 +19,7 @@ return function(lines)
             end
         end
         for line in lines do
+            line = trim(line)
             if line:sub(1, 1) == '>' then
                 yield()
                 local header = line:sub(2, -1)

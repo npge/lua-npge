@@ -24,4 +24,19 @@ TTT]]
         assert.equal(bar_descr, "several words")
         assert.equal(bar_text, "AAATTT")
     end)
+
+    it("parses fasta representation from generator (newlines)",
+    function()
+        local itFromArray = require 'npge.util.itFromArray'
+        local fromFasta = require 'npge.util.fromFasta'
+        local parser = fromFasta(itFromArray {
+            ">foo bar\n",
+            "AAAA\n",
+            "TTTT\n",
+        })
+        local foo, bar, text = parser()
+        assert.equal(foo, "foo")
+        assert.equal(bar, "bar")
+        assert.equal(text, "AAAATTTT")
+    end)
 end)
