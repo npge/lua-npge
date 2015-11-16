@@ -33,6 +33,75 @@ local function readWithReference(bs1)
     end
 end
 
+local function isParted(start, stop, ori)
+    local diff = stop - start
+    return diff * ori < 0
+end
+
+local function getParts(seqname, start, stop, ori, text)
+    local toAtgcn = require 'npge.alignment.toAtgcn'
+    local text = toAtgcn(text)
+    local length = #text
+    local length1, length2
+    if ori == 1 then
+        length2 = stop + 1
+        length1 = length - length2
+    else
+        length1 = start + 1
+        length2 = length - length1
+    end
+    local start1 = start
+    local stop1 = start1 + (length1 - 1) * ori
+    local stop2 = stop
+    local start2 = stop2 - (length2 - 1) * ori
+    local text1 = text:sub(1, length1)
+    local text2 = text:sub(length1 + 1)
+    assert(#text1 == length1)
+    assert(#text2 == length2)
+    assert(start1 >= 0)
+    assert(start2 >= 0)
+    return {seqname, start1, stop1, ori, text1},
+           {seqname, start2, stop2, ori, text2}
+end
+
+local function makeSequence(seqname, parts)
+    local parts2 = {}
+    for _, part in ipairs(parts) do
+        local seqname1, start, stop, ori, text = unpack(part)
+        assert(seqname1 == seqname)
+        if isParted(start, stop, ori) then
+            local part1, part2 =
+                getParts(seqname, start, stop, ori, text)
+            table.insert(parts2, part1)
+            table.insert(parts2, part2)
+        else
+            table.insert(parts2, part)
+        end
+    end
+    table.sort(parts2, function(part1, part2)
+        local seqname1, start1, stop1, ori1 = unpack(part1)
+        local seqname2, start2, stop2, ori2 = unpack(part2)
+        assert(seqname1 == seqname)
+        assert(seqname2 == seqname)
+        assert(not isParted(start1, stop1, ori1))
+        assert(not isParted(start2, stop2, ori2))
+        return math.min(start1, stop1) < math.min(start2, stop2)
+    end)
+    local toAtgcn = require 'npge.alignment.toAtgcn'
+    local texts = {}
+    local last = -1
+    for _, part in ipairs(parts2) do
+        local _, start, stop, ori, text = unpack(part)
+        local first = math.min(start, stop)
+        assert(first == last + 1, "The blockset is not a partition")
+        table.insert(texts, toAtgcn(text))
+        last = math.max(start, stop)
+    end
+    local text = table.concat(texts)
+    local Sequence = require 'npge.model.Sequence'
+    return Sequence(seqname, text)
+end
+
 local function readWithoutReference(generator)
     local blockname2fragments = {}
     local seqname2seq = {}
@@ -62,6 +131,14 @@ local function readWithoutReference(generator)
             -- remove useless records from seqname2parts
             seqname2parts[name] = nil
         end
+    end
+    -- create sequences from seqname2parts
+    local unpack = require 'npge.util.unpack'
+    for seqname, parts in pairs(seqname2parts) do
+        assert(not seqname2seq[seqname])
+        local seq = makeSequence(seqname, parts)
+        seqname2seq[seqname] = seq
+        collectgarbage() -- large text
     end
     local sequences = {}
     for name, seq in pairs(seqname2seq) do

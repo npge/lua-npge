@@ -6,9 +6,10 @@ return function(blockset)
     local WSTF = require 'npge.io.WriteSequencesToFasta'
     local toFasta = require 'npge.util.toFasta'
     return coroutine.wrap(function()
-        -- TODO don't dump sequences if is partition
-        for line in WSTF(blockset) do
-            coroutine.yield(line)
+        if not blockset:isPartition() then
+            for line in WSTF(blockset) do
+                coroutine.yield(line)
+            end
         end
         for block, name in blockset:iterBlocks() do
             coroutine.yield('\n') -- empty line
