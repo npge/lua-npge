@@ -14,11 +14,11 @@ description = {
 }
 dependencies = {
     "lua >= 5.1",
+    "tree",
 }
 dependencies.platforms = {
     unix = {
         "alnbox",
-        "tree",
         "luaposix",
     },
 }
