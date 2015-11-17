@@ -65,6 +65,7 @@ local function getParts(seqname, start, stop, ori, text)
 end
 
 local function makeSequence(seqname, parts)
+    local unpack = require 'npge.util.unpack'
     local parts2 = {}
     for _, part in ipairs(parts) do
         local seqname1, start, stop, ori, text = unpack(part)
@@ -137,7 +138,6 @@ local function readWithoutReference(generator)
         end
     end
     -- create sequences from seqname2parts
-    local unpack = require 'npge.util.unpack'
     for seqname, parts in pairs(seqname2parts) do
         assert(not seqname2seq[seqname])
         local seq = makeSequence(seqname, parts)
