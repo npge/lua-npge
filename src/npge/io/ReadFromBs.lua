@@ -88,12 +88,16 @@ local function makeSequence(seqname, parts)
         return math.min(start1, stop1) < math.min(start2, stop2)
     end)
     local toAtgcn = require 'npge.alignment.toAtgcn'
+    local complement = require 'npge.alignment.complement'
     local texts = {}
     local last = -1
     for _, part in ipairs(parts2) do
         local _, start, stop, ori, text = unpack(part)
         local first = math.min(start, stop)
         assert(first == last + 1, "The blockset is not a partition")
+        if ori == -1 then
+            text = complement(text)
+        end
         table.insert(texts, toAtgcn(text))
         last = math.max(start, stop)
     end

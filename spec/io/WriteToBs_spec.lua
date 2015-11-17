@@ -8,7 +8,7 @@ describe("npge.io.WriteToBs", function()
         local model = npge.model
         local seq = model.Sequence('BRUAB&chr1&c', 'ATTCCC')
         local parted = model.Fragment(seq, 4, 1, 1)
-        local nonparted = model.Fragment(seq, 2, 3, 1)
+        local nonparted = model.Fragment(seq, 3, 2, -1)
         local block = model.Block({parted, nonparted})
         local bs = model.BlockSet({seq}, {block})
         -- read with reference
