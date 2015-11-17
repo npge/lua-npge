@@ -8,16 +8,13 @@ local npge = require 'npge'
 local treelua = require 'treelua'
 
 local bs_fname = assert(arg[1])
-local seqs_fname = assert(arg[2]) -- TODO remove this argument
-local ndiag = assert(tonumber(arg[3]))
-local tree_fname = assert(arg[4])
-local SOURCE = assert(arg[5] or 'diagnostic-positions')
-local min_h_block_length = assert(tonumber(arg[6] or 100))
+local ndiag = assert(tonumber(arg[2]))
+local tree_fname = assert(arg[3])
+local SOURCE = assert(arg[4] or 'diagnostic-positions')
+local min_h_block_length = assert(tonumber(arg[5] or 100))
 
-local seqs_lines = io.lines(seqs_fname)
 local bs_lines = io.lines(bs_fname)
-local seqs = npge.io.ReadSequencesFromFasta(seqs_lines)
-local bs = npge.io.ReadFromBs(bs_lines, seqs)
+local bs = npge.io.ReadFromBs(bs_lines)
 local tree = treelua.fromNewick(io.open(tree_fname):read('*a'))
 
 local function findDiagnosticPositions(alignment)

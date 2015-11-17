@@ -10,11 +10,8 @@
 local npge = require 'npge'
 
 local bs_fname = assert(arg[1])
-local seqs_fname = assert(arg[2]) -- TODO remove this argument
-local seqs_lines = io.lines(seqs_fname)
 local bs_lines = io.lines(bs_fname)
-local seqs = npge.io.ReadSequencesFromFasta(seqs_lines)
-local bs = npge.io.ReadFromBs(bs_lines, seqs)
+local bs = npge.io.ReadFromBs(bs_lines)
 
 local function makeRegions(block)
     local alignment = {}
