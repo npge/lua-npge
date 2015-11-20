@@ -9,6 +9,7 @@ local npge = require 'npge'
 local bs_fname = assert(arg[1])
 local bs_lines = io.lines(bs_fname)
 local bs = npge.io.ReadFromBs(bs_lines)
+local outformat = arg[2] or 'tsv'
 
 -- FIXME
 local function isMinor(name)
@@ -60,10 +61,26 @@ table.sort(t, function(e1, e2)
     return e1[2] > e2[2]
 end)
 
-for _, e in ipairs(t) do
-    local pair, count = npge.util.unpack(e)
-    local name1, name2 = npge.util.unpack(
-        npge.util.split(pair, '\t')
-    )
-    print(("%s\t%s\t%d"):format(name1, name2, count))
+if outformat == 'tsv' then
+    for _, e in ipairs(t) do
+        local pair, count = npge.util.unpack(e)
+        local name1, name2 = npge.util.unpack(
+            npge.util.split(pair, '\t')
+        )
+        print(("%s\t%s\t%d"):format(name1, name2, count))
+    end
+elseif outformat == 'dot' then
+    print('graph G {')
+        for _, e in ipairs(t) do
+            local pair, count = npge.util.unpack(e)
+            local name1, name2 = npge.util.unpack(
+                npge.util.split(pair, '\t')
+            )
+            if name1 < name2 then
+                print(("%s -- %s"):format(name1, name2))
+            end
+        end
+    print('}')
+else
+    error('Unknown format: ' .. outformat)
 end
