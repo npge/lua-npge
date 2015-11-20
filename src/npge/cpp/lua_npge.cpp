@@ -744,12 +744,13 @@ int lua_BlockSet_sameSequences(lua_State *L) {
 int lua_BlockSet_cmp(lua_State *L) {
     const BlockSetPtr& a = lua_tobs(L, 1);
     const BlockSetPtr& b = lua_tobs(L, 2);
-    std::pair<bool, std::string> p = a->cmp(*b);
-    lua_pushboolean(L, p.first);
-    if (p.first) {
+    const char* p = a->cmp(*b);
+    bool ok = (p == 0);
+    lua_pushboolean(L, ok);
+    if (ok) {
         return 1;
     } else {
-        lua_pushlstring(L, p.second.c_str(), p.second.size());
+        lua_pushstring(L, p);
         return 2;
     }
 }

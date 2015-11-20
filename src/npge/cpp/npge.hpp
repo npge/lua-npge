@@ -264,8 +264,8 @@ public:
 
     bool sameSequences(const BlockSet& other) const;
 
-    std::pair<bool, std::string>
-    cmp(const BlockSet& other) const;
+    // 0 on success
+    const char* cmp(const BlockSet& other) const;
 
     bool operator==(const BlockSet& other) const;
 
