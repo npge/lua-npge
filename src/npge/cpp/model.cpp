@@ -844,13 +844,12 @@ bool BlockSet::sameSequences(const BlockSet& other) const {
     return true;
 }
 
-std::pair<bool, std::string>
-BlockSet::cmp(const BlockSet& other) const {
+const char* BlockSet::cmp(const BlockSet& other) const {
     if (!sameSequences(other)) {
-        return std::make_pair(false, "sequences");
+        return "sequences";
     }
     if (size() != other.size()) {
-        return std::make_pair(false, "size");
+        return "size";
     }
     int nseqs = seq_records_.size();
     Blocks blocks1, blocks2;
@@ -863,14 +862,14 @@ BlockSet::cmp(const BlockSet& other) const {
         const Blocks& bb1 = sr1.blocks_;
         const Blocks& bb2 = sr2.blocks_;
         if (ff1.size() != ff2.size()) {
-            return std::make_pair(false, "fragments");
+            return "fragments";
         }
         int n = ff1.size();
         for (int j = 0; j < n; j++) {
             const FragmentPtr& f1 = ff1[j];
             const FragmentPtr& f2 = ff2[j];
             if (!(*f1 == *f2)) {
-                return std::make_pair(false, "fragments");
+                return "fragments";
             }
             const BlockPtr& b1 = bb1[j];
             const BlockPtr& b2 = bb2[j];
@@ -891,15 +890,15 @@ BlockSet::cmp(const BlockSet& other) const {
         const BlockPtr& a = blocks1[i];
         const BlockPtr& b = blocks2[i];
         if (!(*a == *b)) {
-            return std::make_pair(false, "blocks");
+            return "blocks";
         }
     }
-    return std::make_pair(true, "");
+    return 0; // equal
 }
 
 bool BlockSet::operator==(const BlockSet& other) const {
-    std::pair<bool, std::string> r = cmp(other);
-    return r.first;
+    const char* r = cmp(other);
+    return r == 0;
 }
 
 int BlockSet::size() const {
