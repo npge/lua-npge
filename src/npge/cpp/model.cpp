@@ -384,14 +384,17 @@ bool Fragment::operator==(const Fragment& other) const {
 }
 
 bool Fragment::operator<(const Fragment& other) const {
-    typedef boost::tuple<const std::string&, int, int, int> T;
+    typedef boost::tuple<
+        const std::string&, int, int, int, bool
+    > T;
     int self_min = fragmentMin(*this);
     int self_max = fragmentMax(*this);
     int other_min = fragmentMin(other);
     int other_max = fragmentMax(other);
-    T t1(sequence()->name(), self_min, self_max, ori());
+    T t1(sequence()->name(),
+            self_min, self_max, ori(), parted());
     T t2(other.sequence()->name(),
-            other_min, other_max, other.ori());
+            other_min, other_max, other.ori(), other.parted());
     return t1 < t2;
 }
 

@@ -69,6 +69,8 @@ describe("npge.model.Fragment", function()
         assert(Fragment(s2, 0, 1, 1) > Fragment(s1, 0, 2, 1))
         assert(Fragment(s1, 0, 0, -1) < Fragment(s1, 0, 0, 1))
         assert(Fragment(s2, 0, 0, -1) > Fragment(s1, 0, 0, 1))
+        -- non-parted < parted
+        assert(Fragment(s1, 0, 3, 1) < Fragment(s1, 3, 0, 1))
     end)
 
     it("sorts fragments", function()
