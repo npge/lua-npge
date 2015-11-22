@@ -743,6 +743,7 @@ static void sortFragments(SeqRecords& seq_records) {
     }
 }
 
+// TODO can be omitted if the blockset is a partition
 static void findInternalOverlaps(SeqRecords& seq_records) {
     BOOST_FOREACH (SeqRecord& seq_record, seq_records) {
         seq_record.internal_overlaps_ = false;
@@ -789,6 +790,7 @@ static void sortParts(Fragments& parts, Fragments& parents) {
     parents.swap(new_parents);
 }
 
+// TODO can be omitted if the blockset is a partition
 static void findSameParts(SeqRecords& seq_records) {
     BOOST_FOREACH (SeqRecord& seq_record, seq_records) {
         seq_record.same_parts_ = false;
@@ -1146,6 +1148,8 @@ void sortAndUnique(const BlockSet* self, Fragments& ff) {
     ff.erase(std::unique(ff.begin(), ff.end()), ff.end());
 }
 
+// TODO can lose results if same_parts_
+// because parentOrFragment is ambiguous
 Fragments BlockSet::overlapping(
         const FragmentPtr& fragment) const {
     if (fragment->parted()) {
