@@ -544,6 +544,9 @@ Block of 2 fragments, length 2
 Block of 1 fragments, length 2
 ```
 
+If the fragment belongs to multiple blocks, `blockByFragment`
+return one of them (the selection is undefined).
+
 BlockSet can find overlapping fragments very fast:
 
 ```lua

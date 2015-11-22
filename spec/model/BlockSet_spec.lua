@@ -414,11 +414,19 @@ describe("npge.model.BlockSet", function()
         local block1a = model.Block({f1a, f2})
         local blockset = model.BlockSet({s},
             {block1, block1a})
-        assert.equal(blockset:blockByFragment(f1), block1)
-        assert.equal(blockset:blockByFragment(f1a), block1a)
+        local block_of_f1 = blockset:blockByFragment(f1)
+        assert.truthy(
+            block_of_f1 == block1 or
+            block_of_f1 == block1a
+        )
+        local block_of_f1a = blockset:blockByFragment(f1a)
+        assert.truthy(
+            block_of_f1a == block1 or
+            block_of_f1a == block1a
+        )
         assert.equal(blockset:blockByFragment(f2), block1a)
         local f3 = model.Fragment(s, 1, 1, 1)
-        assert.equal(blockset:blockByFragment(f3), nil)
+        assert.equal(blockset:blockByFragment(f3), block1a)
         local f3a = model.Fragment(s, 2, 2, 1)
         assert.equal(blockset:blockByFragment(f3a), nil)
         --
