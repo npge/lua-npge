@@ -545,7 +545,9 @@ Block of 1 fragments, length 2
 ```
 
 If the fragment belongs to multiple blocks, `blockByFragment`
-return one of them (the selection is undefined).
+return one of them (the selection is undefined). The list of
+all blocks owning the fragment can be obtained with method
+`blockaByFragment`.
 
 BlockSet can find overlapping fragments very fast:
 

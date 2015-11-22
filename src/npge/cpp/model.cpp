@@ -1094,6 +1094,35 @@ BlockPtr BlockSet::blockByFragment(
     return sit->blocks_[index2];
 }
 
+Blocks BlockSet::blocksByFragment(
+        const FragmentPtr& fragment) const {
+    const SequencePtr& sequence = fragment->sequence();
+    CSit sit = rawFindSeq(sequence->name(), seq_records_);
+    if (sit == seq_records_.end()) {
+        return Blocks();
+    }
+    if (sit->same_parts_) {
+        const Fragments& fragments = sit->orig_fragments_;
+        Fragments::const_iterator it = binarySearch(
+                fragments.begin(), fragments.end(),
+                fragment, FragmentLess());
+        Blocks result;
+        while (it != fragments.end() && *(*it) == *fragment) {
+            int index2 = std::distance(fragments.begin(), it);
+            result.push_back(sit->orig_blocks_[index2]);
+            ++it;
+        }
+        return result;
+    }
+    // no same_parts_, so size(result) <= 1
+    Blocks result;
+    BlockPtr block = blockByFragment(fragment);
+    if (block) {
+        result.push_back(block);
+    }
+    return result;
+}
+
 const FragmentPtr& BlockSet::parentOrFragment(
         const FragmentPtr& f) const {
     Fragments::const_iterator it = binarySearch(

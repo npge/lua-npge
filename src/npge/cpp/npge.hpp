@@ -304,6 +304,8 @@ public:
 
     BlockPtr blockByFragment(const FragmentPtr& fragment) const;
 
+    Blocks blocksByFragment(const FragmentPtr& fragment) const;
+
     Fragments overlapping(const FragmentPtr& fragment) const;
 
     FragmentPtr next(const FragmentPtr& fragment) const;
