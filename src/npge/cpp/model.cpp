@@ -33,6 +33,8 @@ static void range(Ints& ints, int n) {
     }
 }
 
+// finds first equal element
+// a and b are equal if !less(a, b) && !less(b, a)
 template<typename It, typename V, typename Cmp>
 It binarySearch(It begin, It end, const V& v, const Cmp& less) {
     It it = std::lower_bound(begin, end, v, less);
@@ -42,6 +44,8 @@ It binarySearch(It begin, It end, const V& v, const Cmp& less) {
     return it;
 }
 
+// finds first equal element
+// a and b are equal if !(a < b) && !(b < a)
 template<typename It, typename V>
 It binarySearch(It begin, It end, const V& v) {
     It it = std::lower_bound(begin, end, v);
