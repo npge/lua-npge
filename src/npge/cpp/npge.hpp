@@ -232,10 +232,16 @@ private:
 
 struct SeqRecord {
     SequencePtr sequence_;
-    Fragments fragments_;
+    Fragments fragments_; // original fragments or parts
     Blocks blocks_;
+
     Coordinates segment_tree_; // only if internal_overlaps_
+
+    Fragments orig_fragments_; // only if same_parts_
+    Blocks orig_blocks_; // only if same_parts_
+
     bool internal_overlaps_; // order by start != order by stop
+    bool same_parts_; // equal elements in fragments_
 };
 
 typedef std::vector<SeqRecord> SeqRecords;
@@ -297,6 +303,8 @@ public:
     SequencePtr sequenceByName(const std::string& name) const;
 
     BlockPtr blockByFragment(const FragmentPtr& fragment) const;
+
+    Blocks blocksByFragment(const FragmentPtr& fragment) const;
 
     Fragments overlapping(const FragmentPtr& fragment) const;
 

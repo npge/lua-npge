@@ -952,6 +952,20 @@ int lua_BlockSet_blockByFragment(lua_State *L) {
     return 1;
 }
 
+int lua_BlockSet_blocksByFragment(lua_State *L) {
+    const BlockSetPtr& bs = lua_tobs(L, 1);
+    const FragmentPtr& fr = lua_tofr(L, 2);
+    Blocks blocks = bs->blocksByFragment(fr);
+    int n = blocks.size();
+    lua_createtable(L, n, 0);
+    for (int i = 0; i < n; i++) {
+        const BlockPtr& block = blocks[i];
+        lua_pushblock(L, block);
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
 int lua_BlockSet_overlappingFragments(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     const FragmentPtr& fr = lua_tofr(L, 2);
@@ -1042,6 +1056,7 @@ static const luaL_Reg BlockSet_methods[] = {
     {"hasSequence", lua_BlockSet_hasSequence},
     {"sequenceByName", lua_BlockSet_sequenceByName},
     {"blockByFragment", lua_BlockSet_blockByFragment},
+    {"blocksByFragment", lua_BlockSet_blocksByFragment},
     {"overlappingFragments",
         lua_BlockSet_overlappingFragments},
     {"next", wrap<lua_BlockSet_next>::func},

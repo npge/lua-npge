@@ -33,6 +33,8 @@ static void range(Ints& ints, int n) {
     }
 }
 
+// finds first equal element
+// a and b are equal if !less(a, b) && !less(b, a)
 template<typename It, typename V, typename Cmp>
 It binarySearch(It begin, It end, const V& v, const Cmp& less) {
     It it = std::lower_bound(begin, end, v, less);
@@ -42,6 +44,8 @@ It binarySearch(It begin, It end, const V& v, const Cmp& less) {
     return it;
 }
 
+// finds first equal element
+// a and b are equal if !(a < b) && !(b < a)
 template<typename It, typename V>
 It binarySearch(It begin, It end, const V& v) {
     It it = std::lower_bound(begin, end, v);
@@ -100,6 +104,18 @@ struct BlockRecordNameLess {
                     const BlockRecord& b) const {
         return a < b.name_;
     }
+};
+
+struct IndexedFragmentLess {
+    IndexedFragmentLess(const Fragments& fragments):
+        fragments_(fragments) {
+    }
+
+    bool operator()(int a, int b) const {
+        return *(fragments_[a]) < *(fragments_[b]);
+    }
+
+    const Fragments& fragments_;
 };
 
 struct IndexedFragmentPtrLess {
@@ -380,14 +396,17 @@ bool Fragment::operator==(const Fragment& other) const {
 }
 
 bool Fragment::operator<(const Fragment& other) const {
-    typedef boost::tuple<const std::string&, int, int, int> T;
+    typedef boost::tuple<
+        const std::string&, int, int, int, bool
+    > T;
     int self_min = fragmentMin(*this);
     int self_max = fragmentMax(*this);
     int other_min = fragmentMin(other);
     int other_max = fragmentMax(other);
-    T t1(sequence()->name(), self_min, self_max, ori());
+    T t1(sequence()->name(),
+            self_min, self_max, ori(), parted());
     T t2(other.sequence()->name(),
-            other_min, other_max, other.ori());
+            other_min, other_max, other.ori(), other.parted());
     return t1 < t2;
 }
 
@@ -711,7 +730,7 @@ static void sortFragments(SeqRecords& seq_records) {
         Ints indexes;
         range(indexes, n);
         std::sort(indexes.begin(), indexes.end(),
-                  IndexedFragmentBlockLess(fragments, blocks));
+                  IndexedFragmentLess(fragments));
         Fragments new_fragments(n);
         Blocks new_blocks(n);
         for (int j = 0; j < n; j++) {
@@ -724,6 +743,7 @@ static void sortFragments(SeqRecords& seq_records) {
     }
 }
 
+// TODO can be omitted if the blockset is a partition
 static void findInternalOverlaps(SeqRecords& seq_records) {
     BOOST_FOREACH (SeqRecord& seq_record, seq_records) {
         seq_record.internal_overlaps_ = false;
@@ -768,6 +788,67 @@ static void sortParts(Fragments& parts, Fragments& parents) {
     }
     parts.swap(new_parts);
     parents.swap(new_parents);
+}
+
+// TODO can be omitted if the blockset is a partition
+static void findSameParts(SeqRecords& seq_records) {
+    BOOST_FOREACH (SeqRecord& seq_record, seq_records) {
+        seq_record.same_parts_ = false;
+        Fragments& fragments = seq_record.fragments_;
+        int n = fragments.size();
+        for (int j = 1; j < n; j++) {
+            const FragmentPtr& prev = fragments[j - 1];
+            const FragmentPtr& curr = fragments[j];
+            if (*prev == *curr) {
+                seq_record.same_parts_ = true;
+                break;
+            }
+        }
+    }
+}
+
+static void makeOrigMap(SeqRecords& seq_records,
+                        const BlockRecords& records) {
+    BOOST_FOREACH (const BlockRecord& br, records) {
+        const BlockPtr& b = br.block_;
+        BOOST_FOREACH (const FragmentPtr& f, b->fragments()) {
+            const SequencePtr& seq = f->sequence();
+            Sit it = findSeq(seq->name(), seq_records);
+            if (!it->same_parts_) {
+                continue;
+            }
+            Fragments& flist = it->orig_fragments_;
+            Blocks& blist = it->orig_blocks_;
+            flist.push_back(f);
+            blist.push_back(b);
+        }
+    }
+}
+
+static void sortOrigMap(SeqRecords& seq_records) {
+    BOOST_FOREACH (SeqRecord& seq_record, seq_records) {
+        if (!seq_record.same_parts_) {
+            ASSERT_EQ(seq_record.orig_fragments_.size(), 0);
+            continue;
+        }
+        Fragments& flist = seq_record.orig_fragments_;
+        Blocks& blist = seq_record.orig_blocks_;
+        // sort
+        int n = flist.size();
+        Ints indexes;
+        range(indexes, n);
+        std::sort(indexes.begin(), indexes.end(),
+                  IndexedFragmentLess(flist));
+        Fragments new_flist(n);
+        Blocks new_blist(n);
+        for (int i = 0; i < n; i++) {
+            int index = indexes[i];
+            new_flist[i] = flist[index];
+            new_blist[i] = blist[index];
+        }
+        flist.swap(new_flist);
+        blist.swap(new_blist);
+    }
 }
 
 static bool testPartition(const SeqRecords& seq_records) {
@@ -823,6 +904,10 @@ BlockSetPtr BlockSet::make(const Sequences& sequences,
     findInternalOverlaps(bs->seq_records_);
     makeSegmentTrees(bs->seq_records_);
     sortParts(bs->parts_, bs->parent_of_parts_);
+    //
+    findSameParts(bs->seq_records_);
+    makeOrigMap(bs->seq_records_, bs->block2name_);
+    sortOrigMap(bs->seq_records_);
     //
     bs->isPartition_ = testPartition(bs->seq_records_);
     //
@@ -980,14 +1065,25 @@ SequencePtr BlockSet::sequenceByName(
 
 BlockPtr BlockSet::blockByFragment(
         const FragmentPtr& fragment) const {
-    if (fragment->parted()) {
-        TwoFragments two = fragment->parts();
-        return blockByFragment(two.first);
-    }
     const SequencePtr& sequence = fragment->sequence();
     CSit sit = rawFindSeq(sequence->name(), seq_records_);
     if (sit == seq_records_.end()) {
         return BlockPtr();
+    }
+    if (sit->same_parts_) {
+        const Fragments& fragments = sit->orig_fragments_;
+        Fragments::const_iterator it = binarySearch(
+                fragments.begin(), fragments.end(),
+                fragment, FragmentLess());
+        if (it == fragments.end()) {
+            return BlockPtr();
+        }
+        int index2 = std::distance(fragments.begin(), it);
+        return sit->orig_blocks_[index2];
+    }
+    if (fragment->parted()) {
+        TwoFragments two = fragment->parts();
+        return blockByFragment(two.first);
     }
     const Fragments& fragments = sit->fragments_;
     Fragments::const_iterator it = binarySearch(
@@ -996,23 +1092,42 @@ BlockPtr BlockSet::blockByFragment(
     if (it == fragments.end()) {
         return BlockPtr();
     }
-    if (parentOrFragment(*it) == *it) {
-        // found fragment is not parted
-        // TODO this is good example why no equal
-        // fragments must be allowed in block and in blockset
-        while (*it != fragment) {
-            // fragments are equal but different instances
-            it++;
-            if (it == fragments.end() ||
-                    !(*(*it) == *fragment)) {
-                return BlockPtr();
-            }
-        }
-    }
     int index2 = std::distance(fragments.begin(), it);
     return sit->blocks_[index2];
 }
 
+Blocks BlockSet::blocksByFragment(
+        const FragmentPtr& fragment) const {
+    const SequencePtr& sequence = fragment->sequence();
+    CSit sit = rawFindSeq(sequence->name(), seq_records_);
+    if (sit == seq_records_.end()) {
+        return Blocks();
+    }
+    if (sit->same_parts_) {
+        const Fragments& fragments = sit->orig_fragments_;
+        Fragments::const_iterator it = binarySearch(
+                fragments.begin(), fragments.end(),
+                fragment, FragmentLess());
+        Blocks result;
+        while (it != fragments.end() && *(*it) == *fragment) {
+            int index2 = std::distance(fragments.begin(), it);
+            result.push_back(sit->orig_blocks_[index2]);
+            ++it;
+        }
+        return result;
+    }
+    // no same_parts_, so size(result) <= 1
+    Blocks result;
+    BlockPtr block = blockByFragment(fragment);
+    if (block) {
+        result.push_back(block);
+    }
+    return result;
+}
+
+// must not be applied to a user provided fragment
+// because parts_ are sorted by ptr, not by value
+// (optimization)
 const FragmentPtr& BlockSet::parentOrFragment(
         const FragmentPtr& f) const {
     Fragments::const_iterator it = binarySearch(
@@ -1033,6 +1148,8 @@ void sortAndUnique(const BlockSet* self, Fragments& ff) {
     ff.erase(std::unique(ff.begin(), ff.end()), ff.end());
 }
 
+// TODO can lose results if same_parts_
+// because parentOrFragment is ambiguous
 Fragments BlockSet::overlapping(
         const FragmentPtr& fragment) const {
     if (fragment->parted()) {

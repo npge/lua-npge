@@ -544,6 +544,11 @@ Block of 2 fragments, length 2
 Block of 1 fragments, length 2
 ```
 
+If the fragment belongs to multiple blocks, `blockByFragment`
+return one of them (the selection is undefined). The list of
+all blocks owning the fragment can be obtained with method
+`blockaByFragment`.
+
 BlockSet can find overlapping fragments very fast:
 
 ```lua
@@ -551,6 +556,10 @@ BlockSet can find overlapping fragments very fast:
 { Fragment BRUAB&chr1&c_0_1_1 of length 2,
   Fragment BRUAB&chr1&c_3_2_-1 of length 2,  }
 ```
+
+*Note*. If same fragment (or fragment part for parted fragments)
+belongs to multiple blocks, the result of `overlappingFragments`
+is undefined.
 
 Iterate fragments by sequence ordered by positions:
 ```lua
@@ -598,6 +607,10 @@ Fragment BRUAB&chr1&c_0_1_1 of length 2
 
 *Note*. For a circular sequence, iterating with `next()`
 and `prev()` is infinite.
+
+*Note*. If same fragment (or fragment part for parted fragments)
+belongs to multiple blocks, the result of `prev` and `next` is
+undefined.
 
 Get information about sequences:
 ```lua

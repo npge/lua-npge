@@ -405,38 +405,60 @@ describe("npge.model.BlockSet", function()
         assert.equal(blockset:sequenceByName("s2"), nil)
     end)
 
-    it("gets block by fragment", function()
+    local function sorted(t)
+        table.sort(t)
+        return t
+    end
+
+    it("gets block(s) by fragment", function()
         local s = model.Sequence("s", "ATAT")
         local f1 = model.Fragment(s, 0, 0, 1)
         local f1a = model.Fragment(s, 0, 0, 1)
         local f2 = model.Fragment(s, 1, 1, 1)
         local block1 = model.Block({f1})
-        local block1a = model.Block({f1a})
-        local block2 = model.Block({f2})
+        local block1a = model.Block({f1a, f2})
         local blockset = model.BlockSet({s},
-            {block1, block1a, block2})
-        assert.equal(blockset:blockByFragment(f1), block1)
-        assert.equal(blockset:blockByFragment(f1a), block1a)
-        assert.equal(blockset:blockByFragment(f2), block2)
+            {block1, block1a})
+        local block_of_f1 = blockset:blockByFragment(f1)
+        assert.truthy(
+            block_of_f1 == block1 or
+            block_of_f1 == block1a
+        )
+        assert.same(sorted(blockset:blocksByFragment(f1)),
+            sorted({block1, block1a}))
+        local block_of_f1a = blockset:blockByFragment(f1a)
+        assert.truthy(
+            block_of_f1a == block1 or
+            block_of_f1a == block1a
+        )
+        assert.same(sorted(blockset:blocksByFragment(f1a)),
+            sorted({block1, block1a}))
+        assert.equal(blockset:blockByFragment(f2), block1a)
+        assert.same(blockset:blocksByFragment(f2), {block1a})
         local f3 = model.Fragment(s, 1, 1, 1)
-        assert.equal(blockset:blockByFragment(f3), nil)
+        assert.equal(blockset:blockByFragment(f3), block1a)
+        assert.same(blockset:blocksByFragment(f3), {block1a})
         local f3a = model.Fragment(s, 2, 2, 1)
         assert.equal(blockset:blockByFragment(f3a), nil)
+        assert.same(blockset:blocksByFragment(f3a), {})
         --
         local s2 = model.Sequence("s2", "ATAT")
         local f4 = model.Fragment(s2, 1, 1, 1)
         assert.equal(blockset:blockByFragment(f4), nil)
+        assert.same(blockset:blocksByFragment(f4), {})
     end)
 
-    it("gets block by fragment (#parted)", function()
+    it("gets block(s) by fragment (#parted)", function()
         local s = model.Sequence("g&c&c", "ATAT")
         local f1 = model.Fragment(s, 0, 3, -1)
-        local f2 = model.Fragment(s, 1, 1, 1)
+        local f2 = model.Fragment(s, 0, 0, -1)
         local block1 = model.Block({f1})
         local block2 = model.Block({f2})
         local blockset = model.BlockSet({s}, {block1, block2})
         assert.equal(blockset:blockByFragment(f1), block1)
+        assert.same(blockset:blocksByFragment(f1), {block1})
         assert.equal(blockset:blockByFragment(f2), block2)
+        assert.same(blockset:blocksByFragment(f2), {block2})
     end)
 
     it("gets fragments located on sequence (iter)", function()
