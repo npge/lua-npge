@@ -94,6 +94,7 @@ build = {
         ['npge.fragment.sub'] = 'src/npge/fragment/sub.lua',
         ['npge.fragment.parseId'] = 'src/npge/fragment/parseId.lua',
         ['npge.fragment.exclude'] = 'src/npge/fragment/exclude.lua',
+        ['npge.fragment.overlaps'] = 'src/npge/fragment/overlaps.lua',
         ['npge.block'] = 'src/npge/block/init.lua',
         ['npge.block.align'] = 'src/npge/block/align.lua',
         ['npge.block.alignLeft'] = 'src/npge/block/alignLeft.lua',
