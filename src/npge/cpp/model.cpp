@@ -730,7 +730,7 @@ static void sortFragments(SeqRecords& seq_records) {
         Ints indexes;
         range(indexes, n);
         std::sort(indexes.begin(), indexes.end(),
-                  IndexedFragmentBlockLess(fragments, blocks));
+                  IndexedFragmentLess(fragments));
         Fragments new_fragments(n);
         Blocks new_blocks(n);
         for (int j = 0; j < n; j++) {
