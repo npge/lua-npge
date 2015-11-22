@@ -555,6 +555,10 @@ BlockSet can find overlapping fragments very fast:
   Fragment BRUAB&chr1&c_3_2_-1 of length 2,  }
 ```
 
+*Note*. If same fragment (or fragment part for parted fragments)
+belongs to multiple blocks, the result of `overlappingFragments`
+is undefined.
+
 Iterate fragments by sequence ordered by positions:
 ```lua
 >  for f in bs:iterFragments(seq) do
@@ -601,6 +605,10 @@ Fragment BRUAB&chr1&c_0_1_1 of length 2
 
 *Note*. For a circular sequence, iterating with `next()`
 and `prev()` is infinite.
+
+*Note*. If same fragment (or fragment part for parted fragments)
+belongs to multiple blocks, the result of `prev` and `next` is
+undefined.
 
 Get information about sequences:
 ```lua
