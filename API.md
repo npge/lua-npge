@@ -445,6 +445,13 @@ Creation:
 >  bs = model.BlockSet({seq}, {block1, block2})
 >  bs
 BlockSet of 1 sequences and 2 blocks (partition)
+
+-- check if the block belongs to the blockset
+>  bs:hasBlock(block1)
+true
+>  block3 = model.Block({part1})
+>  bs:hasBlock(block3)
+false
 ```
 
 The label "partition" means that each nucleotide is covered
@@ -482,6 +489,12 @@ BlockSet stores names of blocks:
 
 ```lua
 >  bs = model.BlockSet({seq}, {xxx=block1, yyy=block2})
+
+>  bs:blocksNames()
+{
+   "xxx",
+   "yyy",
+}
 
 -- convert names to blocks and vice-versa
 >  bs:blockByName("xxx")
