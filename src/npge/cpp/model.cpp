@@ -1123,6 +1123,9 @@ Blocks BlockSet::blocksByFragment(
     return result;
 }
 
+// must not be applied to a user provided fragment
+// because parts_ are sorted by ptr, not by value
+// (optimization)
 const FragmentPtr& BlockSet::parentOrFragment(
         const FragmentPtr& f) const {
     Fragments::const_iterator it = binarySearch(
