@@ -204,6 +204,7 @@ build = {
             "src/bin/MakeRegions",
             "src/bin/Clades",
             "src/bin/PrintBlocksNeighbours",
+            "src/bin/ComparePangenomes",
         },
     },
 }
