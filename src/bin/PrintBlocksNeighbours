@@ -12,14 +12,14 @@ local bs = npge.io.ReadFromBs(bs_lines)
 local outformat = arg[2] or 'tsv'
 
 -- FIXME
-local function isMinor(name)
-    return name:sub(1, 1) == 'm'
+local function keepBlock(name)
+    return name:sub(1, 1) ~= 'm' and name:sub(1, 1) ~= 'r'
 end
 
 local function removeMinor(blockset)
     local blocks = {}
     for block, name in blockset:iterBlocks() do
-        if not isMinor(name) then
+        if keepBlock(name) then
             blocks[name] = block
         end
     end
