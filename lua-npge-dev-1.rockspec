@@ -202,6 +202,8 @@ build = {
             "src/bin/BlockSetToDot",
             "src/bin/BlockInfo",
             "src/bin/MakeRegions",
+            "src/bin/Clades",
+            "src/bin/PrintBlocksNeighbours",
         },
     },
 }
