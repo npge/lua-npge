@@ -48,29 +48,6 @@ local function fragmentsLengths(block)
     return lengths
 end
 
--- TODO move to util
-local function stats(values)
-    local min, max, med, avg
-    local n = #values
-    if n > 0 then
-        local sum = 0
-        for _, value in ipairs(values) do
-            sum = sum + value
-            min = min and math.min(min, value) or value
-            max = max and math.max(max, value) or value
-        end
-        table.sort(values)
-        local middle = math.floor((n + 1) / 2)
-        if n % 2 == 1 then
-            med = values[middle]
-        else
-            med = (values[middle] + values[middle + 1]) / 2.0
-        end
-        avg = sum / n
-    end
-    return min, max, med, avg
-end
-
 local function mapToNpg(npg, f)
     local parent = assert(npg:overlappingFragments(f)[1])
     local sequenceToFragment = npge.fragment.sequenceToFragment
@@ -123,7 +100,7 @@ for _, block in ipairs(mul_blocks) do
     r.name_mul = mul:nameByBlock(block)
     r.nfragments = block:size()
     local lengths = fragmentsLengths(block)
-    r.min, r.max, r.med, r.avg = stats(lengths)
+    r.min, r.max, r.med, r.avg = npge.util.stats(lengths)
     r.avg = ("%.2f"):format(r.avg)
     r.shadow1_min, r.shadow1_max = shadow(npg1, block)
     r.shadow2_min, r.shadow2_max = shadow(npg2, block)
