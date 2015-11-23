@@ -14,4 +14,5 @@ return {
     fragmentToSequence = require 'npge.fragment.fragmentToSequence',
     parseId = require 'npge.fragment.parseId',
     exclude = require 'npge.fragment.exclude',
+    overlaps = require 'npge.fragment.overlaps',
 }

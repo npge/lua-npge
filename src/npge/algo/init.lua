@@ -33,6 +33,7 @@ local members = {
     'Overlapping',
     'JoinMinor',
     'CheckPangenome',
+    'Multiply',
 }
 
 local algo = {}
