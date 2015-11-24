@@ -19,6 +19,9 @@ mul = npge.algo.Align(mul)
 
 mul = npge.algo.GiveNames(mul)
 
+local _, conflicts =
+    npge.algo.SplitMultiplication(npg1, npg2, mul)
+
 local mul_blocks = mul:blocks()
 
 local to_npg1_block = {}
@@ -70,6 +73,7 @@ local FIELDS = {
     "name1",
     "name2",
     "name_mul",
+    "conflict",
     "nfragments",
     "sum",
     "length",
@@ -107,6 +111,7 @@ for _, block in ipairs(mul_blocks) do
     r.avg = ("%.2f"):format(r.avg)
     r.shadow1_min, r.shadow1_max = shadow(npg1, block)
     r.shadow2_min, r.shadow2_max = shadow(npg2, block)
+    r.conflict = conflicts:hasBlock(block) and 1 or 0
     local values = collectFields(r)
     print(table.concat(values, '\t'))
 end
