@@ -10,7 +10,7 @@ return function(fragment, fragment_pos)
     if not fragment:parted() then
         assert(sp >= 0)
         assert(sp < sequence:length())
-        return sp
+        return math.abs(sp) -- to prevent -0
     else
         local fixPosition =
             require 'npge.sequence.fixPosition'

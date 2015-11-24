@@ -12,7 +12,8 @@ sequenceToFragment = function(fragment, sequence_pos)
     assert(hasPos(fragment, sequence_pos))
     if not fragment:parted() then
         local pos_diff = sequence_pos - fragment:start()
-        return pos_diff * fragment:ori()
+        return math.abs(pos_diff * fragment:ori())
+        -- math.abs to prevent -0
     else
         local a, b = fragment:parts()
         if hasPos(a, sequence_pos) then
