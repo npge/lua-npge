@@ -74,12 +74,12 @@ describe("npge.algo.Multiply", function()
     it("respects ori of first blockset", function()
         local model = require 'npge.model'
         local s1 = model.Sequence("g1&c&c", "ATGC")
-        local bs1 = model.BlockSet({s1, s2}, {
+        local bs1 = model.BlockSet({s1}, {
             model.Block({
                 model.Fragment(s1, 0, 3, 1),
             }),
         })
-        local bs2 = model.BlockSet({s1, s2}, {
+        local bs2 = model.BlockSet({s1}, {
             model.Block({
                 model.Fragment(s1, 3, 0, -1),
             }),
@@ -87,7 +87,7 @@ describe("npge.algo.Multiply", function()
         local Multiply = require 'npge.algo.Multiply'
         assert.equal(
             Multiply(bs1, bs2),
-            model.BlockSet({s1, s2}, {
+            model.BlockSet({s1}, {
                 model.Block({
                     model.Fragment(s1, 0, 3, 1),
                 }),
