@@ -173,6 +173,7 @@ build = {
         ['npge.algo.CheckPangenome'] = 'src/npge/algo/CheckPangenome.lua',
         ['npge.algo.Extend'] = 'src/npge/algo/Extend.lua',
         ['npge.algo.Multiply'] = 'src/npge/algo/Multiply.lua',
+        ['npge.algo.SplitMultiplication'] = 'src/npge/algo/SplitMultiplication.lua',
         ['npge.io'] = 'src/npge/io/init.lua',
         ['npge.io.ShortForm'] = 'src/npge/io/ShortForm.lua',
         ['npge.io.ReadSequencesFromFasta'] = 'src/npge/io/ReadSequencesFromFasta.lua',

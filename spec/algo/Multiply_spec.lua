@@ -29,8 +29,9 @@ describe("npge.algo.Multiply", function()
             }),
         })
         local Multiply = require 'npge.algo.Multiply'
+        local mul = Multiply(bs1, bs2)
         assert.equal(
-            Multiply(bs1, bs2),
+            mul,
             model.BlockSet({s1, s2}, {
                 model.Block({
                     model.Fragment(s1, 0, 1, 1),
@@ -42,6 +43,29 @@ describe("npge.algo.Multiply", function()
                 model.Block({
                     model.Fragment(s1, 3, 3, 1),
                     model.Fragment(s2, 2, 2, 1),
+                }),
+            })
+        )
+        local SM = require 'npge.algo.SplitMultiplication'
+        local common, conflicts = SM(bs1, bs2, mul)
+        assert.equal(
+            common,
+            model.BlockSet({s1, s2}, {
+                model.Block({
+                    model.Fragment(s1, 0, 1, 1),
+                    model.Fragment(s2, 0, 1, 1),
+                }),
+                model.Block({
+                    model.Fragment(s1, 3, 3, 1),
+                    model.Fragment(s2, 2, 2, 1),
+                }),
+            })
+        )
+        assert.equal(
+            conflicts,
+            model.BlockSet({s1, s2}, {
+                model.Block({
+                    model.Fragment(s1, 2, 2, 1),
                 }),
             })
         )
@@ -131,6 +155,10 @@ describe("npge.algo.Multiply", function()
         local Multiply = require 'npge.algo.Multiply'
         local m = Multiply(bs1, bs2)
         assert.equal(m:size(), 737)
+        local SM = require 'npge.algo.SplitMultiplication'
+        local common, conflicts = SM(bs1, bs2, m)
+        assert.equal(common:size(), 494)
+        assert.equal(conflicts:size(), 243)
         local Overlapping = require 'npge.algo.Overlapping'
         for b in m:iterBlocks() do
             for f in b:iterFragments() do
