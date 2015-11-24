@@ -71,6 +71,8 @@ local FIELDS = {
     "name2",
     "name_mul",
     "nfragments",
+    "sum",
+    "length",
     "min",
     "med",
     "avg",
@@ -99,8 +101,9 @@ for _, block in ipairs(mul_blocks) do
     r.name2 = npg2:nameByBlock(npg2_block)
     r.name_mul = mul:nameByBlock(block)
     r.nfragments = block:size()
+    r.length = block:length()
     local lengths = fragmentsLengths(block)
-    r.min, r.max, r.med, r.avg = npge.util.stats(lengths)
+    r.min, r.max, r.med, r.avg, r.sum = npge.util.stats(lengths)
     r.avg = ("%.2f"):format(r.avg)
     r.shadow1_min, r.shadow1_max = shadow(npg1, block)
     r.shadow2_min, r.shadow2_max = shadow(npg2, block)
