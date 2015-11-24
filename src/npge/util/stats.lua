@@ -3,10 +3,10 @@
 -- See the LICENSE file for terms of use.
 
 local function stats(values)
-    local min, max, med, avg
+    local min, max, med, avg, sum
     local n = #values
     if n > 0 then
-        local sum = 0
+        sum = 0
         for _, value in ipairs(values) do
             sum = sum + value
             min = min and math.min(min, value) or value
@@ -21,7 +21,7 @@ local function stats(values)
         end
         avg = sum / n
     end
-    return min, max, med, avg
+    return min, max, med, avg, sum
 end
 
 return stats
