@@ -13,9 +13,6 @@ describe("npge.io.ReadFromBs", function()
         local bs1 = BlockSet({s1, s2, s3}, {})
         -- parse .bs file
         local ReadFromBs = require 'npge.io.ReadFromBs'
-        local itFromArray =
-            require 'npge.util.itFromArray'
-        local split = require 'npge.util.split'
         local bs_text =
 [[
 >name_0_1 block=b1
