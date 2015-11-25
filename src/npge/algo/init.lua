@@ -34,6 +34,7 @@ local members = {
     'JoinMinor',
     'CheckPangenome',
     'Multiply',
+    'SplitMultiplication',
 }
 
 local algo = {}

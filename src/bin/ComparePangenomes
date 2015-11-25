@@ -1,0 +1,117 @@
+#!/usr/bin/env lua
+
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
+local npge = require 'npge'
+
+local npg1_fname = assert(arg[1])
+local npg2_fname = assert(arg[2])
+
+local npg1 = npge.io.ReadFromBs(io.lines(npg1_fname))
+local npg2 = npge.io.ReadFromBs(io.lines(npg2_fname), npg1)
+
+local mul = npge.algo.Multiply(npg1, npg2)
+
+-- TODO preserve alignment
+mul = npge.algo.Align(mul)
+
+mul = npge.algo.GiveNames(mul)
+
+local _, conflicts =
+    npge.algo.SplitMultiplication(npg1, npg2, mul)
+
+local mul_blocks = mul:blocks()
+
+local to_npg1_block = {}
+local to_npg2_block = {}
+
+for _, block in ipairs(mul_blocks) do
+    local npg1_block = npge.algo.Overlapping(npg1, block)[1]
+    local npg2_block = npge.algo.Overlapping(npg2, block)[1]
+    to_npg1_block[block] = assert(npg1_block)
+    to_npg2_block[block] = assert(npg2_block)
+end
+
+local arraysLess = npge.util.arraysLess
+table.sort(mul_blocks, function(a, b)
+    local a1 = assert(to_npg1_block[a])
+    local a2 = assert(to_npg2_block[a])
+    local b1 = assert(to_npg1_block[b])
+    local b2 = assert(to_npg2_block[b])
+    return arraysLess({b1, b2}, {a1, a2})
+end)
+
+local function fragmentsLengths(block)
+    local lengths = {}
+    for fragment in block:iterFragments() do
+        table.insert(lengths, fragment:length())
+    end
+    return lengths
+end
+
+local function mapToNpg(npg, f)
+    local parent = assert(npg:overlappingFragments(f)[1])
+    local sequenceToFragment = npge.fragment.sequenceToFragment
+    local start = sequenceToFragment(parent, f:start())
+    local stop = sequenceToFragment(parent, f:stop())
+    return math.min(start, stop), math.max(start, stop)
+end
+
+local function shadow(npg, block)
+    local min, max
+    for f in block:iterFragments() do
+        local min1, max1 = mapToNpg(npg, f)
+        min = min and math.min(min, min1) or min1
+        max = max and math.max(max, max1) or max1
+    end
+    return min, max
+end
+
+local FIELDS = {
+    "name1",
+    "name2",
+    "name_mul",
+    "conflict",
+    "nfragments",
+    "sum",
+    "length",
+    "min",
+    "med",
+    "avg",
+    "max",
+    "shadow1_min",
+    "shadow1_max",
+    "shadow2_min",
+    "shadow2_max",
+}
+
+local function collectFields(row)
+    local values = {}
+    for _, field in ipairs(FIELDS) do
+        table.insert(values, assert(row[field]))
+    end
+    return values
+end
+
+print(table.concat(FIELDS, '\t'))
+
+for _, block in ipairs(mul_blocks) do
+    local r = {}
+    local npg1_block = npge.algo.Overlapping(npg1, block)[1]
+    local npg2_block = npge.algo.Overlapping(npg2, block)[1]
+    r.name1 = npg1:nameByBlock(npg1_block)
+    r.name2 = npg2:nameByBlock(npg2_block)
+    r.name_mul = mul:nameByBlock(block)
+    r.nfragments = block:size()
+    r.length = block:length()
+    local lengths = fragmentsLengths(block)
+    r.min, r.max, r.med, r.avg, r.sum = npge.util.stats(lengths)
+    r.avg = ("%.2f"):format(r.avg)
+    r.shadow1_min, r.shadow1_max = shadow(npg1, block)
+    r.shadow2_min, r.shadow2_max = shadow(npg2, block)
+    r.conflict = conflicts:hasBlock(block) and 1 or 0
+    local values = collectFields(r)
+    print(table.concat(values, '\t'))
+end
