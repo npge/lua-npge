@@ -197,4 +197,15 @@ describe("npge.fragment.overlaps", function()
         )
     end)
 
+    it("another sequence", function()
+        local s2 = model.Sequence("genome2&chromosome&c", "AAAA")
+        assert.same(
+            overlaps(
+                Fragment(s, 0, 0, 1),
+                Fragment(s2, 0, 0, 1)
+            ), {
+            }
+        )
+    end)
+
 end)

@@ -13,9 +13,6 @@ describe("npge.io.ReadFromBs", function()
         local bs1 = BlockSet({s1, s2, s3}, {})
         -- parse .bs file
         local ReadFromBs = require 'npge.io.ReadFromBs'
-        local itFromArray =
-            require 'npge.util.itFromArray'
-        local split = require 'npge.util.split'
         local bs_text =
 [[
 >name_0_1 block=b1
@@ -68,4 +65,93 @@ AT-
         assert.equal(bs2:blockByName("b2"), b2)
         assert.equal(bs2:blockByName("b3"), b3)
     end)
+
+    it("reads blockset from #old_bs format without reference",
+    function()
+        -- parse .bs file
+        local ReadFromBs = require 'npge.io.ReadFromBs'
+        local bs_text =
+[[
+>foo_0_1 block=b1
+AT
+>foo_2_3 block=b1
+AT
+]]
+        local bs_seen = ReadFromBs(bs_text)
+        --
+        local model = require 'npge.model'
+        local seq_exp = model.Sequence("foo", "ATAT")
+        local bs_exp = model.BlockSet({seq_exp}, {
+            model.Block({
+                model.Fragment(seq_exp, 0, 1, 1),
+                model.Fragment(seq_exp, 2, 3, 1),
+            }),
+        })
+        assert.equal(bs_seen, bs_exp)
+    end)
+
+    it("reads blockset from #new_bs format without reference",
+    function()
+        -- parse .bs file
+        local ReadFromBs = require 'npge.io.ReadFromBs'
+        local bs_text =
+[[
+>g&c&c_3_0_1 block=b1
+TA-
+>g&c&c_1_2_1 block=b1
+T-A
+]]
+        local bs_seen = ReadFromBs(bs_text)
+        --
+        local model = require 'npge.model'
+        local seq_exp = model.Sequence("g&c&c", "ATAT")
+        local bs_exp = model.BlockSet({seq_exp}, {
+            model.Block({
+                {model.Fragment(seq_exp, 3, 0, 1), "TA-"},
+                {model.Fragment(seq_exp, 1, 2, 1), "T-A"},
+            }),
+        })
+        assert.equal(bs_seen, bs_exp)
+    end)
+
+    it("reads blockset from #new_bs format without reference ori=-1",
+    function()
+        -- parse .bs file
+        local ReadFromBs = require 'npge.io.ReadFromBs'
+        local bs_text =
+[[
+>g&c&c_0_3_-1 block=b1
+TA-
+>g&c&c_1_2_1 block=b1
+T-A
+]]
+        local bs_seen = ReadFromBs(bs_text)
+        --
+        local model = require 'npge.model'
+        local seq_exp = model.Sequence("g&c&c", "ATAT")
+        local bs_exp = model.BlockSet({seq_exp}, {
+            model.Block({
+                {model.Fragment(seq_exp, 0, 3, -1), "TA-"},
+                {model.Fragment(seq_exp, 1, 2, 1), "T-A"},
+            }),
+        })
+        assert.equal(bs_seen, bs_exp)
+    end)
+
+    it("throws if non-partition is read without a reference",
+    function()
+        -- parse .bs file
+        local ReadFromBs = require 'npge.io.ReadFromBs'
+        local bs_text =
+[[
+>g&c&c_3_0_1 block=b1
+TA-
+>g&c&c_1_1_1 block=b1
+T--
+]]
+        assert.has_error(function()
+            ReadFromBs(bs_text)
+        end)
+    end)
+
 end)
