@@ -159,6 +159,9 @@ describe("npge.algo.Multiply", function()
         local common, conflicts = SM(bs1, bs2, m)
         assert.equal(common:size(), 494)
         assert.equal(conflicts:size(), 243)
+        local Merge = require 'npge.algo.Merge'
+        local m1 = Merge({common, conflicts})
+        assert.equal(m1, m)
         local Overlapping = require 'npge.algo.Overlapping'
         for b in m:iterBlocks() do
             for f in b:iterFragments() do
