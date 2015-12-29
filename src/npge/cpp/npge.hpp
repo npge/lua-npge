@@ -111,8 +111,7 @@ typedef std::vector<FragmentPtr> Fragments;
 typedef std::vector<BlockPtr> Blocks;
 typedef std::vector<BlockSetPtr> BlockSets;
 
-class Sequence :
-    public boost::intrusive_ref_counter<Sequence> {
+class Sequence : public boost::intrusive_ref_counter<Sequence> {
 public:
     static SequencePtr make(const std::string& name,
                             const std::string& description,
@@ -144,8 +143,7 @@ private:
     Sequence();
 };
 
-class Fragment :
-    public boost::intrusive_ref_counter<Fragment> {
+class Fragment : public boost::intrusive_ref_counter<Fragment> {
 public:
     static FragmentPtr make(SequencePtr sequence,
                             int start, int stop, int ori);
@@ -188,8 +186,7 @@ int fragmentMin(const Fragment& fragment);
 
 int fragmentMax(const Fragment& fragment);
 
-class Block :
-    public boost::intrusive_ref_counter<Block> {
+class Block : public boost::intrusive_ref_counter<Block> {
 public:
     static BlockPtr make(const Fragments& fragments);
 
@@ -261,8 +258,7 @@ void findOverlapping(Fragments& result,
                      const Fragments& fragments,
                      const FragmentPtr& fragment);
 
-class BlockSet :
-    public boost::intrusive_ref_counter<BlockSet> {
+class BlockSet : public boost::intrusive_ref_counter<BlockSet> {
 public:
     static BlockSetPtr make(const Sequences& sequences,
                             const Blocks& blocks,
