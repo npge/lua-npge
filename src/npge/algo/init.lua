@@ -35,6 +35,7 @@ local members = {
     'CheckPangenome',
     'Multiply',
     'SplitMultiplication',
+    'NpgDistance',
 }
 
 local algo = {}

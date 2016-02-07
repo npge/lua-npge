@@ -46,6 +46,7 @@ describe("npge.algo.Multiply", function()
                 }),
             })
         )
+
         local SM = require 'npge.algo.SplitMultiplication'
         local common, conflicts = SM(bs1, bs2, mul)
         assert.equal(
@@ -69,6 +70,26 @@ describe("npge.algo.Multiply", function()
                 }),
             })
         )
+
+        local NpgDistance = require 'npge.algo.NpgDistance'
+        local abs_dist, rel_dist = NpgDistance(
+            bs1, bs2, conflicts, common
+        )
+        -- not counted, because they are minor
+        assert.equal(abs_dist, 0)
+        assert.equal(rel_dist, 0)
+        local config = require 'npge.config'
+        local revert = config:updateKeys({
+            general = {
+                MIN_LENGTH = 1,
+            },
+        })
+        local abs_dist, rel_dist = NpgDistance(
+            bs1, bs2, conflicts, common
+        )
+        assert.equal(abs_dist, 1)
+        assert.equal(rel_dist, 1 / 7)
+        revert()
     end)
 
     it("respects ori of first blockset", function()
@@ -155,10 +176,12 @@ describe("npge.algo.Multiply", function()
         local Multiply = require 'npge.algo.Multiply'
         local m = Multiply(bs1, bs2)
         assert.equal(m:size(), 737)
+
         local SM = require 'npge.algo.SplitMultiplication'
         local common, conflicts = SM(bs1, bs2, m)
         assert.equal(common:size(), 494)
         assert.equal(conflicts:size(), 243)
+
         local Merge = require 'npge.algo.Merge'
         local m1 = Merge({common, conflicts})
         assert.equal(m1, m)
@@ -177,6 +200,13 @@ describe("npge.algo.Multiply", function()
             assert.equal(#bb1, 1)
             assert.equal(#bb2, 1)
         end
+
+        local NpgDistance = require 'npge.algo.NpgDistance'
+        local abs_dist, rel_dist = NpgDistance(
+            bs1, bs2, conflicts, common
+        )
+        assert.equal(abs_dist, 611)
+        assert.equal(rel_dist, 611 / 323637)
     end)
 
 end)
