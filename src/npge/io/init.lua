@@ -12,6 +12,8 @@ local members = {
     'ShortForm',
     'ToDot',
     'BlockInfo',
+    'ReadMauve1File',
+    'ReadMauveBbcolsFile',
 }
 
 local npge_io = {}
