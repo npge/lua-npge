@@ -48,6 +48,21 @@ ACC
         assert.equal(text, "AAAATTTT")
     end)
 
+    it("parses fasta representation from generator (space after >)",
+    function()
+        local itFromArray = require 'npge.util.itFromArray'
+        local fromFasta = require 'npge.util.fromFasta'
+        local parser = fromFasta(itFromArray {
+            "> foo bar\n",
+            "AAAA\n",
+            "TTTT\n",
+        })
+        local foo, bar, text = parser()
+        assert.equal(foo, "foo")
+        assert.equal(bar, "bar")
+        assert.equal(text, "AAAATTTT")
+    end)
+
     it("parses fasta representation from multiline generator",
     function()
         local itFromArray = require 'npge.util.itFromArray'

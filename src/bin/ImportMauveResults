@@ -1,0 +1,46 @@
+#!/usr/bin/env lua
+
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2016 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
+-- See https://github.com/npge/npge/issues/74
+
+local npge = require 'npge'
+
+local genomes_renamed = assert(arg[1])
+local sequences_names_file = assert(arg[2])
+local mauve_gb_out = assert(arg[3])
+local mauve_bbcols = assert(arg[4])
+local output_global_blocks = assert(arg[5])
+local output_conserved_blocks = assert(arg[6])
+
+local seqs_bs = npge.io.ReadFromBs(io.lines(genomes_renamed))
+
+local sequences_names = {}
+for line in io.lines(sequences_names_file) do
+    local seq_name = npge.util.trim(line)
+    table.insert(sequences_names, seq_name)
+end
+
+local global_blocks = npge.io.ReadMauve1File(
+    io.lines(mauve_gb_out),
+    seqs_bs,
+    sequences_names
+)
+
+local conserved_blocks = npge.io.ReadMauveBbcolsFile(
+    io.lines(mauve_bbcols),
+    global_blocks,
+    sequences_names
+)
+
+npge.util.writeIt(
+    output_global_blocks,
+    npge.io.WriteToBs(global_blocks)
+)
+
+npge.util.writeIt(
+    output_conserved_blocks,
+    npge.io.WriteToBs(conserved_blocks)
+)

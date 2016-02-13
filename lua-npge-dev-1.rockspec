@@ -185,6 +185,8 @@ build = {
         ['npge.io.BlockSetToLua'] = 'src/npge/io/BlockSetToLua.lua',
         ['npge.io.ToDot'] = 'src/npge/io/ToDot.lua',
         ['npge.io.BlockInfo'] = 'src/npge/io/BlockInfo.lua',
+        ['npge.io.ReadMauve1File'] = 'src/npge/io/ReadMauve1File.lua',
+        ['npge.io.ReadMauveBbcolsFile'] = 'src/npge/io/ReadMauveBbcolsFile.lua',
         ['npge.view'] = 'src/npge/view/init.lua',
         ['npge.view.BlockInConsole'] = 'src/npge/view/BlockInConsole.lua',
     },
