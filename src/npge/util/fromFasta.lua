@@ -23,7 +23,7 @@ return function(chunks)
                 line = trim(line)
                 if line:sub(1, 1) == '>' then
                     yield()
-                    local header = line:sub(2, -1)
+                    local header = trim(line:sub(2, -1))
                     local fields = split(header, '%s+', 1)
                     name = fields[1]
                     description = fields[2] or ''
