@@ -50,7 +50,7 @@ install:
 - luarocks install busted
 - luarocks install luacov
 - if "%LUA_SHORTV%"=="5.1" luarocks install bit32
-- luarocks install "https://gist.githubusercontent.com/starius/6c21000109674dd36bfa/raw/f2d931448ce0d0b53c124513eaceaf401a7f87a1/luacov-coveralls-scm-0.rockspec"
+- luarocks install luacov-coveralls
 - luarocks install lua-llthreads2
 - luarocks install tree
 
@@ -61,5 +61,5 @@ test_script:
 - cd %APPVEYOR_BUILD_FOLDER%
 - busted -c -o .appveyor/busted-print.lua
 
-#after_test:
-#- luacov-coveralls -v
+after_test:
+- luacov-coveralls -v
