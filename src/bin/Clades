@@ -171,13 +171,13 @@ local genomes = npge.algo.Genomes(bs)
 local partition2weght = {}
 local partition2blocklengthsum = {}
 
-local function isStem(name)
+local function isStable(name)
     -- FIXME
     return name:match('^s')
 end
 
 local function addByDiagnosticPositions(block, name)
-    if isStem(name) then
+    if isStable(name) then
         local alignment = alignmentForGenomes(block, genomes)
         local diagnostic_positions = findDiagnosticPositions(alignment)
         for _, pos in ipairs(diagnostic_positions) do

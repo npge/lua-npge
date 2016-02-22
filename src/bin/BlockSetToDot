@@ -9,7 +9,7 @@ local npge = require 'npge'
 local fname = assert(arg[1])
 local bs = npge.io.ShortForm.decode(io.lines(fname))
 
--- filter only stem
+-- filter only stable
 local blocks = {}
 for block, name in bs:iterBlocks() do
     if name:match('^s') then
