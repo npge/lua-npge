@@ -63,7 +63,6 @@ return function(generator, collector)
         local result = loadstring(code)()
         return collector({result})
     end
-    local config = require 'npge.config'
     local conf = config:save()
     local threads = spawnWorkers(generator, workers, conf)
     return collectResults(collector, threads)

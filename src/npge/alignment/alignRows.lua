@@ -9,7 +9,7 @@ local function compress(rows)
     -- returns new rows, decompression_info
     local new_rows = {}
     local decompression_info = {}
-    for i, row in ipairs(rows) do
+    for _, row in ipairs(rows) do
         if #row >= 1 then
             table.insert(new_rows, row)
             table.insert(decompression_info, #new_rows)
@@ -74,7 +74,7 @@ end
 
 local function emptyRows(n)
     local rows = {}
-    for i = 1, n do
+    for _ = 1, n do
         table.insert(rows, '')
     end
     return rows

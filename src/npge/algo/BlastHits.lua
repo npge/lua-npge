@@ -20,7 +20,7 @@ local function readBlast(file, query, bank, same, line_handler)
         return query_name and bank_name
             and query_row and bank_row
     end
-    local function goodFragments(query_f, bank_f)
+    local function goodFragments(_, _)
         return true
     end
     if same then
@@ -96,8 +96,8 @@ local function readBlast(file, query, bank, same, line_handler)
             query_row = {}
             bank_row = {}
         elseif goodHit() then
-            local function parseAlignment(line)
-                local parts = split(line)
+            local function parseAlignment(line1)
+                local parts = split(line1)
                 assert(#parts == 4 or #parts == 3)
                 if #parts == 4 then
                     local _, start, row, stop = unpack(parts)

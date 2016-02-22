@@ -7,13 +7,13 @@ return function(blockset, block)
     for f1 in block:iterFragments() do
         local fragments = blockset:overlappingFragments(f1)
         for _, f2 in ipairs(fragments) do
-            local block = blockset:blockByFragment(f2)
-            blocks_set[block] = true
+            local block1 = blockset:blockByFragment(f2)
+            blocks_set[block1] = true
         end
     end
     local blocks = {}
-    for block, _ in pairs(blocks_set) do
-        table.insert(blocks, block)
+    for block1, _ in pairs(blocks_set) do
+        table.insert(blocks, block1)
     end
     return blocks
 end

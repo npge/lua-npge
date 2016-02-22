@@ -19,7 +19,7 @@ return function(blocksets)
         end
     end
     local seqs = {}
-    for name, seq in pairs(name2seq) do
+    for _, seq in pairs(name2seq) do
         table.insert(seqs, seq)
     end
     local concatArrays = require 'npge.util.concatArrays'

@@ -43,7 +43,7 @@ local about = {}
 for section_name, section in pairs(config) do
     about[section_name] = {}
     local names = {}
-    for name, value_and_desc in pairs(section) do
+    for name, _ in pairs(section) do
         table.insert(names, name)
     end
     for _, name in ipairs(names) do
@@ -80,7 +80,7 @@ end
 local function loadConfig(_, conf)
     local sandbox = require 'npge.util.sandbox'
     local env = {}
-    for section_name, section in pairs(config) do
+    for section_name, _ in pairs(config) do
         env[section_name] = {}
     end
     env.Decimal = function() end -- C++ NPGe compatibility

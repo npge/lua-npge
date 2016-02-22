@@ -5,7 +5,7 @@
 local function mergeSequences(prefix2blockset)
     local blocksets = {}
     local BlockSet = require 'npge.model.BlockSet'
-    for prefix, blockset in pairs(prefix2blockset) do
+    for _, blockset in pairs(prefix2blockset) do
         local seqs = blockset:sequences()
         table.insert(blocksets, BlockSet(seqs, {}))
     end

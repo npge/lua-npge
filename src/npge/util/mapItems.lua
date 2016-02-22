@@ -5,7 +5,7 @@
 -- map items to ngroups groups of almost equal size
 return function(ngroups, items)
     local groups = {}
-    for i = 1, ngroups do
+    for _ = 1, ngroups do
         table.insert(groups, {})
     end
     math.randomseed(os.time())

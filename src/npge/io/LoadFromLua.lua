@@ -37,7 +37,7 @@ return function(code, enable_fromRef)
         next=next, pairs=pairs, pcall=pcall,
         tonumber=tonumber, tostring=tostring,
         type=type,
-        unpack = unpack or table.unpack,
+        unpack = _G.unpack or table.unpack,
         string = {
             byte=string.byte, char=string.char,
             format=string.format, len=string.len,

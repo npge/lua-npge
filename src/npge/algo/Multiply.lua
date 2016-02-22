@@ -28,7 +28,7 @@ local function Multiply(bs1, bs2)
                 end
             end
         end
-        for block2, oo in pairs(block2_to_fragments) do
+        for _, oo in pairs(block2_to_fragments) do
             -- TODO preserve alignment
             table.insert(blocks, model.Block(oo))
         end
