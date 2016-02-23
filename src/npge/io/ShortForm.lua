@@ -279,7 +279,7 @@ function ShortForm.decode(iterator, seq_bs)
     local loader, env = ShortForm.loaderAndEnv()
     local sandbox = require 'npge.util.sandbox'
     for line in iterator do
-        local f, err = assert(sandbox(env, line))
+        local f, _ = assert(sandbox(env, line))
         f()
     end
     return ShortForm.loader2blockset(loader, seq_bs)

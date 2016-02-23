@@ -19,13 +19,13 @@ return function(env, code)
         _VERSION == 'Lua 5.3',
         'Implemented in Lua 5.1, 5.2 and 5.3 only')
     if _VERSION == 'Lua 5.2' or _VERSION == 'Lua 5.3' then
-        return load(code, 'sandbox', 't', env)
+        return _G.load(code, 'sandbox', 't', env)
     elseif _VERSION == 'Lua 5.1' then
-        local f, message = loadstring(code, 'sandbox')
+        local f, message = _G.loadstring(code, 'sandbox')
         if not f then
             return nil, message
         end
-        setfenv(f, env)
+        _G.setfenv(f, env)
         return f
     end
 end

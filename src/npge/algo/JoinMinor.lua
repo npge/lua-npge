@@ -41,7 +41,7 @@ local function joinMinor(block, bs, joined, joinable)
             local Block = require 'npge.model.Block'
             local minor_block = Block(fragments)
             table.insert(joined, minor_block)
-            for neighbour, f_ori in pairs(neighbours[ori]) do
+            for neighbour, _ in pairs(neighbours[ori]) do
                 joinable[neighbour]  = nil
             end
         end

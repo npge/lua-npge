@@ -6,3 +6,4 @@ luarocks install luaposix --local
 luarocks install lua-rote --local
 luarocks install alnbox --local
 luarocks install tree --local
+luarocks install luacheck --local

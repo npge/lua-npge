@@ -2,4 +2,4 @@
 -- Copyright (C) 2014-2016 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-return loadstring or load
+return _G.loadstring or _G.load

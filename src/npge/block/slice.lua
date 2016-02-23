@@ -23,7 +23,6 @@ return function(block, min, max, row)
     assert(#row >= (max - min + 1))
     local for_block = {}
     for fragment in block:iterFragments() do
-        local seq = fragment:sequence()
         local frag_min = block:block2right(fragment, min)
         local frag_max = block:block2left(fragment, max)
         if frag_min ~= -1 and frag_max ~= -1 and

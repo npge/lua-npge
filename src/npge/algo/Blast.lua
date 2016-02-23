@@ -37,7 +37,7 @@ function Blast.checkNoCollisions(bs1, bs2)
     end
 end
 
-function Blast.blastnCmd(bank_fname, query_fname, options)
+function Blast.blastnCmd(bank_fname, query_fname)
     local config = require 'npge.config'
     local nullName = require 'npge.util.nullName'
     local args = {

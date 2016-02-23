@@ -10,7 +10,7 @@ return function(blockset)
     local Genomes = require 'npge.algo.Genomes'
     local has_genomes, _, genome2seqs = pcall(Genomes, blockset)
     if has_genomes then
-        for genome, seqs in pairs(genome2seqs) do
+        for _, seqs in pairs(genome2seqs) do
             table.insert(level2bss[1], BlockSet(seqs, {}))
         end
     else
@@ -35,7 +35,7 @@ return function(blockset)
     end
 
     local niterations = #(level2bss[1]) - 1
-    for i = 1, niterations do
+    for _ = 1, niterations do
         local a, level_a = assert(popBs())
         local b, level_b = assert(popBs())
         local Cover = require 'npge.algo.Cover'

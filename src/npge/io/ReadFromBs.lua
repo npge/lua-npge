@@ -38,9 +38,9 @@ local function isParted(start, stop, ori)
     return diff * ori < 0
 end
 
-local function getParts(seqname, start, stop, ori, text)
+local function getParts(seqname, start, stop, ori, text0)
     local toAtgcn = require 'npge.alignment.toAtgcn'
-    local text = toAtgcn(text)
+    local text = toAtgcn(text0)
     local length = #text
     local length1, length2
     if ori == 1 then
@@ -113,7 +113,6 @@ local function readWithoutReference(generator)
     local seqname2parts = {}
     local ev = require 'npge.util.extractValue'
     local Sequence = require 'npge.model.Sequence'
-    local parseId = require 'npge.fragment.parseId'
     for name, description, text in generator do
         local blockname = ev(description, "block")
         if blockname then
@@ -145,7 +144,7 @@ local function readWithoutReference(generator)
         collectgarbage() -- large text
     end
     local sequences = {}
-    for name, seq in pairs(seqname2seq) do
+    for _, seq in pairs(seqname2seq) do
         table.insert(sequences, seq)
     end
     return sequences, blockname2fragments
@@ -183,7 +182,6 @@ return function(lines, blockset_with_sequences)
     local bs1 = BlockSet(sequences, {})
     local blocks = {}
     for blockname, fr_descs in pairs(blockname2fragments) do
-        local Block = require 'npge.model.Block'
         blocks[blockname] = makeBlock(bs1, fr_descs)
     end
     return BlockSet(sequences, blocks)

@@ -64,7 +64,7 @@ return function(blockset)
     -- block must be in right orientation
     -- Quality of s,h,r-blocks is part of this step
     for block, name in blockset:iterBlocks() do
-        local t, size, length, n = npge.block.parseName(name)
+        local t, size, length, _ = npge.block.parseName(name)
         if size ~= block:size() then
             fail("Block %s has size %d", name, block:size())
         end
@@ -104,9 +104,9 @@ return function(blockset)
                 warning([[ All of these good parts were
                     eliminated by better or equal blocks]])
             else
-                local names = blockNames(better_parts)
+                local better_names = blockNames(better_parts)
                 fail(" The following %d parts can be added: %s",
-                    #better_parts, names)
+                    #better_parts, better_names)
             end
         end
     end
@@ -125,7 +125,7 @@ return function(blockset)
     local joined = npge.algo.Join(blockset)
     warning("Joining neighbour blocks produces %d blocks",
         joined:size())
-    for i, block in ipairs(joined:blocks()) do
+    for _, block in ipairs(joined:blocks()) do
         local block_name = npge.block.giveName(block, #genomes)
         inspectBlock('Joined ' .. block_name, block)
     end
