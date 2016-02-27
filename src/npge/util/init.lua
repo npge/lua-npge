@@ -5,6 +5,7 @@
 return {
     split = require 'npge.util.split',
     unpack = require 'npge.util.unpack',
+    execute = require 'npge.util.execute',
     loadstring = require 'npge.util.loadstring',
     arraysEqual = require 'npge.util.arraysEqual',
     arraysLess = require 'npge.util.arraysLess',

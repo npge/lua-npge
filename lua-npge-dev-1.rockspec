@@ -67,6 +67,7 @@ build = {
         ['npge.util.trim'] = 'src/npge/util/trim.lua',
         ['npge.util.unique'] = 'src/npge/util/unique.lua',
         ['npge.util.unpack'] = 'src/npge/util/unpack.lua',
+        ['npge.util.execute'] = 'src/npge/util/execute.lua',
         ['npge.util.writeIt'] = 'src/npge/util/writeIt.lua',
         ['npge.util.writeFile'] = 'src/npge/util/writeFile.lua',
         ['npge.util.threads'] = 'src/npge/util/threads.lua',
