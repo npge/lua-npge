@@ -19,6 +19,7 @@ return {
     endsWith = require 'npge.util.endsWith',
     trim = require 'npge.util.trim',
     writeIt = require 'npge.util.writeIt',
+    writeFile = require 'npge.util.writeFile',
     fileExists = require 'npge.util.fileExists',
     sandbox = require 'npge.util.sandbox',
     readFile = require 'npge.util.readFile',
