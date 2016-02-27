@@ -1,9 +1,9 @@
-luarocks install busted --local
-luarocks install luacov --local
-luarocks install luacov-coveralls --local
-luarocks install lua-llthreads2 --local
-luarocks install lcurses --local
-luarocks install lua-rote --local
-luarocks install alnbox --local
-luarocks install tree --local
-luarocks install luacheck --local
+luarocks install busted
+luarocks install luacov
+luarocks install luacov-coveralls
+luarocks install lua-llthreads2
+luarocks install lcurses
+luarocks install lua-rote
+luarocks install alnbox
+luarocks install tree
+luarocks install luacheck
