@@ -12,8 +12,8 @@ env:
 
 before_install:
   - sudo apt-get update
-  - sudo pip install hererocks
-  - hererocks here --$LUA --luarocks $LUAROCKS
+  - wget https://raw.githubusercontent.com/mpeterv/hererocks/13e45c9db0293ac59ffb3756c0a883c7221e9295/hererocks.py
+  - python hererocks.py here --$LUA --luarocks $LUAROCKS
   - eval $(./here/bin/luarocks path --bin)
   - bash .travis/setup_rote.sh
   - bash .travis/setup_rocks.sh
