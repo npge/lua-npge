@@ -12,7 +12,7 @@ return function(block)
         table.insert(names, name)
     end
     --
-    local curses = require 'posix.curses'
+    local curses = require 'curses'
     local alnbox = require 'alnbox'
     local aln = alnbox.makeAlignment(names, name2text)
     local parameters = alnbox.alignmentParameters(aln, curses)
