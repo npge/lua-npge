@@ -93,7 +93,7 @@ return function(block, left_length, right_length)
     left_rows = alignRows(left_rows, only_left)
     left_rows = cr(left_rows)
     right_rows = alignRows(right_rows, only_left)
-    local rows = join(left_rows, middle_rows, right_rows)
+    local rows = join({left_rows, middle_rows, right_rows})
     --
     assert(#rows == #new_fragments)
     local for_block = {}

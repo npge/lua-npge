@@ -754,13 +754,13 @@ All unknown letters are skipped.
 ### Join alignments
 
 ```lua
->  alignment.join({
+>  alignment.join({{
 >> "AT",
 >> "A-",
 >> }, {
 >> "CC",
 >> "CG",
->> })
+>> }})
 {
   "ATCC",
   "A-CG",

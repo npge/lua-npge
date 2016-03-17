@@ -5,29 +5,29 @@
 describe("npge.alignment.join", function()
     it("joins several alignments", function()
         local join = require 'npge.alignment.join'
-        assert.same(join({
+        assert.same(join{{
             "ATGC",
-        }), {
+        }}, {
             "ATGC",
         })
-        assert.same(join({
+        assert.same(join{{
             "ATGC",
             "AT-C",
-        }), {
+        }}, {
             "ATGC",
             "AT-C",
         })
-        assert.same(join({
+        assert.same(join{{
             "ATGC",
             "AT-C",
         }, {
             "AT",
             "AT",
-        }), {
+        }}, {
             "ATGCAT",
             "AT-CAT",
         })
-        assert.same(join({
+        assert.same(join{{
             "ATGC",
             "AT-C",
         }, {
@@ -36,23 +36,23 @@ describe("npge.alignment.join", function()
         }, {
             "GA",
             "TA",
-        }), {
+        }}, {
             "ATGCATGA",
             "AT-CATTA",
         })
         assert.has_error(function()
-            join({
+            join{{
                 "ATGC",
                 "AT-",
-            })
+            }}
         end)
         assert.has_error(function()
-            join({
+            join{{
                 "ATGC",
                 "AT-C",
             }, {
                 "ATGC",
-            })
+            }}
         end)
     end)
 end)
