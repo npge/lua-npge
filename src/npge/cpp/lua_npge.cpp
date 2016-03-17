@@ -1585,7 +1585,7 @@ static int lua_refineAlignment(lua_State *L) {
     for (int irow = 0; irow < nrows; irow++) {
         const std::string& row = aligned[irow];
         lua_pushlstring(L, row.c_str(), row.length());
-        lua_rawseti(L, -2, irow + 1); // anchor
+        lua_rawseti(L, -2, irow + 1);
     }
     return 1;
 }
