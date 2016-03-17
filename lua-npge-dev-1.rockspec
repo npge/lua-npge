@@ -19,7 +19,7 @@ dependencies = {
 dependencies.platforms = {
     unix = {
         "alnbox",
-        "luaposix",
+        "lcurses",
     },
 }
 external_dependencies = {
