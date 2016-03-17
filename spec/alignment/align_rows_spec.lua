@@ -327,7 +327,10 @@ GA--ATCTAGTCCATCCAATTCTGGAC
 ]]
     end)
 
-    pending("aligns big block", function()
+    it("aligns #big block", function()
+        if os.getenv('UNDER_VALGRIND') then
+            return
+        end
         local readFasta = require 'npge.util.fromFasta'
         local toAtgcn = require 'npge.alignment.toAtgcn'
         local sequences = {}
