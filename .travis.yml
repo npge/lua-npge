@@ -2,25 +2,26 @@ language: cpp
 
 env:
   global:
-    - LUAROCKS=2.2.0
+    - LUAROCKS=2.3.0
   matrix:
-    - LUA=lua5.1
-    - LUA=lua5.2
-    - LUA=lua5.3
-    - LUA=luajit # latest stable version (2.0.4)
-    - LUA=luajit2.0 # current head of 2.0 branch
-    - LUA=luajit2.1 # current head of 2.1 branch
+    - LUA="lua 5.1"
+    - LUA="lua 5.2"
+    - LUA="lua 5.3.1"
+    - LUA="luajit 2.0"
+    - LUA="luajit 2.1"
 
 before_install:
   - sudo apt-get update
-  - source .travis/setenv_lua.sh
+  - wget https://raw.githubusercontent.com/mpeterv/hererocks/13e45c9db0293ac59ffb3756c0a883c7221e9295/hererocks.py
+  - python hererocks.py here --$LUA --luarocks $LUAROCKS
+  - eval $(./here/bin/luarocks path --bin)
   - bash .travis/setup_rote.sh
   - bash .travis/setup_rocks.sh
   - sudo apt-get install valgrind ncbi-blast+ libboost-dev
   - sudo pip install cpp-coveralls
 
 install:
-  - luarocks make --local CFLAGS="-O0 -fPIC -ftest-coverage -fprofile-arcs" LIBFLAG="-shared --coverage"
+  - luarocks make CFLAGS="-O0 -fPIC -ftest-coverage -fprofile-arcs" LIBFLAG="-shared --coverage"
 
 script:
   - luacheck `find src -name '*.lua'`
