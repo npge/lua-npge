@@ -101,17 +101,32 @@ alignRows = function(rows, only_left)
     -- if not only_left, then both left and right
     -- sides are equal (the default)
     local A = require 'npge.alignment'
-    local l1, m1, r1 = strip(rows, A.moveIdentical, only_left)
-    local l2, m2, r2 = strip(m1, A.left, only_left)
-    local l3, anchor, r3 = A.anchor(m2)
-    if anchor then
-        l3 = alignRemaining(l3)
-        r3 = alignRows(r3, only_left)
-        return A.refine(A.join(l1, l2, l3, anchor, r3, r2, r1))
-    else
-        m2 = alignRemaining(m2)
-        return A.refine(A.join(l1, l2, m2, r2, r1))
+    local left_parts = {}
+    local right_parts = {}
+    while rows do
+        local l1, m1, r1 = strip(rows, A.moveIdentical, only_left)
+        local l2, m2, r2 = strip(m1, A.left, only_left)
+        table.insert(left_parts, l1)
+        table.insert(left_parts, l2)
+        table.insert(right_parts, r1)
+        table.insert(right_parts, r2)
+        local l3, anchor, r3 = A.anchor(m2)
+        if anchor then
+            l3 = alignRemaining(l3)
+            table.insert(left_parts, l3)
+            table.insert(left_parts, anchor)
+            rows = r3
+        else
+            m2 = alignRemaining(m2)
+            table.insert(left_parts, m2)
+            rows = nil
+        end
     end
+    -- copy from right_parts to left_parts
+    for i = #right_parts, 1, -1 do
+        table.insert(left_parts, right_parts[i])
+    end
+    return A.refine(A.join(left_parts))
 end
 
 return alignRows

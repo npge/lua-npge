@@ -326,4 +326,19 @@ GA--ATCTAGTCCATCCAATTCCGGGG
 GA--ATCTAGTCCATCCAATTCTGGAC
 ]]
     end)
+
+    it("aligns #big block", function()
+        if os.getenv('UNDER_VALGRIND') then
+            return
+        end
+        local readFasta = require 'npge.util.fromFasta'
+        local toAtgcn = require 'npge.alignment.toAtgcn'
+        local sequences = {}
+        for _, _, text in readFasta(io.lines('spec/big-block.bs')) do
+            table.insert(sequences, toAtgcn(text))
+        end
+        local alignRows = require 'npge.alignment.alignRows'
+        alignRows(sequences)
+    end)
+
 end)

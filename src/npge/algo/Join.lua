@@ -99,7 +99,7 @@ local joinBlocks = function(b1, b2, pairs_list, ori)
     end
     local A = require 'npge.alignment'
     middle_rows = A.alignRows(middle_rows)
-    local rows = A.join(left_rows, middle_rows, right_rows)
+    local rows = A.join({left_rows, middle_rows, right_rows})
     assert(#rows == #fragments)
     local for_block = {}
     for i = 1, #rows do

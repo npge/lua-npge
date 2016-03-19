@@ -754,13 +754,13 @@ All unknown letters are skipped.
 ### Join alignments
 
 ```lua
->  alignment.join({
+>  alignment.join({{
 >> "AT",
 >> "A-",
 >> }, {
 >> "CC",
 >> "CG",
->> })
+>> }})
 {
   "ATCC",
   "A-CG",
@@ -865,6 +865,9 @@ are 0-based.
 ```
 
 ### Make alignment
+
+Warning! Input must contan only letters "A", "T", "G", "C" and "N"
+in upper case.
 
 There are several functions which build an alignment.
 They split input to alignable and non-alignable parts
