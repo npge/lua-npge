@@ -1,22 +1,19 @@
 version: 0.0.1.{build}-test
 
+shallow_clone: true
+
 os:
 - Windows Server 2012 R2
 
-shallow_clone: true
-
 environment:
-  LUAROCKS_VER: 2.2.2
+  LuaRocks: 2.3.0
   matrix:
-  - LUA_VER: 5.1.5
-  - LUA_VER: 5.2.4
-  - LUA_VER: 5.2.4
-    NOCOMPAT: true
-  - LUA_VER: 5.3.0
-  - LUA_VER: 5.3.0
-    NOCOMPAT: true
-  - LJ_VER: 2.0.3
-  - LJ_VER: 2.1
+  - Lua: lua 5.3
+  - Lua: luajit 2.0
+
+configuration:
+  - vs
+  - mingw
 
 platform:
   - x86
@@ -27,23 +24,18 @@ matrix:
   # LuaJIT crashes on C++ exception on x86
   allow_failures:
     - platform: x86
-      LJ_VER: 2.0.3
-    - platform: x86
-      LJ_VER: 2.1
+      Lua: luajit 2.0
 
 cache:
   #- c:\lua -> appveyor.yml
   - c:\external -> appveyor.yml
   - c:\blast -> appveyor.yml
 
-init:
-# Setup Lua development/build environment
-# Make VS 2013 command line tools available
-- call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" %platform%
-
 install:
 # Setup Lua development/build environment
-- call .appveyor\install.bat
+- PATH %CD%\here\bin;C:\mingw\bin;%PATH%
+- curl --location --silent --fail --max-time 120 --connect-timeout 30 https://raw.githubusercontent.com/mpeterv/hererocks/latest/hererocks.py > hererocks.py
+- python hererocks.py here --%Lua% --luarocks=%LuaRocks% --verbose --target=%Configuration% --no-git-cache
 # Downloand and install blast to c:\blast
 - call .appveyor\install_blast.bat
 - luarocks install "https://gist.githubusercontent.com/starius/719b194bb34ce612458c/raw/7ab5aa457164c5dccef2c06e0e06ffbed09319df/mediator_lua-1.1.1-0.rockspec"
