@@ -16,10 +16,6 @@ configuration:
   - vs_32
   - vs_64
 
-platform:
-  - x86
-  - x64
-
 # this is how to allow failing jobs in the matrix
 matrix:
   # LuaJIT crashes on C++ exception on x86
