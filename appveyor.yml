@@ -34,7 +34,7 @@ cache:
 install:
 # Setup Lua development/build environment
 - PATH %CD%\here\bin;C:\mingw\bin;%PATH%
-- curl --location --silent --fail --max-time 120 --connect-timeout 30 https://raw.githubusercontent.com/mpeterv/hererocks/latest/hererocks.py > hererocks.py
+- curl --location --silent --fail --max-time 120 --connect-timeout 30 https://raw.githubusercontent.com/mpeterv/hererocks/master/hererocks.py > hererocks.py
 - python hererocks.py here --%Lua% --luarocks=%LuaRocks% --verbose --target=%Configuration% --no-git-cache
 # Downloand and install blast to c:\blast
 - call .appveyor\install_blast.bat
