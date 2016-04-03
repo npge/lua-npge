@@ -12,8 +12,9 @@ environment:
   - Lua: luajit 2.0
 
 configuration:
-  - vs
   - mingw
+  - vs_32
+  - vs_64
 
 platform:
   - x86
