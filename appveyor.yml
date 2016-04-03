@@ -45,7 +45,9 @@ install:
 - luarocks install tree
 
 build_script:
-- luarocks make BOOST_INCDIR=c:\Libraries\boost "CFLAGS=/nologo /MD /O2 /EHa"
+- set lua_npge_cflags="/nologo /MD /O2 /EHa"
+- if "%Configuration%" EQU "mingw" ( set lua_npge_cflags="-O2" )
+- luarocks make BOOST_INCDIR=c:\Libraries\boost CFLAGS=%lua_npge_cflags%
 
 test_script:
 - cd %APPVEYOR_BUILD_FOLDER%
