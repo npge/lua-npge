@@ -16,13 +16,6 @@ configuration:
   - vs_32
   - vs_64
 
-# this is how to allow failing jobs in the matrix
-matrix:
-  # LuaJIT crashes on C++ exception on x86
-  allow_failures:
-    - platform: x86
-      Lua: luajit 2.0
-
 cache:
   #- c:\lua -> appveyor.yml
   - c:\external -> appveyor.yml
