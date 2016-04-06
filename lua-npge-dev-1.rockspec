@@ -198,6 +198,13 @@ build = {
                 },
             },
         },
+        mingw32 = {
+            modules = {
+                ['npge.cpp'] = {
+                    libraries = {"stdc++"},
+                },
+            },
+        },
     },
     install = {
         bin = {
