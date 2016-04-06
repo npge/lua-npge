@@ -6,15 +6,15 @@ local TMP
 
 return function()
     local fname = os.tmpname()
-    local fileExists = require 'npge.util.fileExists'
-    if not fileExists(fname) then
+    local f = io.open(fname, 'w')
+    if not f then
         -- http://www.luafaq.org/#T1.40
         TMP = TMP or os.getenv("TMP")
         if TMP then
             fname = TMP .. fname
         end
-        local f = assert(io.open(fname, 'w'))
-        f:close()
+        f = assert(io.open(fname, 'w'))
     end
+    f:close()
     return fname
 end
