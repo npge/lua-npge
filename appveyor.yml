@@ -8,7 +8,7 @@ os:
 environment:
   LuaRocks: 2.3.0
   matrix:
-  - Lua: lua 5.3
+  - Lua: lua 5.3.1
   - Lua: luajit 2.0
 
 configuration:
