@@ -98,8 +98,7 @@ describe("npge.algo.BlastHits", function()
     end)
 
     it("finds hits using blast+ (row of gaps)", function()
-        local Sequence = require 'npge.model.Sequence'
-        local s2 = Sequence('s2', [[
+        local text2 = [[
 GCACTAGTATAGTCGTATCACGTTTGGTCATAGGTGCGTCATCTCACGAG
 CAATTCCAGCAATTCAAAATCACTCCGGGGAGCCGTCCGGCAGGATTGAC
 GGATGGGGCGGAAGAATCAAGCGTGTTTCGGCTTGGATGTCGATTGGCGG
@@ -836,8 +835,8 @@ TTCCAACGCTCATCCACAGGTTTGAAAACACCATGCAAATATCTTGTGTC
 GGGATGTTATTTTCCCTGTTGCAATCTGCGGAGCGTTGGTCCATATACCG
 CCTGCCTGACGGAAATGACTGGCGCGAGCGGGTGTAGCTCAGGGGTAGAG
 CACAACCTTGCCAAGGTTGGGGTCGAGGGTTCGAATCCCTTCGCCCGCTC
-CAGTTT]])
-        local s1 = Sequence('s1', [[
+CAGTTT]]
+        local text1 = [[
 AAACTGGAGCGGGCGAAGGGATTCGAACCCTCGACCCCAACCTTGGCAAG
 GTTGTGCTCTACCCCTGAGCTACACCCGCTCGCGCCAGTCATTTCCGTCA
 GGCAGGCGGTATATGGACCAACGCTCCGCAGATTGCAACAGGGAAAATAA
@@ -1572,12 +1571,17 @@ GCGCTGCTCGATCAGTTGAACGGCGTTGAGGTTTCCTCGACACAGGAACT
 CATCAGACCGGAACTGCATATCCGCCAATCGACATCCAAGCCGAAACACG
 CTTGATTCTTCCGCCCCATCCGTCAATCCTGCCGGACGGCTCCCCGGAGT
 GATTTTGAATTGCTGGAATTGCTCGTGAGATGACGCACCTATGACCAAAC
-GTGATACGACTATACTAGTGC]])
-        local BlockSet = require 'npge.model.BlockSet'
-        local bs_with_seqs = BlockSet({s1, s2}, {})
-        local BlastHits = require 'npge.algo.BlastHits'
-        local hits = BlastHits(bs_with_seqs, bs_with_seqs)
-        assert.truthy(#hits:blocks() > 0)
+GTGATACGACTATACTAGTGC]]
+        for offset = 0, 59, 4 do
+            local Sequence = require 'npge.model.Sequence'
+            local s1 = Sequence("s1", text1:sub(offset))
+            local s2 = Sequence("s2", text2:sub(offset))
+            local BlockSet = require 'npge.model.BlockSet'
+            local bs_with_seqs = BlockSet({s1, s2}, {})
+            local BlastHits = require 'npge.algo.BlastHits'
+            local hits = BlastHits(bs_with_seqs, bs_with_seqs)
+            assert.truthy(#hits:blocks() > 0)
+        end
 -- example of output
 --[[
     Query  31492  GAGCGCAGCGGCCGTATTCTTCACTGCCCCACTGCCCCACTGCCCCACTGCCCCACT---  31548
