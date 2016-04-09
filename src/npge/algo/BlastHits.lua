@@ -75,6 +75,7 @@ local function readBlast(file, query, bank, same, line_handler)
     local unpack = require 'npge.util.unpack'
     local file_is_empty = true
     for line in file:lines() do
+        line = trim(line)
         if line_handler then
             line_handler(line)
         end
@@ -90,7 +91,7 @@ local function readBlast(file, query, bank, same, line_handler)
             tryAdd()
             bank_name = trim(line:sub(2))
             bank_name = split(bank_name)[1]
-        elseif startsWith(line, ' Score =') then
+        elseif startsWith(line, 'Score =') then
             -- Example:  Score = 82.4 bits (90),  ...
             tryAdd()
             query_row = {}
@@ -98,12 +99,12 @@ local function readBlast(file, query, bank, same, line_handler)
         elseif goodHit() then
             local function parseAlignment(line1)
                 local parts = split(line1)
-                assert(#parts == 4 or #parts == 3)
+                assert(#parts == 4 or #parts == 2)
                 if #parts == 4 then
                     local _, start, row, stop = unpack(parts)
                     return start, row, stop
                 end
-                if #parts == 3 then
+                if #parts == 2 then
                     local _, row = unpack(parts)
                     return nil, row, nil
                 end
