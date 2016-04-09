@@ -3,5 +3,5 @@
 -- See the LICENSE file for terms of use.
 
 return function(text)
-    return text:gmatch("([^\n]+)")
+    return text:gmatch("([^\r\n]+)")
 end
