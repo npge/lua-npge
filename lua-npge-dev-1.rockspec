@@ -77,6 +77,7 @@ build = {
         ['npge.util.fromFasta'] = 'src/npge/util/fromFasta.lua',
         ['npge.util.configGenerator'] = 'src/npge/util/configGenerator.lua',
         ['npge.util.stats'] = 'src/npge/util/stats.lua',
+        ['npge.util.isWindows'] = 'src/npge/util/isWindows.lua',
         ['npge.model'] = 'src/npge/model/init.lua',
         ['npge.model.Block'] = 'src/npge/model/Block.lua',
         ['npge.model.BlockSet'] = 'src/npge/model/BlockSet.lua',
