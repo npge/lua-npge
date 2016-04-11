@@ -183,7 +183,8 @@ return function(query, bank, options)
     --
     local cmd = Blast.blastnCmd(bank_fname,
         query_cons_fname, options)
-    local f = assert(io.popen(cmd, 'r'))
+    local popen = require 'npge.util.popen'
+    local f = assert(popen(cmd, 'r'))
     local hits = readBlast(f, query, bank,
         same or options.subset, options.line_handler)
     f:close()
