@@ -33,4 +33,5 @@ return {
     fromFasta = require 'npge.util.fromFasta',
     toFasta = require 'npge.util.toFasta',
     stats = require 'npge.util.stats',
+    isWindows = require 'npge.util.isWindows',
 }
