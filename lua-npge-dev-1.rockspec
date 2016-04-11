@@ -78,6 +78,7 @@ build = {
         ['npge.util.configGenerator'] = 'src/npge/util/configGenerator.lua',
         ['npge.util.stats'] = 'src/npge/util/stats.lua',
         ['npge.util.isWindows'] = 'src/npge/util/isWindows.lua',
+        ['npge.util.popen'] = 'src/npge/util/popen.lua',
         ['npge.model'] = 'src/npge/model/init.lua',
         ['npge.model.Block'] = 'src/npge/model/Block.lua',
         ['npge.model.BlockSet'] = 'src/npge/model/BlockSet.lua',
