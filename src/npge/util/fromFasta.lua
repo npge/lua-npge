@@ -19,7 +19,7 @@ return function(chunks)
             end
         end
         for chunk in chunks do
-            for line in chunk:gmatch("([^\n]+)") do
+            for line in chunk:gmatch("([^\r\n]+)") do
                 line = trim(line)
                 if line:sub(1, 1) == '>' then
                     yield()
