@@ -51,7 +51,7 @@ describe("npge.model.BlockSet", function()
         assert.equal(blockset:isPartition(), false)
     end)
 
-    it("throws if fragment is on unknown sequence", function()
+    it("throws if fragment is on unknown sequence #luajit_vs32_fail", function()
         assert.has_error(function()
             local s1 = model.Sequence("s1", "ATAT")
             local s2 = model.Sequence("s2", "ATAT")

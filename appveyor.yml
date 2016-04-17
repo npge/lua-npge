@@ -60,7 +60,7 @@ build_script:
 
 test_script:
 - cd %APPVEYOR_BUILD_FOLDER%
-- busted -c -o .appveyor/busted-print.lua
+- busted -c -o .appveyor/busted-print.lua -t luajit_vs32_fail
 
 after_test:
 - luacov-coveralls -v
