@@ -173,7 +173,7 @@ static bool is_pure_gap(const Strings& aligned, int j) {
     return true;
 }
 
-static void remove_pure_gaps(Strings& aligned) {
+void removePureGaps(Strings& aligned) {
     int size = aligned.size();
     int length = aligned.front().size();
     Strings new_aligned((size));
@@ -192,9 +192,9 @@ void refineAlignment(Strings& aligned) {
         return;
     }
     while (move_chars(aligned)) {
-        remove_pure_gaps(aligned);
+        removePureGaps(aligned);
     }
-    remove_pure_gaps(aligned);
+    removePureGaps(aligned);
 }
 
 }

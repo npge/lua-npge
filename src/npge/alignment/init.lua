@@ -14,6 +14,7 @@ return {
     join = require 'npge.alignment.join',
     alignRows = require 'npge.alignment.alignRows',
     refine = require 'npge.alignment.refine',
+    removePureGaps = require 'npge.alignment.removePureGaps',
     identity = require 'npge.alignment.identity',
     consensus = require 'npge.alignment.consensus',
     goodSlices = require 'npge.alignment.goodSlices',

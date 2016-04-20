@@ -1590,6 +1590,32 @@ static int lua_refineAlignment(lua_State *L) {
     return 1;
 }
 
+// arguments:
+// 1. Lua table with rows
+// results:
+// 1. Lua table with rows
+static int lua_removePureGaps(lua_State *L) {
+    luaL_checktype(L, 1, LUA_TTABLE);
+    int nrows = npge_rawlen(L, 1);
+    int len;
+    const char** rows = toRows(L, 1, nrows, len);
+    Strings aligned(nrows);
+    for (int i = 0; i < nrows; i++) {
+        aligned[i].assign(rows[i], len);
+    }
+    if (nrows != 0 && len != 0) {
+        removePureGaps(aligned);
+    }
+    // write result
+    lua_createtable(L, nrows, 0);
+    for (int irow = 0; irow < nrows; irow++) {
+        const std::string& row = aligned[irow];
+        lua_pushlstring(L, row.c_str(), row.length());
+        lua_rawseti(L, -2, irow + 1);
+    }
+    return 1;
+}
+
 ///
 
 // -1 is module "model"
@@ -1638,6 +1664,7 @@ static const luaL_Reg alignment_functions[] = {
     {"moveIdentical", lua_moveIdentical},
     {"anchor", lua_anchor},
     {"refine", lua_refineAlignment},
+    {"removePureGaps", lua_removePureGaps},
     {NULL, NULL}
 };
 

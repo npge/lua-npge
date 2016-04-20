@@ -15,6 +15,7 @@ return {
     align = require 'npge.block.align',
     alignLeft = require 'npge.block.alignLeft',
     refine = require 'npge.block.refine',
+    removePureGaps = require 'npge.block.removePureGaps',
     extend = require 'npge.block.extend',
     hasSelfOverlap = require 'npge.block.hasSelfOverlap',
     excludeSelfOverlap = require 'npge.block.excludeSelfOverlap',
