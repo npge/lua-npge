@@ -90,6 +90,8 @@ bool findAnchor(int* result, int nrows,
         const char** rows, const int* lens,
         int& ANCHOR, int MIN_LENGTH, int MIN_ANCHOR);
 
+void removePureGaps(Strings& aligned);
+
 void refineAlignment(Strings& aligned);
 
 // model
