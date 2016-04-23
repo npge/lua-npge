@@ -1,0 +1,50 @@
+#!/usr/bin/env lua
+
+-- lua-npge, Nucleotide PanGenome explorer (Lua module)
+-- Copyright (C) 2014-2016 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
+local npge = require 'npge'
+
+local npg_fname = assert(arg[1])
+local genomes = npge.util.split(assert(arg[2]), ',')
+local output_fname = assert(arg[3])
+
+local npg = npge.io.ReadFromBs(io.lines(npg_fname))
+assert(npg:isPartition())
+
+local genomes_set = {}
+for _, genome in ipairs(genomes) do
+    assert(not genomes_set[genome], "Repeat: " .. genome)
+    genomes_set[genome] = true
+end
+local sequences = {}
+for sequence in npg:iterSequences() do
+    local genome = sequence:genome()
+    if genomes_set[genome] then
+        table.insert(sequences, sequence)
+    end
+end
+
+local sub = npge.algo.SubBlockSet(npg, sequences)
+assert(sub:isPartition())
+
+local joined = npge.algo.Join(sub)
+joined = npge.algo.BetterSubblocks(joined, sub)
+sub = npge.algo.BlocksWithoutOverlaps(sub, joined)
+
+sub = npge.algo.Cover(sub)
+assert(not npge.algo.HasOverlap(sub))
+assert(sub:isPartition())
+local minor_joined = npge.algo.JoinMinor(sub)
+sub = npge.algo.BlocksWithoutOverlaps(sub, minor_joined)
+sub = npge.algo.Cover(sub)
+
+assert(sub:isPartition())
+
+sub = npge.algo.GiveNames(sub)
+
+npge.util.writeIt(
+    output_fname,
+    npge.io.WriteToBs(sub)
+)

@@ -179,6 +179,7 @@ build = {
         ['npge.algo.Multiply'] = 'src/npge/algo/Multiply.lua',
         ['npge.algo.SplitMultiplication'] = 'src/npge/algo/SplitMultiplication.lua',
         ['npge.algo.NpgDistance'] = 'src/npge/algo/NpgDistance.lua',
+        ['npge.algo.SubBlockSet'] = 'src/npge/algo/SubBlockSet.lua',
         ['npge.io'] = 'src/npge/io/init.lua',
         ['npge.io.ShortForm'] = 'src/npge/io/ShortForm.lua',
         ['npge.io.ReadSequencesFromFasta'] = 'src/npge/io/ReadSequencesFromFasta.lua',

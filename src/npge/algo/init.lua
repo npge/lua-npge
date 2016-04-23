@@ -36,6 +36,7 @@ local members = {
     'Multiply',
     'SplitMultiplication',
     'NpgDistance',
+    'SubBlockSet',
 }
 
 local algo = {}
