@@ -8,7 +8,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <memory>
-#include <boost/scoped_array.hpp>
 
 #define LUA_LIB
 #include <lua.hpp>
@@ -18,19 +17,18 @@
 
 using namespace lnpge;
 
-template<lua_CFunction F>
-struct wrap {
-    static int func(lua_State* L) {
-        try {
-            return F(L);
-        } catch (std::exception& e) {
-            lua_pushstring(L, e.what());
-        } catch (...) {
-            lua_pushliteral(L, "Unknown exception");
-        }
-        return lua_error(L);
+template<typename F>
+int runThrowing(lua_State* L, const F& f) {
+    try {
+        f();
+        return 0;
+    } catch (std::exception& e) {
+        lua_pushstring(L, e.what());
+    } catch (...) {
+        lua_pushliteral(L, "Unknown exception");
     }
-};
+    return lua_error(L);
+}
 
 #if LUA_VERSION_NUM == 501
 #define npge_rawlen lua_objlen
@@ -48,6 +46,42 @@ template <typename A>
 A* newLuaArray(lua_State* L, int size) {
     void* v = lua_newuserdata(L, size * sizeof(A));
     return reinterpret_cast<A*>(v);
+}
+
+template<typename T>
+const char* typeToStr() {
+    return typeid(T).name();
+}
+
+template <typename T>
+struct callDestructor {
+    static int func(lua_State* L) {
+        void* v = lua_touserdata(L, 1);
+        char* v_char = reinterpret_cast<char*>(v);
+        if (v_char[sizeof(T)]) {
+            T* obj = reinterpret_cast<T*>(v);
+            obj->~T();
+        }
+        return 0;
+    }
+};
+
+// allocate stack objects in Lua stack to avoid
+// memory leaks if Lua error is thrown
+template <typename T>
+T& objectInLua(lua_State* L) {
+    // 1 byte for status of initialization
+    void* v = lua_newuserdata(L, sizeof(T) + 1);
+    char* v_char = reinterpret_cast<char*>(v);
+    v_char[sizeof(T)] = 0;
+    if (luaL_newmetatable(L, typeToStr<T>())) {
+        lua_pushcfunction(L, &callDestructor<T>::func);
+        lua_setfield(L, -2, "__gc");
+    }
+    lua_setmetatable(L, -2);
+    new (v) T();
+    v_char[sizeof(T)] = 1;
+    return *reinterpret_cast<T*>(v);
 }
 
 const char** toRows(lua_State* L, int index,
@@ -176,9 +210,12 @@ int lua_Sequence(lua_State *L) {
         description = luaL_checklstring(L, 3,
                 &description_size);
     }
-    SequencePtr s = Sequence::make(
-        name, description, text, text_size
-    );
+    SequencePtr& s = objectInLua<SequencePtr>(L);
+    runThrowing(L, [&]() {
+        s = Sequence::make(
+            name, description, text, text_size
+        );
+    });
     lua_pushseq(L, s);
     return 1;
 }
@@ -211,7 +248,8 @@ int lua_Sequence_description(lua_State *L) {
 
 int lua_Sequence_genome(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
-    std::string genome = seq->genome();
+    std::string& genome = objectInLua<std::string>(L);
+    genome = seq->genome();
     if (!genome.empty()) {
         lua_pushlstring(L, genome.c_str(), genome.size());
     } else {
@@ -222,7 +260,8 @@ int lua_Sequence_genome(lua_State *L) {
 
 int lua_Sequence_chromosome(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
-    std::string chr = seq->chromosome();
+    std::string& chr = objectInLua<std::string>(L);
+    chr = seq->chromosome();
     if (!chr.empty()) {
         lua_pushlstring(L, chr.c_str(), chr.size());
     } else {
@@ -255,9 +294,11 @@ int lua_Sequence_sub(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
     int min = luaL_checkinteger(L, 2);
     int max = luaL_checkinteger(L, 3);
-    ASSERT_LTE(0, min);
-    ASSERT_LTE(min, max);
-    ASSERT_LT(max, seq->length());
+    runThrowing(L, [&]() {
+        ASSERT_LTE(0, min);
+        ASSERT_LTE(min, max);
+        ASSERT_LT(max, seq->length());
+    });
     int len = max - min + 1;
     const std::string& text = seq->text();
     const char* slice = text.c_str() + min;
@@ -267,7 +308,8 @@ int lua_Sequence_sub(lua_State *L) {
 
 int lua_Sequence_tostring(lua_State *L) {
     const SequencePtr& seq = lua_toseq(L, 1);
-    std::string repr = seq->tostring();
+    std::string& repr = objectInLua<std::string>(L);
+    repr = seq->tostring();
     lua_pushlstring(L, repr.c_str(), repr.size());
     return 1;
 }
@@ -296,7 +338,7 @@ static const luaL_Reg Sequence_methods[] = {
     {"circular", lua_Sequence_circular},
     {"text", lua_Sequence_text},
     {"length", lua_Sequence_length},
-    {"sub", wrap<lua_Sequence_sub>::func},
+    {"sub", lua_Sequence_sub},
     {NULL, NULL}
 };
 
@@ -305,7 +347,11 @@ int lua_Fragment(lua_State *L) {
     int start = luaL_checkinteger(L, 2);
     int stop = luaL_checkinteger(L, 3);
     int ori = luaL_checkinteger(L, 4);
-    lua_pushfr(L, Fragment::make(seq, start, stop, ori));
+    FragmentPtr& f = objectInLua<FragmentPtr>(L);
+    runThrowing(L, [&]() {
+        f = Fragment::make(seq, start, stop, ori);
+    });
+    lua_pushfr(L, f);
     return 1;
 }
 
@@ -358,14 +404,18 @@ int lua_Fragment_length(lua_State *L) {
 
 int lua_Fragment_id(lua_State *L) {
     const FragmentPtr& fragment = lua_tofr(L, 1);
-    std::string id = fragment->id();
+    std::string& id = objectInLua<std::string>(L);
+    id = fragment->id();
     lua_pushlstring(L, id.c_str(), id.length());
     return 1;
 }
 
 int lua_Fragment_parts(lua_State *L) {
     const FragmentPtr& fragment = lua_tofr(L, 1);
-    TwoFragments two = fragment->parts();
+    TwoFragments& two = objectInLua<TwoFragments>(L);
+    runThrowing(L, [&]() {
+        two = fragment->parts();
+    });
     lua_pushfr(L, two.first);
     lua_pushfr(L, two.second);
     return 2;
@@ -373,14 +423,16 @@ int lua_Fragment_parts(lua_State *L) {
 
 int lua_Fragment_text(lua_State *L) {
     const FragmentPtr& fragment = lua_tofr(L, 1);
-    std::string text = fragment->text();
+    std::string& text = objectInLua<std::string>(L);
+    text = fragment->text();
     lua_pushlstring(L, text.c_str(), text.length());
     return 1;
 }
 
 int lua_Fragment_tostring(lua_State *L) {
     const FragmentPtr& fragment = lua_tofr(L, 1);
-    std::string repr = fragment->tostring();
+    std::string& repr = objectInLua<std::string>(L);
+    repr = fragment->tostring();
     lua_pushlstring(L, repr.c_str(), repr.size());
     return 1;
 }
@@ -423,7 +475,7 @@ static const luaL_Reg Fragment_methods[] = {
     {"parted", lua_Fragment_parted},
     {"length", lua_Fragment_length},
     {"id", lua_Fragment_id},
-    {"parts", wrap<lua_Fragment_parts>::func},
+    {"parts", lua_Fragment_parts},
     {"text", lua_Fragment_text},
     {"common", lua_Fragment_common},
     {NULL, NULL}
@@ -461,8 +513,10 @@ int lua_Block(lua_State *L) {
             lua_pop(L, 2); // row, {fragment, row}
         }
         // now fill
-        Fragments fragments(nrows);
-        CStrings rows(nrows);
+        Fragments& fragments = objectInLua<Fragments>(L);
+        fragments.resize(nrows);
+        CStrings& rows = objectInLua<CStrings>(L);
+        rows.resize(nrows);
         for (int i = 0; i < nrows; i++) {
             lua_rawgeti(L, 1, i + 1); // {fragment, row}
             lua_rawgeti(L, -1, 1); // fragment
@@ -471,11 +525,16 @@ int lua_Block(lua_State *L) {
             lua_rawgeti(L, -1, 2); // row
             size_t s;
             const char* t = luaL_checklstring(L, -1, &s);
-            ASSERT_LTE(s, INT_MAX);
+            runThrowing(L, [&]() {
+                ASSERT_LTE(s, INT_MAX);
+            });
             rows[i] = CString(t, s);
             lua_pop(L, 2); // row, {fragment, row}
         }
-        BlockPtr block = Block::make(fragments, rows);
+        BlockPtr& block = objectInLua<BlockPtr>(L);
+        runThrowing(L, [&]() {
+            block = Block::make(fragments, rows);
+        });
         lua_pushblock(L, block);
         return 1;
     } else {
@@ -486,14 +545,18 @@ int lua_Block(lua_State *L) {
             lua_pop(L, 1); // fragment
         }
         // now fill
-        Fragments fragments(nrows);
+        Fragments& fragments = objectInLua<Fragments>(L);
+        fragments.resize(nrows);
         for (int i = 0; i < nrows; i++) {
             lua_rawgeti(L, 1, i + 1); // fragment
             fragments[i] = lua_tofr(L, -1);
             lua_pop(L, 1); // fragment
         }
         // must not throw
-        BlockPtr block = Block::make(fragments);
+        BlockPtr& block = objectInLua<BlockPtr>(L);
+        runThrowing(L, [&]() {
+            block = Block::make(fragments);
+        });
         lua_pushblock(L, block);
         return 1;
     }
@@ -525,7 +588,10 @@ int lua_Block_size(lua_State *L) {
 int lua_Block_text(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
     const FragmentPtr& fragment = lua_tofr(L, 2);
-    const std::string& text = block->text(fragment);
+    std::string& text = objectInLua<std::string>(L);
+    runThrowing(L, [&]() {
+        text = block->text(fragment);
+    });
     lua_pushlstring(L, text.c_str(), text.length());
     return 1;
 }
@@ -570,7 +636,10 @@ int lua_Block_fragment2block(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
     const FragmentPtr& fragment = lua_tofr(L, 2);
     int fp = luaL_checkinteger(L, 3);
-    int bp = block->fragment2block(fragment, fp);
+    int bp;
+    runThrowing(L, [&]() {
+        bp = block->fragment2block(fragment, fp);
+    });
     lua_pushinteger(L, bp);
     return 1;
 }
@@ -579,7 +648,10 @@ int lua_Block_block2fragment(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
     const FragmentPtr& fragment = lua_tofr(L, 2);
     int blockpos = luaL_checkinteger(L, 3);
-    int fp = block->block2fragment(fragment, blockpos);
+    int fp;
+    runThrowing(L, [&]() {
+        fp = block->block2fragment(fragment, blockpos);
+    });
     lua_pushinteger(L, fp);
     return 1;
 }
@@ -588,7 +660,10 @@ int lua_Block_block2right(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
     const FragmentPtr& fragment = lua_tofr(L, 2);
     int blockpos = luaL_checkinteger(L, 3);
-    int fp = block->block2right(fragment, blockpos);
+    int fp;
+    runThrowing(L, [&]() {
+        fp = block->block2right(fragment, blockpos);
+    });
     lua_pushinteger(L, fp);
     return 1;
 }
@@ -597,7 +672,10 @@ int lua_Block_block2left(lua_State *L) {
     const BlockPtr& block = lua_toblock(L, 1);
     const FragmentPtr& fragment = lua_tofr(L, 2);
     int blockpos = luaL_checkinteger(L, 3);
-    int fp = block->block2left(fragment, blockpos);
+    int fp;
+    runThrowing(L, [&]() {
+        fp = block->block2left(fragment, blockpos);
+    });
     lua_pushinteger(L, fp);
     return 1;
 }
@@ -635,13 +713,13 @@ static const luaL_Reg Block_methods[] = {
     {"type", lua_Block_type},
     {"size", lua_Block_size},
     {"length", lua_Block_length},
-    {"text", wrap<lua_Block_text>::func},
+    {"text", lua_Block_text},
     {"fragments", lua_Block_fragments},
     {"iterFragments", lua_Block_iterFragments},
-    {"fragment2block", wrap<lua_Block_fragment2block>::func},
-    {"block2fragment", wrap<lua_Block_block2fragment>::func},
-    {"block2right", wrap<lua_Block_block2right>::func},
-    {"block2left", wrap<lua_Block_block2left>::func},
+    {"fragment2block", lua_Block_fragment2block},
+    {"block2fragment", lua_Block_block2fragment},
+    {"block2right", lua_Block_block2right},
+    {"block2left", lua_Block_block2left},
     {NULL, NULL}
 };
 
@@ -649,7 +727,8 @@ static const luaL_Reg Block_methods[] = {
 
 // BlockSet(BlockSet, {sequences}, {blocks}, [names generator])
 int lua_BlockSet(lua_State *L) {
-    luaL_argcheck(L, lua_gettop(L) >= 3, 2,
+    int args = lua_gettop(L);
+    luaL_argcheck(L, args >= 3, 2,
                   "call BlockSet({sequences}, {blocks})");
     luaL_argcheck(L, lua_type(L, 2) == LUA_TTABLE, 2,
                   "call BlockSet({sequences}, {blocks})");
@@ -673,19 +752,22 @@ int lua_BlockSet(lua_State *L) {
         nblocks += 1;
     }
     // now fill
-    Sequences seqs(nseqs);
+    Sequences& seqs = objectInLua<Sequences>(L);
+    seqs.resize(nseqs);
     for (int i = 0; i < nseqs; i++) {
         lua_rawgeti(L, 2, i + 1); // sequence
         seqs[i] = lua_toseq(L, -1);
         lua_pop(L, 1);
     }
     // check last argument - name generator blockset
-    BlockSetPtr source;
-    if (lua_gettop(L) >= 4) {
+    BlockSetPtr& source = objectInLua<BlockSetPtr>(L);
+    if (args >= 4) {
         source = lua_tobs(L, 4);
     }
-    Blocks blocks(nblocks);
-    Strings names(nblocks);
+    Blocks& blocks = objectInLua<Blocks>(L);
+    blocks.resize(nblocks);
+    Strings& names = objectInLua<Strings>(L);
+    names.resize(nblocks);
     // iterate blocks as hash
     lua_pushnil(L);  // first key
     int i = 0;
@@ -702,7 +784,7 @@ int lua_BlockSet(lua_State *L) {
             if (lua_type(L, -2) == LUA_TSTRING) {
                 size_t len;
                 const char* name = lua_tolstring(L, -2, &len);
-                names[i] = std::string(name, len);
+                names[i].assign(name, len);
             } else if (lua_type(L, -2) == LUA_TNUMBER) {
                 int name = lua_tointeger(L, -2);
                 names[i] = TO_S(name);
@@ -712,7 +794,10 @@ int lua_BlockSet(lua_State *L) {
         lua_pop(L, 1);
         i += 1;
     }
-    BlockSetPtr bs = BlockSet::make(seqs, blocks, names);
+    BlockSetPtr& bs = objectInLua<BlockSetPtr>(L);
+    runThrowing(L, [&]() {
+        bs = BlockSet::make(seqs, blocks, names);
+    });
     lua_pushbs(L, bs);
     return 1;
 }
@@ -809,8 +894,10 @@ int lua_BlockSet_blockByName(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     size_t len;
     const char* name_c = luaL_checklstring(L, 2, &len);
-    std::string name(name_c, len);
-    BlockPtr block = bs->blockByName(name);
+    std::string& name = objectInLua<std::string>(L);
+    name.assign(name_c, len);
+    BlockPtr& block = objectInLua<BlockPtr>(L);
+    block = bs->blockByName(name);
     lua_pushblock(L, block); // pushes nil on null ptr
     return 1;
 }
@@ -818,7 +905,8 @@ int lua_BlockSet_blockByName(lua_State *L) {
 int lua_BlockSet_nameByBlock(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     const BlockPtr& block = lua_toblock(L, 2);
-    std::string name = bs->nameByBlock(block);
+    std::string& name = objectInLua<std::string>(L);
+    name = bs->nameByBlock(block);
     lua_pushlstring(L, name.c_str(), name.size());
     return 1;
 }
@@ -919,7 +1007,9 @@ int lua_BlockSet_iterFragments(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     const SequencePtr& seq = lua_toseq(L, 2);
     // test
-    const Fragments& parts = bs->parts(seq);
+    runThrowing(L, [&]() {
+        const Fragments& parts = bs->parts(seq);
+    });
     lua_pushvalue(L, 1); // upvalue 1 (blockset)
     lua_pushvalue(L, 2); // upvalue 2 (sequence)
     lua_pushinteger(L, 0); // upvalue 3 (index)
@@ -938,8 +1028,10 @@ int lua_BlockSet_sequenceByName(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     size_t name_size;
     const char* name = luaL_checklstring(L, 2, &name_size);
-    std::string name_str(name, name_size);
-    SequencePtr seq = bs->sequenceByName(name);
+    std::string& name_str = objectInLua<std::string>(L);
+    name_str.assign(name, name_size);
+    SequencePtr& seq = objectInLua<SequencePtr>(L);
+    seq = bs->sequenceByName(name);
     lua_pushseq(L, seq);
     return 1;
 }
@@ -947,7 +1039,8 @@ int lua_BlockSet_sequenceByName(lua_State *L) {
 int lua_BlockSet_blockByFragment(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     const FragmentPtr& fr = lua_tofr(L, 2);
-    BlockPtr block = bs->blockByFragment(fr);
+    BlockPtr& block = objectInLua<BlockPtr>(L);
+    block = bs->blockByFragment(fr);
     lua_pushblock(L, block);
     return 1;
 }
@@ -955,7 +1048,8 @@ int lua_BlockSet_blockByFragment(lua_State *L) {
 int lua_BlockSet_blocksByFragment(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     const FragmentPtr& fr = lua_tofr(L, 2);
-    Blocks blocks = bs->blocksByFragment(fr);
+    Blocks& blocks = objectInLua<Blocks>(L);
+    blocks = bs->blocksByFragment(fr);
     int n = blocks.size();
     lua_createtable(L, n, 0);
     for (int i = 0; i < n; i++) {
@@ -969,7 +1063,8 @@ int lua_BlockSet_blocksByFragment(lua_State *L) {
 int lua_BlockSet_overlappingFragments(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     const FragmentPtr& fr = lua_tofr(L, 2);
-    Fragments overlapping = bs->overlapping(fr);
+    Fragments& overlapping = objectInLua<Fragments>(L);
+    overlapping = bs->overlapping(fr);
     int n = overlapping.size();
     lua_createtable(L, n, 0);
     for (int i = 0; i < n; i++) {
@@ -983,7 +1078,10 @@ int lua_BlockSet_overlappingFragments(lua_State *L) {
 int lua_BlockSet_next(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     const FragmentPtr& fr = lua_tofr(L, 2);
-    FragmentPtr next = bs->next(fr);
+    FragmentPtr& next = objectInLua<FragmentPtr>(L);
+    runThrowing(L, [&]() {
+        next = bs->next(fr);
+    });
     lua_pushfr(L, next);
     return 1;
 }
@@ -991,14 +1089,18 @@ int lua_BlockSet_next(lua_State *L) {
 int lua_BlockSet_prev(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
     const FragmentPtr& fr = lua_tofr(L, 2);
-    FragmentPtr prev = bs->prev(fr);
+    FragmentPtr& prev = objectInLua<FragmentPtr>(L);
+    runThrowing(L, [&]() {
+        prev = bs->prev(fr);
+    });
     lua_pushfr(L, prev);
     return 1;
 }
 
 int lua_BlockSet_tostring(lua_State *L) {
     const BlockSetPtr& bs = lua_tobs(L, 1);
-    std::string repr = bs->tostring();
+    std::string& repr = objectInLua<std::string>(L);
+    repr = bs->tostring();
     lua_pushlstring(L, repr.c_str(), repr.size());
     return 1;
 }
@@ -1050,7 +1152,7 @@ static const luaL_Reg BlockSet_methods[] = {
     {"nameByBlock", lua_BlockSet_nameByBlock},
     {"hasBlock", lua_BlockSet_hasBlock},
     {"iterBlocks", lua_BlockSet_iterBlocks},
-    {"iterFragments", wrap<lua_BlockSet_iterFragments>::func},
+    {"iterFragments", lua_BlockSet_iterFragments},
     {"sequences", lua_BlockSet_sequences},
     {"iterSequences", lua_BlockSet_iterSequences},
     {"hasSequence", lua_BlockSet_hasSequence},
@@ -1059,8 +1161,8 @@ static const luaL_Reg BlockSet_methods[] = {
     {"blocksByFragment", lua_BlockSet_blocksByFragment},
     {"overlappingFragments",
         lua_BlockSet_overlappingFragments},
-    {"next", wrap<lua_BlockSet_next>::func},
-    {"prev", wrap<lua_BlockSet_prev>::func},
+    {"next", lua_BlockSet_next},
+    {"prev", lua_BlockSet_prev},
     {NULL, NULL}
 };
 
@@ -1112,8 +1214,6 @@ static const luaL_Reg block_functions[] = {
 
 /////////
 
-typedef boost::scoped_array<char> Buffer;
-
 int lua_toAtgcn(lua_State* L) {
     size_t text_size;
     const char* text = luaL_checklstring(L, 1, &text_size);
@@ -1121,9 +1221,9 @@ int lua_toAtgcn(lua_State* L) {
         lua_pushlstring(L, text, text_size);
         return 1;
     }
-    Buffer buffer(new char[text_size]);
-    int size = toAtgcn(buffer.get(), text, text_size);
-    lua_pushlstring(L, buffer.get(), size);
+    char* buffer = newLuaArray<char>(L, text_size);
+    int size = toAtgcn(buffer, text, text_size);
+    lua_pushlstring(L, buffer, size);
     return 1;
 }
 
@@ -1134,9 +1234,9 @@ int lua_toAtgcnAndGap(lua_State* L) {
         lua_pushlstring(L, text, text_size);
         return 1;
     }
-    Buffer buffer(new char[text_size]);
-    int size = toAtgcnAndGap(buffer.get(), text, text_size);
-    lua_pushlstring(L, buffer.get(), size);
+    char* buffer = newLuaArray<char>(L, text_size);
+    int size = toAtgcnAndGap(buffer, text, text_size);
+    lua_pushlstring(L, buffer, size);
     return 1;
 }
 
@@ -1147,9 +1247,9 @@ int lua_complement(lua_State* L) {
         lua_pushlstring(L, text, text_size);
         return 1;
     }
-    Buffer buffer(new char[text_size]);
-    int size = complement(buffer.get(), text, text_size);
-    lua_pushlstring(L, buffer.get(), size);
+    char* buffer = newLuaArray<char>(L, text_size);
+    int size = complement(buffer, text, text_size);
+    lua_pushlstring(L, buffer, size);
     return 1;
 }
 
@@ -1162,11 +1262,11 @@ int lua_unwindRow(lua_State *L) {
             "length of row on original sequence");
     int size;
     {
-        Buffer buffer(new char[row_size]);
-        size = unwindRow(buffer.get(), row, row_size,
+        char* buffer = newLuaArray<char>(L, row_size);
+        size = unwindRow(buffer, row, row_size,
                          orig, orig_size);
         if (size != -1) {
-            lua_pushlstring(L, buffer.get(), size);
+            lua_pushlstring(L, buffer, size);
         }
     }
     if (size == -1) {
@@ -1340,7 +1440,8 @@ int lua_good_columns(lua_State *L) {
         lua_newtable(L);
         return 1;
     }
-    Scores scores = goodColumns(rows, nrows, length,
+    Scores& scores = objectInLua<Scores>(L);
+    scores = goodColumns(rows, nrows, length,
             min_identity, min_length);
     // table of integers
     lua_createtable(L, length, 0);
@@ -1369,14 +1470,16 @@ int lua_goodSlices(lua_State *L) {
     int end_length = luaL_checkinteger(L, 3);
     int min_identity = luaL_checkinteger(L, 4);
     int min_length = luaL_checkinteger(L, 5);
-    Scores scores(block_length);
+    Scores& scores = objectInLua<Scores>(L);
+    scores.resize(block_length);
     for (int i = 0; i < block_length; i++) {
         lua_rawgeti(L, 1, i + 1);
         // not luaL_checkinteger not to throw (vector scores)
         scores[i] = lua_tointeger(L, -1);
         lua_pop(L, 1);
     }
-    Coordinates slices = goodSlices(scores,
+    Coordinates& slices = objectInLua<Coordinates>(L);
+    slices = goodSlices(scores,
             frame_length, end_length,
             min_identity, min_length);
     lua_createtable(L, slices.size(), 0); // slices
@@ -1398,9 +1501,10 @@ int lua_goodSlices(lua_State *L) {
 // 1. Lua table with alignment
 // 2. Lua table with remaining parts of rows (tails)
 static int lua_left(lua_State *L) {
-    Aln aln;
+    int args = lua_gettop(L);
+    Aln& aln = objectInLua<Aln>(L);
     luaL_checktype(L, 1, LUA_TTABLE);
-    aln.right_aligned = lua_toboolean(L, 2);
+    aln.right_aligned = (args >= 2) && lua_toboolean(L, 2);
     aln.nrows = npge_rawlen(L, 1);
     if (aln.nrows == 0) {
         lua_newtable(L); // prefixes
@@ -1572,7 +1676,8 @@ static int lua_refineAlignment(lua_State *L) {
     int nrows = npge_rawlen(L, 1);
     int len;
     const char** rows = toRows(L, 1, nrows, len);
-    Strings aligned(nrows);
+    Strings& aligned = objectInLua<Strings>(L);
+    aligned.resize(nrows);
     for (int i = 0; i < nrows; i++) {
         aligned[i].assign(rows[i], len);
     }
@@ -1599,7 +1704,8 @@ static int lua_removePureGaps(lua_State *L) {
     int nrows = npge_rawlen(L, 1);
     int len;
     const char** rows = toRows(L, 1, nrows, len);
-    Strings aligned(nrows);
+    Strings& aligned = objectInLua<Strings>(L);
+    aligned.resize(nrows);
     for (int i = 0; i < nrows; i++) {
         aligned[i].assign(rows[i], len);
     }
@@ -1673,16 +1779,16 @@ int luaopen_npge_cpp(lua_State *L) {
     lua_newtable(L); // npge.cpp
     lua_newtable(L); // npge.cpp.model
     registerType(L, "Sequence", "npge_Sequence",
-                 "npge_Sequence_cache", wrap<lua_Sequence>::func,
+                 "npge_Sequence_cache", lua_Sequence,
                  Sequence_mt, Sequence_methods);
     registerType(L, "Fragment", "npge_Fragment",
-                 "npge_Fragment_cache", wrap<lua_Fragment>::func,
+                 "npge_Fragment_cache", lua_Fragment,
                  Fragment_mt, Fragment_methods);
     registerType(L, "Block", "npge_Block",
-                 "npge_Block_cache", wrap<lua_Block>::func,
+                 "npge_Block_cache", lua_Block,
                  Block_mt, Block_methods);
     registerType(L, "BlockSet", "npge_BlockSet",
-                 "npge_BlockSet_cache", wrap<lua_BlockSet>::func,
+                 "npge_BlockSet_cache", lua_BlockSet,
                  BlockSet_mt, BlockSet_methods);
     registerBlockSetFromRef(L);
     lua_setfield(L, -2, "model");
