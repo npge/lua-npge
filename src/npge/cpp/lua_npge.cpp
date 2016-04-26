@@ -18,16 +18,26 @@
 using namespace lnpge;
 
 template<typename F>
-int runThrowing(lua_State* L, const F& f) {
+int runThrowing0(lua_State* L, const F& f) {
     try {
         f();
         return 0;
     } catch (std::exception& e) {
         lua_pushstring(L, e.what());
+        return -1;
     } catch (...) {
         lua_pushliteral(L, "Unknown exception");
+        return -1;
     }
-    return lua_error(L);
+}
+
+template<typename F>
+int runThrowing(lua_State* L, const F& f) {
+    int result = runThrowing0<F>(L, f);
+    if (result == -1) {
+        return lua_error(L);
+    }
+    return 0;
 }
 
 #if LUA_VERSION_NUM == 501
