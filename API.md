@@ -996,3 +996,77 @@ false
 >  npge.fragment.exclude(large_fragment, small_fragment)
 Fragment s_1_1_1 of length 1
 ```
+
+## Module npge.block
+
+Module `npge.block` includes functions operating on objects
+of class `Block`.
+
+Get information about block:
+
+  * `npge.block.consensus(block)` => consensus string
+  * `npge.block.blockType(block, genomes_number)` returns a type
+    of a block ("stable", "repeat", etc).
+  * `npge.block.parseName(string)` gets a name of a block and returns:
+    * type of a block (one letter, e.g., "s"),
+    * number of fragments,
+    * number of columns,
+    * (optional) number of block, in case of name conflict of previous parts
+      (e.g., `1` in "s24x100n1").
+  * `npge.block.gc(block)` returns part of GC in a block.
+  * `npge.block.genomes(block)` returns list of genomes from block.
+  * `npge.block.giveName(block, genomes_number)` generates name for block.
+  * `npge.block.hasRepeats(block)` returns if a block has at least two
+    fragments in same genome.
+  * `npge.block.hasSelfOverlap(block)` returns if a block has overlapping
+    fragments.
+  * `npge.block.hitName(block)` returns a string describing blast hit.
+  * `npge.block.identity(block)` returns identity of a block.
+  * `npge.block.info(block)` returns a table with the following fields:
+    * size
+    * length
+    * identity
+    * gc
+
+Simple modifications:
+
+  * `npge.block.excludeSelfOverlap(block)` returns a list
+    of subblocks without self-overlaps.
+  * `npge.block.excludeBetterOrEqual(block, blockset)` returns `block`
+    excluding parts belonging to blocks from `blockset`.
+  * `npge.block.extend(block, left, right=left)` returns `block`
+    extended to left and right with `left` and `right` positions.
+  * `npge.block.orient(block)` return new block similar to input block
+    maximizing the number of fragments with positive orientation.
+  * `npge.block.reverse(block)` returns reversed copy of a block.
+
+Alignment-related:
+
+  * `npge.block.alignLeft(block)` returns new block in which
+    all gaps are in the end.
+  * `npge.block.isAlignedToLeft(fragment, block)` returns if a row
+    corresponding to the fragment has gaps in the end only.
+  * `npge.block.areAlignedToLeft(block)` returns if all rows in a block
+    have gaps in the end only.
+  * `npge.block.align(block)` returns new block with aligned rows.
+  * `npge.block.removePureGaps(block)` returns a copy of a block with
+    pure-gap columns removed.
+  * `npge.block.refine(block)` returns a copy of a block with refined
+    alignment (moves gaps, removes pure-gap columns).
+  * `npge.block.betterSubblocks(block)` returns a list of
+    good parts of a block.
+  * `npge.block.goodSubblocks(block)` returns good parts list of a block.
+  * `npge.block.isGood(block)` returns if a block meets the requirements.
+
+Unwind and slice:
+
+  * `npge.block.slice(block, start, stop[, row])` returns a slice.
+    Arguments `start` and `stop` are 0-based indices of a slice.
+    Argument `row` is a row of a source block (built on consensuses).
+    Number of non-gap letters in `row` must be equal to `stop - start + 1`.
+    Gaps in `row` produce pure-gap columns in result.
+  * `npge.block.unwind(block, prefix2blockset)` unwounds the block.
+    Argument `block` is a block built on consensuses.
+    `prefix2blockset` stores a map from sequence name prefix to a blockset.
+    If you want just provide one blockset for all sequences, use
+    `{['']=blockset}`.
