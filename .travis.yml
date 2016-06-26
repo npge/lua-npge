@@ -10,6 +10,10 @@ env:
     - LUA="luajit 2.0"
     - LUA="luajit 2.1"
 
+matrix:
+  allow_failures:
+    - env: LUA="luajit 2.1"
+
 before_install:
   - sudo apt-get update
   - wget https://raw.githubusercontent.com/mpeterv/hererocks/13e45c9db0293ac59ffb3756c0a883c7221e9295/hererocks.py
