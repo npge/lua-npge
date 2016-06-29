@@ -3,7 +3,7 @@
 -- See the LICENSE file for terms of use.
 
 describe("npge.algo.GoodSubblocks", function()
-    it("extracts good blocks of parts (already good)",
+    it("extracts good parts of blocks (already good)",
     function()
         local Sequence = require 'npge.model.Sequence'
         local s = Sequence('seq', string.rep('ATGC', 100))
@@ -20,7 +20,7 @@ describe("npge.algo.GoodSubblocks", function()
         assert.same(GoodSubblocks(blockset), blockset)
     end)
 
-    it("extracts good blocks of parts (mismatches in groups)",
+    it("extracts good parts of blocks (mismatches in groups)",
     function()
         -- AAAAAAAA
         -- AAATTAAA
