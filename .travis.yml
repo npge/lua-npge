@@ -8,12 +8,12 @@ env:
     - LUA="lua 5.2"
     - LUA="lua 5.3.1"
     - LUA="luajit 2.0"
-    - LUA="luajit 2.1"
+    - LUA="luajit @v2.1"
 
 before_install:
   - sudo apt-get update
-  - wget https://raw.githubusercontent.com/mpeterv/hererocks/13e45c9db0293ac59ffb3756c0a883c7221e9295/hererocks.py
-  - python hererocks.py here --$LUA --luarocks $LUAROCKS
+  - sudo pip install hererocks
+  - hererocks here --$LUA --luarocks $LUAROCKS
   - eval $(./here/bin/luarocks path --bin)
   - bash .travis/setup_rote.sh
   - bash .travis/setup_rocks.sh
