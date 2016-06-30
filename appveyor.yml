@@ -24,8 +24,8 @@ cache:
 install:
 # Setup Lua development/build environment
 - PATH %CD%\here\bin;C:\mingw\bin;%PATH%
-- curl --location --silent --fail --max-time 120 --connect-timeout 30 https://raw.githubusercontent.com/mpeterv/hererocks/master/hererocks.py > hererocks.py
-- python hererocks.py here --%Lua% --luarocks=%LuaRocks% --verbose --target=%Configuration% --no-git-cache
+- python -m pip install hererocks
+- python -m hererocks here --%Lua% --luarocks=%LuaRocks% --verbose --target=%Configuration% --no-git-cache
 # Downloand and install blast to c:\blast
 - call .appveyor\install_blast.bat
 - luarocks install "https://gist.githubusercontent.com/starius/719b194bb34ce612458c/raw/7ab5aa457164c5dccef2c06e0e06ffbed09319df/mediator_lua-1.1.1-0.rockspec"
