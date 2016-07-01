@@ -28,8 +28,6 @@ matrix:
   allow_failures:
     - platform: x86
       LJ_VER: 2.0.3
-    - platform: x86
-      LJ_VER: 2.1
 
 cache:
   #- c:\lua -> appveyor.yml
