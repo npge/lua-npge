@@ -1065,7 +1065,7 @@ Unwind and slice:
     Argument `row` is a row of a source block (built on consensuses).
     Number of non-gap letters in `row` must be equal to `stop - start + 1`.
     Gaps in `row` produce pure-gap columns in result.
-  * `npge.block.unwind(block, prefix2blockset)` unwounds the block.
+  * `npge.block.unwind(block, prefix2blockset)` unwinds the block.
     Argument `block` is a block built on consensuses.
     `prefix2blockset` stores a map from sequence name prefix to a blockset.
     If you want just provide one blockset for all sequences, use
