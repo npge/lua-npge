@@ -1070,3 +1070,104 @@ Unwind and slice:
     `prefix2blockset` stores a map from sequence name prefix to a blockset.
     If you want just provide one blockset for all sequences, use
     `{['']=blockset}`.
+
+## Module npge.algo
+
+  * `AddGoodBlast(query, bank[, options])` - returns filtered blast hits.
+    Input is blocks. Output is blocks on the same set of sequences.
+    Depends on `npge.config` (`DUST`, `EVALUE`).
+    `options` is a table with the same keys as of `BlastHits`.
+
+  * `AlignLeft(blockset)` - move all non-gap letters in alignment to left.
+
+  * `Align(blockset)` - aligns rows of blocks.
+    Depends on `npge.config.alignment`.
+
+  * `BetterSubblocks(blockset, other_blockset)` - extracts good blocks
+    not overlapping with other bs.
+
+  * `BlastHits(query, bank[, options])` - finds hits using blast+.
+    Input is sequences. Output is blocks built on these sequences.
+    `options` is a table with the following keys (all are optional):
+
+      * `subset` - query is a subset of a bank. Used for optimization:
+        Use the same consensuses for query and bank;
+      * `bank_fname` - pre-built bank;
+      * `line_handler` - a function that is called with
+        each line of blast output.
+
+  * `BlocksWithoutOverlaps(orig_blockset, new_blockset)` - merges
+    two blocksets without overlap of blocks. Prefers better (larger) blocks.
+    If two blocks have same weight, prefers a block from `orig_blockset`.
+
+  * `CheckPangenome(blockset)` - returns if a blockset is a good pangenome
+    and a string describing warnings and errors.
+
+  * `ConsensusSequences(blockset, prefix='')` - returns a blockset
+    made of consensus sequences of input blockset. Sequence name is
+    a concatenation of `prefix` and a block name.
+
+  * `Cover(blockset)` - returns a blockset including all input blocks and
+    one fragment blocks on parts of sequences uncovered by input blocks.
+
+  * `ExcludeSelfOverlap(blockset)` - removes self-overlap from all blocks
+    and return a blockset of non-empty blocks on the results.
+
+  * `Extend(blockset, max_length)` - extend all blocks to left and to right.
+    Extends npge.config.general.MIN_LENGTH positions by default.
+
+  * `FilterGoodBlocks(blockset)` - returns blockset of good blocks.
+
+  * `Genomes(blockset)` - gets a list of genomes of a blockset.
+
+  * `Genomes(blockset)` - generates names for blocks from blockset and
+    returns new blockset with these names of the blocks.
+
+  * `GoodSubblocks(blockset)` - extracts good parts of blocks.
+
+  * `HasOverlap(blockset)` - returns if blockset contains overlaps.
+
+  * `HasSelfOverlap(blockset)` - returns if blockset contains
+    self-overlapping blocks.
+
+  * `JoinMinor(blockset)` - builds minor blocks from one fragment blocks
+    and returns a blockset of the minor blocks.
+
+  * `Join(blockset)` - joins consequent blocks and return a blockset
+    of results of joins.
+
+  * `Merge({blockset1, blockset2, ...})` - returns a blockset of all blocks
+    of all input blocksets.
+
+  * `Multiply(blockset1, blockset2)` - returns multiplication of blocksets.
+    See npge/doc/compare-pangenomes.md
+
+  * `NonCovered(npg1, npg2, conflicts, common)` - returns absolute and
+    relative distances between two pangenomes.
+    See npge/doc/compare-pangenomes.md
+
+  * `Orient(blockset)` - returns blockset of blocks similar to input blocks
+    maximizing the number of fragments with positive orientation.
+
+  * `Overlapping(blockset, block)` - returns a list of blocks from
+    the blockset overlapping with the block.
+
+  * `PangenomeMaker(blockset, silent=false)` - makes and returns pangenome.
+    The blockset is used as an initial source of sequences blocks for
+    the pangenome. If silent is truthy, prints '.' per iteration.
+
+  * `PrimaryHits(blockset)` - creates and returns a pre-pangenome by
+    applying BLAST progressively (firstly, to pair of genomes, then to
+    resulting pairs and so on). This step preceeds `PangenomeMaker`.
+
+  * `ReAlign(blockset)` - re-aligns each block and keeps better alignment.
+
+  * `SubBlockSet(blockset, sequences)` - cuts a blockset to given sequences.
+    Keeps only fragments of given sequences in blocks of blockset. Returns
+    new blockset.
+
+  * `Subtract(minuend, subtrahend)` - removes blocks of `minuend`
+    overlapping with `subtrahend`. Return new blockset.
+
+  * `UnwindBlocks(consensus_bs, prefix2blockset)` - unwinds the blockset.
+    See `npge.block.unwind`.
