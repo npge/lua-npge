@@ -5,6 +5,7 @@
 return {
     split = require 'npge.util.split',
     unpack = require 'npge.util.unpack',
+    execute = require 'npge.util.execute',
     loadstring = require 'npge.util.loadstring',
     arraysEqual = require 'npge.util.arraysEqual',
     arraysLess = require 'npge.util.arraysLess',
@@ -19,6 +20,7 @@ return {
     endsWith = require 'npge.util.endsWith',
     trim = require 'npge.util.trim',
     writeIt = require 'npge.util.writeIt',
+    writeFile = require 'npge.util.writeFile',
     fileExists = require 'npge.util.fileExists',
     sandbox = require 'npge.util.sandbox',
     readFile = require 'npge.util.readFile',
