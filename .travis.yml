@@ -21,7 +21,7 @@ before_install:
   - sudo pip install cpp-coveralls
 
 install:
-  - luarocks make CFLAGS="-O0 -fPIC -ftest-coverage -fprofile-arcs" LIBFLAG="-shared --coverage"
+  - luarocks make CFLAGS="-std=c++0x -O0 -fPIC -ftest-coverage -fprofile-arcs" LIBFLAG="-shared --coverage"
 
 script:
   - luacheck `find src -name '*.lua'`
